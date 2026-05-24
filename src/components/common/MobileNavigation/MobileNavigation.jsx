@@ -10,15 +10,20 @@ import { Icon } from "@iconify/react";
 import { trackPhoneClick, trackWhatsAppClick, trackNavigation } from "../../../utils/gtm";
 import styles from "./MobileNavigation.module.css";
 
-// Navigation items configuration
+// Primary CIT admissions contact (Assam Digital campaign)
+const PRIMARY_PHONE = "+918867354168";
+const PRIMARY_PHONE_DIGITS = "918867354168";
+const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
+
+// Navigation items configuration — CIT admissions actions
 const navItems = [
   {
     id: "call",
     label: "Call",
     icon: "mdi:phone",
-    color: "#E74C3C",
+    color: "#0B3D91",
     action: "call",
-    href: "tel:+919181956562",
+    href: `tel:${PRIMARY_PHONE}`,
   },
   {
     id: "whatsapp",
@@ -26,13 +31,13 @@ const navItems = [
     icon: "mdi:whatsapp",
     color: "#25D366",
     action: "whatsapp",
-    href: "https://api.whatsapp.com/send?phone=919181956562&text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant.",
+    href: WHATSAPP_HREF,
   },
   {
     id: "enquiry",
-    label: "Book Now",
-    icon: "mdi:calendar-plus",
-    color: "#E74C3C",
+    label: "Apply",
+    icon: "mdi:school-outline",
+    color: "#F4A300",
     action: "enquiry",
     badge: true,
     primary: true,
@@ -41,7 +46,7 @@ const navItems = [
     id: "menu",
     label: "Menu",
     icon: "mdi:menu",
-    color: "#546E7A",
+    color: "#0B3D91",
     action: "menu",
   },
 ];
@@ -87,7 +92,7 @@ const MobileNavigation = ({
         window.open(item.href, "_blank");
         break;
       case "call":
-        trackPhoneClick('+919181956562', 'mobile_nav');
+        trackPhoneClick(PRIMARY_PHONE, 'mobile_nav');
         window.open(item.href, "_blank");
         break;
       case "enquiry":
