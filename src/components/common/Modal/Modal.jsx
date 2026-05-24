@@ -209,7 +209,7 @@ export const showSuccessModal = (title, message, buttonText = 'OK') => {
     html: message,
     icon: 'success',
     confirmButtonText: buttonText,
-    confirmButtonColor: '#1A5276',
+    confirmButtonColor: '#0B3D91',
     showClass: {
       popup: 'animate__animated animate__fadeInUp animate__faster'
     },
@@ -237,7 +237,7 @@ export const showConfirmModal = (title, message, confirmText = 'Yes', cancelText
     showCancelButton: true,
     confirmButtonText: confirmText,
     cancelButtonText: cancelText,
-    confirmButtonColor: '#1A5276',
+    confirmButtonColor: '#0B3D91',
     cancelButtonColor: '#6B7280',
   });
 };
@@ -248,7 +248,7 @@ export const showInfoModal = (title, message, buttonText = 'Got it') => {
     html: message,
     icon: 'info',
     confirmButtonText: buttonText,
-    confirmButtonColor: '#1A5276',
+    confirmButtonColor: '#0B3D91',
   });
 };
 
