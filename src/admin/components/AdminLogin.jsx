@@ -41,11 +41,11 @@ const AdminLogin = () => {
         <div className={styles.loginHeader}>
           <div className={styles.loginLogo}>
             <img
-              src="https://www.monjoven.com/assets/img/logo.png"
-              alt="Monjoven"
+              src="https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Admin"
+              alt="CIT Admin"
             />
           </div>
-          <h1 className={styles.loginTitle}>Monjoven Admin Panel</h1>
+          <h1 className={styles.loginTitle}>CIT Admissions Admin</h1>
           <p className={styles.loginSubtitle}>Lead Management System</p>
         </div>
 
@@ -66,7 +66,7 @@ const AdminLogin = () => {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '&.Mui-focused fieldset': {
-                    borderColor: '#148F77',
+                    borderColor: 'var(--admin-accent)',
                   },
                 },
               }}
@@ -89,7 +89,7 @@ const AdminLogin = () => {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '&.Mui-focused fieldset': {
-                    borderColor: '#148F77',
+                    borderColor: 'var(--admin-accent)',
                   },
                 },
               }}
@@ -102,7 +102,7 @@ const AdminLogin = () => {
               size="small"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              sx={{ padding: 0, color: '#148F77', '&.Mui-checked': { color: '#148F77' } }}
+              sx={{ padding: 0, color: 'var(--admin-accent)', '&.Mui-checked': { color: 'var(--admin-accent)' } }}
             />
             <label htmlFor="remember" className={styles.rememberLabel}>
               Remember me

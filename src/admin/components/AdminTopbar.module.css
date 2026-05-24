@@ -39,8 +39,8 @@
 .badge {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--admin-accent, #148F77);
-  background: rgba(20, 143, 119, 0.1);
+  color: var(--admin-accent, #C8102E);
+  background: rgba(200, 16, 46, 0.1);
   padding: 2px 10px;
   border-radius: 20px;
   letter-spacing: 0.5px;
@@ -74,15 +74,15 @@
 }
 
 .navLink:hover {
-  color: var(--admin-accent, #148F77);
-  background: rgba(20, 143, 119, 0.06);
+  color: var(--admin-accent, #C8102E);
+  background: rgba(200, 16, 46, 0.06);
 }
 
 .navLinkActive {
-  color: var(--admin-accent, #148F77);
+  color: var(--admin-accent, #C8102E);
   font-weight: 600;
-  border-bottom-color: var(--admin-accent, #148F77);
-  background: rgba(20, 143, 119, 0.08);
+  border-bottom-color: var(--admin-accent, #C8102E);
+  background: rgba(200, 16, 46, 0.08);
 }
 
 /* ---- Right: User Info + Logout + Hamburger ---- */
@@ -106,7 +106,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--admin-gradient, linear-gradient(135deg, #1A5276, #148F77));
+  background: var(--admin-gradient, linear-gradient(135deg, #0B3D91, #1E5AB8));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -235,14 +235,14 @@
 }
 
 .mobileNavLink:hover {
-  background: rgba(20, 143, 119, 0.06);
-  color: var(--admin-accent, #148F77);
+  background: rgba(200, 16, 46, 0.06);
+  color: var(--admin-accent, #C8102E);
 }
 
 .mobileNavLinkActive {
-  color: var(--admin-accent, #148F77);
+  color: var(--admin-accent, #C8102E);
   font-weight: 600;
-  background: rgba(20, 143, 119, 0.1);
+  background: rgba(200, 16, 46, 0.1);
 }
 
 .mobileMenuDivider {

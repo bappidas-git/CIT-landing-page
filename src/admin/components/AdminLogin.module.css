@@ -107,7 +107,7 @@
 
 .submitButton:hover {
   opacity: 0.9;
-  box-shadow: 0 6px 20px rgba(20, 143, 119, 0.35);
+  box-shadow: 0 6px 20px rgba(244, 163, 0, 0.35);
 }
 
 .submitButton:disabled {

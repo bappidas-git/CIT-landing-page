@@ -24,7 +24,7 @@
  */
 export const exportGoogleAdsCSV = (leads, options = {}) => {
   const {
-    conversionName = 'Offline Lead Conversion',
+    conversionName = 'CIT 2026 B.E. Admission Lead',
     defaultValue = 0,
     currency = 'INR',
   } = options;
