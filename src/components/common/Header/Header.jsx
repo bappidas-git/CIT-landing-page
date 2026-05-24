@@ -7,28 +7,35 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { trackPhoneClick, trackNavigation } from "../../../utils/gtm";
+import {
+  trackPhoneClick,
+  trackNavigation,
+  trackCTAClick,
+} from "../../../utils/gtm";
+import { useModal } from "../../../context/ModalContext";
 import styles from "./Header.module.css";
 
-const logoUrl = "https://www.monjoven.com/assets/img/logo.png";
-const whiteLogoUrl =
-  "https://res.cloudinary.com/dn9gyaiik/image/upload/v1775887476/MONJOVEN-LOGO_hqpdnc.png";
+const logoUrl =
+  "https://placehold.co/200x60/FFFFFF/0B3D91?text=CIT+Logo";
 
-// Navigation items
+const PRIMARY_PHONE = "+918867354168";
+const PRIMARY_PHONE_DISPLAY = "+91 88673 54168";
+
+// Navigation items — admission-focused anchors. Section IDs are set
+// alongside each section component (about / courses / placements / campus / contact).
 const navItems = [
-  { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Why Choose Us", href: "#why-us" },
-  { label: "Results", href: "#results" },
-  { label: "Testimonials", href: "#testimonials" },
+  { label: "Courses", href: "#courses" },
+  { label: "Placements", href: "#placements" },
+  { label: "Campus", href: "#campus" },
   { label: "Contact", href: "#contact" },
 ];
 
 const Header = ({ forceCloseMenu = false }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { openLeadDrawer } = useModal();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -79,6 +86,8 @@ const Header = ({ forceCloseMenu = false }) => {
         top: offsetPosition,
         behavior: "smooth",
       });
+    } else if (targetId === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     setIsMobileMenuOpen(false);
@@ -112,6 +121,12 @@ const Header = ({ forceCloseMenu = false }) => {
         });
       }
     }, 50);
+  };
+
+  const handleApplyClick = (source) => {
+    trackCTAClick(`header_apply_now_${source}`, "header", "Apply Now");
+    openLeadDrawer("apply-now");
+    setIsMobileMenuOpen(false);
   };
 
   // Animation variants
@@ -161,11 +176,12 @@ const Header = ({ forceCloseMenu = false }) => {
             href="#home"
             onClick={(e) => scrollToSection(e, "#home")}
             className={styles.logoLink}
+            aria-label="CIT home — scroll to top"
           >
             <div className={styles.logoWrapper}>
               <img
-                src={isScrolled ? logoUrl : whiteLogoUrl}
-                alt="Monjoven"
+                src={logoUrl}
+                alt="CIT — Channabasaveshwara Institute of Technology"
                 className={styles.mainLogo}
                 style={{
                   height: "40px",
@@ -178,7 +194,7 @@ const Header = ({ forceCloseMenu = false }) => {
 
         {/* Desktop Navigation */}
         {!isMobile && (
-          <nav className={styles.desktopNav}>
+          <nav className={styles.desktopNav} aria-label="Primary">
             <ul className={styles.navList}>
               {navItems.map((item, index) => (
                 <motion.li
@@ -204,25 +220,40 @@ const Header = ({ forceCloseMenu = false }) => {
           </nav>
         )}
 
-        {/* Right Section - Logo Icon & CTA */}
+        {/* Right Section - Phone + Apply Now CTA */}
         <div className={styles.rightSection}>
           {!isMobile && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.3 }}
-            >
-              <a
-                href="tel:+919181956562"
-                className={styles.callButton}
-                onClick={() =>
-                  trackPhoneClick("+919181956562", "header_desktop")
-                }
+            <>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.45, duration: 0.3 }}
               >
-                <Icon icon="mdi:phone" className={styles.callButtonIcon} />
-                +91 9181956562
-              </a>
-            </motion.div>
+                <a
+                  href={`tel:${PRIMARY_PHONE}`}
+                  className={styles.callButton}
+                  onClick={() =>
+                    trackPhoneClick(PRIMARY_PHONE, "header_desktop")
+                  }
+                  aria-label={`Call CIT admissions on ${PRIMARY_PHONE_DISPLAY}`}
+                >
+                  <Icon icon="mdi:phone" className={styles.callButtonIcon} />
+                  {PRIMARY_PHONE_DISPLAY}
+                </a>
+              </motion.div>
+              <motion.button
+                type="button"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.55, duration: 0.3 }}
+                onClick={() => handleApplyClick("desktop")}
+                className={styles.applyButton}
+                aria-label="Apply for 2026 B.E. admission"
+              >
+                <Icon icon="mdi:school-outline" className={styles.applyButtonIcon} />
+                Apply Now
+              </motion.button>
+            </>
           )}
 
           {/* Mobile Menu Button */}
@@ -235,6 +266,7 @@ const Header = ({ forceCloseMenu = false }) => {
                 setIsMobileMenuOpen(newState);
               }}
               aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
               <Icon
                 icon={isMobileMenuOpen ? "mdi:close" : "mdi:menu"}
@@ -255,7 +287,7 @@ const Header = ({ forceCloseMenu = false }) => {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <nav className={styles.mobileNavContent}>
+            <nav className={styles.mobileNavContent} aria-label="Mobile primary">
               <ul className={styles.mobileNavList}>
                 {navItems.map((item, index) => (
                   <motion.li
@@ -279,16 +311,28 @@ const Header = ({ forceCloseMenu = false }) => {
                 ))}
               </ul>
               <div className={styles.mobileNavCTA}>
+                <button
+                  type="button"
+                  onClick={() => handleApplyClick("mobile_menu")}
+                  className={styles.mobileApplyButton}
+                  aria-label="Apply for 2026 B.E. admission"
+                >
+                  <Icon
+                    icon="mdi:school-outline"
+                    className={styles.callButtonIcon}
+                  />
+                  Apply Now
+                </button>
                 <a
-                  href="tel:+919181956562"
+                  href={`tel:${PRIMARY_PHONE}`}
                   className={styles.mobileCallButton}
                   onClick={() => {
-                    trackPhoneClick("+919181956562", "header_mobile_menu");
+                    trackPhoneClick(PRIMARY_PHONE, "header_mobile_menu");
                     setIsMobileMenuOpen(false);
                   }}
                 >
                   <Icon icon="mdi:phone" className={styles.callButtonIcon} />
-                  +91 9181956562
+                  {PRIMARY_PHONE_DISPLAY}
                 </a>
               </div>
             </nav>
@@ -302,12 +346,10 @@ const Header = ({ forceCloseMenu = false }) => {
 // Helper function to get navigation icons
 const getNavIcon = (label) => {
   const icons = {
-    Home: "mdi:home-outline",
     About: "mdi:information-outline",
-    Services: "mdi:medical-bag",
-    "Why Choose Us": "mdi:star-outline",
-    Results: "mdi:image-multiple-outline",
-    Testimonials: "mdi:format-quote-open",
+    Courses: "mdi:book-open-variant",
+    Placements: "mdi:briefcase-check-outline",
+    Campus: "mdi:school-outline",
     Contact: "mdi:phone-outline",
   };
   return icons[label] || "mdi:circle-outline";

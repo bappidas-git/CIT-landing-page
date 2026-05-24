@@ -159,30 +159,102 @@
 }
 
 .callButton {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background: var(--accent-orange);
+  background: transparent;
   color: var(--white);
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   text-decoration: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
   border-radius: var(--radius-lg);
   transition: all var(--transition-fast);
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
 }
 
 .callButton:hover {
-  background: var(--accent-orange-dark);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--white);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.45);
+  border-color: var(--white);
+  transform: translateY(-1px);
+}
+
+.header.scrolled .callButton {
+  color: var(--primary-dark);
+  border-color: rgba(11, 61, 145, 0.3);
+}
+
+.header.scrolled .callButton:hover {
+  background: rgba(11, 61, 145, 0.06);
+  color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 .callButtonIcon {
   font-size: 18px;
+}
+
+/* Primary "Apply Now" CTA — amber accent */
+.applyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  background: var(--accent-amber);
+  color: var(--white);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  box-shadow: var(--shadow-button);
+  font-family: inherit;
+}
+
+.applyButton:hover {
+  background: var(--accent-amber-dark);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.applyButton:focus-visible {
+  outline: 2px solid var(--accent-amber-dark);
+  outline-offset: 2px;
+}
+
+.applyButtonIcon {
+  font-size: 18px;
+}
+
+.mobileApplyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+  background: var(--accent-amber);
+  color: var(--white);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-button);
+  font-family: inherit;
+}
+
+.mobileApplyButton:hover {
+  background: var(--accent-amber-dark);
+  color: var(--white);
 }
 
 .mobileCallButton {
@@ -192,18 +264,18 @@
   gap: var(--space-2);
   width: 100%;
   padding: var(--space-3) var(--space-4);
-  background: var(--accent-orange);
-  color: var(--white);
+  background: transparent;
+  color: var(--primary-dark);
   font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   text-decoration: none;
+  border: 1.5px solid var(--primary-dark);
   border-radius: var(--radius-lg);
   transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
 }
 
 .mobileCallButton:hover {
-  background: var(--accent-orange-dark);
+  background: var(--primary-dark);
   color: var(--white);
 }
 
