@@ -1,13 +1,18 @@
 /* ============================================
    SecondaryCTASection Styles
-   Final conversion push CTA before footer
+   Urgency / limited-seats CTA band — CIT 2026
    ============================================ */
 
 /* Section Container */
 .section {
   position: relative;
   padding: var(--space-16) 0;
-  background: linear-gradient(135deg, #1a5276 0%, #0e3d5c 60%, #1a5276 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 60%,
+    var(--color-primary) 100%
+  );
   overflow: hidden;
 }
 
@@ -23,7 +28,7 @@
     ),
     radial-gradient(
       circle at 85% 70%,
-      rgba(20, 143, 119, 0.1) 0%,
+      rgba(244, 163, 0, 0.1) 0%,
       transparent 40%
     ),
     repeating-linear-gradient(
@@ -45,7 +50,7 @@
 /* Grid Layout */
 .gridLayout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.1fr 1fr;
   gap: var(--space-12);
   align-items: center;
 }
@@ -63,17 +68,24 @@
 }
 
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-5);
-  background: rgba(20, 143, 119, 0.2);
+  background: rgba(244, 163, 0, 0.15);
   backdrop-filter: blur(8px);
   border-radius: var(--radius-full);
   color: #ffffff;
   font-size: var(--fs-sm);
-  font-weight: 100;
+  font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-wide);
-  border: 1px solid rgba(20, 143, 119, 0.3);
+  border: 1px solid rgba(244, 163, 0, 0.45);
   text-transform: uppercase;
+}
+
+.badgeIcon {
+  font-size: 1.1rem;
+  color: var(--accent-amber-light);
 }
 
 /* Title */
@@ -85,10 +97,28 @@
   line-height: var(--lh-tight);
 }
 
+.titleAccent {
+  color: var(--accent-amber);
+  position: relative;
+  display: inline-block;
+}
+
+.titleAccent::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-amber);
+  border-radius: var(--radius-full);
+  opacity: 0.45;
+}
+
 /* Subtitle / Description */
 .subtitle {
   font-size: var(--fs-md);
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   line-height: var(--lh-relaxed);
 }
 
@@ -104,7 +134,7 @@
 
 .benefitItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
   font-size: var(--fs-base);
   color: rgba(255, 255, 255, 0.95);
@@ -112,9 +142,10 @@
 }
 
 .benefitIcon {
-  font-size: 1.25rem;
-  color: #148f77;
+  font-size: 1.3rem;
+  color: var(--accent-amber-light);
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 /* CTA Group */
@@ -127,7 +158,11 @@
 }
 
 .primaryCta {
-  box-shadow: 0 6px 24px rgba(255, 107, 53, 0.45);
+  box-shadow: 0 6px 24px rgba(244, 163, 0, 0.45);
+}
+
+.primaryCta:hover {
+  box-shadow: 0 10px 30px rgba(244, 163, 0, 0.55);
 }
 
 .whatsappBtn {
@@ -139,12 +174,13 @@
   color: #ffffff;
   font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   text-decoration: none;
   transition:
     background 0.2s ease,
     transform 0.2s ease;
   box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  min-height: 52px;
 }
 
 .whatsappBtn:hover {
@@ -157,7 +193,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   text-decoration: none;
@@ -169,8 +205,8 @@
 }
 
 .phoneLink:hover {
-  color: #FFFFFF;
-  border-color: #FFFFFF;
+  color: #ffffff;
+  border-color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
 }
@@ -192,14 +228,14 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
 }
 
 .trustIcon {
-  font-size: 1.1rem;
-  color: #148f77;
+  font-size: 1.15rem;
+  color: var(--accent-amber-light);
 }
 
 /* Image Column */
@@ -209,12 +245,55 @@
   align-items: center;
 }
 
-.ctaImage {
+.imageWrapper {
+  position: relative;
   width: 100%;
   max-width: 540px;
+}
+
+.ctaImage {
+  width: 100%;
   height: auto;
   border-radius: var(--radius-2xl);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Floating Seat Badge */
+.seatBadge {
+  position: absolute;
+  bottom: -18px;
+  left: -18px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  background: var(--accent-amber-gradient);
+  color: #ffffff;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 12px 30px rgba(244, 163, 0, 0.45);
+}
+
+.seatBadgeIcon {
+  font-size: 1.75rem;
+  color: #ffffff;
+}
+
+.seatBadgeLabel {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.seatBadgeValue {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  line-height: 1.1;
 }
 
 /* ============================================
@@ -245,7 +324,9 @@
   }
 
   .benefitsList {
-    align-items: center;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 520px;
   }
 
   .ctaGroup {
@@ -264,7 +345,7 @@
     order: -1;
   }
 
-  .ctaImage {
+  .imageWrapper {
     max-width: 420px;
   }
 }
@@ -306,12 +387,11 @@
     width: 100%;
   }
 
-  .whatsappBtn {
-    justify-content: center;
-  }
-
+  .primaryCta,
+  .whatsappBtn,
   .phoneLink {
     justify-content: center;
+    width: 100%;
   }
 
   .trustRow {
@@ -323,8 +403,15 @@
     order: -1;
   }
 
-  .ctaImage {
+  .imageWrapper {
     max-width: 100%;
+  }
+
+  .seatBadge {
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: var(--space-2) var(--space-4);
   }
 }
 
@@ -347,13 +434,23 @@
     flex-direction: column;
     gap: var(--space-2);
   }
+
+  .seatBadgeIcon {
+    font-size: 1.4rem;
+  }
+
+  .seatBadgeValue {
+    font-size: var(--fs-sm);
+  }
 }
 
 /* ============================================
    Touch Device Optimizations
    ============================================ */
 @media (hover: none) and (pointer: coarse) {
-  .whatsappBtn:hover {
+  .whatsappBtn:hover,
+  .phoneLink:hover,
+  .primaryCta:hover {
     transform: none;
   }
 }
@@ -362,11 +459,9 @@
    Reduced Motion
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .whatsappBtn {
-    transition: none;
-  }
-
-  .phoneLink {
+  .whatsappBtn,
+  .phoneLink,
+  .primaryCta {
     transition: none;
   }
 }
@@ -380,7 +475,8 @@
     padding: var(--space-8) 0;
   }
 
-  .bgPattern {
+  .bgPattern,
+  .seatBadge {
     display: none;
   }
 

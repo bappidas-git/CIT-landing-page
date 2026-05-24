@@ -1,7 +1,7 @@
 /* ============================================
    SecondaryCTASection Component
-   Final conversion push CTA before footer
-   Focused on booking a consultation
+   Urgency / limited-seats band before footer
+   Final conversion push for CIT 2026 admissions
    ============================================ */
 
 import React from "react";
@@ -13,27 +13,21 @@ import { trackCTAClick } from "../../../utils/gtm";
 import Button from "../../common/Button/Button";
 import styles from "./SecondaryCTASection.module.css";
 
-const benefits = [
-  { text: "Get initial consultation & assessment", icon: "mdi:check-circle" },
-  { text: "Personalized treatment plan", icon: "mdi:check-circle" },
-  {
-    text: "Transparent pricing with no hidden costs",
-    icon: "mdi:check-circle",
-  },
-  {
-    text: "Flexible scheduling to suit your convenience",
-    icon: "mdi:check-circle",
-  },
+const reassurances = [
+  { text: "NAAC Accredited · AICTE Approved · VTU Affiliated", icon: "mdi:shield-check" },
+  { text: "85%+ placements over the last 8 years (90+ recruiters on campus)", icon: "mdi:briefcase-check" },
+  { text: "Safe hostel & mess facilities for North-East students", icon: "mdi:home-heart" },
+  { text: "End-to-end admission guidance — no Karnataka trip needed", icon: "mdi:compass-outline" },
 ];
 
 const trustIndicators = [
-  { text: "24/7 Support", icon: "mdi:headset" },
-  { text: "No Obligation", icon: "mdi:shield-check" },
-  { text: "100% Confidential", icon: "mdi:lock" },
+  { text: "100% Free Guidance", icon: "mdi:hand-heart" },
+  { text: "Limited 2026 Seats", icon: "mdi:timer-sand" },
+  { text: "Trusted by NE Families", icon: "mdi:account-group" },
 ];
 
 const WHATSAPP_URL =
-  "https://api.whatsapp.com/send?phone=919181956562&text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant.";
+  "https://api.whatsapp.com/send?phone=918867354168&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
 
 const SecondaryCTASection = () => {
   const { openLeadDrawer } = useModal();
@@ -70,72 +64,70 @@ const SecondaryCTASection = () => {
           <div className={styles.gridLayout}>
             {/* Left Column - Text Content */}
             <div className={styles.textColumn}>
-              {/* Overline */}
               <motion.div
                 variants={itemVariants}
                 className={styles.badgeWrapper}
               >
-                <span className={styles.badge}>Take the First Step</span>
+                <span className={styles.badge}>
+                  <Icon icon="mdi:alarm-light" className={styles.badgeIcon} />
+                  Limited Seats — 2026 Intake
+                </span>
               </motion.div>
 
-              {/* Title */}
               <motion.div variants={itemVariants}>
                 <Typography
                   variant="h3"
                   className={styles.title}
                   sx={{ color: "#fff" }}
                 >
-                  Your Transformation Begins with a Consultation
+                  Limited Seats for the 2026 Intake —{" "}
+                  <span className={styles.titleAccent}>Apply Early</span>
                 </Typography>
               </motion.div>
 
-              {/* Description */}
               <motion.div variants={itemVariants}>
                 <Typography
                   variant="body1"
                   className={styles.subtitle}
-                  sx={{ color: "rgba(255,255,255,0.9)" }}
+                  sx={{ color: "rgba(255,255,255,0.92)" }}
                 >
-                  Dr. Porag Neog personally evaluates every case. Book your free
-                  consultation today and get a customized treatment plan
-                  designed just for you.
+                  Direct B.E. admissions for 2026 close quickly each year. Lock
+                  in your seat at Channabasaveshwara Institute of Technology,
+                  Tumakuru with end-to-end guidance from our North-East
+                  admission desk.
                 </Typography>
               </motion.div>
 
-              {/* Benefits List */}
               <motion.div variants={itemVariants}>
                 <ul className={styles.benefitsList}>
-                  {benefits.map((benefit) => (
-                    <li key={benefit.text} className={styles.benefitItem}>
-                      <Icon
-                        icon={benefit.icon}
-                        className={styles.benefitIcon}
-                      />
-                      <span>{benefit.text}</span>
+                  {reassurances.map((item) => (
+                    <li key={item.text} className={styles.benefitItem}>
+                      <Icon icon={item.icon} className={styles.benefitIcon} />
+                      <span>{item.text}</span>
                     </li>
                   ))}
                 </ul>
               </motion.div>
 
-              {/* CTA Buttons */}
               <motion.div variants={itemVariants} className={styles.ctaGroup}>
                 <Button
                   variant="primary"
+                  size="large"
                   className={styles.primaryCta}
                   onClick={() => {
                     trackCTAClick(
-                      "secondary_cta_book",
+                      "secondary_cta_apply",
                       "secondary_cta",
-                      "Book Consultation",
+                      "Apply for 2026 Admission",
                     );
-                    openLeadDrawer("book-meeting");
+                    openLeadDrawer("apply-now");
                   }}
                 >
                   <Icon
-                    icon="mdi:calendar-check"
+                    icon="mdi:school"
                     style={{ marginRight: 8, fontSize: "1.2rem" }}
                   />
-                  Book Consultation
+                  Apply for 2026 Admission
                 </Button>
 
                 <a
@@ -156,15 +148,23 @@ const SecondaryCTASection = () => {
                 </a>
               </motion.div>
 
-              {/* Phone Number */}
               <motion.div variants={itemVariants}>
-                <a href="tel:+919181956562" className={styles.phoneLink}>
+                <a
+                  href="tel:+918867354168"
+                  className={styles.phoneLink}
+                  onClick={() =>
+                    trackCTAClick(
+                      "secondary_cta_call",
+                      "secondary_cta",
+                      "Call CIT",
+                    )
+                  }
+                >
                   <Icon icon="mdi:phone" className={styles.phoneIcon} />
-                  +91 9181956562
+                  +91 88673 54168
                 </a>
               </motion.div>
 
-              {/* Trust Indicators */}
               <motion.div variants={itemVariants} className={styles.trustRow}>
                 {trustIndicators.map((item) => (
                   <div key={item.text} className={styles.trustItem}>
@@ -175,15 +175,26 @@ const SecondaryCTASection = () => {
               </motion.div>
             </div>
 
-            {/* Right Column - Image */}
-            {/* TODO: Replace placeholder below with actual image of Indian lady with Namaskar posture (600x500px recommended) */}
+            {/* Right Column - Visual */}
             <motion.div variants={itemVariants} className={styles.imageColumn}>
-              <Box
-                component="img"
-                src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1775889576/Book_your_consultation_today_vv54ox.png"
-                alt="Indian woman greeting with Namaskar - Book your consultation today"
-                className={styles.ctaImage}
-              />
+              <div className={styles.imageWrapper}>
+                <Box
+                  component="img"
+                  src="https://placehold.co/600x500/0B3D91/F4A300?text=CIT+B.E.+Admission+2026"
+                  alt="Direct B.E. admission at CIT Tumakuru for the 2026 intake"
+                  className={styles.ctaImage}
+                  loading="lazy"
+                />
+                <div className={styles.seatBadge}>
+                  <Icon icon="mdi:fire" className={styles.seatBadgeIcon} />
+                  <div>
+                    <span className={styles.seatBadgeLabel}>Filling Fast</span>
+                    <span className={styles.seatBadgeValue}>
+                      2026 B.E. Seats
+                    </span>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </motion.div>
