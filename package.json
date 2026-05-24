@@ -1,7 +1,7 @@
 {
-  "name": "landing-page-boilerplate",
+  "name": "cit-landing-page",
   "version": "1.0.0",
-  "description": "High-converting landing page boilerplate with lead management, GTM integration, and conversion tracking. Built with React 18, MUI v5, and Framer Motion.",
+  "description": "CIT — Direct B.E. Engineering Admissions 2026 landing page for Channabasaveshwara Institute of Technology. High-converting, mobile-first lead-generation page built with React 18, MUI v5, and Framer Motion.",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -51,17 +51,18 @@
     ]
   },
   "homepage": "/",
-  "author": "Your Agency Name",
+  "author": "Assam Digital",
   "license": "UNLICENSED",
   "keywords": [
+    "engineering-admission",
     "landing-page",
     "lead-generation",
-    "boilerplate",
-    "react-landing-page",
+    "cit",
+    "vtu",
+    "direct-admission",
+    "be-admission",
+    "tumakuru",
     "gtm-integration",
-    "conversion-tracking",
-    "meta-capi",
-    "google-ads",
-    "seo-optimized"
+    "conversion-tracking"
   ]
 }
