@@ -1,0 +1,483 @@
+/* ============================================
+   MobileDrawer Styles
+   Slide-up menu drawer for mobile navigation
+   ============================================ */
+
+/* Drawer Paper */
+.drawerPaper {
+  border-radius: 24px 24px 0 0 !important;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15) !important;
+  overflow: visible !important;
+}
+
+/* Backdrop */
+.backdrop {
+  background-color: rgba(26, 82, 118, 0.6) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Drawer Content Container */
+.drawerContent {
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Drawer Handle (Swipe indicator) */
+.drawerHandle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 8px;
+  cursor: grab;
+}
+
+.drawerHandle:active {
+  cursor: grabbing;
+}
+
+.handleBar {
+  width: 40px;
+  height: 4px;
+  background: var(--border-gray);
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.drawerHandle:hover .handleBar {
+  background: var(--accent-gold);
+}
+
+/* Drawer Header */
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 16px;
+}
+
+/* Logo Section */
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoIcon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #148F77 0%, #1ABC9C 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(20, 143, 119, 0.3);
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+}
+
+.projectName {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: var(--primary-dark) !important;
+  line-height: 1.2 !important;
+  font-family: var(--font-heading) !important;
+}
+
+.projectSubtitle {
+  font-size: 0.75rem !important;
+  color: var(--text-gray) !important;
+  font-weight: 400 !important;
+}
+
+/* Close Button */
+.closeButton {
+  width: 40px;
+  height: 40px;
+  background: var(--light-gray) !important;
+  transition: all 0.2s ease !important;
+}
+
+.closeButton:hover {
+  background: var(--medium-gray) !important;
+  transform: rotate(90deg);
+}
+
+.closeButton svg {
+  font-size: 20px;
+  color: var(--text-dark-gray);
+}
+
+/* Divider */
+.divider {
+  margin: 0 16px !important;
+  border-color: var(--border-gray) !important;
+}
+
+/* Menu List */
+.menuList {
+  padding: 12px 8px !important;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Menu Item */
+.menuItem {
+  margin-bottom: 4px;
+}
+
+/* Menu Button */
+.menuButton {
+  position: relative;
+  border-radius: 12px !important;
+  margin: 0 8px;
+  padding: 12px 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+.menuButton:hover {
+  background-color: rgba(20, 143, 119, 0.08) !important;
+}
+
+.menuButton:active {
+  background-color: rgba(20, 143, 119, 0.12) !important;
+  transform: scale(0.98);
+}
+
+/* Active Menu Item */
+.activeItem {
+  background-color: rgba(20, 143, 119, 0.1) !important;
+}
+
+.activeItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  background: linear-gradient(180deg, var(--accent-gold) 0%, var(--accent-gold-light) 100%);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Menu Icon */
+.menuIcon {
+  min-width: 44px !important;
+  transition: color 0.2s ease;
+}
+
+/* Menu Text */
+.menuText {
+  margin: 0 !important;
+}
+
+.menuText span {
+  font-weight: 500 !important;
+  font-size: 0.95rem !important;
+  transition: color 0.2s ease;
+}
+
+/* Active Indicator */
+.activeIndicator {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  margin-left: auto;
+  box-shadow: 0 0 8px rgba(20, 143, 119, 0.6);
+}
+
+/* Drawer Footer */
+.drawerFooter {
+  padding: 0 8px 16px;
+  padding-bottom: 90px; /* Account for MobileNavigation bar height */
+  margin-top: auto;
+}
+
+/* Contact Info */
+.contactInfo {
+  padding: 16px 16px 8px;
+  text-align: center;
+}
+
+.contactLabel {
+  display: block;
+  color: var(--text-gray) !important;
+  font-size: 0.75rem !important;
+  margin-bottom: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Contact Details List */
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.contactDetailItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark-gray);
+  text-decoration: none;
+  background: var(--light-gray, #F5F7FA);
+  border: 1px solid var(--border-gray);
+  transition: all 0.2s ease;
+}
+
+.contactDetailItem:hover {
+  background: rgba(20, 143, 119, 0.08);
+  border-color: var(--accent-gold);
+}
+
+.contactDetailItem:active {
+  transform: scale(0.98);
+}
+
+/* Unified Contact (single number with Call + WhatsApp actions) */
+.unifiedContact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--light-gray, #F5F7FA);
+  border: 1px solid var(--border-gray);
+}
+
+.unifiedContactHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.unifiedContactNumber {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-dark-gray);
+  letter-spacing: 0.01em;
+}
+
+.unifiedContactActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.unifiedActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.unifiedActionCall {
+  background: rgba(20, 143, 119, 0.1);
+  color: #148F77;
+  border-color: rgba(20, 143, 119, 0.25);
+}
+
+.unifiedActionCall:active {
+  background: #148F77;
+  color: #fff;
+  transform: scale(0.98);
+}
+
+.unifiedActionWhatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #1da851;
+  border-color: rgba(37, 211, 102, 0.3);
+}
+
+.unifiedActionWhatsapp:active {
+  background: #25D366;
+  color: #fff;
+  transform: scale(0.98);
+}
+
+/* Book Consultation CTA Button */
+.bookConsultationCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #E74C3C 0%, #FF8F5E 100%);
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(231, 76, 60, 0.35);
+  transition: all 0.2s ease;
+}
+
+.bookConsultationCta:hover {
+  background: linear-gradient(135deg, #E55A28 0%, #E74C3C 100%);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.45);
+}
+
+.bookConsultationCta:active {
+  background: linear-gradient(135deg, #D04E1F 0%, #E55A28 100%);
+}
+
+.bookConsultationCta svg {
+  font-size: 20px;
+}
+
+/* Animation for menu items */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Landscape Mode Adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .drawerContent {
+    max-height: 90vh;
+  }
+
+  .drawerHeader {
+    padding: 8px 16px;
+  }
+
+  .menuList {
+    padding: 8px !important;
+  }
+
+  .menuButton {
+    padding: 8px 16px !important;
+  }
+
+  .contactInfo {
+    padding: 8px 16px;
+  }
+
+  .contactDetails {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .contactDetailItem {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .bookConsultationCta {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablet Adjustments */
+@media (min-width: 768px) {
+  .drawerContent {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .menuButton {
+    padding: 14px 20px !important;
+  }
+
+  .menuIcon {
+    min-width: 48px !important;
+  }
+
+  .menuText span {
+    font-size: 1rem !important;
+  }
+
+  .contactDetails {
+    gap: 12px;
+  }
+
+  .contactDetailItem {
+    padding: 10px 16px;
+  }
+
+  .bookConsultationCta {
+    padding: 16px 28px;
+  }
+}
+
+/* Touch feedback optimization */
+@media (hover: none) {
+  .menuButton:hover {
+    background-color: transparent !important;
+  }
+
+  .menuButton:active {
+    background-color: rgba(20, 143, 119, 0.12) !important;
+  }
+
+  .closeButton:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility */
+.menuButton:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.contactDetailItem:focus-visible,
+.bookConsultationCta:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .menuButton,
+  .closeButton,
+  .contactDetailItem,
+  .bookConsultationCta {
+    transition: none !important;
+  }
+}
+
+/* Safe area for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .drawerFooter {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+}

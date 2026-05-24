@@ -1,0 +1,802 @@
+/* ============================================
+   AboutSection Styles - About Landing Page Boilerplate
+   Landing Page legacy, stats, content grid & differentiators
+   ============================================ */
+
+/* ========== Main Section ========== */
+.overviewSection {
+  position: relative;
+  padding: 5rem 0;
+  background-color: #f5f7fa;
+  overflow: hidden;
+}
+
+/* ========== Background Elements ========== */
+.bgGradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #f5f7fa 0%, #eef1f5 50%, #f5f7fa 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgPattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(26, 82, 118, 0.04) 1px,
+    transparent 0
+  );
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== Main Wrapper ========== */
+.mainWrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== Section Header ========== */
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #1A5276 0%, #1A5276 100%);
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 8px 20px;
+  border-radius: 30px;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sectionSubtitle {
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ========== Stats Counter Row ========== */
+.statsRow {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.375rem;
+  padding: 1.25rem 1rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  min-width: 140px;
+  flex: 1;
+  max-width: 200px;
+}
+
+.statItem:hover {
+  box-shadow: 0 8px 30px rgba(26, 82, 118, 0.1);
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 20px;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1A5276;
+  font-family: "Inter", sans-serif;
+  line-height: 1.1;
+}
+
+.statSuffix {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #148F77;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ========== Content Grid ========== */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto 3rem;
+  align-items: center;
+}
+
+/* Text Column */
+.textColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.contentParagraph {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: #374151;
+  font-family: "Inter", sans-serif;
+  margin-bottom: 1rem;
+}
+
+.ctaButton {
+  align-self: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+/* Image Column */
+.imageColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.imageWrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.gridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Doctor Profile Card */
+.doctorCard {
+  display: flex;
+  gap: 1.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+.doctorCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #148F77 0%, #1A5276 100%);
+}
+
+.doctorImageWrapper {
+  flex-shrink: 0;
+  width: 130px;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(26, 82, 118, 0.12);
+  border: 2px solid #ffffff;
+}
+
+.doctorImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.doctorInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.doctorName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1A5276;
+  margin: 0 0 0.25rem;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2;
+}
+
+.doctorCredentials {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #148F77;
+  background: rgba(20, 143, 119, 0.08);
+  padding: 4px 10px;
+  border-radius: 20px;
+  align-self: flex-start;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.doctorSpecialization {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1A5276;
+  margin-bottom: 0.875rem;
+  line-height: 1.4;
+  font-family: "Poppins", sans-serif;
+}
+
+.doctorRoles {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  border-top: 1px solid rgba(26, 82, 118, 0.08);
+  padding-top: 0.75rem;
+}
+
+.doctorRoleItem {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+
+.doctorRoleIcon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #148F77 0%, #1ABC9C 100%);
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 1px;
+}
+
+.doctorRoleText {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8125rem;
+  color: #374151;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+}
+
+.doctorRoleText strong {
+  font-weight: 700;
+  color: #1A5276;
+  font-size: 0.8125rem;
+}
+
+.doctorRoleDetail {
+  color: #4b5563;
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+/* ========== Key Differentiators ========== */
+.differentiatorsRow {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.differentiatorsTitle {
+  margin: 0;
+  margin-bottom: 2rem;
+}
+
+.differentiatorsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.differentiatorCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.differentiatorCard:hover {
+  box-shadow: 0 12px 36px rgba(26, 82, 118, 0.1);
+  border-color: rgba(26, 82, 118, 0.08);
+}
+
+.differentiatorIcon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1A5276 0%, #1A5276 100%);
+  color: #ffffff;
+  font-size: 24px;
+  margin: 0 auto 1rem;
+}
+
+.differentiatorTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #1A5276;
+  margin: 0 0 0.5rem;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.3;
+}
+
+.differentiatorDesc {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+/* ========== Responsive Styles ========== */
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+  .overviewSection {
+    padding: 6rem 0;
+  }
+
+  .statsRow {
+    gap: 2rem;
+  }
+
+  .statItem {
+    padding: 1.5rem 1.25rem;
+    min-width: 160px;
+  }
+
+  .statValue {
+    font-size: 2rem;
+  }
+
+  .contentGrid {
+    gap: 4rem;
+  }
+
+  .contentParagraph {
+    font-size: 1.125rem;
+  }
+
+  .differentiatorCard {
+    padding: 2rem 1.5rem;
+  }
+
+  .differentiatorIcon {
+    width: 56px;
+    height: 56px;
+    font-size: 26px;
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .overviewSection {
+    padding: 3.5rem 0;
+  }
+
+  .sectionHeader {
+    margin-bottom: 2rem;
+  }
+
+  .statsRow {
+    gap: 1rem;
+  }
+
+  .statItem {
+    padding: 1rem 0.75rem;
+    min-width: 120px;
+  }
+
+  .statIcon {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .statSuffix {
+    font-size: 1rem;
+  }
+
+  .statLabel {
+    font-size: 0.6875rem;
+  }
+
+  .contentGrid {
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .contentParagraph {
+    font-size: 0.9375rem;
+  }
+
+  .differentiatorsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .differentiatorCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .differentiatorIcon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  .differentiatorTitle {
+    font-size: 0.875rem;
+  }
+
+  .differentiatorDesc {
+    font-size: 0.75rem;
+  }
+}
+
+/* Mobile (max-width: 767px) */
+@media (max-width: 767px) {
+  .overviewSection {
+    padding: 2.5rem 0;
+  }
+
+  .sectionHeader {
+    margin-bottom: 1.5rem;
+  }
+
+  .badge {
+    font-size: 0.625rem;
+    padding: 6px 16px;
+    margin-bottom: 0.75rem;
+  }
+
+  .bgPattern {
+    background-size: 22px 22px;
+  }
+
+  .statsRow {
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .statItem {
+    padding: 0.875rem 0.625rem;
+    min-width: 90px;
+    flex: 1 1 calc(50% - 0.75rem);
+    max-width: calc(50% - 0.375rem);
+    border-radius: 12px;
+  }
+
+  .statIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .statValue {
+    font-size: 1.375rem;
+  }
+
+  .statSuffix {
+    font-size: 1rem;
+  }
+
+  .statLabel {
+    font-size: 0.625rem;
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .contentParagraph {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .ctaButton {
+    align-self: center;
+  }
+
+  .imageColumn {
+    gap: 1rem;
+  }
+
+  .imageWrapper {
+    border-radius: 12px;
+  }
+
+  .doctorCard {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1.25rem;
+    align-items: center;
+  }
+
+  .doctorCard::before {
+    width: 100%;
+    height: 4px;
+  }
+
+  .doctorImageWrapper {
+    width: 110px;
+    height: 135px;
+  }
+
+  .doctorInfo {
+    align-items: center;
+  }
+
+  .doctorName {
+    font-size: 1.125rem;
+  }
+
+  .doctorSpecialization {
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  .doctorRoles {
+    width: 100%;
+  }
+
+  .doctorRoleItem {
+    text-align: left;
+  }
+
+  .differentiatorsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .differentiatorCard {
+    padding: 1.25rem 0.875rem;
+    border-radius: 12px;
+  }
+
+  .differentiatorIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  .differentiatorTitle {
+    font-size: 0.8125rem;
+  }
+
+  .differentiatorDesc {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Small Mobile (max-width: 374px) */
+@media (max-width: 374px) {
+  .overviewSection {
+    padding: 2rem 0;
+  }
+
+  .badge {
+    font-size: 0.5625rem;
+    padding: 5px 12px;
+  }
+
+  .statsRow {
+    gap: 0.5rem;
+  }
+
+  .statItem {
+    padding: 0.75rem 0.5rem;
+    min-width: 80px;
+  }
+
+  .statIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .statValue {
+    font-size: 1.125rem;
+  }
+
+  .statSuffix {
+    font-size: 0.875rem;
+  }
+
+  .statLabel {
+    font-size: 0.5625rem;
+  }
+
+  .contentGrid {
+    gap: 1.5rem;
+  }
+
+  .contentParagraph {
+    font-size: 0.875rem;
+  }
+
+  .differentiatorsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+
+  .differentiatorCard {
+    padding: 1rem 0.75rem;
+  }
+
+  .differentiatorIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+
+  .differentiatorTitle {
+    font-size: 0.75rem;
+  }
+
+  .differentiatorDesc {
+    font-size: 0.625rem;
+  }
+}
+
+/* ========== Hover Effects (Pointer Devices) ========== */
+@media (hover: hover) {
+  .statItem:hover {
+    transform: scale(1.03);
+  }
+
+  .differentiatorCard:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* ========== Reduced Motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  .statItem,
+  .differentiatorCard,
+  .ctaButton,
+  .imageWrapper {
+    transition: none;
+  }
+
+  .statItem:hover,
+  .differentiatorCard:hover,
+  .imageWrapper:hover {
+    transform: none;
+  }
+
+  .ctaButton::before {
+    display: none;
+  }
+}
+
+/* ========== Focus Styles for Accessibility ========== */
+.statItem:focus-visible,
+.ctaButton:focus-visible,
+.differentiatorCard:focus-visible {
+  outline: 2px solid #148F77;
+  outline-offset: 2px;
+}
+
+/* ========== Print Styles ========== */
+@media print {
+  .overviewSection {
+    padding: 2rem 0;
+    background: white;
+  }
+
+  .bgGradient,
+  .bgPattern {
+    display: none;
+  }
+
+  .statsRow {
+    flex-wrap: wrap;
+  }
+
+  .statItem {
+    box-shadow: none;
+    border: 1px solid #e5e5e5;
+  }
+
+  .contentGrid {
+    display: block;
+  }
+
+  .imageColumn {
+    display: none;
+  }
+
+  .differentiatorCard {
+    box-shadow: none;
+    border: 1px solid #e5e5e5;
+    page-break-inside: avoid;
+  }
+}

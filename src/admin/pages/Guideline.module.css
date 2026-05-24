@@ -1,0 +1,502 @@
+/* ============================================
+   Guideline Page Styles
+   ============================================ */
+
+/* Password Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 58, 107, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  padding: 16px;
+}
+
+.modalCard {
+  background: #ffffff;
+  border-radius: 24px;
+  max-width: 400px;
+  width: 100%;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalLogo {
+  height: 40px;
+  margin: 0 auto 24px auto;
+}
+
+.modalTitle {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  margin: 0 0 8px;
+}
+
+.modalSubtitle {
+  font-size: 0.875rem;
+  color: var(--admin-text-secondary);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalInputWrap {
+  position: relative;
+}
+
+.modalToggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.modalButton {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: var(--admin-gradient-accent);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalButton:hover {
+  opacity: 0.9;
+}
+
+.modalError {
+  color: var(--admin-error);
+  font-size: 0.8125rem;
+  margin: 0;
+  text-align: left;
+}
+
+.modalCancel {
+  background: none;
+  border: none;
+  color: var(--admin-text-secondary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  margin-top: 8px;
+  text-decoration: underline;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalCancel:hover {
+  color: var(--admin-text-primary);
+}
+
+/* Page Layout */
+.guidelinePage {
+  padding: 0;
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--admin-text-primary);
+  margin: 0 0 4px;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--admin-text-secondary);
+  margin: 0;
+}
+
+/* Tab Bar */
+.tabBar {
+  display: flex;
+  background: var(--admin-card-bg);
+  border-radius: 16px 16px 0 0;
+  border: 1px solid var(--admin-border);
+  border-bottom: none;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabBar::-webkit-scrollbar {
+  display: none;
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--admin-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+  flex-shrink: 0;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tabButton:hover {
+  color: var(--admin-text-primary);
+}
+
+.tabButtonActive {
+  color: var(--admin-accent);
+  border-bottom-color: var(--admin-accent);
+  font-weight: 600;
+}
+
+.tabIcon {
+  font-size: 1.125rem;
+  display: flex;
+}
+
+/* Tab Content */
+.tabContent {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--admin-border);
+  border-top: 1px solid var(--admin-border);
+  border-radius: 0 0 16px 16px;
+  padding: 24px;
+  min-height: 400px;
+}
+
+.tabPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 12px;
+  text-align: center;
+}
+
+.tabPlaceholder h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--admin-text-primary);
+  margin: 0;
+}
+
+.tabPlaceholder p {
+  font-size: 0.875rem;
+  color: var(--admin-text-secondary);
+  margin: 0;
+}
+
+/* ============================================
+   Guide Content Shared Styles
+   (Used by tab content components in 08B-08I)
+   ============================================ */
+
+/* Section wrapper */
+.guideSection {
+  margin-bottom: 32px;
+}
+
+/* h2 heading */
+.guideTitle {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  margin: 32px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--admin-border);
+}
+
+.guideTitle:first-child {
+  margin-top: 0;
+}
+
+/* h3 heading */
+.guideSubtitle {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--admin-text-primary);
+  margin: 24px 0 12px;
+}
+
+/* Body text */
+.guideParagraph {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--admin-text-secondary);
+  margin-bottom: 12px;
+}
+
+/* Ordered list */
+.guideStepList {
+  padding-left: 24px;
+  margin: 0 0 16px;
+}
+
+.guideStepItem {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--admin-text-secondary);
+  margin-bottom: 10px;
+}
+
+/* Code block */
+.guideCode {
+  background: #f1f5f9;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 0.8125rem;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 12px 0 16px;
+  line-height: 1.6;
+  color: var(--admin-text-primary);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Styled scrollbar for code blocks */
+.guideCode::-webkit-scrollbar {
+  height: 6px;
+}
+
+.guideCode::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 3px;
+}
+
+.guideCode::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 3px;
+}
+
+.guideCode::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Inline code */
+.guideInlineCode {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  color: var(--admin-primary);
+}
+
+/* Table wrapper for horizontal scroll with shadow indicators */
+.guideTableWrap {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0;
+}
+
+/* Shadow indicators on edges */
+.guideTableWrap::before,
+.guideTableWrap::after {
+  content: '';
+  position: sticky;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.guideTableWrap::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255,255,255,0.9), transparent);
+}
+
+.guideTableWrap::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255,255,255,0.9), transparent);
+}
+
+/* Table */
+.guideTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.guideTableHead {
+  background: var(--admin-bg);
+}
+
+.guideTableHead th {
+  padding: 10px 14px;
+  border: 1px solid var(--admin-border);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--admin-text-primary);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.guideTableCell {
+  padding: 10px 14px;
+  border: 1px solid var(--admin-border);
+  font-size: 0.8125rem;
+  color: var(--admin-text-secondary);
+}
+
+/* Note box */
+.guideNote {
+  background: #ebf5ff;
+  border-left: 4px solid var(--admin-accent);
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin: 16px 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--admin-text-secondary);
+}
+
+/* Warning box */
+.guideNoteWarning {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin: 16px 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--admin-text-secondary);
+}
+
+/* Tip box */
+.guideTip {
+  background: #ecfdf5;
+  border-left: 4px solid #10b981;
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin: 16px 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--admin-text-secondary);
+}
+
+/* ---- Responsive: Mobile ---- */
+
+@media (max-width: 768px) {
+  .tabContent {
+    padding: 16px;
+  }
+
+  .tabButton {
+    padding: 10px 14px;
+    font-size: 0.75rem;
+  }
+
+  .guideCode {
+    font-size: 0.75rem;
+    padding: 12px;
+  }
+
+  .guideTable {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .guideStepList {
+    padding-left: 20px;
+  }
+
+  .guideTitle {
+    font-size: 1.125rem;
+    margin: 24px 0 12px;
+  }
+
+  .guideSubtitle {
+    font-size: 0.9375rem;
+    margin: 16px 0 8px;
+  }
+
+  .guideParagraph {
+    font-size: 0.875rem;
+  }
+
+  .guideStepItem {
+    font-size: 0.875rem;
+  }
+
+  .guideNote,
+  .guideNoteWarning,
+  .guideTip {
+    padding: 12px 14px;
+    font-size: 0.875rem;
+  }
+}
+
+/* ---- Print Styles ---- */
+
+@media print {
+  .tabBar {
+    display: none;
+  }
+
+  .tabContent {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .guideCode {
+    border: 1px solid #ddd;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .guideTable {
+    display: table;
+    overflow: visible;
+  }
+
+  .guideNote,
+  .guideNoteWarning,
+  .guideTip {
+    border-left-width: 3px;
+  }
+
+  .pageHeader {
+    margin-bottom: 16px;
+  }
+}

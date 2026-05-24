@@ -1,0 +1,393 @@
+/* ============================================
+   SecondaryCTASection Styles
+   Final conversion push CTA before footer
+   ============================================ */
+
+/* Section Container */
+.section {
+  position: relative;
+  padding: var(--space-16) 0;
+  background: linear-gradient(135deg, #1a5276 0%, #0e3d5c 60%, #1a5276 100%);
+  overflow: hidden;
+}
+
+/* Background Pattern */
+.bgPattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle at 15% 30%,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 85% 70%,
+      rgba(20, 143, 119, 0.1) 0%,
+      transparent 40%
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255, 255, 255, 0.015) 40px,
+      rgba(255, 255, 255, 0.015) 80px
+    );
+  pointer-events: none;
+}
+
+/* Content Container */
+.content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Grid Layout */
+.gridLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+/* Text Column */
+.textColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Badge / Overline */
+.badgeWrapper {
+  display: flex;
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-2) var(--space-5);
+  background: rgba(20, 143, 119, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  font-size: var(--fs-sm);
+  font-weight: 100;
+  letter-spacing: var(--ls-wide);
+  border: 1px solid rgba(20, 143, 119, 0.3);
+  text-transform: uppercase;
+}
+
+/* Title */
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: var(--fw-bold);
+  color: #ffffff;
+  line-height: var(--lh-tight);
+}
+
+/* Subtitle / Description */
+.subtitle {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: var(--lh-relaxed);
+}
+
+/* Benefits List */
+.benefitsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.benefitItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-base);
+  color: rgba(255, 255, 255, 0.95);
+  line-height: var(--lh-relaxed);
+}
+
+.benefitIcon {
+  font-size: 1.25rem;
+  color: #148f77;
+  flex-shrink: 0;
+}
+
+/* CTA Group */
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-top: var(--space-2);
+}
+
+.primaryCta {
+  box-shadow: 0 6px 24px rgba(255, 107, 53, 0.45);
+}
+
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: #25d366;
+  color: #ffffff;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+}
+
+.whatsappBtn:hover {
+  background: #1ebe5d;
+  transform: translateY(-2px);
+}
+
+/* Phone Link */
+.phoneLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: #FFFFFF;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  padding: var(--space-3) var(--space-6);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-xl);
+  transition: all 0.25s ease;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.phoneLink:hover {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.phoneIcon {
+  font-size: 1.1rem;
+}
+
+/* Trust Indicators */
+.trustRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding-top: var(--space-2);
+}
+
+.trustItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.trustIcon {
+  font-size: 1.1rem;
+  color: #148f77;
+}
+
+/* Image Column */
+.imageColumn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ctaImage {
+  width: 100%;
+  max-width: 540px;
+  height: auto;
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   Desktop (1024px+)
+   ============================================ */
+@media (min-width: 1024px) {
+  .section {
+    padding: var(--space-16) 0;
+  }
+}
+
+/* ============================================
+   Tablet (768px - 1023px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .section {
+    padding: var(--space-14) 0;
+  }
+
+  .gridLayout {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    text-align: center;
+  }
+
+  .textColumn {
+    align-items: center;
+  }
+
+  .benefitsList {
+    align-items: center;
+  }
+
+  .ctaGroup {
+    justify-content: center;
+  }
+
+  .trustRow {
+    justify-content: center;
+  }
+
+  .phoneLink {
+    justify-content: center;
+  }
+
+  .imageColumn {
+    order: -1;
+  }
+
+  .ctaImage {
+    max-width: 420px;
+  }
+}
+
+/* ============================================
+   Mobile (below 768px)
+   ============================================ */
+@media (max-width: 767px) {
+  .section {
+    padding: var(--space-12) 0;
+  }
+
+  .gridLayout {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    text-align: center;
+  }
+
+  .textColumn {
+    align-items: center;
+  }
+
+  .title {
+    font-size: var(--fs-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .benefitsList {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .whatsappBtn {
+    justify-content: center;
+  }
+
+  .phoneLink {
+    justify-content: center;
+  }
+
+  .trustRow {
+    justify-content: center;
+    gap: var(--space-4);
+  }
+
+  .imageColumn {
+    order: -1;
+  }
+
+  .ctaImage {
+    max-width: 100%;
+  }
+}
+
+/* Small Mobile (below 480px) */
+@media (max-width: 479px) {
+  .section {
+    padding: var(--space-10) 0;
+  }
+
+  .title {
+    font-size: var(--fs-xl);
+  }
+
+  .subtitle {
+    font-size: var(--fs-xs);
+    line-height: 1.7;
+  }
+
+  .trustRow {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}
+
+/* ============================================
+   Touch Device Optimizations
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  .whatsappBtn:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .whatsappBtn {
+    transition: none;
+  }
+
+  .phoneLink {
+    transition: none;
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  .section {
+    background: #f0f4f8;
+    padding: var(--space-8) 0;
+  }
+
+  .bgPattern {
+    display: none;
+  }
+
+  .title,
+  .subtitle,
+  .benefitItem,
+  .trustItem {
+    color: #333 !important;
+  }
+}

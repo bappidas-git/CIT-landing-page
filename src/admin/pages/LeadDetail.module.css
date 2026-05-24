@@ -1,0 +1,632 @@
+/* ============================================
+   Lead Detail Page Styles
+   Dedicated full-page lead detail view
+   ============================================ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---- Page Header ---- */
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  color: var(--admin-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.backBtn:hover {
+  border-color: var(--admin-accent);
+  color: var(--admin-accent);
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.leadName {
+  font-family: var(--font-heading);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--admin-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.leadId {
+  font-size: 0.75rem;
+  color: var(--admin-text-muted);
+  margin: 2px 0 0;
+}
+
+/* ---- Two-Column Layout ---- */
+.columns {
+  display: grid;
+  grid-template-columns: 60fr 40fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---- Card ---- */
+.card {
+  background: var(--admin-card-bg);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 16px;
+}
+
+.cardTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--admin-text-muted);
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- Info Grid ---- */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.infoField {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infoFieldFull {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  grid-column: 1 / -1;
+}
+
+.infoLabel {
+  font-size: 0.75rem;
+  color: var(--admin-text-secondary);
+}
+
+.infoValue {
+  font-size: 0.9rem;
+  color: var(--admin-text-primary);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.infoLink {
+  font-size: 0.9rem;
+  color: var(--admin-accent);
+  font-weight: 500;
+  text-decoration: none;
+  word-break: break-word;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.infoLink:hover {
+  text-decoration: underline;
+}
+
+.infoDash {
+  font-size: 0.9rem;
+  color: var(--admin-text-muted);
+}
+
+/* ---- UTM Grid (key-value pairs) ---- */
+.utmGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.utmItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.utmItemFull {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  grid-column: 1 / -1;
+}
+
+/* ---- Copy Button ---- */
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  color: var(--admin-text-muted);
+  cursor: pointer;
+  margin-left: 6px;
+  transition: all 0.15s ease;
+  min-height: 32px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.copyBtn:hover {
+  border-color: var(--admin-accent);
+  color: var(--admin-accent);
+}
+
+/* ---- Notes Section ---- */
+.noteTextarea {
+  width: 100%;
+  min-height: 72px;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: vertical;
+  color: var(--admin-text-primary);
+  background: #fff;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.noteTextarea:focus {
+  outline: none;
+  border-color: var(--admin-accent);
+}
+
+.noteTextarea::placeholder {
+  color: var(--admin-text-muted);
+}
+
+.addNoteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--admin-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+  margin-top: 8px;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.addNoteBtn:hover {
+  background: var(--admin-accent-light);
+}
+
+.addNoteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.notesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.noteItem {
+  background: #F8FAFC;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.noteText {
+  font-size: 0.875rem;
+  color: var(--admin-text-primary);
+  white-space: pre-wrap;
+  margin: 0 0 4px;
+  line-height: 1.4;
+}
+
+.noteTime {
+  font-size: 0.7rem;
+  color: var(--admin-text-muted);
+}
+
+.emptyNotes {
+  font-size: 0.8125rem;
+  color: var(--admin-text-muted);
+  padding: 8px 0;
+}
+
+/* ---- Activity Timeline ---- */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--admin-border);
+  border-radius: 1px;
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+  position: absolute;
+  left: -20px;
+  z-index: 1;
+  border: 2px solid #fff;
+}
+
+.timelineContent {
+  flex: 1;
+}
+
+.timelineAction {
+  font-size: 0.8125rem;
+  color: var(--admin-text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.timelineTime {
+  font-size: 0.7rem;
+  color: var(--admin-text-muted);
+  margin: 2px 0 0;
+}
+
+.emptyTimeline {
+  font-size: 0.8125rem;
+  color: var(--admin-text-muted);
+  padding: 8px 0;
+}
+
+/* ---- Conversion Tracking Card ---- */
+.trackingGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trackingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.trackingLabel {
+  font-size: 0.75rem;
+  color: var(--admin-text-secondary);
+}
+
+.trackingValue {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--admin-text-primary);
+}
+
+.trackingChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.trackingChipGreen {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.trackingChipBlue {
+  background: #E0F7F1;
+  color: #148F77;
+}
+
+.trackingChipMuted {
+  background: #F1F5F9;
+  color: var(--admin-text-muted);
+}
+
+.trackingChipOrange {
+  background: #FFF7ED;
+  color: #F59E0B;
+}
+
+/* ---- Action Buttons ---- */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.convertBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 16px;
+  background: #10B981;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.convertBtn:hover {
+  background: #059669;
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 16px;
+  background: #fff;
+  color: var(--admin-error);
+  border: 1px solid var(--admin-error);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.deleteBtn:hover {
+  background: #FEF2F2;
+}
+
+/* ---- Source Chip ---- */
+.sourceChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #E0F7F1;
+  color: var(--admin-accent);
+}
+
+/* ---- Mobile Sticky Footer ---- */
+.mobileFooter {
+  display: none;
+}
+
+/* ---- Not Found ---- */
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.notFoundIcon {
+  color: var(--admin-text-muted);
+  margin-bottom: 16px;
+}
+
+.notFoundTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--admin-text-primary);
+  margin: 0 0 8px;
+}
+
+.notFoundText {
+  font-size: 0.875rem;
+  color: var(--admin-text-secondary);
+  margin: 0 0 16px;
+}
+
+/* ---- Responsive: Tablet ---- */
+
+@media (max-width: 1024px) {
+  .columns {
+    grid-template-columns: 55fr 45fr;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+}
+
+/* ---- Responsive: Mobile ---- */
+
+@media (max-width: 768px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .headerLeft {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .utmGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .noteTextarea {
+    min-height: 80px;
+  }
+
+  /* Sticky footer for action buttons on mobile */
+  .mobileFooter {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--admin-card-bg);
+    border-top: 1px solid var(--admin-border);
+    padding: 12px 16px;
+    z-index: 100;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .mobileFooter .convertBtn,
+  .mobileFooter .deleteBtn {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 0.8125rem;
+  }
+
+  /* Add bottom padding to page to account for sticky footer */
+  .page {
+    padding-bottom: 80px;
+  }
+
+  /* Hide desktop action buttons on mobile */
+  .desktopActions {
+    display: none;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobileFooter {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ---- Print Styles ---- */
+
+@media print {
+  .backBtn {
+    display: none;
+  }
+
+  .desktopActions {
+    display: none;
+  }
+
+  .mobileFooter {
+    display: none !important;
+  }
+
+  .convertBtn,
+  .deleteBtn {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+
+  .page {
+    color: #000;
+    padding-bottom: 0;
+  }
+
+  .columns {
+    grid-template-columns: 1fr 1fr;
+  }
+}

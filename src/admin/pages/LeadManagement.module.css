@@ -1,0 +1,387 @@
+/* ============================================
+   Lead Management Page Styles — Redesigned
+   Professional responsive data table
+   ============================================ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---- Page Header ---- */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--admin-primary);
+  margin: 0;
+}
+
+.pageSubtitle {
+  font-size: var(--fs-sm);
+  color: var(--admin-text-secondary);
+  margin: 4px 0 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Mobile more menu trigger — hidden on desktop */
+.moreMenuBtn {
+  display: none;
+}
+
+/* Spinning animation for the refresh icon while syncing */
+.refreshSpinning {
+  animation: refreshSpin 0.8s linear infinite;
+}
+
+@keyframes refreshSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Stats Grid ---- */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.statCard {
+  background: var(--admin-card-bg);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.statCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statIconBlue {
+  background: rgba(20, 143, 119, 0.1);
+  color: var(--admin-accent);
+}
+
+.statIconGreen {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--admin-success);
+}
+
+.statIconTeal {
+  background: rgba(60, 200, 200, 0.1);
+  color: var(--admin-cyan);
+}
+
+.statIconOrange {
+  background: rgba(214, 36, 110, 0.1);
+  color: var(--admin-magenta);
+}
+
+.statValue {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--admin-text-secondary);
+  margin: 2px 0 0;
+}
+
+/* ---- Card Container ---- */
+.card {
+  background: var(--admin-card-bg);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* ---- Filters Bar ---- */
+.filtersBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid var(--admin-border);
+  align-items: center;
+}
+
+/* ---- Filter Chips ---- */
+.filterChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--admin-bg);
+  border-bottom: 1px solid var(--admin-border);
+  align-items: center;
+}
+
+/* ---- Bulk Actions Bar ---- */
+.bulkBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #E0F7F1;
+  border-bottom: 1px solid rgba(20, 143, 119, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* ---- Desktop Table ---- */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.desktopTable {
+  display: block;
+}
+
+.mobileCards {
+  display: none;
+}
+
+/* ---- Mobile Lead Card ---- */
+.leadCard {
+  background: var(--admin-card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--admin-border);
+  padding: 16px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.leadCardSelected {
+  background: rgba(20, 143, 119, 0.06);
+  border-left: 3px solid var(--admin-accent);
+}
+
+.leadCardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leadCardName {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--admin-text-primary);
+  margin: 0;
+}
+
+.leadCardDate {
+  font-size: 0.75rem;
+  color: var(--admin-text-muted);
+  white-space: nowrap;
+}
+
+.leadCardMobile {
+  font-size: 0.8125rem;
+  color: var(--admin-text-secondary);
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+  margin: 4px 0 0;
+}
+
+.leadCardChips {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.leadCardActions {
+  display: flex;
+  gap: 4px;
+  margin-top: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* ---- Empty State ---- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  color: var(--admin-text-secondary);
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--admin-text-muted);
+  margin-bottom: 16px;
+}
+
+.emptyText {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--admin-text-primary);
+}
+
+.emptySubtext {
+  font-size: 0.875rem;
+  margin: 0;
+  color: var(--admin-text-secondary);
+}
+
+/* ---- Responsive: Tablet ---- */
+
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---- Responsive: Mobile ---- */
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .statCard {
+    padding: 12px;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .statValue {
+    font-size: 1.05rem;
+  }
+
+  .filtersBar {
+    flex-direction: column;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  /* Hide desktop header actions, show more menu */
+  .headerActions {
+    display: none;
+  }
+
+  .moreMenuBtn {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Switch table/cards */
+  .desktopTable {
+    display: none;
+  }
+
+  .mobileCards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .bulkBar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .emptyState {
+    padding: 48px 16px;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .filterChips {
+    padding: 8px 12px;
+  }
+
+  .leadCardActions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---- Print Styles ---- */
+
+@media print {
+  .mobileCards {
+    display: none;
+  }
+
+  .filtersBar {
+    display: none;
+  }
+
+  .filterChips {
+    display: none;
+  }
+
+  .bulkBar {
+    display: none;
+  }
+
+  .headerActions {
+    display: none;
+  }
+
+  .moreMenuBtn {
+    display: none;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .statCard:hover {
+    box-shadow: none;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

@@ -1,0 +1,476 @@
+/* ============================================
+   Dashboard Page — Redesigned Professional UI
+   ============================================ */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Page Header ── */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  margin: 0;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--admin-text-secondary);
+  margin: 4px 0 0;
+}
+
+.headerDate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--admin-text-muted);
+  white-space: nowrap;
+  padding-top: 4px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Spinning animation for the refresh icon while syncing */
+.refreshSpinning {
+  animation: dashRefreshSpin 0.8s linear infinite;
+}
+
+@keyframes dashRefreshSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Stats Grid ── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.statCard {
+  background: var(--admin-card-bg);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statIconBlue {
+  background: rgba(20, 143, 119, 0.1);
+  color: var(--admin-accent);
+}
+
+.statIconGreen {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--admin-success);
+}
+
+.statIconPink {
+  background: rgba(214, 36, 110, 0.1);
+  color: var(--admin-magenta);
+}
+
+.statIconTeal {
+  background: rgba(60, 200, 200, 0.1);
+  color: var(--admin-cyan);
+}
+
+.statContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.statValue {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  margin: 0;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.8125rem;
+  color: var(--admin-text-muted);
+  margin: 6px 0 0;
+}
+
+/* ── Quick Actions ── */
+.quickActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.actionOutlined,
+.actionSolid,
+.actionGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: inherit;
+  line-height: 1.4;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.actionOutlined {
+  background: transparent;
+  border: 1.5px solid var(--admin-border);
+  color: var(--admin-text-primary);
+}
+
+.actionOutlined:hover {
+  border-color: var(--admin-accent);
+  color: var(--admin-accent);
+  background: rgba(20, 143, 119, 0.04);
+}
+
+.actionSolid {
+  background: var(--admin-gradient-accent);
+  border: none;
+  color: #fff;
+}
+
+.actionSolid:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(20, 143, 119, 0.25);
+}
+
+.actionGhost {
+  background: transparent;
+  border: none;
+  color: var(--admin-text-secondary);
+}
+
+.actionGhost:hover {
+  color: var(--admin-accent);
+  background: rgba(20, 143, 119, 0.04);
+}
+
+/* ── Recent Leads Section ── */
+.recentSection {
+  background: var(--admin-card-bg);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.recentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--admin-primary);
+  margin: 0;
+}
+
+.viewAllLink {
+  font-size: 0.8125rem;
+  color: var(--admin-accent);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s ease;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viewAllLink:hover {
+  color: var(--admin-primary);
+}
+
+/* ── Empty State ── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  color: var(--admin-text-secondary);
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--admin-border);
+  margin-bottom: 16px;
+}
+
+.emptyText {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--admin-text-primary);
+}
+
+.emptySubtext {
+  font-size: 0.8125rem;
+  margin: 0;
+  color: var(--admin-text-secondary);
+  max-width: 340px;
+}
+
+/* ── Desktop Table ── */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.recentTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recentTable thead th {
+  text-align: left;
+  padding: 12px 20px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--admin-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--admin-bg);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.recentTable tbody td {
+  padding: 12px 20px;
+  font-size: 0.8125rem;
+  color: var(--admin-text-primary);
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.recentTable tbody tr:hover {
+  background: #F8FAFF;
+}
+
+.rowAlt {
+  background: #FAFBFD;
+}
+
+.rowAlt:hover {
+  background: #F8FAFF !important;
+}
+
+.leadName {
+  font-weight: 600;
+  color: var(--admin-primary);
+}
+
+.leadDate {
+  white-space: nowrap;
+  color: var(--admin-text-secondary);
+  font-size: 0.75rem;
+}
+
+/* ── Mobile Card Layout (hidden on desktop) ── */
+.mobileCards {
+  display: none;
+}
+
+.mobileCard {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--admin-border);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobileCard:last-child {
+  border-bottom: none;
+}
+
+.mobileCard:hover {
+  background: #F8FAFF;
+}
+
+.mobileCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.mobileCardName {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--admin-primary);
+}
+
+.mobileCardRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--admin-text-secondary);
+  margin-bottom: 10px;
+}
+
+.mobileCardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobileCardDate {
+  font-size: 0.75rem;
+  color: var(--admin-text-muted);
+}
+
+/* ── Footer Badge ── */
+.footerBadge {
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--admin-text-muted);
+  margin: 32px 0 0;
+}
+
+/* ── Responsive: Tablet ── */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Responsive: Mobile ── */
+@media (max-width: 768px) {
+  .dashboard {
+    gap: 16px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .statCard {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .headerDate {
+    padding-top: 0;
+  }
+
+  /* Hide desktop table, show mobile cards */
+  .tableWrapper {
+    display: none;
+  }
+
+  .mobileCards {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .quickActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionOutlined,
+  .actionSolid,
+  .actionGhost {
+    justify-content: center;
+  }
+
+  .recentHeader {
+    padding: 16px 20px;
+  }
+}
+
+/* ── Print Styles ── */
+@media print {
+  .quickActions {
+    display: none;
+  }
+
+  .mobileCards {
+    display: none;
+  }
+
+  .statCard:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .footerBadge {
+    display: none;
+  }
+
+  .recentTable tbody tr:hover {
+    background: none;
+  }
+
+  .dashboard {
+    color: #000;
+  }
+}

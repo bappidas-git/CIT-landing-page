@@ -1,0 +1,624 @@
+/* ============================================
+   CTASection Styles - Patient Testimonials
+   Dark primary gradient with testimonial cards
+   ============================================ */
+
+/* Section Container */
+.section {
+  position: relative;
+  padding: var(--space-16) 0;
+  background: linear-gradient(135deg, #1a5276 0%, #0e2f44 100%);
+  overflow: hidden;
+}
+
+/* Background Overlay Image */
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://placehold.co/1920x900/1A5276/0E2F44?text=");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* Background Pattern */
+.bgPattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 255, 255, 0.04) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 60% 80%,
+      rgba(255, 255, 255, 0.03) 0%,
+      transparent 35%
+    );
+  pointer-events: none;
+}
+
+/* Content Container */
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-8);
+}
+
+/* Section Header */
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 700px;
+}
+
+.overline {
+  font-size: var(--fs-sm) !important;
+  font-weight: var(--fw-semibold) !important;
+  letter-spacing: 0.15em !important;
+  color: var(--accent-gold-light) !important;
+  text-transform: uppercase;
+}
+
+/* Main Title */
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: var(--fw-bold);
+  color: #ffffff !important;
+  line-height: var(--lh-tight);
+}
+
+.highlight {
+  position: relative;
+  display: inline-block;
+  color: var(--accent-gold) !important;
+}
+
+.highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-gold);
+  border-radius: var(--radius-full);
+  opacity: 0.4;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.8) !important;
+  line-height: var(--lh-relaxed);
+  max-width: 600px;
+}
+
+/* Testimonial Grid */
+.testimonialGrid {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.cardsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+/* Testimonial Card */
+.testimonialCard {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: relative;
+  text-align: left;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.testimonialCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(20, 143, 119, 0.4);
+}
+
+/* Quote Icon */
+.quoteIcon {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: 2rem;
+  color: rgba(20, 143, 119, 0.3);
+  line-height: 1;
+}
+
+/* Card Header with Avatar */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--accent-gold-light) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.cardHeaderInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.patientName {
+  font-family: var(--font-heading);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: #ffffff;
+}
+
+.patientLocation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-xs);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.patientLocation svg {
+  font-size: 0.875rem;
+}
+
+/* Star Rating */
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  font-size: 1.125rem;
+  color: #f5b041;
+}
+
+.starEmpty {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Testimonial Text */
+.testimonialText {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: var(--lh-relaxed);
+  flex: 1;
+  margin: 0;
+}
+
+/* Procedure Badge */
+.procedureBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--accent-gold-light);
+  background: rgba(20, 143, 119, 0.15);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+
+.procedureBadge svg {
+  font-size: 0.875rem;
+}
+
+/* Carousel Navigation */
+.carouselNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.navBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+  font-size: 1.25rem;
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.dotActive {
+  background: var(--accent-gold-light);
+  transform: scale(1.2);
+}
+
+/* Trust Badges */
+.trustBadges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding: var(--space-4) 0;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.badgeIcon {
+  font-size: 1.5rem;
+  color: var(--accent-gold);
+}
+
+.badgeValue {
+  font-family: var(--font-heading);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: #ffffff;
+}
+
+.badgeLabel {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: var(--fw-medium);
+}
+
+.badgeDivider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* CTA Area */
+.ctaArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 700px;
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: var(--fw-bold);
+  color: #ffffff !important;
+  line-height: var(--lh-tight);
+}
+
+.ctaSubtext {
+  font-size: var(--fs-base);
+  color: rgba(255, 255, 255, 0.8) !important;
+  line-height: var(--lh-relaxed);
+  max-width: 550px;
+}
+
+/* CTA Buttons */
+.ctaButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+.primaryBtn {
+  min-width: 260px;
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.45);
+}
+
+.primaryBtn:hover {
+  box-shadow: 0 12px 35px rgba(255, 107, 53, 0.55);
+}
+
+.secondaryBtn {
+  min-width: 200px;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(4px);
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: #ffffff !important;
+}
+
+/* Corner Decorations */
+.cornerDecoration1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 70%
+  );
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  pointer-events: none;
+}
+
+.cornerDecoration2 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(
+    315deg,
+    rgba(20, 143, 119, 0.1) 0%,
+    transparent 70%
+  );
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+/* ============================================
+   Tablet Styles (768px - 1023px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .section {
+    padding: var(--space-14) 0;
+  }
+
+  .cardsWrapper {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .testimonialCard {
+    padding: var(--space-4);
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: var(--fs-xs);
+  }
+}
+
+/* ============================================
+   Mobile Styles (below 768px)
+   ============================================ */
+@media (max-width: 767px) {
+  .section {
+    padding: var(--space-12) 0;
+  }
+
+  .title {
+    font-size: var(--fs-2xl);
+  }
+
+  .highlight::after {
+    height: 3px;
+    bottom: 1px;
+  }
+
+  .subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .cardsWrapper {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .testimonialCard {
+    padding: var(--space-5);
+  }
+
+  .trustBadges {
+    gap: var(--space-4);
+  }
+
+  .badgeDivider {
+    display: none;
+  }
+
+  .badgeItem {
+    flex-direction: column;
+    gap: var(--space-1);
+    text-align: center;
+  }
+
+  .badgeValue {
+    font-size: var(--fs-lg);
+  }
+
+  .badgeLabel {
+    font-size: var(--fs-xs);
+  }
+
+  .ctaTitle {
+    font-size: var(--fs-xl);
+  }
+
+  .ctaSubtext {
+    font-size: var(--fs-sm);
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .primaryBtn,
+  .secondaryBtn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .cornerDecoration1,
+  .cornerDecoration2 {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Small Mobile (below 480px) */
+@media (max-width: 479px) {
+  .section {
+    padding: var(--space-10) 0;
+  }
+
+  .title {
+    font-size: var(--fs-xl);
+  }
+
+  .subtitle {
+    font-size: var(--fs-xs);
+    line-height: 1.7;
+  }
+
+  .primaryBtn,
+  .secondaryBtn {
+    min-width: unset;
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   Touch Device Optimizations
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  .primaryBtn:hover,
+  .secondaryBtn:hover {
+    transform: none;
+  }
+
+  .testimonialCard:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .primaryBtn,
+  .secondaryBtn,
+  .testimonialCard,
+  .dot {
+    transition: none;
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  .section {
+    background: #f5f7fa;
+    padding: var(--space-8) 0;
+  }
+
+  .bgOverlay,
+  .bgPattern,
+  .cornerDecoration1,
+  .cornerDecoration2 {
+    display: none;
+  }
+
+  .title,
+  .subtitle,
+  .badgeValue,
+  .badgeLabel,
+  .ctaTitle,
+  .ctaSubtext {
+    color: #1a5276 !important;
+  }
+
+  .testimonialCard {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+  }
+
+  .patientName {
+    color: #1a5276;
+  }
+
+  .testimonialText {
+    color: #333;
+  }
+
+  .ctaButtons {
+    display: none;
+  }
+}

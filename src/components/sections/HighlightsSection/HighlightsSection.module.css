@@ -1,0 +1,501 @@
+/* ============================================
+   Results & Procedures Section Styles
+   Light gray background with image-based cards
+   ============================================ */
+
+/* ========== Main Section ========== */
+.resultsSection {
+  position: relative;
+  padding: 4rem 0;
+  background: #f5f7fa;
+  overflow: hidden;
+}
+
+/* ========== Section Header ========== */
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.sectionBadge {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  background: rgba(26, 82, 118, 0.1);
+  color: #1a5276;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  border-radius: 16px;
+  border: 1px solid rgba(26, 82, 118, 0.2);
+}
+
+.sectionTitle {
+  position: relative;
+}
+
+.highlightText {
+  color: #148f77;
+  font-style: italic;
+}
+
+.titleUnderline {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.underlineBar {
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(135deg, #148f77 0%, #1abc9c 100%);
+  border-radius: 3px;
+}
+
+.sectionSubtitle {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  color: #5c6370;
+  text-align: center;
+  max-width: 600px;
+}
+
+/* ========== Highlights Grid ========== */
+.highlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.highlightCard {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(26, 82, 118, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.highlightCard:hover {
+  box-shadow: 0 12px 40px rgba(26, 82, 118, 0.12);
+}
+
+.highlightImageWrap {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #e8f6f3;
+}
+
+.highlightImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.highlightCard:hover .highlightImage {
+  transform: scale(1.05);
+}
+
+.highlightContent {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.highlightTitle {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 700 !important;
+  color: #1a5276;
+  line-height: 1.3;
+}
+
+.highlightDesc {
+  font-size: 0.9rem;
+  color: #5c6370;
+  line-height: 1.55;
+}
+
+.highlightBullets {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.highlightBulletItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #2d3748;
+  line-height: 1.5;
+}
+
+.highlightBulletIcon {
+  color: #148f77;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+/* ========== Disclaimer Note ========== */
+.disclaimerNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  max-width: 760px;
+  margin: 0 auto 2.5rem;
+  padding: 0.875rem 1.25rem;
+  background: rgba(26, 82, 118, 0.04);
+  border: 1px solid rgba(26, 82, 118, 0.12);
+  border-left: 3px solid #148f77;
+  border-radius: 10px;
+}
+
+.disclaimerIcon {
+  color: #148f77;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.disclaimerText {
+  font-size: 0.85rem !important;
+  color: #5c6370;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ========== CTA Banner ========== */
+.ctaBanner {
+  margin-bottom: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a5276 0%, #1b2631 100%);
+  box-shadow: 0 8px 32px rgba(26, 82, 118, 0.25);
+}
+
+.ctaBannerContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 2.5rem;
+}
+
+.ctaIconWrap {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 143, 119, 0.15);
+  border-radius: 50%;
+}
+
+.ctaIconWrap svg {
+  font-size: 30px;
+  color: #ffffff;
+}
+
+.ctaTextBlock {
+  flex: 1;
+}
+
+.ctaHeading {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.375rem;
+}
+
+.ctaDesc {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.ctaButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #e74c3c 0%, #ff8f5e 100%);
+  border: none;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(231, 76, 60, 0.55);
+}
+
+.ctaButton svg {
+  font-size: 18px;
+}
+
+/* ========== Responsive - Large Desktop (1440px+) ========== */
+@media (min-width: 1440px) {
+  .resultsSection {
+    padding: 5rem 0;
+  }
+
+  .highlightsGrid {
+    gap: 2rem;
+  }
+
+  .highlightContent {
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+
+  .ctaBannerContent {
+    padding: 2.5rem 3rem;
+  }
+}
+
+/* ========== Responsive - Tablet (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .resultsSection {
+    padding: 3.5rem 0;
+  }
+
+  .sectionHeader {
+    margin-bottom: 2rem;
+  }
+
+  .highlightsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .highlightContent {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .highlightTitle {
+    font-size: 0.95rem;
+  }
+
+  .highlightDesc {
+    font-size: 0.85rem;
+  }
+
+  .highlightBulletItem {
+    font-size: 0.825rem;
+  }
+
+  .ctaBannerContent {
+    padding: 1.75rem 2rem;
+    gap: 1.25rem;
+  }
+
+  .ctaHeading {
+    font-size: 1.25rem;
+  }
+
+  .ctaDesc {
+    font-size: 0.875rem;
+  }
+
+  .ctaButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ========== Responsive - Mobile (max-width: 767px) ========== */
+@media (max-width: 767px) {
+  .resultsSection {
+    padding: 2.5rem 0;
+  }
+
+  .sectionHeader {
+    margin-bottom: 1.5rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .highlightsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .highlightContent {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .highlightTitle {
+    font-size: 0.95rem;
+  }
+
+  .highlightDesc {
+    font-size: 0.85rem;
+  }
+
+  .highlightBulletItem {
+    font-size: 0.825rem;
+  }
+
+  .disclaimerNote {
+    margin-bottom: 2rem;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .disclaimerText {
+    font-size: 0.8rem !important;
+  }
+
+  .ctaBanner {
+    border-radius: 14px;
+  }
+
+  .ctaBannerContent {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .ctaIconWrap {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+  }
+
+  .ctaIconWrap svg {
+    font-size: 26px;
+  }
+
+  .ctaHeading {
+    font-size: 1.25rem;
+  }
+
+  .ctaDesc {
+    font-size: 0.875rem;
+  }
+
+  .ctaButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ========== Responsive - Small Mobile (max-width: 374px) ========== */
+@media (max-width: 374px) {
+  .resultsSection {
+    padding: 2rem 0;
+  }
+
+  .highlightContent {
+    padding: 0.875rem 1rem 1rem;
+  }
+
+  .highlightTitle {
+    font-size: 0.9rem;
+  }
+
+  .highlightDesc {
+    font-size: 0.8rem;
+  }
+
+  .ctaBannerContent {
+    padding: 1.25rem 1rem;
+  }
+
+  .ctaHeading {
+    font-size: 1.125rem;
+  }
+
+  .ctaDesc {
+    font-size: 0.8rem;
+  }
+
+  .ctaButton {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ========== Hover Effects (Pointer Devices) ========== */
+@media (hover: hover) {
+  .highlightCard:hover {
+    transform: translateY(-6px);
+  }
+}
+
+/* ========== Reduced Motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  .highlightCard,
+  .highlightImage,
+  .ctaButton {
+    transition: none;
+    animation: none;
+  }
+
+  .highlightCard:hover,
+  .ctaButton:hover {
+    transform: none;
+  }
+
+  .highlightCard:hover .highlightImage {
+    transform: none;
+  }
+}
+
+/* ========== Focus Styles for Accessibility ========== */
+.ctaButton:focus-visible {
+  outline: 2px solid #148f77;
+  outline-offset: 2px;
+}
+
+/* ========== Print Styles ========== */
+@media print {
+  .resultsSection {
+    padding: 2rem 0;
+    background: white;
+  }
+
+  .highlightCard {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    box-shadow: none;
+  }
+
+  .ctaBanner {
+    background: #f0f0f0;
+    box-shadow: none;
+  }
+
+  .ctaHeading,
+  .ctaDesc {
+    color: #1a5276 !important;
+  }
+}

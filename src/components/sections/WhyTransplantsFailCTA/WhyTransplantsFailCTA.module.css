@@ -1,0 +1,694 @@
+/* ============================================
+   WhyTransplantsFailCTA Styles
+   Problem/solution CTA with price highlight.
+   ============================================ */
+
+/* ---------- Section ---------- */
+.section {
+  position: relative;
+  padding: var(--space-16) 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4f8 50%, #f8fafc 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(26, 82, 118, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.6),
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bgGlowOne,
+.bgGlowTwo {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bgGlowOne {
+  top: -180px;
+  left: -160px;
+  background: rgba(244, 67, 54, 0.18);
+}
+
+.bgGlowTwo {
+  bottom: -200px;
+  right: -140px;
+  background: rgba(20, 143, 119, 0.22);
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Header ---------- */
+.header {
+  max-width: 760px;
+  margin: 0 auto var(--space-12);
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(244, 67, 54, 0.08);
+  color: #c62828;
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
+}
+
+.badgeIcon {
+  font-size: 1.1rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 2.4vw + 0.5rem, 2.75rem);
+  font-weight: var(--fw-bold);
+  color: var(--primary-dark);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-4);
+}
+
+.titleAccent {
+  position: relative;
+  color: #d32f2f;
+  background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.titleAccent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #f44336, transparent);
+  border-radius: var(--radius-full);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  color: var(--text-gray);
+  line-height: var(--lh-relaxed);
+  margin-top: var(--space-4);
+}
+
+/* ---------- Failure reasons grid ---------- */
+.reasonsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.reasonCard {
+  position: relative;
+  background: #ffffff;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8) var(--space-6);
+  border: 1px solid rgba(211, 47, 47, 0.08);
+  box-shadow: 0 8px 24px rgba(26, 82, 118, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  overflow: hidden;
+}
+
+.reasonCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d32f2f 0%, #ff6b35 100%);
+  opacity: 0.85;
+}
+
+.reasonCard:hover {
+  box-shadow: 0 16px 40px rgba(211, 47, 47, 0.12);
+  border-color: rgba(211, 47, 47, 0.2);
+}
+
+.reasonIconWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(244, 67, 54, 0.1);
+  color: #d32f2f;
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-5);
+}
+
+.reasonIcon {
+  font-size: 2rem;
+}
+
+.reasonNumber {
+  position: absolute;
+  top: -12px;
+  right: -16px;
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: var(--fw-extrabold);
+  color: rgba(211, 47, 47, 0.12);
+  letter-spacing: var(--ls-tight);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.reasonTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--primary-dark);
+  margin: 0 0 var(--space-3);
+  line-height: var(--lh-snug);
+}
+
+.reasonDescription {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  color: var(--text-gray);
+  line-height: var(--lh-relaxed);
+  margin: 0;
+}
+
+/* ---------- CTA Banner ---------- */
+.ctaBanner {
+  position: relative;
+  border-radius: var(--radius-3xl);
+  padding: var(--space-10);
+  background: linear-gradient(135deg, #1a5276 0%, #0e3d5c 55%, #148f77 140%);
+  color: #ffffff;
+  box-shadow: 0 30px 80px rgba(26, 82, 118, 0.3);
+  overflow: hidden;
+}
+
+.ctaBanner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(20, 143, 119, 0.25) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 45%
+    );
+  pointer-events: none;
+}
+
+.bannerGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: var(--space-10);
+  align-items: center;
+}
+
+/* --- Banner Left --- */
+.bannerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.bannerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(20, 143, 119, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(20, 143, 119, 0.35);
+  border-radius: var(--radius-full);
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  width: fit-content;
+  backdrop-filter: blur(8px);
+}
+
+.bannerBadgeIcon {
+  font-size: 1.1rem;
+  color: #2ec4b6;
+}
+
+.bannerTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 1.8vw + 0.4rem, 2rem);
+  font-weight: var(--fw-bold);
+  color: #ffffff !important;
+  line-height: var(--lh-snug);
+  margin: 0;
+}
+
+.bannerTitleAccent {
+  color: #2ec4b6 !important;
+  white-space: nowrap;
+}
+
+.reassuranceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.reassuranceItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  color: rgba(255, 255, 255, 0.92);
+  line-height: var(--lh-relaxed);
+}
+
+.reassuranceIcon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: #2ec4b6;
+  margin-top: 2px;
+}
+
+/* --- Banner Right (Price Card) --- */
+.bannerRight {
+  display: flex;
+  justify-content: center;
+}
+
+.priceCard {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  color: var(--text-dark-gray);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.priceLabel {
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-gray);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+.priceValueRow {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1;
+  color: var(--primary-dark);
+}
+
+.priceCurrency {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: var(--fw-semibold);
+  margin-top: 10px;
+}
+
+.priceValue {
+  font-family: var(--font-heading);
+  font-size: clamp(2.75rem, 4vw + 1rem, 3.75rem);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-tight);
+  background: linear-gradient(135deg, #1a5276 0%, #148f77 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.priceStar {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: var(--fw-bold);
+  color: #ff6b35;
+  margin-top: 6px;
+}
+.priceNotwWrapper {
+  width: 100%;
+  padding: 10px;
+  background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 8px;
+}
+.priceNote {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--text-gray);
+  font-weight: var(--fw-medium);
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.ctaButton {
+  margin-top: var(--space-3);
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--accent-orange-gradient);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  padding: var(--space-4) var(--space-6);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  text-transform: none;
+  box-shadow: 0 10px 24px rgba(255, 107, 53, 0.4);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  background: var(--accent-orange-gradient-reverse);
+  box-shadow: 0 14px 32px rgba(255, 107, 53, 0.5);
+}
+
+.ctaButton:focus-visible {
+  outline: 3px solid rgba(255, 107, 53, 0.5);
+  outline-offset: 3px;
+}
+
+.ctaButtonIcon {
+  font-size: 1.25rem;
+}
+
+.trustRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.trustItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+  color: var(--text-gray);
+}
+
+.trustItem svg,
+.trustItem :global(iconify-icon) {
+  color: var(--accent-gold);
+  font-size: 1rem;
+}
+
+.priceDisclaimer {
+  font-family: var(--font-body);
+  font-size: 10px !important;
+  color: var(--text-gray);
+  margin-top: 0;
+  margin-bottom: -5px;
+  opacity: 0.85;
+  line-height: var(--lh-normal);
+}
+
+/* ============================================
+   Tablet (768px - 1023px)
+   ============================================ */
+@media (max-width: 1023px) {
+  .section {
+    padding: var(--space-14) 0;
+  }
+
+  .header {
+    margin-bottom: var(--space-10);
+  }
+
+  .reasonsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin-bottom: var(--space-10);
+  }
+
+  .reasonCard:nth-child(3) {
+    grid-column: 1 / -1;
+    max-width: 520px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .ctaBanner {
+    padding: var(--space-8);
+  }
+
+  .bannerGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .bannerLeft {
+    align-items: center;
+    text-align: center;
+  }
+
+  .bannerTitle {
+    text-align: center;
+  }
+
+  .reassuranceList {
+    text-align: left;
+    max-width: 520px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .priceCard {
+    max-width: 440px;
+  }
+}
+
+/* ============================================
+   Mobile (below 768px)
+   ============================================ */
+@media (max-width: 767px) {
+  .section {
+    padding: var(--space-12) 0;
+  }
+
+  .header {
+    margin-bottom: var(--space-8);
+  }
+
+  .title {
+    font-size: 1.65rem;
+  }
+
+  .subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .reasonsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .reasonCard {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .reasonCard:nth-child(3) {
+    grid-column: auto;
+    max-width: none;
+    margin: 0;
+  }
+
+  .reasonIconWrap {
+    width: 56px;
+    height: 56px;
+    margin-bottom: var(--space-4);
+  }
+
+  .reasonIcon {
+    font-size: 1.75rem;
+  }
+
+  .reasonNumber {
+    font-size: 1.75rem;
+    right: -10px;
+    top: -8px;
+  }
+
+  .ctaBanner {
+    padding: var(--space-6) var(--space-5);
+    border-radius: var(--radius-2xl);
+  }
+
+  .bannerGrid {
+    gap: var(--space-6);
+  }
+
+  .bannerLeft {
+    gap: var(--space-4);
+  }
+
+  .bannerTitle {
+    font-size: 1.3rem;
+  }
+
+  .bannerTitleAccent {
+    white-space: normal;
+  }
+
+  .reassuranceItem {
+    font-size: var(--fs-sm);
+  }
+
+  .priceCard {
+    padding: var(--space-6) var(--space-5);
+    max-width: 100%;
+  }
+
+  .priceValue {
+    font-size: 2.75rem;
+  }
+
+  .priceCurrency {
+    font-size: 1.5rem;
+    margin-top: 8px;
+  }
+
+  .ctaButton {
+    font-size: var(--fs-sm);
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .trustRow {
+    gap: var(--space-3);
+  }
+}
+
+/* Small mobile */
+@media (max-width: 420px) {
+  .title {
+    font-size: 1.45rem;
+  }
+
+  .bannerTitle {
+    font-size: 1.15rem;
+  }
+
+  .priceValue {
+    font-size: 2.5rem;
+  }
+}
+
+/* ============================================
+   Motion preferences
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .reasonCard,
+  .ctaButton {
+    transition: none;
+  }
+
+  .ctaButton:hover {
+    transform: none;
+  }
+
+  .reasonCard:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   Print
+   ============================================ */
+@media print {
+  .section {
+    background: #ffffff;
+    padding: var(--space-8) 0;
+  }
+
+  .bgDecor,
+  .bgGlowOne,
+  .bgGlowTwo {
+    display: none;
+  }
+
+  .ctaBanner {
+    background: #f0f4f8;
+    color: #1a1a1a;
+    box-shadow: none;
+  }
+
+  .bannerTitle,
+  .reassuranceItem {
+    color: #1a1a1a !important;
+  }
+}

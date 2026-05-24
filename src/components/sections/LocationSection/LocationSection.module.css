@@ -1,0 +1,537 @@
+/* ============================================
+   LocationSection Styles - Landing Page Boilerplate
+   Our Centre section with light background
+   ============================================ */
+
+/* Section Container */
+.section {
+  position: relative;
+  padding: var(--space-20) 0;
+  background: var(--off-white);
+  overflow: hidden;
+}
+
+/* Main Content Grid */
+.mainContent {
+  margin-top: var(--space-8);
+}
+
+/* ========== Centre Info Card ========== */
+.centreInfoCard {
+  background: var(--white);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  height: 100%;
+  box-shadow: 0 10px 40px rgba(26, 82, 118, 0.08);
+  border: 1px solid var(--medium-gray);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.centreHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.centreIconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-xl);
+  background: var(--card-dark-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.centreName {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-bold);
+  color: var(--primary-dark);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  margin-bottom: var(--space-1);
+}
+
+.centreAddress {
+  color: var(--text-gray);
+  font-size: var(--fs-sm);
+}
+
+/* Contact List */
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--off-white);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.contactItem:hover {
+  background: var(--light-gray);
+  transform: translateX(4px);
+}
+
+.contactIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: rgba(20, 143, 119, 0.1);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.contactLabel {
+  display: block;
+  color: var(--text-gray);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+  font-weight: var(--fw-medium);
+  margin-bottom: 2px;
+}
+
+.contactValue {
+  color: var(--primary-dark);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+}
+
+.contactValue a {
+  color: var(--primary-dark);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.contactValue a:hover {
+  color: var(--accent-gold);
+}
+
+/* ========== Map Section ========== */
+.mapWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mapContainer {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(26, 82, 118, 0.12);
+  height: 100%;
+}
+
+.mapPlaceholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-dark-light) 100%);
+}
+
+.mapImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mapOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(26, 82, 118, 0.3) 0%, rgba(26, 82, 118, 0.8) 100%);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.mapPinIcon {
+  font-size: 3rem;
+  color: var(--accent-gold);
+  margin-bottom: var(--space-2);
+  filter: drop-shadow(0 2px 8px rgba(20, 143, 119, 0.5));
+}
+
+.mapTitle {
+  font-family: var(--font-heading);
+  color: var(--white);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-1);
+}
+
+.mapAddress {
+  color: #E6E8EA;
+  margin-bottom: var(--space-4);
+  max-width: 300px;
+}
+
+.mapButton {
+  z-index: 1;
+}
+
+/* ========== Areas Served Section ========== */
+.areasSection {
+  margin-top: var(--space-12);
+  text-align: center;
+}
+
+.areasTitle {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-bold);
+  color: var(--primary-dark);
+  margin-bottom: var(--space-6);
+  font-size: var(--fs-xl);
+}
+
+.areasGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.areaPill {
+  height: 36px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  background: var(--white);
+  color: var(--primary-dark);
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-2);
+  transition: all var(--transition-base);
+}
+
+.areaPill:hover {
+  background: var(--primary-dark);
+  color: var(--white);
+  border-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 82, 118, 0.2);
+}
+
+.areaPill :global(.MuiChip-icon) {
+  font-size: 1rem;
+  color: var(--accent-gold);
+}
+
+.areaPill:hover :global(.MuiChip-icon) {
+  color: var(--accent-gold-light);
+}
+
+/* ========== Connectivity Highlights ========== */
+.connectivitySection {
+  margin-top: var(--space-12);
+}
+
+.connectivityCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--medium-gray);
+  transition: all var(--transition-base);
+  cursor: default;
+}
+
+.connectivityCard:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 8px 24px rgba(26, 82, 118, 0.1);
+}
+
+.connectivityIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.connectivityText {
+  font-weight: var(--fw-medium);
+  color: var(--primary-dark);
+  font-size: var(--fs-base);
+  line-height: var(--lh-snug);
+}
+
+/* ========== Bottom CTA ========== */
+.bottomCta {
+  margin-top: var(--space-12);
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+  background: var(--card-dark-gradient);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 20px 60px rgba(26, 82, 118, 0.15);
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-bold);
+  color: var(--white);
+  margin-bottom: var(--space-6);
+  font-size: var(--fs-2xl);
+}
+
+.ctaButtons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.callUsBtn {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(4px);
+}
+
+.callUsBtn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+/* ========== Background Decorations ========== */
+.bgDecoration1 {
+  position: absolute;
+  top: 10%;
+  left: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(26, 82, 118, 0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+}
+
+.bgDecoration2 {
+  position: absolute;
+  bottom: 10%;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(20, 143, 119, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+/* ========== Responsive Styles ========== */
+@media (max-width: 1024px) {
+  .section {
+    padding: var(--space-16) 0;
+  }
+
+  .connectivityCard {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-12) 0;
+  }
+
+  .mainContent {
+    margin-top: var(--space-6);
+  }
+
+  .centreInfoCard {
+    padding: var(--space-4);
+    border-radius: var(--radius-xl);
+    gap: var(--space-4);
+  }
+
+  .centreIconWrapper {
+    width: 48px;
+    height: 48px;
+    font-size: 1.4rem;
+  }
+
+  .centreName {
+    font-size: var(--fs-base);
+  }
+
+  .mapContainer {
+    border-radius: var(--radius-xl);
+  }
+
+  .mapPlaceholder {
+    min-height: 280px;
+  }
+
+  .areasSection {
+    margin-top: var(--space-8);
+  }
+
+  .areasTitle {
+    font-size: var(--fs-lg);
+    margin-bottom: var(--space-4);
+  }
+
+  .areasGrid {
+    gap: var(--space-2);
+  }
+
+  .areaPill {
+    height: 32px;
+    font-size: var(--fs-xs);
+  }
+
+  .connectivitySection {
+    margin-top: var(--space-8);
+  }
+
+  .connectivityIcon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+  }
+
+  .connectivityText {
+    font-size: var(--fs-sm);
+  }
+
+  .bottomCta {
+    margin-top: var(--space-8);
+    padding: var(--space-8) var(--space-4);
+    border-radius: var(--radius-xl);
+  }
+
+  .ctaTitle {
+    font-size: var(--fs-xl);
+    margin-bottom: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: var(--space-10) 0;
+  }
+
+  .centreHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .contactItem {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .contactIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .mapOverlay {
+    padding: var(--space-4);
+  }
+
+  .mapTitle {
+    font-size: var(--fs-base);
+  }
+
+  .mapAddress {
+    font-size: var(--fs-xs);
+  }
+
+  .mapPinIcon {
+    font-size: 2.4rem;
+  }
+
+  .connectivityCard {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .connectivityIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .connectivityText {
+    font-size: var(--fs-xs);
+  }
+
+  .bottomCta {
+    padding: var(--space-6) var(--space-3);
+  }
+
+  .ctaTitle {
+    font-size: var(--fs-lg);
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .contactItem:hover,
+  .areaPill:hover,
+  .connectivityCard:hover {
+    transform: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .section {
+    background: var(--white);
+    padding: var(--space-8) 0;
+  }
+
+  .mapContainer,
+  .bgDecoration1,
+  .bgDecoration2 {
+    display: none;
+  }
+
+  .centreInfoCard {
+    box-shadow: none;
+    border: 1px solid var(--medium-gray);
+  }
+
+  .bottomCta {
+    background: var(--white);
+    box-shadow: none;
+    border: 1px solid var(--medium-gray);
+  }
+
+  .ctaTitle {
+    color: var(--primary-dark);
+  }
+}

@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-MKXWCN4S");
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.png" type="image/png" />
+
+    <!-- =========================================
+         Viewport & Mobile Optimization
+         ========================================= -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"
+    />
+    <meta
+      name="theme-color"
+      content="#1A5276"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#1A5276"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Monjoven" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-TileColor" content="#1A5276" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- =========================================
+         SEO Meta Tags
+         ========================================= -->
+    <meta
+      name="description"
+      content="Monjoven - Northeast India's first dedicated hair transplant clinic. Led by Dr. Porag Neog (MBBS, MS) with 25+ years of experience in plastic surgery and 15+ years in hair transplant. Advanced Micro-FUE technology, cosmetic surgery, and non-surgical treatments in Guwahati, Assam."
+    />
+    <meta
+      name="keywords"
+      content="hair transplant guwahati, hair transplant assam, fue hair transplant, fut hair transplant, beard transplant, cosmetic surgery guwahati, rhinoplasty, liposuction, gynecomastia, prp therapy, hair loss treatment northeast india, dr porag neog, monjoven"
+    />
+    <meta name="author" content="Monjoven Hair Transplant & Cosmetic Surgery" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- =========================================
+         Open Graph / Facebook
+         ========================================= -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.monjoven.com" />
+    <meta
+      property="og:title"
+      content="Monjoven | Hair Transplant & Cosmetic Surgery in Guwahati"
+    />
+    <meta
+      property="og:description"
+      content="Northeast India's premier hair transplant clinic. 25+ years of plastic surgery excellence and 15+ years in hair transplant. Advanced Micro-FUE technology. Book your consultation today."
+    />
+    <meta
+      property="og:image"
+      content="https://www.monjoven.com/assets/img/logo.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Monjoven Hair Transplant & Cosmetic Surgery"
+    />
+    <meta property="og:site_name" content="Monjoven" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- =========================================
+         Twitter Card
+         ========================================= -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://www.monjoven.com" />
+    <meta
+      name="twitter:title"
+      content="Monjoven | Hair Transplant & Cosmetic Surgery"
+    />
+    <meta
+      name="twitter:description"
+      content="Northeast India's first dedicated hair transplant clinic. Book your consultation."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.monjoven.com/assets/img/logo.png"
+    />
+
+    <!-- =========================================
+         Canonical & Alternate URLs
+         ========================================= -->
+    <link rel="canonical" href="https://www.monjoven.com" />
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="IN-AS" />
+    <meta name="geo.placename" content="Guwahati" />
+    <!-- Hreflang: Uncomment and update if multi-language support is needed -->
+    <!-- <link rel="alternate" hreflang="en" href="https://www.monjoven.com/" /> -->
+    <!-- <link rel="alternate" hreflang="hi" href="https://www.monjoven.com/hi/" /> -->
+    <!-- <link rel="alternate" hreflang="x-default" href="https://www.monjoven.com/" /> -->
+
+    <!-- =========================================
+         PWA Manifest & Icons
+         ========================================= -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="%PUBLIC_URL%/apple-touch-icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%PUBLIC_URL%/apple-touch-icon-180x180.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="167x167"
+      href="%PUBLIC_URL%/apple-touch-icon-167x167.png"
+    />
+    <link
+      rel="mask-icon"
+      href="%PUBLIC_URL%/safari-pinned-tab.svg"
+      color="#148F77"
+    />
+
+    <!-- =========================================
+         Preconnect & DNS Prefetch
+         ========================================= -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.monjoven.com" />
+    <link rel="preconnect" href="https://api.iconify.design" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://www.monjoven.com" />
+
+    <!-- =========================================
+         Preload Critical Resources
+         ========================================= -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- =========================================
+         Page Title
+         ========================================= -->
+    <title>
+      Monjoven | Hair Transplant & Cosmetic Surgery in Guwahati, Assam
+    </title>
+
+    <!-- =========================================
+         Structured Data / JSON-LD for SEO
+         ========================================= -->
+
+    <!-- Schema: Organization -->
+    <!-- These static schemas serve as fallbacks; the SEOHead component injects dynamic versions at runtime -->
+    <script type="application/ld+json" id="schema-organization">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Monjoven Hair Transplant & Cosmetic Surgery",
+        "alternateName": "Monjoven",
+        "url": "https://www.monjoven.com",
+        "logo": "https://www.monjoven.com/assets/img/logo.png",
+        "description": "Northeast India's first dedicated hair transplant clinic. Led by Dr. Porag Neog with 25+ years of experience in plastic surgery and 15+ years in hair transplant. Advanced Micro-FUE technology, cosmetic surgery, and non-surgical treatments in Guwahati, Assam.",
+        "telephone": "+91-9181956562",
+        "email": "dr@monjoven.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "VIP Road, Borbari, Six Mile, Near Pratiksha Hospital",
+          "addressLocality": "Guwahati",
+          "addressRegion": "Assam",
+          "addressCountry": "IN"
+        },
+        "sameAs": [
+          "https://www.facebook.com/MONJOVEN/",
+          "https://www.instagram.com/monjoven_"
+        ]
+      }
+    </script>
+
+    <!-- Schema: FAQPage -->
+    <script type="application/ld+json" id="schema-faq">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What hair transplant techniques does Monjoven offer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Monjoven specializes in advanced Micro-FUE (Follicular Unit Extraction) and FUT (Follicular Unit Transplantation) hair transplant techniques. We also offer beard transplant, eyebrow transplant, PRP therapy, and laser therapy for comprehensive hair restoration."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much does a hair transplant cost at Monjoven?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Hair transplant costs vary based on the number of grafts required and the technique used. We offer personalized treatment plans with transparent pricing. Book a consultation with Dr. Porag Neog to get an accurate assessment and cost estimate."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What cosmetic surgery procedures are available?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In addition to hair transplants, Monjoven offers rhinoplasty (nose reshaping), liposuction, gynecomastia surgery, and other cosmetic procedures. All surgeries are performed by experienced surgeons using advanced techniques."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is Monjoven located?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Monjoven Hair Transplant & Cosmetic Surgery is located at VIP Road, Borbari, Six Mile, Near Pratiksha Hospital, Guwahati, Assam. We are Northeast India's first dedicated hair transplant clinic, founded in 2012."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I book a consultation?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can book a consultation by filling out the form on our website, or contact us at +91 9181956562 — available for both calls and WhatsApp. Our team will schedule your appointment with Dr. Porag Neog."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Schema: LocalBusiness -->
+    <script type="application/ld+json" id="schema-localbusiness">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Monjoven Hair Transplant & Cosmetic Surgery",
+        "image": "https://www.monjoven.com/assets/img/logo.png",
+        "url": "https://www.monjoven.com",
+        "telephone": "+91-9181956562",
+        "email": "dr@monjoven.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "VIP Road, Borbari, Six Mile, Near Pratiksha Hospital",
+          "addressLocality": "Guwahati",
+          "addressRegion": "Assam",
+          "addressCountry": "IN"
+        },
+        "priceRange": "$$",
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "08:00",
+          "closes": "22:00"
+        }
+      }
+    </script>
+
+    <!-- Schema: BreadcrumbList -->
+    <!-- Dynamically updated by SEOHead component -->
+    <script type="application/ld+json" id="schema-breadcrumb">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.monjoven.com/"
+          }
+        ]
+      }
+    </script>
+
+    <!-- Schema: WebPage -->
+    <!-- Dynamically updated by SEOHead component -->
+    <script type="application/ld+json" id="schema-webpage">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Monjoven | Hair Transplant & Cosmetic Surgery in Guwahati, Assam",
+        "description": "Northeast India's first dedicated hair transplant clinic. Led by Dr. Porag Neog with 25+ years of experience in plastic surgery and 15+ years in hair transplant. Advanced Micro-FUE technology, cosmetic surgery, and non-surgical treatments.",
+        "url": "https://www.monjoven.com/",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Monjoven",
+          "url": "https://www.monjoven.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Monjoven Hair Transplant & Cosmetic Surgery",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.monjoven.com/assets/img/logo.png"
+          }
+        }
+      }
+    </script>
+
+    <!-- =========================================
+         Critical CSS (Above the Fold)
+         ========================================= -->
+    <style>
+      /* Critical CSS - Inline for fastest first paint */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        overflow-x: hidden;
+        background-color: #ffffff;
+        color: #1a1a1a;
+        line-height: 1.5;
+      }
+
+      /* Root element setup */
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        isolation: isolate;
+      }
+
+      /* Skip link for accessibility */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #148f77;
+        color: #1a5276;
+        padding: 8px 16px;
+        z-index: 10000;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 0 0 4px 0;
+        transition: top 0.2s ease;
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+
+      /* ============================================
+         Initial Loader — Branded Splash Screen
+         Shown until React mounts, then fades out
+         ============================================ */
+      .initial-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        transition:
+          opacity 0.4s ease,
+          visibility 0.4s ease;
+      }
+
+      .initial-loader.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      /* Wrapper */
+      .loader-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        padding: 24px;
+        max-width: 280px;
+        width: 100%;
+      }
+
+      /* Brand Block */
+      .loader-brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .loader-logo-img {
+        width: 180px;
+        height: auto;
+        object-fit: contain;
+        animation: loaderFadeIn 0.6s ease both;
+      }
+
+      .loader-tagline {
+        margin: 0;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #546e7a;
+        letter-spacing: 0.04em;
+        text-align: center;
+        animation: loaderFadeIn 0.6s 0.2s ease both;
+      }
+
+      /* Progress Bar Track */
+      .loader-bar-track {
+        width: 100%;
+        height: 3px;
+        background: #eceef5;
+        border-radius: 3px;
+        overflow: hidden;
+        animation: loaderFadeIn 0.4s 0.3s ease both;
+      }
+
+      .loader-bar-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #1a5276, #2980b9, #148f77);
+        background-size: 200% 100%;
+        animation:
+          loaderProgress 2s 0.4s ease-in-out forwards,
+          loaderShimmer 1.5s 0.4s ease-in-out infinite;
+      }
+
+      /* Loading Status Text */
+      .loader-status {
+        margin: 0;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        color: #90a4ae;
+        letter-spacing: 0.02em;
+        animation: loaderFadeIn 0.4s 0.4s ease both;
+      }
+
+      /* Animated dots "Loading..." */
+      .loader-dots::after {
+        content: "";
+        animation: loaderDots 1.4s steps(4, end) infinite;
+      }
+
+      /* ============================================
+         Loader Keyframes
+         ============================================ */
+      @keyframes loaderFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes loaderProgress {
+        0% {
+          width: 0%;
+        }
+        30% {
+          width: 40%;
+        }
+        60% {
+          width: 70%;
+        }
+        100% {
+          width: 92%;
+        }
+      }
+
+      @keyframes loaderShimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      @keyframes loaderDots {
+        0% {
+          content: "";
+        }
+        25% {
+          content: ".";
+        }
+        50% {
+          content: "..";
+        }
+        75% {
+          content: "...";
+        }
+        100% {
+          content: "";
+        }
+      }
+
+      /* Safe area for notched devices (iPhone X+) */
+      @supports (padding-bottom: env(safe-area-inset-bottom)) {
+        body {
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+
+      /* ============================================
+         Reduced Motion — Respect user preference
+         ============================================ */
+      @media (prefers-reduced-motion: reduce) {
+        .loader-logo-img,
+        .loader-tagline,
+        .loader-bar-track,
+        .loader-status {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        .loader-bar-fill {
+          animation: loaderProgress 2s ease-in-out forwards;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      /* ============================================
+         Dark mode support (if user's OS is dark)
+         ============================================ */
+      @media (prefers-color-scheme: dark) {
+        .initial-loader {
+          background: #154360;
+        }
+        .loader-tagline {
+          color: rgba(255, 255, 255, 0.6);
+        }
+        .loader-bar-track {
+          background: rgba(255, 255, 255, 0.1);
+        }
+        .loader-status {
+          color: rgba(255, 255, 255, 0.4);
+        }
+        .loader-logo-img {
+          filter: brightness(0) invert(1);
+        }
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        body {
+          background-color: #000;
+          color: #fff;
+        }
+      }
+
+      /* Print styles */
+      @media print {
+        .initial-loader {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MKXWCN4S"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Noscript fallback -->
+    <noscript>
+      <div
+        style="
+          padding: 20px;
+          text-align: center;
+          background: #1a5276;
+          color: #ffffff;
+          font-family: sans-serif;
+        "
+      >
+        <h1 style="color: #148f77; margin-bottom: 10px">JavaScript Required</h1>
+        <p>You need to enable JavaScript to run this app.</p>
+        <p style="margin-top: 10px">
+          Please enable JavaScript in your browser settings and refresh the
+          page.
+        </p>
+      </div>
+    </noscript>
+
+    <!-- Initial Loader — Professional Branded Splash Screen -->
+    <div
+      class="initial-loader"
+      id="initial-loader"
+      role="progressbar"
+      aria-label="Loading Monjoven"
+    >
+      <div class="loader-wrapper">
+        <!-- Logo + Brand -->
+        <div class="loader-brand">
+          <img
+            src="https://www.monjoven.com/assets/img/logo.png"
+            alt="Monjoven"
+            class="loader-logo-img"
+            width="180"
+            height="auto"
+          />
+          <p class="loader-tagline">Hair Transplant & Cosmetic Surgery</p>
+        </div>
+
+        <!-- Animated Progress Bar -->
+        <div class="loader-bar-track">
+          <div class="loader-bar-fill"></div>
+        </div>
+
+        <!-- Loading text -->
+        <p class="loader-status">Loading<span class="loader-dots"></span></p>
+      </div>
+    </div>
+
+    <!-- React Root -->
+    <div id="root"></div>
+
+    <!-- Hide initial loader when React is ready -->
+    <script>
+      (function () {
+        // Performance mark for load timing
+        if (window.performance && window.performance.mark) {
+          window.performance.mark("loader-start");
+        }
+
+        // Hide loader on window load
+        window.addEventListener("load", function () {
+          // Give React time to mount
+          setTimeout(function () {
+            var loader = document.getElementById("initial-loader");
+            if (loader) {
+              loader.classList.add("hidden");
+
+              // Remove from DOM after transition
+              setTimeout(function () {
+                if (loader && loader.parentNode) {
+                  loader.style.display = "none";
+                }
+
+                // Performance mark for load complete
+                if (window.performance && window.performance.mark) {
+                  window.performance.mark("loader-end");
+                  window.performance.measure(
+                    "app-load-time",
+                    "loader-start",
+                    "loader-end",
+                  );
+                }
+              }, 400);
+            }
+          }, 200);
+        });
+
+        // Fallback: Hide loader after max timeout
+        setTimeout(function () {
+          var loader = document.getElementById("initial-loader");
+          if (loader && !loader.classList.contains("hidden")) {
+            loader.classList.add("hidden");
+            setTimeout(function () {
+              loader.style.display = "none";
+            }, 400);
+          }
+        }, 5000);
+      })();
+    </script>
+
+    <!-- Register touch events for mobile performance -->
+    <script>
+      document.addEventListener("touchstart", function () {}, {
+        passive: true,
+      });
+    </script>
+  </body>
+</html>

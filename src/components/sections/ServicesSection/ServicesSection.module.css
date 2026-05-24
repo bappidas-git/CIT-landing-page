@@ -1,0 +1,700 @@
+/* ============================================
+   ServicesSection Styles - Landing Page Boilerplate
+   Programme cards with comparison table
+   ============================================ */
+
+/* ========== Main Section ========== */
+.coursesSection {
+  position: relative;
+  padding: 4rem 0;
+  background-color: #FFFFFF;
+  overflow: hidden;
+}
+
+/* ========== Background Elements ========== */
+.bgOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #F8F9FA 0%, #FFFFFF 50%, #F8F9FA 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgPattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(26, 82, 118, 0.02) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== Section Header ========== */
+.sectionHeader {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  position: relative;
+}
+
+.accentText {
+  color: #148F77;
+  font-style: italic;
+}
+
+.sectionSubtitle {
+  line-height: 1.5;
+}
+
+/* ========== Courses Grid (Desktop) ========== */
+.coursesGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== Swiper Container (Mobile) ========== */
+.swiperContainer {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.swiperContainer :global(.swiper-pagination-bullet) {
+  width: 8px;
+  height: 8px;
+  background: #C5CAE9;
+  opacity: 1;
+}
+
+.swiperContainer :global(.swiper-pagination-bullet-active) {
+  background: #148F77;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ========== Course Card ========== */
+.courseCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  height: 100%;
+}
+
+/* ========== Course Badge ========== */
+.courseBadge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #148F77 0%, #1ABC9C 100%);
+  color: #FFFFFF;
+  z-index: 2;
+}
+
+.courseBadge svg {
+  font-size: 12px;
+}
+
+.premiumBadge {
+  background: linear-gradient(135deg, #1A5276 0%, #4A5888 100%);
+  color: #FFFFFF;
+}
+
+/* ========== Course Icon ========== */
+.courseIconWrapper {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 82, 118, 0.08);
+  border-radius: 14px;
+  margin-bottom: 1rem;
+}
+
+.courseIcon {
+  font-size: 26px;
+  color: #1A5276;
+}
+
+/* ========== Course Name ========== */
+.courseName {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 1.0625rem !important;
+  font-weight: 700 !important;
+  color: #1A5276 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 0.75rem !important;
+  min-height: 2.75rem;
+}
+
+/* ========== Course Meta ========== */
+.courseMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.metaItem svg {
+  font-size: 15px;
+  color: #148F77;
+}
+
+/* ========== Course Description ========== */
+.courseDescription {
+  font-size: 0.8125rem !important;
+  color: #6B7280 !important;
+  line-height: 1.55 !important;
+  margin-bottom: 1rem !important;
+  flex-grow: 0;
+}
+
+/* ========== Course Features ========== */
+.courseFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.courseFeatureItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.78125rem;
+  color: #4B5563;
+}
+
+.courseFeatureItem svg {
+  font-size: 15px;
+  color: #4CAF50;
+  flex-shrink: 0;
+}
+
+/* ========== Course Frequency ========== */
+.courseFrequency {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: #F3F4F6;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: #4B5563;
+  margin-bottom: 1.25rem;
+}
+
+.courseFrequency svg {
+  font-size: 15px;
+  color: #1A5276;
+  flex-shrink: 0;
+}
+
+/* ========== Course CTA Button ========== */
+.courseCtaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 11px 20px;
+  background: linear-gradient(135deg, #148F77 0%, #1ABC9C 100%);
+  border: none;
+  border-radius: 10px;
+  color: #FFFFFF;
+  font-size: 0.8375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.courseCtaBtn:hover {
+  box-shadow: 0 6px 20px rgba(20, 143, 119, 0.35);
+}
+
+.courseCtaBtn svg {
+  font-size: 18px;
+}
+
+/* ========== Comparison Section ========== */
+.comparisonSection {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2rem;
+}
+
+.comparisonTitle {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  color: #1A5276 !important;
+  margin-bottom: 1rem !important;
+}
+
+.comparisonTitle svg {
+  font-size: 22px;
+  color: #148F77;
+}
+
+.comparisonTableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+}
+
+.comparisonTableWrapper::-webkit-scrollbar {
+  height: 4px;
+}
+
+.comparisonTableWrapper::-webkit-scrollbar-track {
+  background: #F3F4F6;
+}
+
+.comparisonTableWrapper::-webkit-scrollbar-thumb {
+  background: #C5CAE9;
+  border-radius: 2px;
+}
+
+.comparisonTable {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+  font-size: 0.8375rem;
+}
+
+.comparisonTable thead {
+  background: linear-gradient(135deg, #1A5276 0%, #1A5276 100%);
+}
+
+.comparisonTable th {
+  padding: 0.875rem 1rem;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.comparisonTable th:first-child {
+  border-radius: 11px 0 0 0;
+}
+
+.comparisonTable th:last-child {
+  border-radius: 0 11px 0 0;
+}
+
+.comparisonTable tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.comparisonTable tbody tr:last-child {
+  border-bottom: none;
+}
+
+.comparisonTable tbody tr:nth-child(even) {
+  background: #FAFAFA;
+}
+
+.comparisonTable td {
+  padding: 0.75rem 1rem;
+  color: #374151;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.comparisonLabel {
+  font-weight: 600 !important;
+  color: #1A5276 !important;
+}
+
+.comparisonYes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.comparisonYes svg {
+  font-size: 16px;
+}
+
+.comparisonNo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.comparisonNo svg {
+  font-size: 16px;
+}
+
+/* ========== Bottom CTA ========== */
+.bottomCta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem 1.75rem;
+  background: linear-gradient(135deg, #1A5276 0%, #4A5888 100%);
+  border-radius: 14px;
+}
+
+.ctaContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ctaIcon {
+  font-size: 28px;
+  color: #148F77;
+}
+
+.ctaText {
+  display: flex;
+  flex-direction: column;
+}
+
+.ctaTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.ctaSubtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ctaBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 11px 22px;
+  background: linear-gradient(135deg, #148F77 0%, #1ABC9C 100%);
+  border: none;
+  border-radius: 10px;
+  color: #FFFFFF;
+  font-size: 0.8375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.ctaBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(20, 143, 119, 0.4);
+}
+
+.ctaBtn svg {
+  font-size: 18px;
+}
+
+/* ========== Responsive - Large Desktop (1440px+) ========== */
+@media (min-width: 1440px) {
+  .coursesSection {
+    padding: 5rem 0;
+  }
+
+  .coursesGrid {
+    gap: 1.5rem;
+  }
+
+  .courseCard {
+    padding: 1.875rem 1.5rem;
+  }
+}
+
+/* ========== Responsive - Medium Desktop (1200-1439px) ========== */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .coursesGrid {
+    gap: 1rem;
+  }
+
+  .courseCard {
+    padding: 1.5rem 1.125rem;
+  }
+
+  .courseName {
+    font-size: 1rem !important;
+  }
+}
+
+/* ========== Responsive - Small Desktop (1024-1199px) ========== */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 900px;
+  }
+
+  .courseCard {
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+/* ========== Responsive - Tablet (768-1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .coursesSection {
+    padding: 3rem 0;
+  }
+
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  .bottomCta {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .ctaContent {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ctaBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ========== Responsive - Mobile (max-width: 767px) ========== */
+@media (max-width: 767px) {
+  .coursesSection {
+    padding: 2.5rem 0;
+  }
+
+  .bgPattern {
+    background-size: 30px 30px;
+  }
+
+  .sectionHeader {
+    margin-bottom: 1.75rem;
+  }
+
+  .courseCard {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .courseName {
+    font-size: 1rem !important;
+    min-height: auto;
+  }
+
+  .courseDescription {
+    font-size: 0.8125rem !important;
+  }
+
+  .courseFeatureItem {
+    font-size: 0.75rem;
+  }
+
+  .courseFrequency {
+    font-size: 0.7rem;
+  }
+
+  .courseCtaBtn {
+    padding: 10px 16px;
+    font-size: 0.8125rem;
+  }
+
+  .comparisonTitle {
+    font-size: 1rem !important;
+  }
+
+  .bottomCta {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.875rem;
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+  }
+
+  .ctaContent {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .ctaIcon {
+    font-size: 24px;
+  }
+
+  .ctaTitle {
+    font-size: 0.875rem;
+  }
+
+  .ctaSubtitle {
+    font-size: 0.6875rem;
+  }
+
+  .ctaBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ========== Responsive - Small Mobile (max-width: 374px) ========== */
+@media (max-width: 374px) {
+  .coursesSection {
+    padding: 2rem 0;
+  }
+
+  .courseCard {
+    padding: 1.25rem 1rem;
+  }
+
+  .courseName {
+    font-size: 0.9375rem !important;
+  }
+
+  .courseIconWrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .courseIcon {
+    font-size: 22px;
+  }
+
+  .ctaTitle {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ========== Hover Effects (Pointer Devices) ========== */
+@media (hover: hover) {
+  .courseCard:hover {
+    border-color: rgba(26, 82, 118, 0.15);
+  }
+}
+
+/* ========== Reduced Motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  .courseCard,
+  .courseCtaBtn,
+  .ctaBtn {
+    transition: none;
+  }
+
+  .courseCtaBtn:hover,
+  .ctaBtn:hover {
+    transform: none;
+  }
+}
+
+/* ========== Focus Styles for Accessibility ========== */
+.courseCtaBtn:focus-visible,
+.ctaBtn:focus-visible {
+  outline: 2px solid #148F77;
+  outline-offset: 2px;
+}
+
+/* ========== Print Styles ========== */
+@media print {
+  .coursesSection {
+    padding: 2rem 0;
+    background: white;
+  }
+
+  .bgOverlay,
+  .bgPattern {
+    display: none;
+  }
+
+  .courseCard {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+
+  .courseBadge {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .bottomCta {
+    display: none;
+  }
+
+  .courseCtaBtn {
+    display: none;
+  }
+
+  .accentText {
+    color: #1A5276 !important;
+  }
+}
+
+/* Foundation Course CTA Banner */
+.foundationBanner {
+  position: relative;
+  z-index: 1;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .foundationBanner {
+    margin-top: 20px;
+  }
+}
