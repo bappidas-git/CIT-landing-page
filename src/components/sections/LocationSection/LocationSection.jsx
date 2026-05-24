@@ -1,6 +1,6 @@
 /* ============================================
    LocationSection Component
-   Our Locations section showing business location info
+   CIT — Tumakuru campus location + travel reassurance for NE students
    ============================================ */
 
 import React from "react";
@@ -10,10 +10,12 @@ import { Icon } from "@iconify/react";
 import SectionTitle from "../../common/SectionTitle/SectionTitle";
 import Button from "../../common/Button/Button";
 import { locationData } from "../../../data/locationData";
+import { useModal } from "../../../context/ModalContext";
 import styles from "./LocationSection.module.css";
 
 const LocationSection = () => {
-  // Animation variants
+  const { openLeadDrawer } = useModal();
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -49,53 +51,61 @@ const LocationSection = () => {
     },
     hover: {
       y: -5,
-      boxShadow: "0 15px 40px rgba(26, 82, 118, 0.15)",
+      boxShadow: "0 15px 40px rgba(11, 61, 145, 0.18)",
       transition: {
         duration: 0.3,
       },
     },
   };
 
+  const mapsQuery = encodeURIComponent(
+    `${locationData.name}, ${locationData.address}`,
+  );
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
   const handleGetDirections = () => {
-    window.open(
-      "https://www.google.com/maps/search/Monjoven+Clinic+Six+Mile+Guwahati",
-      "_blank",
-      "noopener,noreferrer",
-    );
+    window.open(mapsUrl, "_blank", "noopener,noreferrer");
   };
 
-  const connectivityHighlights = [
-    {
-      icon: "mdi:airplane",
-      title: "Well-connected by air — Guwahati LGBI Airport nearby",
-      color: "#FF9800",
-    },
+  const handleAdmissionGuidance = () => {
+    openLeadDrawer("request-callback");
+  };
+
+  const neHighlights = [
     {
       icon: "mdi:train",
-      title: "Accessible by rail from all Northeast states",
-      color: "#2196F3",
+      title: "Well-connected via Bengaluru",
+      text: "~70 km from Bengaluru. Daily trains, buses & flights from all 8 North East states via Kempegowda International Airport.",
+      color: "#0B3D91",
     },
     {
-      icon: "mdi:hospital-building",
-      title: "Located near Pratiksha Hospital, Six Mile, Guwahati",
-      color: "#9C27B0",
+      icon: "mdi:home-heart",
+      title: "Hostel from day one",
+      text: "Safe, supervised on-campus hostel & mess from arrival — no scrambling for accommodation after admission.",
+      color: "#1E8E5A",
+    },
+    {
+      icon: "mdi:account-tie",
+      title: "CIT North East admission desk",
+      text: "Our team helps with travel planning, documents, hostel allocation and settling in — in your language.",
+      color: "#C8102E",
     },
     {
       icon: "mdi:account-group",
-      title: "Patients visiting from all 8 Northeastern states",
-      color: "#4CAF50",
+      title: "Familiar faces on campus",
+      text: "An active North East student community — seniors who've made the same journey, ready to help juniors.",
+      color: "#F4A300",
     },
   ];
 
   return (
-    <section id="stores" className={styles.section}>
+    <section id="location" className={styles.section}>
       <Container maxWidth="xl">
-        {/* Section Title */}
         <SectionTitle
-          badge="LOCATIONS"
-          title="Serving All of"
-          highlight="Northeast India"
-          subtitle="Conveniently located in Guwahati with patients visiting from across the Northeast and beyond"
+          badge="LOCATION"
+          title="Find Us in"
+          highlight="Tumakuru, Karnataka"
+          subtitle="CIT's campus sits on NH-206, just ~70 km from Bengaluru — reachable by train, bus or flight from across North East India."
           align="center"
           variant="light"
           badgeVariant="gold"
@@ -108,7 +118,7 @@ const LocationSection = () => {
           viewport={{ once: true, margin: "-100px" }}
         >
           <Grid container spacing={4} className={styles.mainContent}>
-            {/* Centre Info Card */}
+            {/* Campus Info Card */}
             <Grid item xs={12} md={5}>
               <motion.div
                 variants={itemVariants}
@@ -116,7 +126,7 @@ const LocationSection = () => {
               >
                 <div className={styles.centreHeader}>
                   <div className={styles.centreIconWrapper}>
-                    <Icon icon="mdi:hospital-building" />
+                    <Icon icon="mdi:school" />
                   </div>
                   <div>
                     <Typography variant="h5" className={styles.centreName}>
@@ -132,7 +142,10 @@ const LocationSection = () => {
                 </div>
 
                 <div className={styles.contactList}>
-                  <div className={styles.contactItem}>
+                  <a
+                    href={`tel:${locationData.phone}`}
+                    className={styles.contactItem}
+                  >
                     <div className={styles.contactIcon}>
                       <Icon icon="mdi:phone" />
                     </div>
@@ -141,18 +154,76 @@ const LocationSection = () => {
                         variant="caption"
                         className={styles.contactLabel}
                       >
-                        Phone
+                        Admission helpline
                       </Typography>
                       <Typography
                         variant="body2"
                         className={styles.contactValue}
                       >
-                        <a href={`tel:${locationData.phone}`}>{locationData.phoneDisplay}</a>
+                        {locationData.phoneDisplay}
                       </Typography>
                     </div>
-                  </div>
+                  </a>
 
-                  <div className={styles.contactItem}>
+                  <a
+                    href={`tel:${locationData.altPhone}`}
+                    className={styles.contactItem}
+                  >
+                    <div className={styles.contactIcon}>
+                      <Icon icon="mdi:phone-outline" />
+                    </div>
+                    <div>
+                      <Typography
+                        variant="caption"
+                        className={styles.contactLabel}
+                      >
+                        Alternate
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={styles.contactValue}
+                      >
+                        {locationData.altPhoneDisplay}
+                        {locationData.secondaryPhoneDisplay
+                          ? ` · ${locationData.secondaryPhoneDisplay}`
+                          : ""}
+                      </Typography>
+                    </div>
+                  </a>
+
+                  <a
+                    href={`https://wa.me/${locationData.whatsapp}?text=${encodeURIComponent(
+                      "Hi CIT, I'd like guidance on the 2026 B.E. direct admission from North East.",
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.contactItem}
+                  >
+                    <div
+                      className={`${styles.contactIcon} ${styles.contactIconWhatsapp}`}
+                    >
+                      <Icon icon="mdi:whatsapp" />
+                    </div>
+                    <div>
+                      <Typography
+                        variant="caption"
+                        className={styles.contactLabel}
+                      >
+                        WhatsApp
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={styles.contactValue}
+                      >
+                        Chat with admission team
+                      </Typography>
+                    </div>
+                  </a>
+
+                  <a
+                    href={`mailto:${locationData.email}`}
+                    className={styles.contactItem}
+                  >
                     <div className={styles.contactIcon}>
                       <Icon icon="mdi:email-outline" />
                     </div>
@@ -167,25 +238,49 @@ const LocationSection = () => {
                         variant="body2"
                         className={styles.contactValue}
                       >
-                        <a href={`mailto:${locationData.email}`}>
-                          {locationData.email}
-                        </a>
+                        {locationData.email}
                       </Typography>
                     </div>
-                  </div>
+                  </a>
+
+                  <a
+                    href={`https://${locationData.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.contactItem}
+                  >
+                    <div className={styles.contactIcon}>
+                      <Icon icon="mdi:web" />
+                    </div>
+                    <div>
+                      <Typography
+                        variant="caption"
+                        className={styles.contactLabel}
+                      >
+                        Website
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={styles.contactValue}
+                      >
+                        {locationData.website}
+                      </Typography>
+                    </div>
+                  </a>
                 </div>
               </motion.div>
             </Grid>
 
-            {/* Map Section */}
+            {/* Map */}
             <Grid item xs={12} md={7}>
               <motion.div variants={itemVariants} className={styles.mapWrapper}>
                 <div className={styles.mapContainer}>
                   <div className={styles.mapPlaceholder}>
                     <img
-                      src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1775885388/Map_Image_tezkg3.png"
-                      alt="Monjoven Clinic Location Map - Six Mile, Guwahati"
+                      src={locationData.mapUrl}
+                      alt={`Map showing ${locationData.name} campus in ${locationData.city}, ${locationData.state}`}
                       className={styles.mapImage}
+                      loading="lazy"
                     />
                     <div className={styles.mapOverlay}>
                       <Icon
@@ -193,10 +288,10 @@ const LocationSection = () => {
                         className={styles.mapPinIcon}
                       />
                       <Typography variant="h6" className={styles.mapTitle}>
-                        Monjoven Clinic
+                        CIT Campus, Gubbi
                       </Typography>
                       <Typography variant="body2" className={styles.mapAddress}>
-                        Six Mile, Guwahati, Assam
+                        NH-206, B.H. Road, Tumakuru — Karnataka
                       </Typography>
                       <Button
                         variant="primary"
@@ -215,16 +310,27 @@ const LocationSection = () => {
           </Grid>
         </motion.div>
 
-        {/* Connectivity Highlights - 2x2 Grid */}
+        {/* "Coming from North East?" helper block */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className={styles.connectivitySection}
+          className={styles.neBlock}
         >
-          <Grid container spacing={3}>
-            {connectivityHighlights.map((item, index) => (
+          <motion.div variants={itemVariants} className={styles.neBlockHead}>
+            <span className={styles.neBlockEyebrow}>FOR NORTH EAST STUDENTS</span>
+            <Typography variant="h4" className={styles.neBlockTitle}>
+              Coming from the North East? We've got you covered.
+            </Typography>
+            <Typography variant="body1" className={styles.neBlockSubtitle}>
+              From the moment you decide to apply, our team walks you through
+              every step — travel, hostel and arrival in Tumakuru.
+            </Typography>
+          </motion.div>
+
+          <Grid container spacing={3} className={styles.neGrid}>
+            {neHighlights.map((item, index) => (
               <Grid item xs={12} sm={6} key={index}>
                 <motion.div
                   variants={cardVariants}
@@ -240,16 +346,47 @@ const LocationSection = () => {
                   >
                     <Icon icon={item.icon} />
                   </div>
-                  <Typography
-                    variant="body1"
-                    className={styles.connectivityText}
-                  >
-                    {item.title}
-                  </Typography>
+                  <div className={styles.connectivityBody}>
+                    <Typography
+                      variant="subtitle1"
+                      className={styles.connectivityTitle}
+                    >
+                      {item.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      className={styles.connectivityText}
+                    >
+                      {item.text}
+                    </Typography>
+                  </div>
                 </motion.div>
               </Grid>
             ))}
           </Grid>
+        </motion.div>
+
+        {/* NE audience strip */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className={styles.statesBand}
+        >
+          <motion.div variants={itemVariants}>
+            <Typography variant="h6" className={styles.statesTitle}>
+              Proudly welcoming students from across North East India
+            </Typography>
+          </motion.div>
+          <motion.div variants={itemVariants} className={styles.statesPills}>
+            {locationData.servingStates.map((state) => (
+              <span key={state} className={styles.statePill}>
+                <Icon icon="mdi:map-marker-radius" />
+                {state}
+              </span>
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* Bottom CTA */}
@@ -261,37 +398,36 @@ const LocationSection = () => {
           className={styles.bottomCta}
         >
           <motion.div variants={itemVariants}>
-            <Typography
-              variant="h5"
-              className={styles.ctaTitle}
-              sx={{ color: "#fff", marginBottom: "2rem" }}
-            >
-              Ready to Transform Your Look? Visit Us Today
+            <Typography variant="h5" className={styles.ctaTitle}>
+              Need help planning your journey to CIT?
+            </Typography>
+            <Typography variant="body1" className={styles.ctaSubtitle}>
+              Our admission counsellor will call you and walk you through travel,
+              documents, hostel and the 2026 B.E. direct-admission process.
             </Typography>
           </motion.div>
           <motion.div variants={itemVariants} className={styles.ctaButtons}>
             <Button
               variant="primary"
               size="large"
-              startIcon="mdi:directions"
-              onClick={handleGetDirections}
+              startIcon="mdi:headset"
+              onClick={handleAdmissionGuidance}
             >
-              Get Directions
+              Get Admission Guidance
             </Button>
             <Button
               variant="outline"
               size="large"
               startIcon="mdi:phone"
-              href="tel:+919181956562"
+              href={`tel:${locationData.phone}`}
               className={styles.callUsBtn}
             >
-              Call Us
+              Call {locationData.phoneDisplay}
             </Button>
           </motion.div>
         </motion.div>
       </Container>
 
-      {/* Background Decorations */}
       <div className={styles.bgDecoration1} />
       <div className={styles.bgDecoration2} />
     </section>
