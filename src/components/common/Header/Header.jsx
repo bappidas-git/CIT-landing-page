@@ -51,18 +51,22 @@ const Header = ({ forceCloseMenu = false }) => {
     const scrollPosition = window.scrollY;
     setIsScrolled(scrollPosition > 50);
 
-    // Determine active section
+    // Determine active section. When scrolled back above the first section
+    // (e.g. the hero), no section is in range and we reset to none so the
+    // previously clicked nav item doesn't stay highlighted.
     const sections = navItems.map((item) => item.href.substring(1));
+    let currentSection = "";
     for (let i = sections.length - 1; i >= 0; i--) {
       const section = document.getElementById(sections[i]);
       if (section) {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 150) {
-          setActiveSection(sections[i]);
+          currentSection = sections[i];
           break;
         }
       }
     }
+    setActiveSection(currentSection);
   }, []);
 
   useEffect(() => {
