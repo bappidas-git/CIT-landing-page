@@ -47,6 +47,7 @@ const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
 const AboutSection = lazy(() => import('./components/sections/AboutSection/AboutSection'));
 const WhyChooseCIT = lazy(() => import('./components/sections/WhyChooseCIT/WhyChooseCIT'));
 const ServicesSection = lazy(() => import('./components/sections/ServicesSection/ServicesSection'));
+const StatsSection = lazy(() => import('./components/sections/StatsSection/StatsSection'));
 const HighlightsSection = lazy(() => import('./components/sections/HighlightsSection/HighlightsSection'));
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection/FeaturesSection'));
 const LocationSection = lazy(() => import('./components/sections/LocationSection/LocationSection'));
@@ -320,6 +321,7 @@ const useIdlePreload = () => {
         () => import('./components/sections/AboutSection/AboutSection'),
         () => import('./components/sections/WhyChooseCIT/WhyChooseCIT'),
         () => import('./components/sections/ServicesSection/ServicesSection'),
+        () => import('./components/sections/StatsSection/StatsSection'),
         () => import('./components/sections/LocationSection/LocationSection'),
         () => import('./components/sections/FeaturesSection/FeaturesSection'),
         () => import('./components/sections/HighlightsSection/HighlightsSection'),
@@ -451,6 +453,12 @@ const HomePageContent = () => {
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={400} variant="skeleton" />}>
             <ServicesSection />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
+            <StatsSection />
           </Suspense>
         </ErrorBoundary>
 
