@@ -1,6 +1,6 @@
 /* ============================================
-   FeaturesSection Component - Why Choose Monjoven
-   Tabbed benefits showcase with clinic highlights and CTA
+   FeaturesSection Component - Campus Life & Recognition
+   Tabbed campus/NE-support benefits + awards timeline
    ============================================ */
 
 import React, { useState, useRef } from "react";
@@ -11,28 +11,53 @@ import { useModal } from "../../../context/ModalContext";
 import { featuresData } from "../../../data/featuresData";
 import styles from "./FeaturesSection.module.css";
 
-// Category icons (replacing Lottie animations)
+// Category icons keyed to featuresData ids
 const categoryIcons = {
-  1: "mdi:chip",
-  2: "mdi:hand-heart",
-  3: "mdi:star-circle",
+  1: "mdi:school-outline",
+  2: "mdi:briefcase-check-outline",
+  3: "mdi:home-heart",
 };
 
-// Accent icons for decorative display (replacing Lottie)
+// Decorative accent icons per category
 const categoryAccentIcons = {
-  1: "mdi:microscope",
-  2: "mdi:shield-check",
-  3: "mdi:trophy-outline",
+  1: "mdi:lightbulb-on-outline",
+  2: "mdi:handshake-outline",
+  3: "mdi:account-group-outline",
 };
 
-// Highlights strip items
-const courseHighlights = [
-  { icon: "mdi:microscope", label: "Micro-FUE" },
-  { icon: "mdi:laser-pointer", label: "Laser Therapy" },
-  { icon: "mdi:needle", label: "PRP Therapy" },
-  { icon: "mdi:phone-in-talk", label: "24/7 Support" },
-  { icon: "mdi:doctor", label: "Expert Surgeon" },
-  { icon: "mdi:earth", label: "Global Patients" },
+// Awards & recognition timeline (CIT — §6 of master reference)
+const awardsTimeline = [
+  {
+    year: "2016",
+    title: "Excellent Engineering Institution",
+    detail: "National Education Summit — Rural India",
+  },
+  {
+    year: "2018",
+    title: "Most Promising Engineering Institution",
+    detail: "Leaders Conclave",
+  },
+  {
+    year: "2019",
+    title: "Outstanding & Positive Accomplishment",
+    detail: "Academic Insights",
+  },
+  {
+    year: "2021",
+    title: "Best College — Global Technocrats",
+    detail: "For nurturing rural talents",
+  },
+  {
+    year: "2024",
+    title: "Outstanding Contribution",
+    detail: "Federation for World Academics, New Delhi",
+  },
+  {
+    year: "2025",
+    title: "Best Brand",
+    detail: "IIRF, New Delhi — academic performance",
+    highlight: true,
+  },
 ];
 
 // Animation variants
@@ -79,8 +104,8 @@ const FeaturesSection = () => {
   const [activeTab, setActiveTab] = useState(featuresData[0]?.id ?? 1);
   const { openLeadDrawer } = useModal();
 
-  const handleConsultation = () => {
-    openLeadDrawer("consultation");
+  const handleApply = () => {
+    openLeadDrawer("apply-now");
   };
 
   const activeCategory =
@@ -102,14 +127,14 @@ const FeaturesSection = () => {
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600,
                 fontSize: { xs: "0.75rem", md: "0.85rem" },
-                color: "#148F77",
+                color: "#C8102E",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
                 textAlign: "center",
                 marginBottom: "0.5rem",
               }}
             >
-              Why Choose Us
+              Campus Life & Recognition
             </Typography>
             <Typography
               variant="h2"
@@ -118,12 +143,13 @@ const FeaturesSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 700,
                 fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2.25rem" },
-                color: "#1A5276",
+                color: "#0B3D91",
                 textAlign: "center",
                 lineHeight: 1.2,
               }}
             >
-              The Monjoven <span className={styles.accentText}>Approach</span>
+              A Safe, Supportive Home for{" "}
+              <span className={styles.accentText}>North East Students</span>
             </Typography>
             <Typography
               className={styles.sectionSubtitle}
@@ -135,8 +161,8 @@ const FeaturesSection = () => {
                 marginTop: "0.75rem",
               }}
             >
-              Experience the difference of Northeast India's most trusted hair
-              transplant and cosmetic surgery clinic
+              Hostel, mess, guided admission and an inclusive campus — backed
+              by a quarter-century of national recognition.
             </Typography>
           </motion.div>
 
@@ -182,7 +208,7 @@ const FeaturesSection = () => {
                   <Icon
                     icon={categoryAccentIcons[activeTab]}
                     className={styles.lottiePlayer}
-                    style={{ width: "100%", height: "100%", color: "#148F77" }}
+                    style={{ width: "100%", height: "100%", color: "#0B3D91" }}
                   />
                 </div>
 
@@ -226,7 +252,7 @@ const FeaturesSection = () => {
                       style={{
                         width: "100%",
                         height: "100%",
-                        color: "#148F77",
+                        color: "#0B3D91",
                       }}
                     />
                   </div>
@@ -261,28 +287,40 @@ const FeaturesSection = () => {
             ))}
           </div>
 
-          {/* Course Highlights Strip */}
+          {/* Awards & Recognition Timeline */}
           <motion.div
             variants={itemVariants}
-            className={styles.highlightsStrip}
+            className={styles.timelineWrapper}
           >
-            <div className={styles.highlightsTrack}>
-              {courseHighlights.map((item, index) => (
-                <div key={index} className={styles.highlightChip}>
-                  <Icon icon={item.icon} className={styles.highlightIcon} />
-                  <span className={styles.highlightLabel}>{item.label}</span>
+            <div className={styles.timelineHeader}>
+              <Icon
+                icon="mdi:trophy-award"
+                className={styles.timelineHeaderIcon}
+              />
+              <h3 className={styles.timelineTitle}>
+                Awards & Recognition Timeline
+              </h3>
+            </div>
+            <div className={styles.timelineTrack}>
+              {awardsTimeline.map((award) => (
+                <div
+                  key={award.year}
+                  className={`${styles.timelineItem} ${
+                    award.highlight ? styles.timelineItemHighlight : ""
+                  }`}
+                >
+                  <div className={styles.timelineDot} />
+                  <div className={styles.timelineYear}>{award.year}</div>
+                  <div className={styles.timelineBody}>
+                    <div className={styles.timelineItemTitle}>
+                      {award.title}
+                    </div>
+                    <div className={styles.timelineItemDetail}>
+                      {award.detail}
+                    </div>
+                  </div>
                 </div>
               ))}
-            </div>
-          </motion.div>
-
-          {/* Procedures Milestone Highlight */}
-          <motion.div variants={itemVariants} className={styles.milestoneWrapper}>
-            <div className={styles.milestoneBadge}>
-              <Icon icon="mdi:medal-outline" className={styles.milestoneIcon} />
-              <span className={styles.milestoneText}>
-                <strong>2000+</strong> hair transplant procedures performed
-              </span>
             </div>
           </motion.div>
 
@@ -293,36 +331,36 @@ const FeaturesSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 600,
                 fontSize: { xs: "1.1rem", md: "1.35rem" },
-                color: "#1A5276",
+                color: "#0B3D91",
                 textAlign: "center",
                 marginBottom: "1rem",
               }}
             >
-              Ready to transform your look?
+              Ready to start your B.E. journey at CIT?
             </Typography>
             <Button
               variant="contained"
               className={styles.ctaButton}
-              onClick={handleConsultation}
+              onClick={handleApply}
               endIcon={<Icon icon="mdi:arrow-right" />}
               sx={{
-                background: "linear-gradient(135deg, #148F77 0%, #1ABC9C 100%)",
-                color: "#fff",
+                background: "linear-gradient(135deg, #F4A300 0%, #D98C00 100%)",
+                color: "#11203A",
                 fontWeight: 700,
                 fontSize: { xs: "0.9rem", md: "1rem" },
                 padding: { xs: "12px 28px", md: "14px 36px" },
                 borderRadius: "50px",
                 textTransform: "none",
-                boxShadow: "0 8px 32px rgba(20, 143, 119, 0.3)",
+                boxShadow: "0 8px 32px rgba(244, 163, 0, 0.3)",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #1ABC9C 0%, #148F77 100%)",
-                  boxShadow: "0 12px 40px rgba(20, 143, 119, 0.4)",
+                    "linear-gradient(135deg, #D98C00 0%, #F4A300 100%)",
+                  boxShadow: "0 12px 40px rgba(244, 163, 0, 0.4)",
                   transform: "translateY(-2px)",
                 },
               }}
             >
-              Schedule Your Consultation
+              Apply for 2026 Admission
             </Button>
           </motion.div>
         </motion.div>
