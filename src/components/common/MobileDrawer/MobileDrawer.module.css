@@ -12,7 +12,7 @@
 
 /* Backdrop */
 .backdrop {
-  background-color: rgba(26, 82, 118, 0.6) !important;
+  background-color: rgba(7, 42, 102, 0.6) !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -73,9 +73,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #148F77 0%, #1ABC9C 100%);
+  background: linear-gradient(135deg, #0B3D91 0%, #1E5AB8 100%);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(20, 143, 119, 0.3);
+  box-shadow: 0 4px 12px rgba(11, 61, 145, 0.3);
 }
 
 .logoText {
@@ -143,17 +143,17 @@
 }
 
 .menuButton:hover {
-  background-color: rgba(20, 143, 119, 0.08) !important;
+  background-color: rgba(11, 61, 145, 0.08) !important;
 }
 
 .menuButton:active {
-  background-color: rgba(20, 143, 119, 0.12) !important;
+  background-color: rgba(11, 61, 145, 0.12) !important;
   transform: scale(0.98);
 }
 
 /* Active Menu Item */
 .activeItem {
-  background-color: rgba(20, 143, 119, 0.1) !important;
+  background-color: rgba(11, 61, 145, 0.1) !important;
 }
 
 .activeItem::before {
@@ -192,7 +192,7 @@
   background: var(--accent-gold);
   border-radius: 50%;
   margin-left: auto;
-  box-shadow: 0 0 8px rgba(20, 143, 119, 0.6);
+  box-shadow: 0 0 8px rgba(11, 61, 145, 0.6);
 }
 
 /* Drawer Footer */
@@ -241,7 +241,7 @@
 }
 
 .contactDetailItem:hover {
-  background: rgba(20, 143, 119, 0.08);
+  background: rgba(11, 61, 145, 0.08);
   border-color: var(--accent-gold);
 }
 
@@ -296,13 +296,13 @@
 }
 
 .unifiedActionCall {
-  background: rgba(20, 143, 119, 0.1);
-  color: #148F77;
-  border-color: rgba(20, 143, 119, 0.25);
+  background: rgba(11, 61, 145, 0.1);
+  color: #0B3D91;
+  border-color: rgba(11, 61, 145, 0.25);
 }
 
 .unifiedActionCall:active {
-  background: #148F77;
+  background: #0B3D91;
   color: #fff;
   transform: scale(0.98);
 }
@@ -319,7 +319,7 @@
   transform: scale(0.98);
 }
 
-/* Book Consultation CTA Button */
+/* Apply Now CTA Button — CIT amber */
 .bookConsultationCta {
   display: flex;
   align-items: center;
@@ -329,22 +329,23 @@
   padding: 14px 24px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #E74C3C 0%, #FF8F5E 100%);
+  background: linear-gradient(135deg, #F4A300 0%, #FFB733 100%);
   color: #FFFFFF;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(231, 76, 60, 0.35);
+  box-shadow: 0 4px 16px rgba(244, 163, 0, 0.4);
   transition: all 0.2s ease;
 }
 
 .bookConsultationCta:hover {
-  background: linear-gradient(135deg, #E55A28 0%, #E74C3C 100%);
-  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.45);
+  background: linear-gradient(135deg, #D98C00 0%, #F4A300 100%);
+  box-shadow: 0 6px 20px rgba(244, 163, 0, 0.5);
 }
 
 .bookConsultationCta:active {
-  background: linear-gradient(135deg, #D04E1F 0%, #E55A28 100%);
+  background: linear-gradient(135deg, #B87600 0%, #D98C00 100%);
 }
 
 .bookConsultationCta svg {
@@ -440,7 +441,7 @@
   }
 
   .menuButton:active {
-    background-color: rgba(20, 143, 119, 0.12) !important;
+    background-color: rgba(11, 61, 145, 0.12) !important;
   }
 
   .closeButton:hover {

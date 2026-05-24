@@ -21,14 +21,23 @@ import { Icon } from "@iconify/react";
 import { trackPhoneClick, trackWhatsAppClick } from "../../../utils/gtm";
 import styles from "./MobileDrawer.module.css";
 
-// Navigation menu items
+// CIT primary admissions contact (Assam Digital campaign)
+const PRIMARY_PHONE = "+918867354168";
+const PRIMARY_PHONE_DISPLAY = "+91 88673 54168";
+const PRIMARY_PHONE_DIGITS = "918867354168";
+const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
+const ADMISSIONS_EMAIL = "admin@cittumkur.org";
+
+const CIT_LOGO_URL =
+  "https://placehold.co/200x60/FFFFFF/0B3D91?text=CIT+Logo";
+
+// Navigation menu items — match Header anchors
 const menuItems = [
   { id: "home", label: "Home", icon: "ic:outline-home", href: "#home" },
-  { id: "about", label: "About Us", icon: "mdi:information-outline", href: "#about" },
-  { id: "services", label: "Services", icon: "mdi:medical-bag", href: "#services" },
-  { id: "why-us", label: "Why Choose Us", icon: "mdi:star-outline", href: "#why-us" },
-  { id: "results", label: "Results", icon: "mdi:image-multiple-outline", href: "#results" },
-  { id: "testimonials", label: "Testimonials", icon: "mdi:format-quote-open", href: "#testimonials" },
+  { id: "about", label: "About CIT", icon: "mdi:information-outline", href: "#about" },
+  { id: "courses", label: "Courses", icon: "mdi:book-open-variant", href: "#courses" },
+  { id: "placements", label: "Placements", icon: "mdi:briefcase-outline", href: "#placements" },
+  { id: "campus", label: "Campus", icon: "mdi:school-outline", href: "#campus" },
   { id: "contact", label: "Contact", icon: "mdi:phone-outline", href: "#contact" },
 ];
 
@@ -158,9 +167,9 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
       <Box className={styles.drawerHeader}>
         <Box className={styles.logoSection}>
           <img
-            src="https://www.monjoven.com/assets/img/logo.png"
-            alt="Monjoven"
-            style={{ height: "32px", width: "auto" }}
+            src={CIT_LOGO_URL}
+            alt="CIT — Channabasaveshwara Institute of Technology"
+            style={{ height: "36px", width: "auto" }}
           />
         </Box>
         <IconButton
@@ -199,7 +208,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                         py: 1.5,
                         transition: "all 0.2s ease",
                         "&:hover": {
-                          backgroundColor: "rgba(20, 143, 119, 0.08)",
+                          backgroundColor: "rgba(11, 61, 145, 0.08)",
                         },
                       }}
                     >
@@ -208,7 +217,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                         sx={{
                           minWidth: 44,
                           color:
-                            activeSection === item.id ? "#148F77" : "#6B7280",
+                            activeSection === item.id ? "#0B3D91" : "#6B7280",
                         }}
                       >
                         <Icon icon={item.icon} style={{ fontSize: 22 }} />
@@ -220,7 +229,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                           "& .MuiTypography-root": {
                             fontWeight: activeSection === item.id ? 600 : 500,
                             color:
-                              activeSection === item.id ? "#148F77" : "#374151",
+                              activeSection === item.id ? "#0B3D91" : "#374151",
                             fontSize: "0.95rem",
                           },
                         }}
@@ -252,7 +261,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
         <Divider className={styles.divider} />
         <Box className={styles.contactInfo}>
           <Typography variant="caption" className={styles.contactLabel}>
-            Get in Touch
+            CIT Admissions Desk
           </Typography>
 
           {/* Contact Details */}
@@ -261,31 +270,31 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
               <Box className={styles.unifiedContactHeader}>
                 <Icon
                   icon="mdi:phone-in-talk-outline"
-                  style={{ color: '#148F77', fontSize: 18 }}
+                  style={{ color: '#0B3D91', fontSize: 18 }}
                 />
                 <span className={styles.unifiedContactNumber}>
-                  +91 9181956562
+                  {PRIMARY_PHONE_DISPLAY}
                 </span>
               </Box>
               <Box className={styles.unifiedContactActions}>
                 <a
-                  href="tel:+919181956562"
+                  href={`tel:${PRIMARY_PHONE}`}
                   className={`${styles.unifiedActionBtn} ${styles.unifiedActionCall}`}
                   onClick={() =>
-                    trackPhoneClick('+919181956562', 'mobile_drawer')
+                    trackPhoneClick(PRIMARY_PHONE, 'mobile_drawer')
                   }
-                  aria-label="Call +91 9181956562"
+                  aria-label={`Call ${PRIMARY_PHONE_DISPLAY}`}
                 >
                   <Icon icon="mdi:phone" style={{ fontSize: 16 }} />
                   <span>Call</span>
                 </a>
                 <a
-                  href="https://api.whatsapp.com/send?phone=919181956562&text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant."
+                  href={WHATSAPP_HREF}
                   className={`${styles.unifiedActionBtn} ${styles.unifiedActionWhatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackWhatsAppClick('mobile_drawer')}
-                  aria-label="Chat on WhatsApp with +91 9181956562"
+                  aria-label={`Chat on WhatsApp with ${PRIMARY_PHONE_DISPLAY}`}
                 >
                   <Icon icon="mdi:whatsapp" style={{ fontSize: 16 }} />
                   <span>WhatsApp</span>
@@ -293,15 +302,15 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
               </Box>
             </Box>
             <a
-              href="mailto:dr@monjoven.com"
+              href={`mailto:${ADMISSIONS_EMAIL}`}
               className={styles.contactDetailItem}
             >
-              <Icon icon="mdi:email-outline" style={{ color: '#148F77', fontSize: 18 }} />
-              <span>dr@monjoven.com</span>
+              <Icon icon="mdi:email-outline" style={{ color: '#0B3D91', fontSize: 18 }} />
+              <span>{ADMISSIONS_EMAIL}</span>
             </a>
           </Box>
 
-          {/* Book Consultation CTA */}
+          {/* Apply Now CTA — opens unified lead drawer */}
           <motion.button
             className={styles.bookConsultationCta}
             whileHover={{ scale: 1.02 }}
@@ -312,9 +321,10 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                 setTimeout(() => onBookConsultation(), 300);
               }
             }}
+            aria-label="Apply for 2026 B.E. admission"
           >
-            <Icon icon="mdi:calendar-plus" style={{ fontSize: 20 }} />
-            <span>Book Consultation</span>
+            <Icon icon="mdi:school-outline" style={{ fontSize: 20 }} />
+            <span>Apply for 2026 Admission</span>
           </motion.button>
         </Box>
       </Box>

@@ -15,10 +15,10 @@
   padding: var(--space-12) 0 var(--space-8);
 }
 
-/* Footer Grid - 4 columns */
+/* Footer Grid - 3 columns (Brand, Quick Links, Contact) */
 .footerGrid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  grid-template-columns: 1.6fr 1fr 1.4fr;
   gap: var(--space-10);
 }
 
@@ -162,14 +162,16 @@
 }
 
 .contactValue {
+  display: block;
   font-size: var(--fs-sm);
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.78);
   text-decoration: none;
   transition: color var(--transition-fast);
+  line-height: 1.5;
 }
 
 a.contactValue:hover {
-  color: var(--accent-gold);
+  color: var(--accent-amber);
 }
 
 /* Unified Contact Chips (Call + WhatsApp) */
@@ -223,6 +225,40 @@ a.contactValue:hover {
   border-color: #25d366;
 }
 
+/* Accreditation Strip */
+.accreditationStrip {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  padding: var(--space-4) 0;
+}
+
+.accreditationList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3) var(--space-5);
+}
+
+.accreditationItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.accreditationIcon {
+  font-size: 1.05rem;
+  color: var(--accent-amber, var(--accent-orange));
+}
+
 /* Bottom Bar */
 .bottomBar {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -262,7 +298,7 @@ a.contactValue:hover {
 }
 
 .legalLink:hover {
-  color: var(--accent-gold);
+  color: var(--accent-amber);
 }
 
 .linkDivider {
@@ -284,7 +320,7 @@ a.contactValue:hover {
 }
 
 .developerLink {
-  background: var(--accent-gold-gradient-horizontal);
+  background: var(--accent-amber-gradient, var(--accent-orange-gradient));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -452,7 +488,7 @@ a.contactValue:hover {
    Responsive Styles
    ============================================ */
 
-/* 4 columns -> 2 columns */
+/* 3 columns -> 2 columns */
 @media (max-width: 1024px) {
   .footerGrid {
     grid-template-columns: 1fr 1fr;
@@ -466,7 +502,7 @@ a.contactValue:hover {
   }
 
   .tagline {
-    max-width: 400px;
+    max-width: 480px;
   }
 
   .socialIcons {

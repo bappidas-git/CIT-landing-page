@@ -74,11 +74,11 @@
 }
 
 .navButton:hover {
-  background: rgba(20, 143, 119, 0.08);
+  background: rgba(11, 61, 145, 0.08);
 }
 
 .navButton:active {
-  background: rgba(20, 143, 119, 0.15);
+  background: rgba(11, 61, 145, 0.15);
 }
 
 /* Navigation Icon */
@@ -134,10 +134,10 @@
   opacity: 0.6;
 }
 
-/* Primary CTA Item (Book Now) */
+/* Primary CTA Item (Apply Now) — CIT amber */
 .primaryItem .navButton {
-  background: linear-gradient(135deg, #E74C3C 0%, #FF8F5E 100%);
-  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);
+  background: linear-gradient(135deg, #F4A300 0%, #FFB733 100%);
+  box-shadow: 0 4px 12px rgba(244, 163, 0, 0.4);
   width: 52px;
   height: 52px;
   margin-top: -6px;
@@ -148,17 +148,17 @@
 }
 
 .primaryItem .navLabel {
-  color: #E74C3C !important;
-  font-weight: 600 !important;
+  color: #D98C00 !important;
+  font-weight: 700 !important;
 }
 
 .primaryItem .navButton:hover {
-  background: linear-gradient(135deg, #E55A28 0%, #E74C3C 100%);
-  box-shadow: 0 6px 16px rgba(231, 76, 60, 0.45);
+  background: linear-gradient(135deg, #D98C00 0%, #F4A300 100%);
+  box-shadow: 0 6px 16px rgba(244, 163, 0, 0.5);
 }
 
 .primaryItem .navButton:active {
-  background: linear-gradient(135deg, #D04E1F 0%, #E55A28 100%);
+  background: linear-gradient(135deg, #B87600 0%, #D98C00 100%);
 }
 
 /* WhatsApp Button Special Styling */
@@ -183,15 +183,15 @@
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .mobileNav {
-    background: rgba(26, 82, 118, 0.95);
+    background: rgba(7, 42, 102, 0.95);
   }
 
   .safeAreaBackground {
-    background: rgba(26, 82, 118, 0.95);
+    background: rgba(7, 42, 102, 0.95);
   }
 
   .navButton:hover {
-    background: rgba(20, 143, 119, 0.15);
+    background: rgba(11, 61, 145, 0.15);
   }
 }
 
@@ -248,7 +248,7 @@
   left: 50%;
   width: 0;
   height: 0;
-  background: radial-gradient(circle, rgba(20, 143, 119, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(11, 61, 145, 0.3) 0%, transparent 70%);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: width 0.3s ease, height 0.3s ease;
@@ -278,7 +278,7 @@
   }
 
   .navButton:active {
-    background: rgba(20, 143, 119, 0.15);
+    background: rgba(11, 61, 145, 0.15);
   }
 }
 
