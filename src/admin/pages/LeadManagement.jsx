@@ -56,23 +56,24 @@ import { exportGoogleAdsCSV } from "../utils/googleAdsExport";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import styles from "./LeadManagement.module.css";
 
-// Status config
+// Status config — values are the canonical workflow keys (do not rename keys);
+// labels are CIT-admission friendly.
 const STATUS_OPTIONS = [
   { value: "new", label: "New", color: "#2B7BD5", bg: "#EBF5FF" },
   { value: "contacted", label: "Contacted", color: "#F59E0B", bg: "#FFF7ED" },
   {
     value: "consultation_booked",
-    label: "Consultation Booked",
+    label: "Counselling Booked",
     color: "#8B5CF6",
     bg: "#F3E8FF",
   },
   {
     value: "procedure_scheduled",
-    label: "Procedure Scheduled",
+    label: "Visit Scheduled",
     color: "#0097A7",
     bg: "#E0F7FA",
   },
-  { value: "completed", label: "Completed", color: "#10B981", bg: "#ECFDF5" },
+  { value: "completed", label: "Admitted", color: "#10B981", bg: "#ECFDF5" },
   {
     value: "not_interested",
     label: "Not Interested",
@@ -102,18 +103,20 @@ const formatShortDate = (dateStr) => {
   });
 };
 
-// Columns config
+// Columns config — `service_interest` is the canonical key (kept from the
+// public form), displayed as "Course Interested" in the UI.
 const COLUMNS = [
-  { id: "name", label: "Patient Name", sortable: true },
-  { id: "mobile", label: "Phone", sortable: true, width: 130 },
-  { id: "email", label: "Email", sortable: true },
+  { id: "name", label: "Name", sortable: true },
+  { id: "mobile", label: "Mobile", sortable: true, width: 130 },
+  { id: "email", label: "Email", sortable: true, hideTablet: true },
   {
     id: "service_interest",
-    label: "Service Interest",
+    label: "Course Interested",
     sortable: true,
     hideTablet: true,
   },
-  { id: "source", label: "Source", sortable: true, width: 140 },
+  { id: "state", label: "State", sortable: true, width: 120 },
+  { id: "source", label: "Source", sortable: true, width: 130 },
   { id: "status", label: "Status", sortable: true, width: 150 },
   { id: "submitted_at", label: "Date", sortable: true, width: 100 },
 ];
@@ -439,9 +442,9 @@ const LeadManagement = () => {
       {/* Page Header */}
       <div className={styles.pageHeader}>
         <div>
-          <h1 className={styles.pageTitle}>Consultation Requests</h1>
+          <h1 className={styles.pageTitle}>Admission Leads</h1>
           <p className={styles.pageSubtitle}>
-            View and manage all consultation requests in one place.
+            View and manage all 2026 B.E. admission leads in one place.
           </p>
         </div>
         <div className={styles.headerActions}>
@@ -636,7 +639,7 @@ const LeadManagement = () => {
         <div className={styles.filtersBar}>
           <TextField
             size="small"
-            placeholder="Search by patient name, email, or phone..."
+            placeholder="Search by name, email, mobile, course, or state..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -897,11 +900,11 @@ const LeadManagement = () => {
             <div className={styles.emptyIcon}>
               <Icon icon="mdi:account-group-outline" width={64} height={64} />
             </div>
-            <p className={styles.emptyText}>No consultation requests found</p>
+            <p className={styles.emptyText}>No admission leads found</p>
             <p className={styles.emptySubtext}>
               {hasActiveFilters
                 ? "No results match your current filters. Try adjusting your search or filters."
-                : "New consultation requests will appear here as they come in from your landing page forms."}
+                : "New admission leads will appear here as they come in from your landing page forms."}
             </p>
             {hasActiveFilters && (
               <Button
@@ -1055,19 +1058,21 @@ const LeadManagement = () => {
                               {lead.mobile || "—"}
                             </Typography>
                           </TableCell>
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                maxWidth: 200,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {lead.email || "—"}
-                            </Typography>
-                          </TableCell>
+                          {!isTablet && (
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  maxWidth: 200,
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {lead.email || "—"}
+                              </Typography>
+                            </TableCell>
+                          )}
                           {!isTablet && (
                             <TableCell>
                               <Typography
@@ -1081,6 +1086,17 @@ const LeadManagement = () => {
                               </Typography>
                             </TableCell>
                           )}
+                          <TableCell>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontSize: "0.8125rem",
+                                color: "var(--admin-text-secondary)",
+                              }}
+                            >
+                              {lead.state || "—"}
+                            </Typography>
+                          </TableCell>
                           <TableCell>
                             <Chip
                               label={lead.source || "—"}
@@ -1221,6 +1237,17 @@ const LeadManagement = () => {
                       style={{ paddingLeft: 32 }}
                     >
                       {lead.mobile || "—"}
+                    </div>
+                    <div
+                      className={styles.leadCardMobile}
+                      style={{
+                        paddingLeft: 32,
+                        fontFamily: "inherit",
+                        marginTop: 2,
+                      }}
+                    >
+                      {lead.service_interest || "—"}
+                      {lead.state ? ` · ${lead.state}` : ""}
                     </div>
                     <div
                       className={styles.leadCardChips}

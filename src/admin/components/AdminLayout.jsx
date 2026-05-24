@@ -17,7 +17,7 @@ const Guideline = lazy(() => import('../pages/Guideline'));
 
 const PageLoader = () => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
-    <CircularProgress sx={{ color: '#148F77' }} />
+    <CircularProgress sx={{ color: 'var(--admin-accent)' }} />
   </Box>
 );
 

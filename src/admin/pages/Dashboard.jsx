@@ -19,6 +19,15 @@ const STATUS_COLORS = {
   not_interested: { color: "#F44336", bg: "#FFEBEE" },
 };
 
+const STATUS_LABELS = {
+  new: "New",
+  contacted: "Contacted",
+  consultation_booked: "Counselling Booked",
+  procedure_scheduled: "Visit Scheduled",
+  completed: "Admitted",
+  not_interested: "Not Interested",
+};
+
 const formatDate = () => {
   const d = new Date();
   return d.toLocaleDateString('en-US', {
@@ -95,10 +104,10 @@ const Dashboard = () => {
   }, []);
 
   const statCards = [
-    { label: 'Total Consultation Requests', value: stats?.totalLeads ?? 0, icon: 'mdi:account-multiple', colorClass: 'statIconBlue' },
-    { label: 'Pending Follow-ups', value: stats?.newLeads24h ?? 0, icon: 'mdi:phone-in-talk', colorClass: 'statIconGreen' },
-    { label: 'Consultations Booked', value: stats?.weekLeads ?? 0, icon: 'mdi:calendar-check', colorClass: 'statIconPink' },
-    { label: 'Procedures Scheduled', value: `${stats?.conversionRate ?? 0}%`, icon: 'mdi:medical-bag', colorClass: 'statIconTeal' },
+    { label: 'Total Admission Leads', value: stats?.totalLeads ?? 0, icon: 'mdi:account-multiple', colorClass: 'statIconBlue' },
+    { label: 'New Today', value: stats?.newLeads24h ?? 0, icon: 'mdi:account-plus', colorClass: 'statIconGreen' },
+    { label: 'This Week', value: stats?.weekLeads ?? 0, icon: 'mdi:calendar-week', colorClass: 'statIconPink' },
+    { label: 'Conversion Rate', value: `${stats?.conversionRate ?? 0}%`, icon: 'mdi:percent', colorClass: 'statIconTeal' },
   ];
 
   const recentLeads = stats?.recentLeads || [];
@@ -141,7 +150,7 @@ const Dashboard = () => {
         <div>
           <h1 className={styles.pageTitle}>Dashboard</h1>
           <p className={styles.pageSubtitle}>
-            Welcome to Monjoven Lead Management. Here&rsquo;s your consultation overview.
+            Welcome to CIT Admissions Lead Management. Here&rsquo;s your admission lead overview.
           </p>
         </div>
         <div className={styles.headerRight}>
@@ -211,7 +220,7 @@ const Dashboard = () => {
       {/* Recent Leads Section */}
       <div className={styles.recentSection}>
         <div className={styles.recentHeader}>
-          <h2 className={styles.sectionTitle}>Recent Consultation Requests</h2>
+          <h2 className={styles.sectionTitle}>Recent Admission Leads</h2>
           <Link to="/admin/lms" className={styles.viewAllLink}>
             View All <Icon icon="mdi:arrow-right" width={16} height={16} style={{ verticalAlign: 'middle' }} />
           </Link>
@@ -222,9 +231,9 @@ const Dashboard = () => {
             <div className={styles.emptyIcon}>
               <Icon icon="mdi:inbox-outline" width={56} height={56} />
             </div>
-            <p className={styles.emptyText}>No consultation requests yet</p>
+            <p className={styles.emptyText}>No admission leads yet</p>
             <p className={styles.emptySubtext}>
-              New consultation requests will appear here as they come in from your landing page forms.
+              New admission leads will appear here as they come in from your landing page forms.
             </p>
           </div>
         ) : (
@@ -234,9 +243,10 @@ const Dashboard = () => {
               <table className={styles.recentTable}>
                 <thead>
                   <tr>
-                    <th>Patient Name</th>
-                    <th>Phone</th>
-                    <th>Source</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Course</th>
+                    <th>State</th>
                     <th>Status</th>
                     <th>Date</th>
                     <th>Action</th>
@@ -249,24 +259,17 @@ const Dashboard = () => {
                       <tr key={lead.lead_id} className={idx % 2 === 1 ? styles.rowAlt : undefined}>
                         <td className={styles.leadName}>{lead.name || '—'}</td>
                         <td>{lead.mobile || '—'}</td>
+                        <td>{lead.service_interest || '—'}</td>
+                        <td>{lead.state || '—'}</td>
                         <td>
                           <Chip
-                            label={lead.source || '—'}
-                            size="small"
-                            variant="outlined"
-                            sx={{ fontSize: '0.7rem', maxWidth: 120 }}
-                          />
-                        </td>
-                        <td>
-                          <Chip
-                            label={lead.status || 'new'}
+                            label={STATUS_LABELS[lead.status] || STATUS_LABELS.new}
                             size="small"
                             sx={{
                               bgcolor: sc.bg,
                               color: sc.color,
                               fontWeight: 600,
                               fontSize: '0.7rem',
-                              textTransform: 'capitalize',
                             }}
                           />
                         </td>
@@ -308,7 +311,7 @@ const Dashboard = () => {
                     <div className={styles.mobileCardTop}>
                       <span className={styles.mobileCardName}>{lead.name || '—'}</span>
                       <Chip
-                        label={lead.status || 'new'}
+                        label={STATUS_LABELS[lead.status] || STATUS_LABELS.new}
                         size="small"
                         sx={{
                           bgcolor: sc.bg,
@@ -316,7 +319,6 @@ const Dashboard = () => {
                           fontWeight: 600,
                           fontSize: '0.65rem',
                           height: 22,
-                          textTransform: 'capitalize',
                         }}
                       />
                     </div>
@@ -324,9 +326,13 @@ const Dashboard = () => {
                       <Icon icon="mdi:phone-outline" width={14} height={14} />
                       <span>{lead.mobile || '—'}</span>
                     </div>
+                    <div className={styles.mobileCardRow}>
+                      <Icon icon="mdi:school-outline" width={14} height={14} />
+                      <span>{lead.service_interest || '—'}</span>
+                    </div>
                     <div className={styles.mobileCardBottom}>
                       <Chip
-                        label={lead.source || '—'}
+                        label={lead.state || '—'}
                         size="small"
                         variant="outlined"
                         sx={{ fontSize: '0.65rem', height: 22 }}
@@ -351,7 +357,7 @@ const Dashboard = () => {
 
       {/* Footer Badge */}
       <p className={styles.footerBadge}>
-        Monjoven Admin Panel | Lead Management System v1.0
+        CIT Admissions Admin Panel | Lead Management System v1.0
       </p>
 
       <Snackbar

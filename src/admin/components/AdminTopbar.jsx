@@ -58,12 +58,12 @@ const AdminTopbar = () => {
     <header className={styles.topbar}>
       <div className={styles.topbarLeft}>
         <img
-          src="https://www.monjoven.com/assets/img/logo.png"
-          alt="Monjoven"
+          src="https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Admin"
+          alt="CIT Admin"
           className={styles.logo}
         />
         <span className={styles.divider} />
-        <span className={styles.badge}>Admin</span>
+        <span className={styles.badge}>Admissions</span>
       </div>
 
       <nav className={styles.desktopNav}>
@@ -111,8 +111,8 @@ const AdminTopbar = () => {
             {/* Logo at top */}
             <div className={styles.mobileMenuHeader}>
               <img
-                src="https://www.monjoven.com/assets/img/logo.png"
-                alt="Monjoven"
+                src="https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Admin"
+                alt="CIT Admin"
                 className={styles.mobileMenuLogo}
               />
             </div>
@@ -151,7 +151,7 @@ const AdminTopbar = () => {
             </div>
 
             {/* Footer */}
-            <p className={styles.mobileMenuFooter}>Monjoven Admin Panel</p>
+            <p className={styles.mobileMenuFooter}>CIT Admissions Admin Panel</p>
           </div>
         </div>
       )}

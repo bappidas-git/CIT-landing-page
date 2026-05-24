@@ -88,8 +88,8 @@ const Guideline = () => {
       <div className={styles.modalOverlay}>
         <div className={styles.modalCard}>
           <img
-            src="https://assamdigital.com/wp-content/uploads/2022/04/logo.png"
-            alt="Monjoven"
+            src="https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Admin"
+            alt="CIT Admin"
             className={styles.modalLogo}
           />
           <h2 className={styles.modalTitle}>Restricted Access</h2>

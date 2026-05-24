@@ -143,14 +143,16 @@ const saveLeads = (allLeads) => {
 export const getLeads = (filters = {}) => {
   let leads = getAllLeadsRaw();
 
-  // Search filter
+  // Search filter — name, email, mobile, course (service_interest), state
   if (filters.search) {
     const q = filters.search.toLowerCase();
     leads = leads.filter(
       (l) =>
         (l.name || "").toLowerCase().includes(q) ||
         (l.email || "").toLowerCase().includes(q) ||
-        (l.mobile || "").includes(q)
+        (l.mobile || "").includes(q) ||
+        (l.service_interest || "").toLowerCase().includes(q) ||
+        (l.state || "").toLowerCase().includes(q)
     );
   }
 
@@ -373,7 +375,8 @@ export const exportLeadsCSV = (leads) => {
     "Name",
     "Mobile",
     "Email",
-    "Service Interest",
+    "Course Interested",
+    "State",
     "Source",
     "Status",
     "Submitted At",
@@ -401,6 +404,7 @@ export const exportLeadsCSV = (leads) => {
     l.mobile,
     l.email,
     l.service_interest,
+    l.state,
     l.source,
     l.status,
     l.submitted_at,
@@ -449,7 +453,12 @@ export const importLeadsCSV = (csvText) => {
     name: "name",
     mobile: "mobile",
     email: "email",
+    // Canonical key is `service_interest` (kept from the public form); the
+    // exported header label is "Course Interested" but legacy "Service
+    // Interest" CSVs still import into the same key.
+    "course interested": "service_interest",
     "service interest": "service_interest",
+    state: "state",
     source: "source",
     status: "status",
     "submitted at": "submitted_at",

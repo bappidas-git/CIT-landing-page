@@ -91,7 +91,7 @@
 }
 
 .statIconBlue {
-  background: rgba(20, 143, 119, 0.1);
+  background: rgba(200, 16, 46, 0.1);
   color: var(--admin-accent);
 }
 
@@ -168,7 +168,7 @@
 .actionOutlined:hover {
   border-color: var(--admin-accent);
   color: var(--admin-accent);
-  background: rgba(20, 143, 119, 0.04);
+  background: rgba(200, 16, 46, 0.04);
 }
 
 .actionSolid {
@@ -179,7 +179,7 @@
 
 .actionSolid:hover {
   opacity: 0.9;
-  box-shadow: 0 4px 12px rgba(20, 143, 119, 0.25);
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.25);
 }
 
 .actionGhost {
@@ -190,7 +190,7 @@
 
 .actionGhost:hover {
   color: var(--admin-accent);
-  background: rgba(20, 143, 119, 0.04);
+  background: rgba(200, 16, 46, 0.04);
 }
 
 /* ── Recent Leads Section ── */

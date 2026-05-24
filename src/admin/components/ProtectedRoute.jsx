@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children }) => {
           backgroundColor: '#F8FAFC',
         }}
       >
-        <CircularProgress sx={{ color: '#148F77' }} />
+        <CircularProgress sx={{ color: 'var(--admin-accent)' }} />
       </Box>
     );
   }
