@@ -18,7 +18,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(rgba(240, 165, 0, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(224, 48, 30, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
 }
@@ -29,7 +29,7 @@
   left: -200px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(240, 165, 0, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(224, 48, 30, 0.18) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -136,8 +136,8 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  background: linear-gradient(135deg, rgba(240, 165, 0, 0.18) 0%, rgba(240, 165, 0, 0.08) 100%);
-  border: 1px solid rgba(240, 165, 0, 0.35);
+  background: linear-gradient(135deg, rgba(224, 48, 30, 0.18) 0%, rgba(224, 48, 30, 0.08) 100%);
+  border: 1px solid rgba(224, 48, 30, 0.35);
   border-radius: 20px;
   padding: 24px 28px;
   margin: 0 auto 40px;
@@ -149,7 +149,7 @@
   flex-shrink: 0;
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
+  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -168,7 +168,7 @@
 .noticeTitle {
   font-size: 1.0625rem !important;
   font-weight: 600 !important;
-  color: #F0A500 !important;
+  color: #E0301E !important;
   margin-bottom: 6px !important;
 }
 
@@ -210,7 +210,7 @@
   flex-shrink: 0;
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
+  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -301,14 +301,14 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(240, 165, 0, 0.18);
-  border: 1px solid rgba(240, 165, 0, 0.4);
+  background: rgba(224, 48, 30, 0.18);
+  border: 1px solid rgba(224, 48, 30, 0.4);
   border-radius: 20px;
   padding: 8px 16px;
   margin-bottom: 12px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #F0A500;
+  color: #E0301E;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -342,7 +342,7 @@
   flex-shrink: 0;
   width: 48px;
   height: 48px;
-  background: rgba(240, 165, 0, 0.15);
+  background: rgba(224, 48, 30, 0.15);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -351,7 +351,7 @@
 
 .contactIconWrapper svg {
   font-size: 24px;
-  color: #F0A500;
+  color: #E0301E;
 }
 
 .contactDetails {
@@ -377,7 +377,7 @@
 }
 
 .contactValue:hover {
-  color: #F0A500;
+  color: #E0301E;
 }
 
 .contactValueAlt {
@@ -388,7 +388,7 @@
 }
 
 .contactValueAlt:hover {
-  color: #F0A500;
+  color: #E0301E;
 }
 
 /* CTA Section */
@@ -404,8 +404,8 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
-  border: 2px solid #F0A500;
+  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
+  border: 2px solid #E0301E;
   border-radius: 50px;
   padding: 14px 28px;
   color: #081F33 !important;
@@ -413,14 +413,14 @@
   font-weight: 700;
   text-decoration: none;
   transition: all 0.2s ease;
-  box-shadow: 0 6px 18px rgba(240, 165, 0, 0.35);
+  box-shadow: 0 6px 18px rgba(224, 48, 30, 0.35);
 }
 
 .backHomeBtn:hover {
-  background: linear-gradient(135deg, #C77F00 0%, #F0A500 100%);
-  border-color: #C77F00;
+  background: linear-gradient(135deg, #B71F12 0%, #E0301E 100%);
+  border-color: #B71F12;
   color: #081F33 !important;
-  box-shadow: 0 8px 22px rgba(240, 165, 0, 0.45);
+  box-shadow: 0 8px 22px rgba(224, 48, 30, 0.45);
 }
 
 .backHomeBtn svg {

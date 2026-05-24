@@ -22,11 +22,10 @@ import { trackPhoneClick, trackWhatsAppClick } from "../../../utils/gtm";
 import styles from "./MobileDrawer.module.css";
 
 // CIT primary admissions contact (Assam Digital campaign)
-const PRIMARY_PHONE = "+918867354168";
-const PRIMARY_PHONE_DISPLAY = "+91 88673 54168";
-const PRIMARY_PHONE_DIGITS = "918867354168";
+const PRIMARY_PHONE = "+919403891805";
+const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";
+const PRIMARY_PHONE_DIGITS = "919403891805";
 const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
-const ADMISSIONS_EMAIL = "admin@cittumkur.org";
 
 const CIT_LOGO_URL =
   "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
@@ -301,13 +300,6 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                 </a>
               </Box>
             </Box>
-            <a
-              href={`mailto:${ADMISSIONS_EMAIL}`}
-              className={styles.contactDetailItem}
-            >
-              <Icon icon="mdi:email-outline" style={{ color: '#0C2D48', fontSize: 18 }} />
-              <span>{ADMISSIONS_EMAIL}</span>
-            </a>
           </Box>
 
           {/* Apply Now CTA — opens unified lead drawer */}

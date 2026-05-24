@@ -1,7 +1,7 @@
 /* ============================================
    WhyChooseCIT Styles
    NE-objection answers + CIT direct-admission CTA.
-   CIT blue (#0C2D48) + amber (#F0A500) palette.
+   CIT blue (#0C2D48) + amber (#E0301E) palette.
    ============================================ */
 
 /* ---------- Section ---------- */
@@ -51,7 +51,7 @@
 .bgGlowTwo {
   bottom: -200px;
   right: -140px;
-  background: rgba(240, 165, 0, 0.22);
+  background: rgba(224, 48, 30, 0.22);
 }
 
 .wrapper {
@@ -228,7 +228,7 @@
   background-image:
     radial-gradient(
       circle at 20% 20%,
-      rgba(240, 165, 0, 0.2) 0%,
+      rgba(224, 48, 30, 0.2) 0%,
       transparent 45%
     ),
     radial-gradient(
@@ -259,9 +259,9 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background: rgba(240, 165, 0, 0.18);
+  background: rgba(224, 48, 30, 0.18);
   color: #ffffff;
-  border: 1px solid rgba(240, 165, 0, 0.4);
+  border: 1px solid rgba(224, 48, 30, 0.4);
   border-radius: var(--radius-full);
   font-family: var(--font-primary);
   font-size: var(--fs-sm);
@@ -375,7 +375,7 @@
   border-radius: var(--radius-full);
   cursor: pointer;
   text-transform: none;
-  box-shadow: 0 10px 24px rgba(240, 165, 0, 0.4);
+  box-shadow: 0 10px 24px rgba(224, 48, 30, 0.4);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -385,11 +385,11 @@
 .ctaButton:hover {
   transform: translateY(-2px);
   background: linear-gradient(135deg, var(--accent-amber-light) 0%, var(--color-accent) 100%);
-  box-shadow: 0 14px 32px rgba(240, 165, 0, 0.5);
+  box-shadow: 0 14px 32px rgba(224, 48, 30, 0.5);
 }
 
 .ctaButton:focus-visible {
-  outline: 3px solid rgba(240, 165, 0, 0.5);
+  outline: 3px solid rgba(224, 48, 30, 0.5);
   outline-offset: 3px;
 }
 

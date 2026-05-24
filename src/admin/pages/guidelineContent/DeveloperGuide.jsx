@@ -262,7 +262,7 @@ npm start
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--color-accent</code></td>
-              <td className={styles.guideTableCell}>#F0A500 (Amber / Gold)</td>
+              <td className={styles.guideTableCell}>#E0301E (CTA Red)</td>
               <td className={styles.guideTableCell}>Primary CTA buttons only</td>
             </tr>
           </tbody>

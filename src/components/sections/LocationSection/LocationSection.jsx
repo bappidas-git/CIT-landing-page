@@ -94,7 +94,7 @@ const LocationSection = () => {
       icon: "mdi:account-group",
       title: "Familiar faces on campus",
       text: "An active North East student community — seniors who've made the same journey, ready to help juniors.",
-      color: "#F0A500",
+      color: "#E0301E",
     },
   ];
 
@@ -166,32 +166,6 @@ const LocationSection = () => {
                   </a>
 
                   <a
-                    href={`tel:${locationData.altPhone}`}
-                    className={styles.contactItem}
-                  >
-                    <div className={styles.contactIcon}>
-                      <Icon icon="mdi:phone-outline" />
-                    </div>
-                    <div>
-                      <Typography
-                        variant="caption"
-                        className={styles.contactLabel}
-                      >
-                        Alternate
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={styles.contactValue}
-                      >
-                        {locationData.altPhoneDisplay}
-                        {locationData.secondaryPhoneDisplay
-                          ? ` · ${locationData.secondaryPhoneDisplay}`
-                          : ""}
-                      </Typography>
-                    </div>
-                  </a>
-
-                  <a
                     href={`https://wa.me/${locationData.whatsapp}?text=${encodeURIComponent(
                       "Hi CIT, I'd like guidance on the 2026 B.E. direct admission from North East.",
                     )}`}
@@ -216,54 +190,6 @@ const LocationSection = () => {
                         className={styles.contactValue}
                       >
                         Chat with admission team
-                      </Typography>
-                    </div>
-                  </a>
-
-                  <a
-                    href={`mailto:${locationData.email}`}
-                    className={styles.contactItem}
-                  >
-                    <div className={styles.contactIcon}>
-                      <Icon icon="mdi:email-outline" />
-                    </div>
-                    <div>
-                      <Typography
-                        variant="caption"
-                        className={styles.contactLabel}
-                      >
-                        Email
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={styles.contactValue}
-                      >
-                        {locationData.email}
-                      </Typography>
-                    </div>
-                  </a>
-
-                  <a
-                    href={`https://${locationData.website}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.contactItem}
-                  >
-                    <div className={styles.contactIcon}>
-                      <Icon icon="mdi:web" />
-                    </div>
-                    <div>
-                      <Typography
-                        variant="caption"
-                        className={styles.contactLabel}
-                      >
-                        Website
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={styles.contactValue}
-                      >
-                        {locationData.website}
                       </Typography>
                     </div>
                   </a>

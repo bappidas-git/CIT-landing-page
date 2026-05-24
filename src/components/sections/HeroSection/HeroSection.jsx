@@ -246,7 +246,7 @@ const HeroSection = () => {
                     openLeadDrawer("apply-now");
                   }}
                   sx={{
-                    backgroundColor: "#F0A500",
+                    backgroundColor: "#E0301E",
                     color: "#11203A",
                     fontWeight: 700,
                     fontSize: "1rem",
@@ -254,10 +254,10 @@ const HeroSection = () => {
                     borderRadius: "12px",
                     textTransform: "none",
                     fontFamily: "'Poppins', sans-serif",
-                    boxShadow: "0 4px 20px rgba(240, 165, 0, 0.45)",
+                    boxShadow: "0 4px 20px rgba(224, 48, 30, 0.45)",
                     "&:hover": {
-                      backgroundColor: "#C77F00",
-                      boxShadow: "0 6px 24px rgba(240, 165, 0, 0.6)",
+                      backgroundColor: "#B71F12",
+                      boxShadow: "0 6px 24px rgba(224, 48, 30, 0.6)",
                       transform: "translateY(-2px)",
                     },
                     transition: "all 0.3s ease",
@@ -270,7 +270,7 @@ const HeroSection = () => {
                   size="large"
                   className={styles.secondaryCta}
                   component="a"
-                  href="tel:+918867354168"
+                  href="tel:+919403891805"
                   onClick={() => {
                     trackCTAClick("hero_secondary_cta", "hero", "Call Now");
                   }}
@@ -292,7 +292,7 @@ const HeroSection = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Call +91 88673 54168
+                  Call +91 94038 91805
                 </Button>
               </motion.div>
 

@@ -125,11 +125,11 @@ const CTASection = () => {
               variant="outline"
               size="large"
               startIcon="mdi:phone-outline"
-              href="tel:+918867354168"
+              href="tel:+919403891805"
               onClick={handleCallClick}
               className={styles.secondaryBtn}
             >
-              Call +91 88673 54168
+              Call +91 94038 91805
             </Button>
           </motion.div>
 

@@ -329,23 +329,23 @@
   padding: 14px 24px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
+  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
   color: #FFFFFF;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(240, 165, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(224, 48, 30, 0.4);
   transition: all 0.2s ease;
 }
 
 .bookConsultationCta:hover {
-  background: linear-gradient(135deg, #C77F00 0%, #F0A500 100%);
-  box-shadow: 0 6px 20px rgba(240, 165, 0, 0.5);
+  background: linear-gradient(135deg, #B71F12 0%, #E0301E 100%);
+  box-shadow: 0 6px 20px rgba(224, 48, 30, 0.5);
 }
 
 .bookConsultationCta:active {
-  background: linear-gradient(135deg, #B87600 0%, #C77F00 100%);
+  background: linear-gradient(135deg, #9A1A0E 0%, #B71F12 100%);
 }
 
 .bookConsultationCta svg {

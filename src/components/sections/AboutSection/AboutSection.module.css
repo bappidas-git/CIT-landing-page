@@ -414,7 +414,7 @@
 /* ========== Focus Styles for Accessibility ========== */
 .ctaButton:focus-visible,
 .differentiatorCard:focus-visible {
-  outline: 2px solid #F0A500;
+  outline: 2px solid #E0301E;
   outline-offset: 2px;
 }
 

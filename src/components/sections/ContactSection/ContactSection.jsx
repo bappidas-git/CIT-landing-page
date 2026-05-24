@@ -89,31 +89,6 @@ const ContactSection = () => {
           variant: "whatsapp",
         },
       ],
-      secondaryLinks: [
-        {
-          display: locationData.altPhoneDisplay,
-          href: `tel:${locationData.altPhone}`,
-        },
-        {
-          display: locationData.secondaryPhoneDisplay,
-          href: `tel:${locationData.secondaryPhone}`,
-        },
-      ],
-    },
-    {
-      icon: "mdi:email-outline",
-      title: "Email Admissions",
-      content: locationData.email,
-      href: `mailto:${locationData.email}`,
-      subText: `Also: ${locationData.altEmail}`,
-      subHref: `mailto:${locationData.altEmail}`,
-    },
-    {
-      icon: "mdi:web",
-      title: "Website",
-      content: locationData.website,
-      href: `https://${locationData.website}`,
-      external: true,
     },
     {
       icon: "mdi:clock-fast",
@@ -168,13 +143,6 @@ const ContactSection = () => {
             >
               <Icon icon="mdi:whatsapp" className={styles.quickActionIcon} />
               <span>WhatsApp Admissions</span>
-            </a>
-            <a
-              href={`mailto:${locationData.email}`}
-              className={`${styles.quickActionBtn} ${styles.quickActionEmail}`}
-            >
-              <Icon icon="mdi:email-fast-outline" className={styles.quickActionIcon} />
-              <span>Email Us</span>
             </a>
           </motion.div>
 

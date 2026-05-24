@@ -344,18 +344,18 @@ const FeaturesSection = () => {
               onClick={handleApply}
               endIcon={<Icon icon="mdi:arrow-right" />}
               sx={{
-                background: "linear-gradient(135deg, #F0A500 0%, #C77F00 100%)",
+                background: "linear-gradient(135deg, #E0301E 0%, #B71F12 100%)",
                 color: "#11203A",
                 fontWeight: 700,
                 fontSize: { xs: "0.9rem", md: "1rem" },
                 padding: { xs: "12px 28px", md: "14px 36px" },
                 borderRadius: "50px",
                 textTransform: "none",
-                boxShadow: "0 8px 32px rgba(240, 165, 0, 0.3)",
+                boxShadow: "0 8px 32px rgba(224, 48, 30, 0.3)",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #C77F00 0%, #F0A500 100%)",
-                  boxShadow: "0 12px 40px rgba(240, 165, 0, 0.4)",
+                    "linear-gradient(135deg, #B71F12 0%, #E0301E 100%)",
+                  boxShadow: "0 12px 40px rgba(224, 48, 30, 0.4)",
                   transform: "translateY(-2px)",
                 },
               }}
