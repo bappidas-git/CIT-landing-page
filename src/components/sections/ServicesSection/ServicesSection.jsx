@@ -1,6 +1,6 @@
 /* ============================================
    ServicesSection Component
-   Showcases medical procedure cards
+   CIT 2026 — Courses Offered (B.E. branches)
    ============================================ */
 
 import React, { useRef, useEffect } from "react";
@@ -9,8 +9,6 @@ import {
   Container,
   Typography,
   Chip,
-  Box,
-  Button,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -66,6 +64,12 @@ const cardVariants = {
   }),
 };
 
+const badgeIconFor = (badge) => {
+  if (badge === "Most Popular") return "mdi:star";
+  if (badge === "High Demand") return "mdi:trending-up";
+  return "mdi:diamond-stone";
+};
+
 const ServicesSection = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -79,97 +83,82 @@ const ServicesSection = () => {
     return () => removeSchema("schema-services");
   }, []);
 
-  const handleBookConsultation = (serviceName) => {
-    openLeadDrawer("get-course-details", {
-      subtitle: `Book consultation for ${serviceName}`,
+  const handleApply = (course) => {
+    openLeadDrawer("apply-now", {
+      subtitle: `Apply for ${course.shortName} — ${course.name}`,
+      course: course.name,
+      course_interest: course.name,
     });
   };
 
-  const renderServiceCard = (service, index) => (
+  const renderCourseCard = (course, index) => (
     <motion.div
-      key={service.id}
+      key={course.id}
       className={styles.courseCard}
       custom={index}
       variants={isMobile ? undefined : cardVariants}
       initial={isMobile ? undefined : "hidden"}
       animate={isMobile ? undefined : isInView ? "visible" : "hidden"}
-      whileHover={{ y: -6, boxShadow: "0 12px 40px rgba(26, 82, 118, 0.15)" }}
+      whileHover={{ y: -6, boxShadow: "0 12px 40px rgba(11, 61, 145, 0.18)" }}
       transition={{ duration: 0.3 }}
     >
       {/* Badge */}
-      {service.badge && (
+      {course.badge && (
         <div
           className={`${styles.courseBadge} ${
-            service.badge === "Premium" ? styles.premiumBadge : ""
+            course.badge === "Most Popular" ? styles.popularBadge : ""
           }`}
         >
-          <Icon
-            icon={
-              service.badge === "Most Popular"
-                ? "mdi:star"
-                : "mdi:diamond-stone"
-            }
-          />
-          <span>{service.badge}</span>
+          <Icon icon={badgeIconFor(course.badge)} />
+          <span>{course.badge}</span>
         </div>
       )}
 
       {/* Icon */}
       <div className={styles.courseIconWrapper}>
-        <Icon icon={service.icon} className={styles.courseIcon} />
+        <Icon icon={course.icon} className={styles.courseIcon} />
       </div>
 
-      {/* Service Name */}
-      <Typography className={styles.courseName}>{service.name}</Typography>
+      {/* Short Name Chip */}
+      <div className={styles.shortNameChip}>{course.shortName}</div>
 
-      {/* Target & Duration */}
-      <div className={styles.courseMeta}>
-        <div className={styles.metaItem}>
-          <Icon icon="mdi:account-check" />
-          <span>{service.target}</span>
-        </div>
-        <div className={styles.metaItem}>
-          <Icon icon="mdi:clock-outline" />
-          <span>{service.duration}</span>
-        </div>
+      {/* Course Name */}
+      <Typography className={styles.courseName}>{course.name}</Typography>
+
+      {/* Ideal for */}
+      <div className={styles.idealFor}>
+        <Icon icon="mdi:bullseye-arrow" />
+        <span>
+          <strong>Ideal for:</strong> {course.target}
+        </span>
       </div>
-
-      {/* Description */}
-      <Typography className={styles.courseDescription}>
-        {service.description}
-      </Typography>
 
       {/* Features */}
-      <div className={styles.courseFeatures}>
-        {service.features.map((feature, idx) => (
-          <div key={idx} className={styles.courseFeatureItem}>
+      <ul className={styles.courseFeatures}>
+        {course.features.slice(0, 4).map((feature, idx) => (
+          <li key={idx} className={styles.courseFeatureItem}>
             <Icon icon="mdi:check-circle" />
             <span>{feature}</span>
-          </div>
+          </li>
         ))}
-      </div>
-
-      {/* Frequency */}
-      <div className={styles.courseFrequency}>
-        <Icon icon="mdi:calendar-week" />
-        <span>{service.frequency}</span>
-      </div>
+      </ul>
 
       {/* CTA Button */}
       <motion.button
         className={styles.courseCtaBtn}
-        onClick={() => handleBookConsultation(service.name)}
+        onClick={() => handleApply(course)}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
+        aria-label={`Apply or enquire for ${course.name}`}
       >
-        <span>Book Consultation</span>
+        <span>Apply / Enquire</span>
         <Icon icon="mdi:arrow-right" />
       </motion.button>
     </motion.div>
   );
 
   return (
-    <section className={styles.coursesSection} id="services" ref={ref}>
+    <section className={styles.coursesSection} id="courses" ref={ref}>
       {/* Background */}
       <div className={styles.bgOverlay} />
       <div className={styles.bgPattern} />
@@ -183,16 +172,16 @@ const ServicesSection = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className={styles.sectionHeader}>
             <Chip
-              label="Our Services"
+              label="Courses Offered"
               sx={{
-                backgroundColor: "rgba(20, 143, 119, 0.12)",
-                color: "#148F77",
+                backgroundColor: "rgba(200, 16, 46, 0.10)",
+                color: "#C8102E",
                 fontWeight: 700,
                 fontSize: "0.7rem",
                 letterSpacing: "0.1em",
                 height: "28px",
                 borderRadius: "20px",
-                border: "1px solid rgba(20, 143, 119, 0.3)",
+                border: "1px solid rgba(200, 16, 46, 0.25)",
               }}
             />
             <Typography
@@ -202,31 +191,33 @@ const ServicesSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 700,
                 fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2.25rem" },
-                color: "#1A5276",
+                color: "#0B3D91",
                 marginTop: "0.75rem",
                 textAlign: "center",
                 lineHeight: 1.2,
               }}
             >
-              Advanced Hair &{" "}
-              <span className={styles.accentText}>Cosmetic Procedures</span>
+              Choose Your{" "}
+              <span className={styles.accentText}>B.E. Engineering Branch</span>{" "}
+              — 2026 Intake
             </Typography>
             <Typography
               className={styles.sectionSubtitle}
               sx={{
                 fontSize: { xs: "0.875rem", md: "1rem" },
-                color: "#6B7280",
+                color: "#475569",
                 textAlign: "center",
                 marginTop: "0.5rem",
-                maxWidth: "480px",
+                maxWidth: "560px",
               }}
             >
-              Treatments tailored to your needs, performed by experienced
-              specialists using the latest technology
+              Seven VTU-affiliated B.E. programmes with hands-on labs, strong
+              placement record, and end-to-end admission guidance for
+              North-East students.
             </Typography>
           </motion.div>
 
-          {/* Service Cards */}
+          {/* Course Cards */}
           <motion.div variants={itemVariants}>
             {isMobile ? (
               <Swiper
@@ -238,16 +229,16 @@ const ServicesSection = () => {
                 autoplay={{ delay: 4000, disableOnInteraction: true }}
                 className={styles.swiperContainer}
               >
-                {servicesData.map((service, index) => (
-                  <SwiperSlide key={service.id}>
-                    {renderServiceCard(service, index)}
+                {servicesData.map((course, index) => (
+                  <SwiperSlide key={course.id}>
+                    {renderCourseCard(course, index)}
                   </SwiperSlide>
                 ))}
               </Swiper>
             ) : (
               <div className={styles.coursesGrid}>
-                {servicesData.map((service, index) =>
-                  renderServiceCard(service, index),
+                {servicesData.map((course, index) =>
+                  renderCourseCard(course, index),
                 )}
               </div>
             )}
@@ -259,124 +250,23 @@ const ServicesSection = () => {
               <Icon icon="mdi:headset" className={styles.ctaIcon} />
               <div className={styles.ctaText}>
                 <span className={styles.ctaTitle}>
-                  Not sure which procedure is right for you?
+                  Not sure which branch is right for you?
                 </span>
                 <span className={styles.ctaSubtitle}>
-                  Our specialists will help you choose the best treatment
+                  Talk to our admission team — we'll help you pick the right
+                  B.E. programme.
                 </span>
               </div>
             </div>
             <motion.button
               className={styles.ctaBtn}
-              onClick={() => openLeadDrawer("request-callback")}
+              onClick={() => openLeadDrawer("get-details")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span>Book Consultation →</span>
+              <span>Talk to Us</span>
               <Icon icon="mdi:arrow-right" />
             </motion.button>
-          </motion.div>
-
-          {/* === Doctor CTA Banner === */}
-          <motion.div
-            className={styles.foundationBanner}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <Box
-              sx={{
-                background: "linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)",
-                borderRadius: "16px",
-                padding: { xs: "24px 20px", md: "32px 40px" },
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: { xs: 2, md: 3 },
-                border: "1px solid #FFE0B2",
-                mt: 3,
-              }}
-            >
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}
-              >
-                <Box
-                  component="img"
-                  src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1775886740/doc-small-photo_rasnle.png"
-                  alt="Lead Surgeon"
-                  sx={{
-                    width: { xs: 56, md: 64 },
-                    height: { xs: 56, md: 64 },
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    flexShrink: 0,
-                    border: "3px solid #148F77",
-                    boxShadow: "0 4px 12px rgba(20, 143, 119, 0.25)",
-                  }}
-                />
-                <Box>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 700,
-                      color: "#1B2631",
-                      fontSize: { xs: "1rem", md: "1.15rem" },
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
-                    A Message from Our Lead Surgeon
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "#546E7A",
-                      fontSize: { xs: "0.85rem", md: "0.9rem" },
-                      mt: 0.5,
-                    }}
-                  >
-                    Hair restoration and cosmetic procedures require careful
-                    planning and a thorough understanding of individual patient
-                    needs. At MONJOVEN, each procedure is approached with
-                    clinical evaluation, appropriate technique selection, and a
-                    focus on long-term outcomes.
-                  </Typography>
-                </Box>
-              </Box>
-              <Button
-                onClick={() => {
-                  const aboutSection = document.getElementById("about");
-                  if (aboutSection) {
-                    const headerOffset = 80;
-                    const elementPosition =
-                      aboutSection.getBoundingClientRect().top;
-                    const offsetPosition =
-                      elementPosition + window.pageYOffset - headerOffset;
-                    window.scrollTo({
-                      top: offsetPosition,
-                      behavior: "smooth",
-                    });
-                  }
-                }}
-                sx={{
-                  background: "linear-gradient(135deg, #148F77, #1ABC9C)",
-                  color: "#FFF",
-                  fontWeight: 600,
-                  borderRadius: "12px",
-                  padding: { xs: "10px 24px", md: "12px 32px" },
-                  textTransform: "none",
-                  fontSize: "0.95rem",
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 4px 14px rgba(20, 143, 119, 0.3)",
-                  "&:hover": {
-                    background: "linear-gradient(135deg, #1FA89B, #148F77)",
-                    boxShadow: "0 6px 20px rgba(20, 143, 119, 0.4)",
-                  },
-                }}
-              >
-                Learn More About Us →
-              </Button>
-            </Box>
           </motion.div>
         </motion.div>
       </Container>
