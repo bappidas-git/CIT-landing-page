@@ -16,41 +16,40 @@ import { seoConfig } from "../../config/seo";
 // Trust badges
 const trustBadges = [
   {
-    icon: "mdi:calendar-check",
-    label: "25+ Yrs Plastic Surgery | 15+ Yrs Hair Transplant",
-    color: "#148F77",
+    icon: "mdi:shield-check",
+    label: "NAAC Accredited",
+    color: "#0B3D91",
   },
   {
-    icon: "mdi:account-heart",
-    label: "5,000+ Happy Patients",
-    color: "#4CAF50",
+    icon: "mdi:school",
+    label: "AICTE Approved · VTU Affiliated",
+    color: "#1E8E5A",
   },
   {
-    icon: "mdi:shield-lock",
-    label: "100% Confidential",
-    color: "#2196F3",
+    icon: "mdi:headset",
+    label: "100% Free Admission Guidance",
+    color: "#C8102E",
   },
 ];
 
 // Contact details
 const contactInfo = {
-  phone: "+91 9181956562",
-  whatsapp: "+91 9181956562",
-  email: "dr@monjoven.com",
-  clinicHours: "Mon - Sat: 9:00 AM - 6:00 PM",
+  phone: "+91 88673 54168",
+  whatsapp: "+91 88673 54168",
+  email: "admin@cittumkur.org",
+  officeHours: "Mon - Sat: 9:00 AM - 5:00 PM",
 };
 
 // Next steps after form submission
 const nextSteps = [
-  "Our team will call you to confirm your preferred date and time",
-  "You'll receive a pre-consultation questionnaire via WhatsApp/Email",
-  "Dr. Neog will personally evaluate your case during the consultation",
-  "You'll receive a customized treatment plan and transparent pricing",
+  "Keep your phone reachable — our CIT admission team will call you shortly on the number you shared.",
+  "Have your Class 10 & 12 marksheets handy so we can map you to the right B.E. branch quickly.",
+  "Feel free to ask about courses, hostel, fees, scholarships and travel from the North East.",
 ];
 
 const ThankYou = () => {
   const navigate = useNavigate();
-  const [, setUserName] = useState("");
+  const [userName, setUserName] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   // Check if user is authorized to view this page
@@ -65,7 +64,7 @@ const ThankYou = () => {
     }
 
     setIsAuthorized(true);
-    setUserName(name || "there");
+    setUserName(name || "");
 
     // Set noindex meta and update page title for Thank You page
     updatePageSEO({
@@ -126,7 +125,7 @@ const ThankYou = () => {
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        colors: ["#148F77", "#1ABC9C", "#FFD700", "#FFA500"],
+        colors: ["#0B3D91", "#1E5AB8", "#F4A300", "#C8102E"],
       });
 
       // Right side confetti
@@ -134,7 +133,7 @@ const ThankYou = () => {
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        colors: ["#148F77", "#1ABC9C", "#FFD700", "#FFA500"],
+        colors: ["#0B3D91", "#1E5AB8", "#F4A300", "#C8102E"],
       });
     }, 250);
 
@@ -143,7 +142,7 @@ const ThankYou = () => {
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ["#148F77", "#1ABC9C", "#FFD700", "#4CAF50", "#2196F3"],
+      colors: ["#0B3D91", "#1E5AB8", "#F4A300", "#C8102E", "#1E8E5A"],
     });
   }, []);
 
@@ -195,6 +194,10 @@ const ThankYou = () => {
     return null; // Or a loading spinner
   }
 
+  const greeting = userName
+    ? `Hi ${userName.split(" ")[0]}, our CIT admission team will call you shortly to guide you through the direct B.E. admission process for 2026.`
+    : "Our CIT admission team will call you shortly to guide you through the direct B.E. admission process for 2026.";
+
   return (
     <div className={styles.thankYouPage}>
       {/* Background Elements */}
@@ -224,13 +227,13 @@ const ThankYou = () => {
             className={styles.thankYouMessage}
           >
             <Typography variant="h2" className={styles.title}>
-              Thank You for Choosing Monjoven!
+              Thank You! Your 2026 Admission Enquiry is Received.
             </Typography>
             <Typography
               className={styles.subtitle}
               sx={{ color: "#FFFFFFB3 !important" }}
             >
-              Your consultation request has been received successfully
+              {greeting}
             </Typography>
           </motion.div>
 
@@ -247,8 +250,8 @@ const ThankYou = () => {
                 className={styles.noticeDesc}
                 sx={{ color: "#FFFFFFA6 !important" }}
               >
-                Dr. Porag Neog's team will contact you within 24 hours to
-                schedule your personalized consultation. Here's what to expect:
+                A quick checklist so we can make your 2026 B.E. admission
+                conversation smooth and useful:
               </Typography>
             </div>
           </motion.div>
@@ -305,11 +308,11 @@ const ThankYou = () => {
           <motion.div variants={itemVariants} className={styles.contactCard}>
             <div className={styles.contactHeader}>
               <div className={styles.companyBadge}>
-                <Icon icon="mdi:headset" />
-                <span>Support</span>
+                <Icon icon="mdi:phone-in-talk" />
+                <span>CIT Admission Desk</span>
               </div>
               <Typography variant="h4" className={styles.companyName}>
-                Need Immediate Assistance?
+                Or call us now if it's urgent
               </Typography>
             </div>
 
@@ -328,7 +331,7 @@ const ThankYou = () => {
                       Call Us
                     </span>
                     <a
-                      href="tel:+919181956562"
+                      href="tel:+918867354168"
                       className={styles.contactValue}
                     >
                       {contactInfo.phone}
@@ -351,7 +354,7 @@ const ThankYou = () => {
                       WhatsApp
                     </span>
                     <a
-                      href="https://wa.me/919181956562?text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant."
+                      href="https://wa.me/918867354168?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.contactValue}
@@ -376,7 +379,7 @@ const ThankYou = () => {
                       Email Us
                     </span>
                     <a
-                      href="mailto:dr@monjoven.com"
+                      href="mailto:admin@cittumkur.org"
                       className={styles.contactValue}
                     >
                       {contactInfo.email}
@@ -385,7 +388,7 @@ const ThankYou = () => {
                 </div>
               </Grid>
 
-              {/* Clinic Hours */}
+              {/* Office Hours */}
               <Grid item xs={12} sm={6}>
                 <div className={styles.contactItem}>
                   <div className={styles.contactIconWrapper}>
@@ -396,10 +399,10 @@ const ThankYou = () => {
                       className={styles.contactLabel}
                       style={{ color: "#FFFFFF80" }}
                     >
-                      Clinic Hours
+                      Office Hours
                     </span>
                     <span className={styles.contactValue}>
-                      {contactInfo.clinicHours}
+                      {contactInfo.officeHours}
                     </span>
                   </div>
                 </div>
@@ -422,7 +425,7 @@ const ThankYou = () => {
               <span>Back to Home</span>
             </motion.a>
             <motion.a
-              href="https://wa.me/919181956562?text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant."
+              href="https://wa.me/918867354168?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
               target="_blank"
               rel="noopener noreferrer"
               className={styles.whatsappBtn}
