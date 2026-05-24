@@ -24,10 +24,10 @@ import styles from "./HeroSection.module.css";
 // Hero images with fallbacks
 const HERO_IMAGES = {
   desktop: [
-    "https://res.cloudinary.com/dn9gyaiik/image/upload/v1775884050/Hero_Image_Desktop_V_pcpj89.png",
+    "https://placehold.co/1600x900/0B3D91/FFFFFF?text=CIT+Campus+Hero+Desktop",
   ],
   mobile: [
-    "https://res.cloudinary.com/dn9gyaiik/image/upload/v1775884050/Hero_Image_Mobile_V_k4r8vx.png",
+    "https://placehold.co/800x1000/0B3D91/FFFFFF?text=CIT+Campus+Hero+Mobile",
   ],
 };
 
@@ -81,10 +81,10 @@ const buttonVariants = {
 
 // Trust indicators data
 const trustIndicators = [
-  { icon: "mdi:calendar-check-outline", text: "25+ Yrs Plastic Surgery | 15+ Yrs Hair Transplant" },
-  { icon: "mdi:check-decagram-outline", text: "5000+ Successful Procedures" },
-  { icon: "mdi:microscope", text: "Micro-FUE Technology" },
-  { icon: "mdi:laser-pointer", text: "Free Post operative" },
+  { icon: "mdi:school-outline", text: "25 Years of Excellence" },
+  { icon: "mdi:briefcase-check-outline", text: "85%+ Placements" },
+  { icon: "mdi:office-building-outline", text: "90+ Recruiters" },
+  { icon: "mdi:certificate-outline", text: "NAAC • AICTE • VTU" },
 ];
 
 const HeroSection = () => {
@@ -165,10 +165,10 @@ const HeroSection = () => {
               <motion.div variants={badgeVariants}>
                 <Chip
                   icon={<span className={styles.pulseDot} />}
-                  label="Northeast India's Premier Hair Transplant Clinic"
+                  label="Direct B.E. Admission 2026 • Limited Seats"
                   className={styles.launchBadge}
                   sx={{
-                    backgroundColor: "#148F77",
+                    backgroundColor: "#0B3D91",
                     color: "#FFFFFF",
                     fontWeight: 600,
                     fontSize: "0.875rem",
@@ -200,10 +200,10 @@ const HeroSection = () => {
                     marginTop: "1.5rem",
                   }}
                 >
-                  World-Class Hair Transplant —
+                  Your Engineering Future Starts at CIT —
                   <span className={styles.orangeText}>
                     {" "}
-                    Natural Hair Back in 6–9 Months
+                    Direct B.E. Admission for 2026
                   </span>
                 </Typography>
               </motion.div>
@@ -222,10 +222,9 @@ const HeroSection = () => {
                     lineHeight: 1.6,
                   }}
                 >
-                  Led by Dr. Porag Neog (MBBS, MS) with 25+ years of experience
-                  in plastic surgery and 15+ years in hair transplant. We use the
-                  latest Micro-FUE technology to deliver natural, permanent
-                  results at par with international standards.
+                  NAAC-accredited, AICTE-approved VTU degree in Tumakuru,
+                  Karnataka with 85%+ placements — guided direct admission for
+                  students from North East India.
                 </Typography>
               </motion.div>
 
@@ -242,36 +241,36 @@ const HeroSection = () => {
                     trackCTAClick(
                       "hero_primary_cta",
                       "hero",
-                      "Book Consultation",
+                      "Apply Now",
                     );
                     openLeadDrawer("apply-now");
                   }}
                   sx={{
-                    backgroundColor: "#FF6B35",
-                    color: "#FFFFFF",
+                    backgroundColor: "#F4A300",
+                    color: "#11203A",
                     fontWeight: 700,
                     fontSize: "1rem",
                     padding: "0.875rem 2rem",
                     borderRadius: "12px",
                     textTransform: "none",
                     fontFamily: "'Poppins', sans-serif",
-                    boxShadow: "0 4px 20px rgba(255, 107, 53, 0.4)",
+                    boxShadow: "0 4px 20px rgba(244, 163, 0, 0.45)",
                     "&:hover": {
-                      backgroundColor: "#E85A20",
-                      boxShadow: "0 6px 24px rgba(255, 107, 53, 0.55)",
+                      backgroundColor: "#D98C00",
+                      boxShadow: "0 6px 24px rgba(244, 163, 0, 0.6)",
                       transform: "translateY(-2px)",
                     },
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Book Consultation →
+                  Apply Now →
                 </Button>
                 <Button
                   variant="outlined"
                   size="large"
                   className={styles.secondaryCta}
                   component="a"
-                  href="tel:+919181956562"
+                  href="tel:+918867354168"
                   onClick={() => {
                     trackCTAClick("hero_secondary_cta", "hero", "Call Now");
                   }}
@@ -293,7 +292,7 @@ const HeroSection = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Call Now: +91 9181956562
+                  Call +91 88673 54168
                 </Button>
               </motion.div>
 
@@ -333,7 +332,7 @@ const HeroSection = () => {
                         fontSize: "1.25rem",
                       }}
                     >
-                      Book Your Consultation
+                      Apply for Direct B.E. Admission 2026
                     </Typography>
                     <Typography
                       variant="body2"
@@ -344,7 +343,7 @@ const HeroSection = () => {
                         fontSize: "0.875rem",
                       }}
                     >
-                      Get expert advice from Dr. Porag Neog
+                      Free guidance from CIT's admission team
                     </Typography>
                   </div>
                   <div className={styles.formBody}>
@@ -357,7 +356,7 @@ const HeroSection = () => {
                       showTrustBadges={true}
                       showConsent={true}
                       showPhoneButton={false}
-                      submitButtonText="Book Consultation"
+                      submitButtonText="Apply for 2026 Admission"
                       formId="hero-form"
                     />
                   </div>
