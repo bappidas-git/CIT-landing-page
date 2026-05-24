@@ -8,44 +8,77 @@ export const seoConfig = {
   // =========================================
   // Site-level Settings
   // =========================================
-  siteName: "Monjoven",
-  siteUrl: "https://www.monjoven.com",
-  defaultTitle: "Monjoven | Hair Transplant & Cosmetic Surgery in Guwahati",
-  titleTemplate: "%s | Monjoven",
+  siteName: "CIT Admissions",
+  siteUrl: "https://www.cittumkur.org",
+  defaultTitle:
+    "CIT Tumakuru | Direct B.E. Engineering Admission 2026 — North East India",
+  titleTemplate: "%s | CIT Tumakuru",
   defaultDescription:
-    "Monjoven is the first dedicated hair transplant clinic in Northeast India, led by Dr. Porag Neog with 25+ years of experience in plastic surgery and 15+ years in hair transplant. Expert FUE & FUT hair transplant, cosmetic surgery, and aesthetic treatments in Guwahati, Assam. Consult Dr. Porag Neog today.",
-  defaultImage: "https://www.monjoven.com/og-image.jpg",
+    "Direct B.E. Engineering Admission 2026 at Channabasaveshwara Institute of Technology (CIT), Tumakuru — NAAC, AICTE, VTU-affiliated. Guided pathway, hostel & strong placements for North East students.",
+  defaultImage:
+    "https://placehold.co/1200x630/0B3D91/FFFFFF?text=CIT+Admissions+2026",
   locale: "en_IN",
   language: "en",
 
   // =========================================
-  // Organization Details
+  // Organization Details (Educational)
   // =========================================
   organization: {
-    name: "Monjoven Hair Transplant & Cosmetic Surgery",
-    alternateName: "Monjoven",
-    url: "https://www.monjoven.com",
-    logo: "https://www.monjoven.com/assets/img/logo.png",
-    email: "dr@monjoven.com",
-    phone: "+91 9181956562",
+    name: "Channabasaveshwara Institute of Technology",
+    alternateName: "CIT Tumakuru",
+    url: "https://www.cittumkur.org",
+    logo: "https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Logo",
+    email: "admin@cittumkur.org",
+    phone: "+91 8867354168",
     description:
-      "Monjoven is Northeast India's first dedicated hair transplant clinic, offering advanced FUE & FUT hair restoration, cosmetic surgery, and aesthetic treatments in Guwahati, Assam. Founded by Dr. Porag Neog with over 25 years of experience in plastic surgery and 15+ years in hair transplant.",
+      "Channabasaveshwara Institute of Technology (CIT), Tumakuru is a NAAC-accredited, AICTE-approved engineering college affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements and guided direct B.E. admissions for the 2026 intake.",
     address: {
-      streetAddress: "VIP Road, Borbari, Six Mile, Near Pratiksha Hospital",
-      addressLocality: "Guwahati",
-      addressRegion: "Assam",
-      postalCode: "",
+      streetAddress: "NH 206, B.H. Road, Gubbi",
+      addressLocality: "Tumakuru",
+      addressRegion: "Karnataka",
+      postalCode: "572216",
       addressCountry: "IN",
     },
-    sameAs: [
-      "https://www.facebook.com/MONJOVEN/",
-      "https://www.instagram.com/monjoven_",
+    sameAs: [],
+    foundingDate: "2001",
+    // 7 B.E. programs offered (used for hasOfferingCatalog)
+    courses: [
+      {
+        name: "B.E. — Artificial Intelligence & Data Science",
+        description:
+          "Four-year B.E. program in Artificial Intelligence & Data Science, affiliated to VTU.",
+      },
+      {
+        name: "B.E. — Computer Science & Engineering",
+        description:
+          "Four-year B.E. program in Computer Science & Engineering, affiliated to VTU.",
+      },
+      {
+        name: "B.E. — Information Science & Engineering",
+        description:
+          "Four-year B.E. program in Information Science & Engineering, affiliated to VTU.",
+      },
+      {
+        name: "B.E. — Electronics & Communication Engineering",
+        description:
+          "Four-year B.E. program in Electronics & Communication Engineering, affiliated to VTU.",
+      },
+      {
+        name: "B.E. — Electrical & Electronics Engineering",
+        description:
+          "Four-year B.E. program in Electrical & Electronics Engineering, affiliated to VTU.",
+      },
+      {
+        name: "B.E. — Mechanical Engineering",
+        description:
+          "Four-year B.E. program in Mechanical Engineering, affiliated to VTU.",
+      },
+      {
+        name: "B.E. — Civil Engineering",
+        description:
+          "Four-year B.E. program in Civil Engineering, affiliated to VTU.",
+      },
     ],
-    founder: {
-      name: "Dr. Porag Neog",
-      jobTitle: "Cosmetic Surgeon & Founder",
-    },
-    foundingDate: "2012",
   },
 
   // =========================================
@@ -53,85 +86,77 @@ export const seoConfig = {
   // =========================================
   pages: {
     home: {
-      title: "Monjoven | Hair Transplant & Cosmetic Surgery in Guwahati, Assam",
+      title:
+        "CIT Tumakuru | Direct B.E. Engineering Admission 2026 — North East India",
       description:
-        "Northeast India's first dedicated hair transplant clinic. Led by Dr. Porag Neog (MBBS, MS) with 25+ years of experience in plastic surgery and 15+ years in hair transplant. Advanced Micro-FUE technology, free post operative care. Book your consultation today.",
+        "Apply for Direct B.E. Engineering Admission 2026 at CIT Tumakuru. NAAC-accredited, AICTE-approved, VTU-affiliated. Hostel, scholarships & 85%+ placements. Guidance for NE students.",
       keywords:
-        "hair transplant guwahati, fue hair transplant assam, hair transplant northeast india, cosmetic surgery guwahati, dr porag neog, monjoven, beard transplant, rhinoplasty assam, prp therapy guwahati",
+        "cit tumakuru, direct be admission 2026, engineering admission karnataka, b.e. admission northeast india, vtu engineering college, naac engineering college, cit channabasaveshwara, engineering college tumakuru, hostel engineering karnataka, direct admission b.e.",
     },
     thankYou: {
-      title: "Thank You | Monjoven Hair Transplant & Cosmetic Surgery",
+      title: "Thank You | CIT Tumakuru B.E. Admissions 2026",
       description:
-        "Thank you for your consultation request. Dr. Neog's team will contact you within 24 hours.",
+        "Thanks for your interest in CIT Tumakuru's Direct B.E. Admissions 2026. Our admission team will call you shortly to guide you through the process.",
       robots: "noindex, nofollow",
     },
     admin: {
-      title: "Admin Panel | Monjoven",
+      title: "Admin Panel | CIT Admissions",
       robots: "noindex, nofollow",
     },
   },
 
   // =========================================
-  // FAQ Schema Data
+  // FAQ Schema Data (Admissions)
   // =========================================
   faqs: [
     {
-      question: "What is a hair transplant and how does it work?",
+      question:
+        "Who is eligible for direct B.E. admission at CIT Tumakuru for 2026?",
       answer:
-        "A hair transplant is a surgical procedure that moves hair follicles from a donor area (usually the back of the head) to balding or thinning areas. At Monjoven, we use both FUE (Follicular Unit Extraction) and FUT (Follicular Unit Transplantation) methods. FUE uses micro punches (0.6-1.25mm) to extract individual follicles, while FUT involves removing a strip for graft separation. Both methods produce permanent, natural-looking results.",
+        "Students who have passed 10+2 (Class 12) with Physics and Mathematics as compulsory subjects, plus one of Chemistry, Biology, Computer Science, Biotechnology or Electronics, are eligible to apply for Direct B.E. admission for the 2026 intake. North East students can apply through the guided admission pathway — contact our admission team for branch-specific eligibility.",
     },
     {
-      question: "What is the difference between FUE and FUT hair transplant?",
+      question: "How do I apply for direct B.E. admission at CIT?",
       answer:
-        "FUE (Follicular Unit Extraction) extracts individual follicles using tiny punches, leaving minimal scarring with faster recovery. FUT (Follicular Unit Transplantation) removes a strip of scalp for graft harvesting, allowing more grafts in a single session. Dr. Porag Neog at Monjoven recommends the best method based on your hair loss pattern, donor area, and desired results.",
+        "Submit the enquiry form on this page with your name, mobile, preferred B.E. branch and state. Our admission team will call you, explain the documents needed, share the application form and guide you end-to-end — no confusing counselling trips required.",
     },
     {
-      question: "How long does a hair transplant procedure take?",
+      question: "Which B.E. courses are offered at CIT Tumakuru?",
       answer:
-        "A typical hair transplant at Monjoven takes 6-8 hours, performed in a single session under local anesthesia. The duration depends on the number of grafts needed. You remain comfortable throughout with our luxury clinic amenities including healthy & hygienic meals and snacks.",
+        "CIT offers seven B.E. branches: Artificial Intelligence & Data Science, Computer Science & Engineering, Information Science & Engineering, Electronics & Communication Engineering, Electrical & Electronics Engineering, Mechanical Engineering and Civil Engineering — all affiliated to VTU, Belagavi.",
     },
     {
-      question: "Is the hair transplant procedure painful?",
+      question: "What about fees and scholarships?",
       answer:
-        "The procedure is performed under local anesthesia, so you feel minimal discomfort. Most patients report the experience as painless. After the procedure, any mild soreness is easily managed with prescribed medication. Dr. Neog ensures patient comfort throughout the process.",
+        "Fee structure varies by B.E. branch and is set as per VTU/AICTE norms. Merit-based fee assistance may be available for eligible students. Please contact our admission team for the latest 2026 fee details and scholarship guidance.",
     },
     {
-      question: "What is the recovery time after a hair transplant?",
+      question: "Is hostel accommodation available for North East students?",
       answer:
-        "Most patients return to normal activities within 2-3 days. FUE has faster recovery than FUT as there are no sutures. Monjoven provides free 2-week follow-up care and 4 months of complimentary laser therapy to accelerate healing and hair growth.",
+        "Yes. CIT offers safe, supervised hostel and mess facilities for outstation students, including those from North East India. The hostel is on campus with full boarding, study spaces and round-the-clock security.",
     },
     {
-      question: "When will I see results after my hair transplant?",
+      question: "How strong are CIT's placements?",
       answer:
-        "Initial growth begins at 3-4 months, with significant improvement visible at 6-8 months. Full results are typically seen at 12-18 months. The transplanted hair is permanent and grows naturally for a lifetime.",
+        "Over 90+ reputed companies visit CIT every year with 85%+ overall placement for eligible students, sustained over the last 8 years. Recruiters include Accenture, Infosys, Deloitte, HCLTech, TCS, Tech Mahindra, Wipro and more. Highest CTC is 15 LPA with a median of 5 LPA.",
     },
     {
-      question: "How much does a hair transplant cost at Monjoven?",
+      question: "Is CIT recognised and accredited?",
       answer:
-        "The cost depends on the number of grafts required, technique used (FUE or FUT), and the extent of hair loss. We offer transparent pricing with no hidden costs. Book a consultation with Dr. Porag Neog for a personalized assessment and detailed cost estimate.",
+        "Yes. CIT is NAAC accredited, ISO 9001:2015 certified, approved by AICTE, New Delhi, and affiliated to Visvesvaraya Technological University (VTU), Belagavi. CET Code: E101 · COMED-K Code: E035.",
     },
     {
-      question: "Who is a good candidate for hair transplant?",
+      question: "What is the last date to apply for 2026 B.E. admission?",
       answer:
-        "Good candidates include individuals with male/female pattern baldness, adequate donor hair, and realistic expectations. Age, hair type, and medical history are considered. Dr. Neog evaluates each case personally to determine the best treatment approach.",
-    },
-    {
-      question: "Does Monjoven offer non-surgical hair loss treatments?",
-      answer:
-        "Yes, Monjoven offers PRP (Platelet-Rich Plasma) therapy and laser therapy as non-surgical options for hair loss. These can be standalone treatments or complement surgical procedures for enhanced results.",
-    },
-    {
-      question: "Why should I choose Monjoven for my hair transplant?",
-      answer:
-        "Monjoven is Northeast India's first dedicated hair transplant clinic, led by Dr. Porag Neog (MBBS, MS) with 25+ years of experience in plastic surgery and 15+ years in hair transplant. We use the smallest FUE punch technology, offer free post-operative laser therapy, 24/7 support, and have served patients from 10+ countries with results at par with international standards.",
+        "Seats for the 2026 B.E. intake are limited and filled on a first-come, first-served basis. We recommend applying early. For the exact closing date, please contact our admission team.",
     },
   ],
 
   // =========================================
-  // LocalBusiness Schema Settings
+  // CollegeOrUniversity Schema Settings
   // =========================================
   localBusiness: {
-    type: "MedicalBusiness",
+    type: "CollegeOrUniversity",
     priceRange: "$$",
     openingHours: {
       days: [
@@ -143,37 +168,13 @@ export const seoConfig = {
         "Saturday",
       ],
       opens: "09:00",
-      closes: "18:00",
+      closes: "17:00",
     },
     geo: {
-      latitude: "26.1445",
-      longitude: "91.7862",
+      latitude: "13.3133",
+      longitude: "76.9971",
     },
-    medicalSpecialty: "Cosmetic Surgery, Hair Transplant",
-    isAcceptingNewPatients: true,
-    hasMap: "https://maps.google.com/?cid=monjoven-guwahati",
-    availableService: [
-      {
-        name: "FUE Hair Transplant",
-        description: "Follicular Unit Extraction hair restoration",
-      },
-      {
-        name: "FUT Hair Transplant",
-        description: "Follicular Unit Transplantation hair restoration",
-      },
-      {
-        name: "Beard Transplant",
-        description: "Facial hair restoration surgery",
-      },
-      {
-        name: "PRP Therapy",
-        description: "Platelet-Rich Plasma therapy for hair loss",
-      },
-      { name: "Rhinoplasty", description: "Cosmetic nose surgery" },
-      {
-        name: "Cosmetic Surgery",
-        description: "Aesthetic and cosmetic surgical procedures",
-      },
-    ],
+    hasMap:
+      "https://www.google.com/maps/search/?api=1&query=Channabasaveshwara+Institute+of+Technology+Tumakuru",
   },
 };
