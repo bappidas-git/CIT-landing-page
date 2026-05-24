@@ -188,6 +188,14 @@ const Header = ({ forceCloseMenu = false }) => {
                   width: "auto",
                 }}
               />
+              {!isMobile && (
+                <span
+                  className={styles.accreditationStrip}
+                  aria-label="Accreditations: NAAC, AICTE, VTU"
+                >
+                  NAAC • AICTE • VTU
+                </span>
+              )}
             </div>
           </a>
         </motion.div>
