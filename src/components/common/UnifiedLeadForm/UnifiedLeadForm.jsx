@@ -6,7 +6,7 @@
    - Consent text
    - Redirect to Thank You page
    - Customizable title, subtitle, and phone CTA
-   Monjoven Hair Transplant & Cosmetic Surgery
+   CIT — Direct B.E. Engineering Admissions 2026
    ============================================ */
 
 import React, { useState, useCallback, useRef } from "react";
@@ -42,17 +42,30 @@ import {
 } from "../../../utils/validators";
 import styles from "./UnifiedLeadForm.module.css";
 
-// Service interest options for medical consultations
-const SERVICE_OPTIONS = [
-  "Hair Transplant",
-  "Beard Transplant",
-  "Eyebrow Transplant",
-  "Rhinoplasty",
-  "Liposuction",
-  "Gynecomastia",
-  "PRP Therapy",
-  "Laser Therapy",
-  "Hairfall Consultation",
+// Course options for CIT B.E. (Engineering) admissions 2026.
+// NOTE: stored under `service_interest` in form state / webhook payload to
+// preserve the existing admin + webhook plumbing — the value is the course.
+const COURSE_OPTIONS = [
+  "B.E. — Artificial Intelligence & Data Science",
+  "B.E. — Computer Science & Engineering",
+  "B.E. — Information Science & Engineering",
+  "B.E. — Electronics & Communication Engineering",
+  "B.E. — Electrical & Electronics Engineering",
+  "B.E. — Mechanical Engineering",
+  "B.E. — Civil Engineering",
+  "Not Sure — Need Guidance",
+];
+
+// North-East India state options (the campaign's target geography).
+const STATE_OPTIONS = [
+  "Assam",
+  "Arunachal Pradesh",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Tripura",
+  "Sikkim",
   "Other",
 ];
 
@@ -62,6 +75,7 @@ const initialFormState = {
   mobile: "",
   email: "",
   service_interest: "",
+  state: "",
   message: "",
 };
 
@@ -71,6 +85,7 @@ const initialErrorState = {
   mobile: "",
   email: "",
   service_interest: "",
+  state: "",
   message: "",
 };
 
@@ -83,17 +98,18 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         Introduction
       </h3>
       <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#374151" }}>
-        Monjoven Hair Transplant & Cosmetic Surgery ("we," "our," or "us")
-        respects your privacy and is committed to protecting your personal
-        and medical data. This Privacy Policy explains how we collect, use,
-        disclose, and safeguard your information when you visit our website
-        or engage with our services.
+        Channabasaveshwara Institute of Technology (CIT), Tumakuru, together
+        with Assam Digital, the marketing partner running this 2026 B.E.
+        admissions campaign ("we," "our," or "us"), respects your privacy and is
+        committed to protecting the information you share with us. This Privacy
+        Policy explains how we collect, use, and safeguard your information
+        when you submit an admission enquiry through this landing page.
       </p>
     </section>
 
@@ -103,7 +119,7 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         Information We Collect
@@ -116,7 +132,7 @@ const PrivacyPolicyContent = () => (
           marginBottom: "8px",
         }}
       >
-        We may collect the following types of information:
+        Through the enquiry form on this page we collect:
       </p>
       <ul
         style={{
@@ -128,24 +144,21 @@ const PrivacyPolicyContent = () => (
         }}
       >
         <li style={{ marginBottom: "6px" }}>
-          <strong>Personal Information:</strong> Name, email address, phone
-          number, and other contact details you provide when filling out inquiry
-          forms or contacting us.
+          <strong>Contact details:</strong> your full name, mobile number, and
+          email address.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          <strong>Business Preferences:</strong> Information about your
-          investment preferences, occupation, and service requirements shared
-          during consultations.
+          <strong>Admission preferences:</strong> the B.E. course you are
+          interested in and the state you are applying from.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          <strong>Usage Data:</strong> Information about how you interact with
-          our website, including pages visited, time spent, and navigation
-          patterns.
+          <strong>Optional message:</strong> any question you choose to add
+          about admission, hostel, or fees.
         </li>
         <li>
-          <strong>Device Information:</strong> IP address, browser type,
-          operating system, and device identifiers for analytics and security
-          purposes.
+          <strong>Usage & device data:</strong> standard analytics information
+          (IP address, browser, pages visited) used to improve the site and
+          measure campaign performance.
         </li>
       </ul>
     </section>
@@ -156,7 +169,7 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         How We Use Your Information
@@ -169,7 +182,7 @@ const PrivacyPolicyContent = () => (
           marginBottom: "8px",
         }}
       >
-        We use the collected information for the following purposes:
+        We use the information you submit to:
       </p>
       <ul
         style={{
@@ -181,21 +194,19 @@ const PrivacyPolicyContent = () => (
         }}
       >
         <li style={{ marginBottom: "6px" }}>
-          To respond to your inquiries and provide service information
+          Provide personalised guidance on CIT's 2026 B.E. direct-admission
+          process.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          To schedule store visits and consultations
+          Contact you by phone, WhatsApp, SMS, or email about your enquiry.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          To send relevant service updates and promotional communications
-          (with your consent)
-        </li>
-        <li style={{ marginBottom: "6px" }}>
-          To improve our website and services based on user feedback
+          Share course, fee, hostel, and placement details relevant to your
+          enquiry.
         </li>
         <li>
-          To comply with legal obligations and protect our legitimate business
-          interests
+          Improve our website, content, and ad campaigns based on aggregated
+          usage data.
         </li>
       </ul>
     </section>
@@ -206,7 +217,7 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         Information Sharing
@@ -219,7 +230,7 @@ const PrivacyPolicyContent = () => (
           marginBottom: "8px",
         }}
       >
-        We may share your information with:
+        Your enquiry is shared with:
       </p>
       <ul
         style={{
@@ -231,16 +242,16 @@ const PrivacyPolicyContent = () => (
         }}
       >
         <li style={{ marginBottom: "6px" }}>
-          <strong>Monjoven Hair Transplant & Cosmetic Surgery:</strong> We share inquiry details within our
-          team for processing your consultation requests.
+          <strong>CIT admission office, Tumakuru:</strong> so the admission
+          team can follow up with you.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          <strong>Service Providers:</strong> Third-party vendors who assist us
-          with website hosting, analytics, and communication services.
+          <strong>Assam Digital:</strong> the marketing partner managing this
+          campaign and the North-East admission desk.
         </li>
         <li>
-          <strong>Legal Requirements:</strong> When required by law, court
-          order, or governmental regulations.
+          <strong>Service providers:</strong> trusted vendors that help us host
+          the website, send communications, and measure campaign performance.
         </li>
       </ul>
       <p
@@ -261,16 +272,15 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         Data Security
       </h3>
       <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#374151" }}>
-        We implement appropriate technical and organizational measures to
-        protect your personal information against unauthorized access,
-        alteration, disclosure, or destruction. However, no method of
-        transmission over the internet is 100% secure, and we cannot guarantee
+        We use reasonable technical and organisational measures to protect your
+        information against unauthorised access, alteration, or disclosure. No
+        method of internet transmission is fully secure, so we cannot guarantee
         absolute security.
       </p>
     </section>
@@ -281,7 +291,7 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         Your Rights
@@ -294,7 +304,7 @@ const PrivacyPolicyContent = () => (
           marginBottom: "8px",
         }}
       >
-        You have the right to:
+        You can, at any time:
       </p>
       <ul
         style={{
@@ -306,18 +316,17 @@ const PrivacyPolicyContent = () => (
         }}
       >
         <li style={{ marginBottom: "6px" }}>
-          Access and request a copy of your personal data
+          Request a copy of the data we hold about you.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          Correct any inaccurate or incomplete information
+          Ask us to correct inaccurate information.
         </li>
         <li style={{ marginBottom: "6px" }}>
-          Request deletion of your personal data (subject to legal obligations)
+          Ask us to delete your enquiry data (subject to any legal obligations).
         </li>
-        <li style={{ marginBottom: "6px" }}>
-          Opt-out of marketing communications at any time
+        <li>
+          Opt out of further admission communication from CIT or Assam Digital.
         </li>
-        <li>Withdraw consent where processing is based on consent</li>
       </ul>
     </section>
 
@@ -327,14 +336,14 @@ const PrivacyPolicyContent = () => (
           fontSize: "16px",
           fontWeight: 600,
           marginBottom: "12px",
-          color: "#1A5276",
+          color: "#0B3D91",
         }}
       >
         Contact Us
       </h3>
       <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#374151" }}>
-        If you have any questions or concerns about this Privacy Policy or our
-        data practices, please contact us at:
+        For any privacy questions or to exercise your rights, please contact
+        the CIT admission office:
       </p>
       <p
         style={{
@@ -344,11 +353,13 @@ const PrivacyPolicyContent = () => (
           marginTop: "8px",
         }}
       >
-        <strong>Monjoven Hair Transplant & Cosmetic Surgery</strong>
+        <strong>Channabasaveshwara Institute of Technology (CIT)</strong>
         <br />
-        Email: dr@monjoven.com
+        NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
         <br />
-        Phone: +91-9181956562
+        Email: admin@cittumkur.org
+        <br />
+        Phone: +91 88673 54168
       </p>
     </section>
 
@@ -430,7 +441,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => {
                   fontSize: "18px",
                   fontWeight: 600,
                   margin: 0,
-                  color: "#1A5276",
+                  color: "#0B3D91",
                 }}
               >
                 Privacy Policy
@@ -466,18 +477,18 @@ const getHeaderDefaults = (source) => {
   switch (source) {
     case "hero":
       return {
-        title: "Book Your Consultation",
-        subtitle: "Get expert advice from Dr. Porag Neog",
+        title: "Apply for Direct B.E. Admission 2026",
+        subtitle: "Get personal guidance from CIT's admission team",
       };
     case "contact":
       return {
         title: "Request a Callback",
-        subtitle: "Our team will contact you within 24 hours",
+        subtitle: "Our admission team will call you within 24 hours",
       };
     default:
       return {
-        title: "Schedule a Consultation",
-        subtitle: "Take the first step towards your transformation",
+        title: "Enquire About 2026 Admission",
+        subtitle: "Fill the form — we'll guide you",
       };
   }
 };
@@ -487,7 +498,7 @@ const UnifiedLeadForm = ({
   source = "default",
   title: titleProp,
   subtitle: subtitleProp,
-  submitButtonText = "Book Consultation",
+  submitButtonText = "Apply for 2026 Admission",
   showTitle = true,
   showSubtitle = true,
   showCourseFields = true,
@@ -516,6 +527,7 @@ const UnifiedLeadForm = ({
   const mobileRef = useRef(null);
   const emailRef = useRef(null);
   const serviceRef = useRef(null);
+  const stateSelectRef = useRef(null);
   const messageRef = useRef(null);
 
   // Handle input change
@@ -569,7 +581,12 @@ const UnifiedLeadForm = ({
           break;
         case "service_interest":
           if (showCourseFields && !formData.service_interest) {
-            errorMessage = "Please select a service";
+            errorMessage = "Please select a course";
+          }
+          break;
+        case "state":
+          if (showCourseFields && !formData.state) {
+            errorMessage = "Please select your state";
           }
           break;
         case "message":
@@ -597,7 +614,11 @@ const UnifiedLeadForm = ({
       email: formData.email ? getEmailErrorMessage(formData.email) : "",
       service_interest:
         showCourseFields && !formData.service_interest
-          ? "Please select a service"
+          ? "Please select a course"
+          : "",
+      state:
+        showCourseFields && !formData.state
+          ? "Please select your state"
           : "",
       message:
         formData.message && formData.message.length > 500
@@ -611,6 +632,7 @@ const UnifiedLeadForm = ({
       mobile: true,
       email: true,
       service_interest: true,
+      state: true,
       message: true,
     });
 
@@ -650,11 +672,14 @@ const UnifiedLeadForm = ({
 
     try {
       // Prepare lead data
+      // `service_interest` holds the selected B.E. course (legacy key kept
+      // for webhook + admin panel compatibility — see COURSE_OPTIONS above).
       const leadData = {
         name: formData.name.trim(),
         mobile: formData.mobile.trim(),
         email: formData.email.trim(),
         service_interest: formData.service_interest || '',
+        state: formData.state || '',
         message: formData.message || '',
         source: formId || 'general',
       };
@@ -711,7 +736,7 @@ const UnifiedLeadForm = ({
         // Show success alert ON TOP of drawer
         await showSuccess(
           'Thank You!',
-          "Your consultation request has been received. Dr. Neog's team will contact you within 24 hours to schedule your appointment."
+          "Our admission team will call you shortly to guide you through the 2026 B.E. direct-admission process."
         );
 
         // THEN reset form
@@ -738,7 +763,7 @@ const UnifiedLeadForm = ({
       console.error('Form submission error:', error);
       await showError(
         'Something went wrong',
-        'Please try again or call us directly at +91-9181956562.'
+        'Please try again or call us directly at +91 88673 54168.'
       );
     } finally {
       setIsSubmitting(false);
@@ -945,7 +970,7 @@ const UnifiedLeadForm = ({
           />
         </motion.div>
 
-        {/* Service Interest Field */}
+        {/* Course Interested In Field */}
         {showCourseFields && (
           <motion.div
             custom={3}
@@ -968,7 +993,7 @@ const UnifiedLeadForm = ({
                 startAdornment={
                   <InputAdornment position="start">
                     <Icon
-                      icon="mdi:medical-bag"
+                      icon="mdi:school-outline"
                       className={styles.inputIcon}
                       style={
                         variant === "dark" || variant === "drawer"
@@ -982,7 +1007,7 @@ const UnifiedLeadForm = ({
                   if (!selected) {
                     return (
                       <span style={{ color: variant === "dark" || variant === "drawer" ? "#FFFFFF80" : undefined, opacity: variant === "dark" || variant === "drawer" ? 1 : 0.5 }}>
-                        Select Service
+                        Course Interested In
                       </span>
                     );
                   }
@@ -996,7 +1021,7 @@ const UnifiedLeadForm = ({
                   style: { zIndex: 99999 },
                 }}
                 inputProps={{
-                  "aria-label": "Service interest",
+                  "aria-label": "Course interested in",
                 }}
                 sx={
                   variant === "dark" || variant === "drawer"
@@ -1004,7 +1029,7 @@ const UnifiedLeadForm = ({
                     : undefined
                 }
               >
-                {SERVICE_OPTIONS.map((option) => (
+                {COURSE_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
                   </MenuItem>
@@ -1017,9 +1042,81 @@ const UnifiedLeadForm = ({
           </motion.div>
         )}
 
+        {/* State Field (NE states) */}
+        {showCourseFields && (
+          <motion.div
+            custom={4}
+            variants={fieldVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <FormControl
+              fullWidth
+              error={touched.state && !!errors.state}
+              className={styles.textField}
+            >
+              <Select
+                ref={stateSelectRef}
+                displayEmpty
+                value={formData.state}
+                onChange={handleChange("state")}
+                onBlur={handleBlur("state")}
+                disabled={isSubmitting}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <Icon
+                      icon="mdi:map-marker-outline"
+                      className={styles.inputIcon}
+                      style={
+                        variant === "dark" || variant === "drawer"
+                          ? { color: "#FFFFFF80" }
+                          : undefined
+                      }
+                    />
+                  </InputAdornment>
+                }
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return (
+                      <span style={{ color: variant === "dark" || variant === "drawer" ? "#FFFFFF80" : undefined, opacity: variant === "dark" || variant === "drawer" ? 1 : 0.5 }}>
+                        Your State
+                      </span>
+                    );
+                  }
+                  return selected;
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { zIndex: 99999 },
+                  },
+                  disablePortal: false,
+                  style: { zIndex: 99999 },
+                }}
+                inputProps={{
+                  "aria-label": "Your state",
+                }}
+                sx={
+                  variant === "dark" || variant === "drawer"
+                    ? { color: "#FFFFFF", "& .MuiSelect-icon": { color: "#FFFFFF80" } }
+                    : undefined
+                }
+              >
+                {STATE_OPTIONS.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+              {touched.state && errors.state && (
+                <FormHelperText>{errors.state}</FormHelperText>
+              )}
+            </FormControl>
+          </motion.div>
+        )}
+
         {/* Brief Message Field */}
         <motion.div
-          custom={4}
+          custom={5}
           variants={fieldVariants}
           initial="hidden"
           animate="visible"
@@ -1027,7 +1124,7 @@ const UnifiedLeadForm = ({
           <TextField
             inputRef={messageRef}
             fullWidth
-            placeholder="Describe your concern or preferred consultation time..."
+            placeholder="Any question about admission, hostel, or fees? (optional)"
             variant="outlined"
             value={formData.message}
             onChange={handleChange("message")}
@@ -1063,7 +1160,7 @@ const UnifiedLeadForm = ({
 
         {/* Submit Button */}
         <motion.div
-          custom={showCourseFields ? 5 : 3}
+          custom={showCourseFields ? 6 : 3}
           variants={fieldVariants}
           initial="hidden"
           animate="visible"
@@ -1093,7 +1190,7 @@ const UnifiedLeadForm = ({
         {/* Trust Badges */}
         {showTrustBadges && (
           <motion.div
-            custom={showCourseFields ? 6 : 4}
+            custom={showCourseFields ? 7 : 4}
             variants={fieldVariants}
             initial="hidden"
             animate="visible"
@@ -1107,8 +1204,8 @@ const UnifiedLeadForm = ({
                   : undefined
               }
             >
-              <Icon icon="mdi:shield-lock-outline" className={styles.trustIcon} />
-              <span>100% Confidential</span>
+              <Icon icon="mdi:gift-outline" className={styles.trustIcon} />
+              <span>100% Free Guidance</span>
             </div>
             <div
               className={styles.trustBadge}
@@ -1118,8 +1215,8 @@ const UnifiedLeadForm = ({
                   : undefined
               }
             >
-              <Icon icon="mdi:hand-shake-outline" className={styles.trustIcon} />
-              <span>No Obligation</span>
+              <Icon icon="mdi:seat-outline" className={styles.trustIcon} />
+              <span>Limited 2026 Seats</span>
             </div>
             <div
               className={styles.trustBadge}
@@ -1129,8 +1226,8 @@ const UnifiedLeadForm = ({
                   : undefined
               }
             >
-              <Icon icon="mdi:stethoscope" className={styles.trustIcon} />
-              <span>Consultation</span>
+              <Icon icon="mdi:certificate-outline" className={styles.trustIcon} />
+              <span>NAAC Accredited</span>
             </div>
           </motion.div>
         )}
@@ -1138,7 +1235,7 @@ const UnifiedLeadForm = ({
         {/* Consent Text */}
         {showConsent && (
           <motion.div
-            custom={showCourseFields ? 7 : 5}
+            custom={showCourseFields ? 8 : 5}
             variants={fieldVariants}
             initial="hidden"
             animate="visible"
@@ -1152,7 +1249,8 @@ const UnifiedLeadForm = ({
                   : undefined
               }
             >
-              By submitting this form, I agree to the{" "}
+              By submitting, I agree to be contacted by CIT / Assam Digital
+              about 2026 B.E. admissions and to the{" "}
               <button
                 type="button"
                 onClick={() => setPrivacyModalOpen(true)}
@@ -1166,8 +1264,7 @@ const UnifiedLeadForm = ({
               >
                 Terms & Conditions and Privacy Policy
               </button>
-
-              . By submitting this form, I agree to receive communication from Monjoven regarding consultation and services.
+              .
             </Typography>
           </motion.div>
         )}
@@ -1182,9 +1279,9 @@ const UnifiedLeadForm = ({
           >
             Or call us directly
           </Typography>
-          <a href="tel:+919181956562" className={styles.phoneLink}>
+          <a href="tel:+918867354168" className={styles.phoneLink}>
             <Icon icon="mdi:phone" />
-            <span>+91-9181956562</span>
+            <span>+91 88673 54168</span>
           </a>
         </div>
       )}
