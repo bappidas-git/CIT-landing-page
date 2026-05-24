@@ -65,6 +65,27 @@
   gap: var(--space-3);
 }
 
+.accreditationStrip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px var(--space-2);
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wider);
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  transition: all var(--transition-base);
+}
+
+.scrolled .accreditationStrip {
+  color: var(--primary-dark);
+  background: rgba(11, 61, 145, 0.06);
+  border-color: rgba(11, 61, 145, 0.25);
+}
+
 .mainLogo {
   height: 60px;
   width: auto;
