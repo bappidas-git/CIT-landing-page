@@ -1,76 +1,97 @@
 /* ============================================
-   MUI Theme Configuration - Landing Page Boilerplate
-   Landing Page
+   MUI Theme Configuration — CIT Brand System
+   Channabasaveshwara Institute of Technology
+   Direct B.E. Engineering Admissions 2026
    ============================================ */
 
 import { createTheme, alpha } from '@mui/material/styles';
 
-// Color palette matching CSS variables
+// Color palette — CIT blue / red / amber.
+// Matches the tokens in src/styles/variables.css.
 const colors = {
   primary: {
-    main: '#1A5276',
-    light: '#2980B9',
-    dark: '#154360',
+    main: '#0B3D91',
+    light: '#1E5AB8',
+    dark: '#072A66',
     contrastText: '#FFFFFF',
   },
   secondary: {
-    main: '#148F77',
-    light: '#1ABC9C',
-    dark: '#0E6655',
+    main: '#C8102E',
+    light: '#E63950',
+    dark: '#9E0C24',
     contrastText: '#FFFFFF',
   },
+  // CTA amber — primary CTA buttons only.
+  accent: {
+    main: '#F4A300',
+    light: '#FFB733',
+    dark: '#D98C00',
+    contrastText: '#11203A',
+    50: '#FFF7E0',
+    100: '#FFE9B3',
+    200: '#FFD980',
+    300: '#FFC94D',
+    400: '#FFB733',
+    500: '#F4A300',
+    600: '#D98C00',
+    700: '#B57400',
+    800: '#8F5C00',
+    900: '#6B4400',
+  },
+  // Legacy alias — many components still reference `palette.orange.*`.
+  // Mapped to amber so CTAs render correctly without sweeping renames.
   orange: {
-    main: '#FF6B35',
-    light: '#FF8C5A',
-    dark: '#E85A20',
-    50: '#FFF3ED',
-    100: '#FFE0CC',
-    200: '#FFCAAA',
-    300: '#FFB088',
-    400: '#FF8C5A',
-    500: '#FF6B35',
-    600: '#E85A20',
-    700: '#CC4D1A',
-    800: '#A63F15',
-    900: '#803110',
+    main: '#F4A300',
+    light: '#FFB733',
+    dark: '#D98C00',
+    50: '#FFF7E0',
+    100: '#FFE9B3',
+    200: '#FFD980',
+    300: '#FFC94D',
+    400: '#FFB733',
+    500: '#F4A300',
+    600: '#D98C00',
+    700: '#B57400',
+    800: '#8F5C00',
+    900: '#6B4400',
   },
   navy: {
-    main: '#1A5276',
-    light: '#2980B9',
-    dark: '#154360',
-    50: '#EBF5FB',
-    100: '#D6EAF8',
-    200: '#AED6F1',
-    300: '#85C1E9',
-    400: '#5DADE2',
-    500: '#2980B9',
-    600: '#1F6F96',
-    700: '#1A5276',
-    800: '#1A5276',
-    900: '#154360',
+    main: '#0B3D91',
+    light: '#1E5AB8',
+    dark: '#072A66',
+    50: '#EAF1FB',
+    100: '#D0DEF5',
+    200: '#A6BEEB',
+    300: '#7C9FE1',
+    400: '#527FD7',
+    500: '#1E5AB8',
+    600: '#1747A0',
+    700: '#0B3D91',
+    800: '#072A66',
+    900: '#041C45',
   },
   success: {
-    main: '#2E7D32',
-    light: '#66BB6A',
-    dark: '#1B5E20',
+    main: '#1E8E5A',
+    light: '#4FB07F',
+    dark: '#13683F',
     contrastText: '#FFFFFF',
   },
   warning: {
-    main: '#F57C00',
-    light: '#FFB74D',
-    dark: '#E65100',
-    contrastText: '#FFFFFF',
+    main: '#F4A300',
+    light: '#FFB733',
+    dark: '#D98C00',
+    contrastText: '#11203A',
   },
   error: {
-    main: '#D32F2F',
-    light: '#EF5350',
-    dark: '#C62828',
+    main: '#C8102E',
+    light: '#E63950',
+    dark: '#9E0C24',
     contrastText: '#FFFFFF',
   },
   info: {
-    main: '#2196F3',
-    light: '#64B5F6',
-    dark: '#1976D2',
+    main: '#0B3D91',
+    light: '#1E5AB8',
+    dark: '#072A66',
     contrastText: '#FFFFFF',
   },
   grey: {
@@ -88,33 +109,33 @@ const colors = {
   background: {
     default: '#FFFFFF',
     paper: '#FFFFFF',
-    dark: '#1A5276',
-    light: '#F8FAFC',
+    dark: '#0B3D91',
+    light: '#EAF1FB',
   },
   text: {
-    primary: '#1B2631',
+    primary: '#11203A',
     secondary: '#546E7A',
     disabled: '#90A4AE',
-    dark: '#1B2631',
+    dark: '#11203A',
     light: '#FFFFFF',
   },
   iconColors: {
-    gold: '#148F77',
-    green: '#4CAF50',
-    purple: '#9C27B0',
-    orange: '#FF6B35',
-    pink: '#E91E63',
-    red: '#F44336',
-    teal: '#148F77',
-    blue: '#2196F3',
+    gold: '#0B3D91',
+    green: '#1E8E5A',
+    purple: '#6B3FA0',
+    orange: '#F4A300',
+    pink: '#C8102E',
+    red: '#C8102E',
+    teal: '#0B3D91',
+    blue: '#0B3D91',
   },
   cardBg: {
-    yellow: '#FFF3E0',
-    green: '#E8F5E9',
-    pink: '#FCE4EC',
-    purple: '#F3E5F5',
-    orange: '#FFF3E0',
-    blue: '#E3F2FD',
+    yellow: '#FFF4D6',
+    green: '#E5F5EC',
+    pink: '#FCE4E8',
+    purple: '#EFE7F7',
+    orange: '#FFF1D6',
+    blue: '#EAF1FB',
   },
 };
 
@@ -267,9 +288,12 @@ const shadows = [
   '0 40px 152px rgba(0, 0, 0, 0.28)',
 ];
 
-// Orange shadow for CTA buttons and highlights
-const orangeShadow = '0 4px 14px rgba(255, 107, 53, 0.35)';
-const orangeShadowHover = '0 6px 20px rgba(255, 107, 53, 0.45)';
+// Amber shadow for CTA buttons and highlights.
+// Legacy exports kept as `orangeShadow*` so existing imports keep working.
+const orangeShadow = '0 4px 14px rgba(244, 163, 0, 0.35)';
+const orangeShadowHover = '0 6px 20px rgba(244, 163, 0, 0.45)';
+const amberShadow = orangeShadow;
+const amberShadowHover = orangeShadowHover;
 
 // Create theme
 const theme = createTheme({
@@ -284,18 +308,19 @@ const theme = createTheme({
     grey: colors.grey,
     background: colors.background,
     text: colors.text,
+    accent: colors.accent,
     orange: colors.orange,
     navy: colors.navy,
     iconColors: colors.iconColors,
     cardBg: colors.cardBg,
     divider: colors.grey[300],
     action: {
-      active: colors.secondary.main,
-      hover: alpha(colors.secondary.main, 0.08),
-      selected: alpha(colors.secondary.main, 0.16),
+      active: colors.primary.main,
+      hover: alpha(colors.primary.main, 0.06),
+      selected: alpha(colors.primary.main, 0.12),
       disabled: colors.grey[400],
       disabledBackground: colors.grey[200],
-      focus: alpha(colors.secondary.main, 0.12),
+      focus: alpha(colors.primary.main, 0.12),
     },
   },
   breakpoints,
@@ -353,7 +378,7 @@ const theme = createTheme({
           overflowX: 'hidden',
         },
         '::selection': {
-          backgroundColor: colors.secondary.main,
+          backgroundColor: colors.primary.main,
           color: colors.background.default,
         },
         '::-webkit-scrollbar': {
@@ -365,10 +390,10 @@ const theme = createTheme({
           borderRadius: 4,
         },
         '::-webkit-scrollbar-thumb': {
-          background: colors.secondary.main,
+          background: colors.primary.main,
           borderRadius: 4,
           '&:hover': {
-            background: colors.secondary.dark,
+            background: colors.primary.dark,
           },
         },
       },
@@ -387,7 +412,7 @@ const theme = createTheme({
           textTransform: 'none',
           transition: 'all 0.25s ease',
           '&:focus-visible': {
-            outline: `2px solid ${colors.secondary.main}`,
+            outline: `2px solid ${colors.primary.main}`,
             outlineOffset: 2,
           },
         },
@@ -398,13 +423,14 @@ const theme = createTheme({
             transform: 'translateY(-2px)',
           },
         },
+        // CTA button — amber gradient with dark text for contrast.
         containedPrimary: {
-          background: `linear-gradient(135deg, ${colors.orange.main} 0%, ${colors.orange.light} 100%)`,
-          color: '#FFFFFF',
-          boxShadow: orangeShadow,
+          background: `linear-gradient(135deg, ${colors.accent.main} 0%, ${colors.accent.light} 100%)`,
+          color: colors.accent.contrastText,
+          boxShadow: amberShadow,
           '&:hover': {
-            background: `linear-gradient(135deg, ${colors.orange.light} 0%, ${colors.orange.main} 100%)`,
-            boxShadow: orangeShadowHover,
+            background: `linear-gradient(135deg, ${colors.accent.light} 0%, ${colors.accent.main} 100%)`,
+            boxShadow: amberShadowHover,
             transform: 'translateY(-2px)',
           },
           '&:active': {
@@ -425,14 +451,6 @@ const theme = createTheme({
           },
         },
         outlinedPrimary: {
-          borderColor: colors.secondary.main,
-          color: colors.secondary.main,
-          '&:hover': {
-            backgroundColor: alpha(colors.secondary.main, 0.08),
-            borderColor: colors.secondary.main,
-          },
-        },
-        outlinedSecondary: {
           borderColor: colors.primary.main,
           color: colors.primary.main,
           '&:hover': {
@@ -440,9 +458,17 @@ const theme = createTheme({
             borderColor: colors.primary.main,
           },
         },
-        text: {
+        outlinedSecondary: {
+          borderColor: colors.secondary.main,
+          color: colors.secondary.main,
           '&:hover': {
             backgroundColor: alpha(colors.secondary.main, 0.08),
+            borderColor: colors.secondary.main,
+          },
+        },
+        text: {
+          '&:hover': {
+            backgroundColor: alpha(colors.primary.main, 0.08),
           },
         },
         sizeLarge: {
@@ -461,7 +487,7 @@ const theme = createTheme({
         root: {
           transition: 'all 0.25s ease',
           '&:hover': {
-            backgroundColor: alpha(colors.secondary.main, 0.1),
+            backgroundColor: alpha(colors.primary.main, 0.1),
           },
         },
       },
@@ -554,10 +580,10 @@ const theme = createTheme({
             borderRadius: 12,
             transition: 'all 0.25s ease',
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: colors.secondary.main,
+              borderColor: colors.primary.main,
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: colors.secondary.main,
+              borderColor: colors.primary.main,
               borderWidth: 2,
             },
           },
@@ -569,10 +595,10 @@ const theme = createTheme({
         root: {
           borderRadius: 12,
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: colors.secondary.main,
+            borderColor: colors.primary.main,
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: colors.secondary.main,
+            borderColor: colors.primary.main,
           },
         },
         notchedOutline: {
@@ -589,7 +615,7 @@ const theme = createTheme({
         root: {
           color: colors.text.secondary,
           '&.Mui-focused': {
-            color: colors.secondary.main,
+            color: colors.primary.main,
           },
         },
       },
@@ -623,12 +649,12 @@ const theme = createTheme({
           padding: '12px 16px',
           transition: 'background-color 0.2s ease',
           '&:hover': {
-            backgroundColor: alpha(colors.secondary.main, 0.08),
+            backgroundColor: alpha(colors.primary.main, 0.08),
           },
           '&.Mui-selected': {
-            backgroundColor: alpha(colors.secondary.main, 0.12),
+            backgroundColor: alpha(colors.primary.main, 0.12),
             '&:hover': {
-              backgroundColor: alpha(colors.secondary.main, 0.16),
+              backgroundColor: alpha(colors.primary.main, 0.16),
             },
           },
         },
@@ -651,14 +677,14 @@ const theme = createTheme({
           borderWidth: 1.5,
         },
         colorPrimary: {
-          backgroundColor: colors.secondary.main,
+          backgroundColor: colors.primary.main,
           color: '#FFFFFF',
           '&:hover': {
-            backgroundColor: colors.secondary.light,
+            backgroundColor: colors.primary.light,
           },
         },
         colorSecondary: {
-          backgroundColor: colors.primary.main,
+          backgroundColor: colors.secondary.main,
           color: colors.background.default,
         },
       },
@@ -682,7 +708,7 @@ const theme = createTheme({
           fontWeight: 600,
         },
         colorPrimary: {
-          backgroundColor: colors.secondary.main,
+          backgroundColor: colors.primary.main,
           color: '#FFFFFF',
         },
       },
@@ -696,7 +722,7 @@ const theme = createTheme({
         indicator: {
           height: 3,
           borderRadius: '3px 3px 0 0',
-          backgroundColor: colors.secondary.main,
+          backgroundColor: colors.primary.main,
         },
       },
     },
@@ -710,10 +736,10 @@ const theme = createTheme({
           textTransform: 'none',
           transition: 'all 0.2s ease',
           '&.Mui-selected': {
-            color: colors.secondary.main,
+            color: colors.primary.main,
           },
           '&:hover': {
-            color: colors.secondary.main,
+            color: colors.primary.main,
             opacity: 1,
           },
         },
@@ -730,7 +756,7 @@ const theme = createTheme({
         },
         track: {
           border: 'none',
-          background: `linear-gradient(90deg, ${colors.secondary.main}, ${colors.secondary.light})`,
+          background: `linear-gradient(90deg, ${colors.primary.main}, ${colors.primary.light})`,
         },
         rail: {
           opacity: 0.3,
@@ -739,10 +765,10 @@ const theme = createTheme({
         thumb: {
           width: 20,
           height: 20,
-          backgroundColor: colors.secondary.main,
-          boxShadow: orangeShadow,
+          backgroundColor: colors.primary.main,
+          boxShadow: amberShadow,
           '&:hover, &.Mui-focusVisible': {
-            boxShadow: orangeShadowHover,
+            boxShadow: amberShadowHover,
           },
           '&:before': {
             display: 'none',
@@ -762,7 +788,7 @@ const theme = createTheme({
           borderRadius: 2,
         },
         markActive: {
-          backgroundColor: colors.secondary.light,
+          backgroundColor: colors.primary.light,
         },
       },
     },
@@ -780,7 +806,7 @@ const theme = createTheme({
             transform: 'translateX(22px)',
             color: colors.background.default,
             '& + .MuiSwitch-track': {
-              backgroundColor: colors.secondary.main,
+              backgroundColor: colors.primary.main,
               opacity: 1,
             },
           },
@@ -804,7 +830,7 @@ const theme = createTheme({
         root: {
           color: colors.grey[400],
           '&.Mui-checked': {
-            color: colors.secondary.main,
+            color: colors.primary.main,
           },
         },
       },
@@ -815,7 +841,7 @@ const theme = createTheme({
         root: {
           color: colors.grey[400],
           '&.Mui-checked': {
-            color: colors.secondary.main,
+            color: colors.primary.main,
           },
         },
       },
@@ -991,11 +1017,11 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          color: colors.secondary.main,
+          color: colors.primary.main,
           fontWeight: 500,
           transition: 'color 0.2s ease',
           '&:hover': {
-            color: colors.secondary.light,
+            color: colors.primary.light,
           },
         },
       },
@@ -1015,10 +1041,10 @@ const theme = createTheme({
           '& .MuiPaginationItem-root': {
             fontWeight: 500,
             '&.Mui-selected': {
-              backgroundColor: colors.secondary.main,
+              backgroundColor: colors.primary.main,
               color: '#FFFFFF',
               '&:hover': {
-                backgroundColor: colors.secondary.light,
+                backgroundColor: colors.primary.light,
               },
             },
           },
@@ -1043,7 +1069,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            backgroundColor: alpha(colors.secondary.main, 0.04),
+            backgroundColor: alpha(colors.primary.main, 0.04),
           },
         },
       },
@@ -1054,13 +1080,13 @@ const theme = createTheme({
         root: {
           borderRadius: 12,
           '&.Mui-selected': {
-            backgroundColor: alpha(colors.secondary.main, 0.12),
+            backgroundColor: alpha(colors.primary.main, 0.12),
             '&:hover': {
-              backgroundColor: alpha(colors.secondary.main, 0.16),
+              backgroundColor: alpha(colors.primary.main, 0.16),
             },
           },
           '&:hover': {
-            backgroundColor: alpha(colors.secondary.main, 0.08),
+            backgroundColor: alpha(colors.primary.main, 0.08),
           },
         },
       },
@@ -1069,7 +1095,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           minWidth: 40,
-          color: colors.secondary.main,
+          color: colors.primary.main,
         },
       },
     },
@@ -1090,7 +1116,7 @@ const theme = createTheme({
           padding: '8px 12px',
           color: colors.text.secondary,
           '&.Mui-selected': {
-            color: colors.secondary.main,
+            color: colors.primary.main,
           },
         },
         label: {
@@ -1106,14 +1132,14 @@ const theme = createTheme({
     MuiFab: {
       styleOverrides: {
         root: {
-          boxShadow: orangeShadow,
+          boxShadow: amberShadow,
           '&:hover': {
-            boxShadow: orangeShadowHover,
+            boxShadow: amberShadowHover,
           },
         },
         primary: {
-          background: `linear-gradient(135deg, ${colors.orange.main} 0%, ${colors.orange.light} 100%)`,
-          color: '#FFFFFF',
+          background: `linear-gradient(135deg, ${colors.accent.main} 0%, ${colors.accent.light} 100%)`,
+          color: colors.accent.contrastText,
         },
       },
     },
@@ -1121,12 +1147,12 @@ const theme = createTheme({
     MuiSpeedDial: {
       styleOverrides: {
         fab: {
-          background: `linear-gradient(135deg, ${colors.orange.main} 0%, ${colors.orange.light} 100%)`,
-          color: '#FFFFFF',
-          boxShadow: orangeShadow,
+          background: `linear-gradient(135deg, ${colors.accent.main} 0%, ${colors.accent.light} 100%)`,
+          color: colors.accent.contrastText,
+          boxShadow: amberShadow,
           '&:hover': {
-            background: `linear-gradient(135deg, ${colors.orange.light} 0%, ${colors.orange.main} 100%)`,
-            boxShadow: orangeShadowHover,
+            background: `linear-gradient(135deg, ${colors.accent.light} 0%, ${colors.accent.main} 100%)`,
+            boxShadow: amberShadowHover,
           },
         },
       },
@@ -1147,5 +1173,5 @@ const theme = createTheme({
 });
 
 // Export theme and colors for use in styled components
-export { colors, orangeShadow, orangeShadowHover };
+export { colors, orangeShadow, orangeShadowHover, amberShadow, amberShadowHover };
 export default theme;

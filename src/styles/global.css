@@ -619,8 +619,8 @@ table {
 }
 
 .btn-primary {
-  background: var(--accent-gold-gradient);
-  color: var(--primary-dark);
+  background: var(--accent-amber-gradient);
+  color: var(--color-text);
   box-shadow: var(--shadow-button);
 }
 
@@ -631,13 +631,13 @@ table {
 
 .btn-secondary {
   background: transparent;
-  color: var(--accent-gold);
-  border: 2px solid var(--accent-gold);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
 }
 
 .btn-secondary:hover {
-  background: var(--accent-gold);
-  color: var(--primary-dark);
+  background: var(--color-primary);
+  color: var(--white);
 }
 
 .btn-dark {
@@ -696,7 +696,7 @@ table {
 
 .badge-gold {
   background: var(--accent-gold);
-  color: var(--primary-dark);
+  color: var(--white);
 }
 
 .badge-dark {
@@ -759,12 +759,12 @@ table {
 }
 
 .icon-circle-red {
-  background: rgba(244, 67, 54, 0.1);
+  background: rgba(200, 16, 46, 0.1);
   color: var(--icon-red);
 }
 
 .icon-circle-teal {
-  background: rgba(0, 150, 136, 0.1);
+  background: rgba(11, 61, 145, 0.1);
   color: var(--icon-teal);
 }
 
@@ -831,8 +831,8 @@ table {
   position: absolute;
   top: -100%;
   left: 0;
-  background: var(--accent-gold);
-  color: var(--primary-dark);
+  background: var(--color-primary);
+  color: var(--white);
   padding: var(--space-3) var(--space-4);
   z-index: var(--z-max);
   transition: top var(--transition-fast);
@@ -913,7 +913,7 @@ table {
 /* ========== High Contrast Mode ========== */
 @media (prefers-contrast: high) {
   :root {
-    --accent-gold: #1FA89B;
+    --accent-gold: #0B3D91;
     --primary-dark: #000000;
     --border-gray: #000000;
   }
