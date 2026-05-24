@@ -24,7 +24,7 @@
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#0B3D91",
+  "theme_color": "#0C2D48",
   "background_color": "#FFFFFF",
   "categories": ["education", "business"],
   "lang": "en",

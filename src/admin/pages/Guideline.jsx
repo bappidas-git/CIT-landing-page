@@ -88,7 +88,7 @@ const Guideline = () => {
       <div className={styles.modalOverlay}>
         <div className={styles.modalCard}>
           <img
-            src="https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Admin"
+            src="https://placehold.co/200x60/0C2D48/FFFFFF?text=CIT+Admin"
             alt="CIT Admin"
             className={styles.modalLogo}
           />

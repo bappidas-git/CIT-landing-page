@@ -759,12 +759,12 @@ table {
 }
 
 .icon-circle-red {
-  background: rgba(200, 16, 46, 0.1);
+  background: rgba(216, 38, 24, 0.1);
   color: var(--icon-red);
 }
 
 .icon-circle-teal {
-  background: rgba(11, 61, 145, 0.1);
+  background: rgba(12, 45, 72, 0.1);
   color: var(--icon-teal);
 }
 
@@ -913,7 +913,7 @@ table {
 /* ========== High Contrast Mode ========== */
 @media (prefers-contrast: high) {
   :root {
-    --accent-gold: #0B3D91;
+    --accent-gold: #0C2D48;
     --primary-dark: #000000;
     --border-gray: #000000;
   }

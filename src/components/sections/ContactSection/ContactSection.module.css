@@ -105,7 +105,7 @@
   background: var(--primary-dark);
   color: var(--white);
   border-color: var(--primary-dark);
-  box-shadow: 0 4px 15px rgba(11, 61, 145, 0.3);
+  box-shadow: 0 4px 15px rgba(12, 45, 72, 0.3);
 }
 
 .quickActionIcon {
@@ -151,8 +151,8 @@
   border-radius: var(--radius-lg);
   background: linear-gradient(
     135deg,
-    rgba(11, 61, 145, 0.15) 0%,
-    rgba(11, 61, 145, 0.08) 100%
+    rgba(12, 45, 72, 0.15) 0%,
+    rgba(12, 45, 72, 0.08) 100%
   );
   display: flex;
   align-items: center;
@@ -252,9 +252,9 @@
 }
 
 .contactAction_call {
-  background: rgba(11, 61, 145, 0.1);
+  background: rgba(12, 45, 72, 0.1);
   color: var(--primary-dark);
-  border-color: rgba(11, 61, 145, 0.25);
+  border-color: rgba(12, 45, 72, 0.25);
 }
 
 .contactAction_call:hover {

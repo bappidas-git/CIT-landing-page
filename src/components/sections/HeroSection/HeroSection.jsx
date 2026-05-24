@@ -24,10 +24,10 @@ import styles from "./HeroSection.module.css";
 // Hero images with fallbacks
 const HERO_IMAGES = {
   desktop: [
-    "https://placehold.co/1600x900/0B3D91/FFFFFF?text=CIT+Campus+Hero+Desktop",
+    "https://placehold.co/1600x900/0C2D48/FFFFFF?text=CIT+Campus+Hero+Desktop",
   ],
   mobile: [
-    "https://placehold.co/800x1000/0B3D91/FFFFFF?text=CIT+Campus+Hero+Mobile",
+    "https://placehold.co/800x1000/0C2D48/FFFFFF?text=CIT+Campus+Hero+Mobile",
   ],
 };
 
@@ -168,7 +168,7 @@ const HeroSection = () => {
                   label="Direct B.E. Admission 2026 • Limited Seats"
                   className={styles.launchBadge}
                   sx={{
-                    backgroundColor: "#0B3D91",
+                    backgroundColor: "#0C2D48",
                     color: "#FFFFFF",
                     fontWeight: 600,
                     fontSize: "0.875rem",
@@ -246,7 +246,7 @@ const HeroSection = () => {
                     openLeadDrawer("apply-now");
                   }}
                   sx={{
-                    backgroundColor: "#F4A300",
+                    backgroundColor: "#F0A500",
                     color: "#11203A",
                     fontWeight: 700,
                     fontSize: "1rem",
@@ -254,10 +254,10 @@ const HeroSection = () => {
                     borderRadius: "12px",
                     textTransform: "none",
                     fontFamily: "'Poppins', sans-serif",
-                    boxShadow: "0 4px 20px rgba(244, 163, 0, 0.45)",
+                    boxShadow: "0 4px 20px rgba(240, 165, 0, 0.45)",
                     "&:hover": {
-                      backgroundColor: "#D98C00",
-                      boxShadow: "0 6px 24px rgba(244, 163, 0, 0.6)",
+                      backgroundColor: "#C77F00",
+                      boxShadow: "0 6px 24px rgba(240, 165, 0, 0.6)",
                       transform: "translateY(-2px)",
                     },
                     transition: "all 0.3s ease",

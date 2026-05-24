@@ -7,7 +7,7 @@
 .resultsSection {
   position: relative;
   padding: 4rem 0;
-  background: #eaf1fb;
+  background: #EAEFF3;
   overflow: hidden;
 }
 
@@ -22,13 +22,13 @@
 .sectionBadge {
   display: inline-block;
   padding: 0.3rem 1rem;
-  background: rgba(200, 16, 46, 0.08);
-  color: #c8102e;
+  background: rgba(216, 38, 24, 0.08);
+  color: #D82618;
   font-weight: 700;
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   border-radius: 16px;
-  border: 1px solid rgba(200, 16, 46, 0.2);
+  border: 1px solid rgba(216, 38, 24, 0.2);
 }
 
 .sectionTitle {
@@ -36,7 +36,7 @@
 }
 
 .highlightText {
-  color: #f4a300;
+  color: #F0A500;
   font-style: italic;
 }
 
@@ -49,7 +49,7 @@
 .underlineBar {
   width: 50px;
   height: 3px;
-  background: linear-gradient(135deg, #0b3d91 0%, #f4a300 100%);
+  background: linear-gradient(135deg, #0C2D48 0%, #F0A500 100%);
   border-radius: 3px;
 }
 
@@ -73,8 +73,8 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 1.5rem 1.25rem;
-  border: 1px solid rgba(11, 61, 145, 0.08);
-  box-shadow: 0 4px 18px rgba(11, 61, 145, 0.06);
+  border: 1px solid rgba(12, 45, 72, 0.08);
+  box-shadow: 0 4px 18px rgba(12, 45, 72, 0.06);
   transition:
     box-shadow 0.3s ease,
     transform 0.3s ease,
@@ -87,8 +87,8 @@
 }
 
 .highlightCard:hover {
-  box-shadow: 0 10px 30px rgba(11, 61, 145, 0.12);
-  border-color: rgba(244, 163, 0, 0.4);
+  box-shadow: 0 10px 30px rgba(12, 45, 72, 0.12);
+  border-color: rgba(240, 165, 0, 0.4);
 }
 
 .iconWrap {
@@ -97,14 +97,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0b3d91 0%, #072a66 100%);
+  background: linear-gradient(135deg, #0C2D48 0%, #081F33 100%);
   border-radius: 12px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(11, 61, 145, 0.25);
+  box-shadow: 0 4px 12px rgba(12, 45, 72, 0.25);
 }
 
 .cardIcon {
-  color: #f4a300;
+  color: #F0A500;
   font-size: 26px;
 }
 
@@ -119,7 +119,7 @@
   font-family: "Poppins", sans-serif;
   font-size: 0.975rem !important;
   font-weight: 700 !important;
-  color: #0b3d91;
+  color: #0C2D48;
   line-height: 1.3;
 }
 

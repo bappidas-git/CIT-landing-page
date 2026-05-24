@@ -24,7 +24,7 @@
   width: 100%;
   max-width: 480px;
   height: 100%;
-  background: linear-gradient(180deg, #0B3D91 0%, #072A66 100%);
+  background: linear-gradient(180deg, #0C2D48 0%, #081F33 100%);
   box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4);
   overflow-y: auto;
   overflow-x: hidden;
@@ -46,8 +46,8 @@
 }
 
 .closeButton:hover {
-  background: rgba(244, 163, 0, 0.3) !important;
-  border-color: rgba(244, 163, 0, 0.5) !important;
+  background: rgba(240, 165, 0, 0.3) !important;
+  border-color: rgba(240, 165, 0, 0.5) !important;
   transform: rotate(90deg) scale(1.05);
 }
 
@@ -77,12 +77,12 @@
   width: 64px;
   height: 64px;
   margin: 0 auto 16px;
-  background: linear-gradient(135deg, #F4A300 0%, #FFB733 100%);
+  background: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
   border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 28px rgba(244, 163, 0, 0.35);
+  box-shadow: 0 8px 28px rgba(240, 165, 0, 0.35);
   position: relative;
 }
 
@@ -91,7 +91,7 @@
   position: absolute;
   inset: -3px;
   border-radius: 21px;
-  background: linear-gradient(135deg, rgba(244, 163, 0, 0.3) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(240, 165, 0, 0.3) 0%, transparent 100%);
   z-index: -1;
 }
 
@@ -126,7 +126,7 @@
   left: -100px;
   width: 280px;
   height: 280px;
-  background: radial-gradient(circle, rgba(244, 163, 0, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(240, 165, 0, 0.12) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -137,7 +137,7 @@
   right: -80px;
   width: 220px;
   height: 220px;
-  background: radial-gradient(circle, rgba(244, 163, 0, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(240, 165, 0, 0.1) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -236,10 +236,10 @@
 }
 
 .drawer::-webkit-scrollbar-thumb {
-  background: rgba(244, 163, 0, 0.3);
+  background: rgba(240, 165, 0, 0.3);
   border-radius: 3px;
 }
 
 .drawer::-webkit-scrollbar-thumb:hover {
-  background: rgba(244, 163, 0, 0.5);
+  background: rgba(240, 165, 0, 0.5);
 }

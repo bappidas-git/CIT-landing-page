@@ -16,7 +16,7 @@ export const seoConfig = {
   defaultDescription:
     "Direct B.E. Engineering Admission 2026 at Channabasaveshwara Institute of Technology (CIT), Tumakuru — NAAC, AICTE, VTU-affiliated. Guided pathway, hostel & strong placements for North East students.",
   defaultImage:
-    "https://placehold.co/1200x630/0B3D91/FFFFFF?text=CIT+Admissions+2026",
+    "https://placehold.co/1200x630/0C2D48/FFFFFF?text=CIT+Admissions+2026",
   locale: "en_IN",
   language: "en",
 
@@ -27,7 +27,7 @@ export const seoConfig = {
     name: "Channabasaveshwara Institute of Technology",
     alternateName: "CIT Tumakuru",
     url: "https://www.cittumkur.org",
-    logo: "https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Logo",
+    logo: "https://placehold.co/200x60/0C2D48/FFFFFF?text=CIT+Logo",
     email: "admin@cittumkur.org",
     phone: "+91 8867354168",
     description:

@@ -34,7 +34,7 @@ const itemVariants = {
 };
 
 const campusImage = {
-  src: "https://placehold.co/600x400/0B3D91/FFFFFF?text=CIT+Campus",
+  src: "https://placehold.co/600x400/0C2D48/FFFFFF?text=CIT+Campus",
   alt: "CIT Tumakuru campus",
 };
 
@@ -92,7 +92,7 @@ const AboutSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 700,
                 fontSize: { xs: "1.75rem", sm: "2rem", md: "2.75rem" },
-                color: "#0B3D91",
+                color: "#0C2D48",
                 letterSpacing: "-0.01em",
               }}
             >
@@ -136,19 +136,19 @@ const AboutSection = () => {
                 endIcon={<Icon icon="mdi:arrow-right" />}
                 sx={{
                   background:
-                    "linear-gradient(135deg, #F4A300 0%, #D98C00 100%)",
+                    "linear-gradient(135deg, #F0A500 0%, #C77F00 100%)",
                   color: "#11203A",
                   fontWeight: 700,
                   fontSize: { xs: "0.9375rem", md: "1rem" },
                   padding: { xs: "12px 28px", md: "14px 36px" },
                   borderRadius: "50px",
                   textTransform: "none",
-                  boxShadow: "0 8px 30px rgba(244, 163, 0, 0.3)",
+                  boxShadow: "0 8px 30px rgba(240, 165, 0, 0.3)",
                   marginTop: "1rem",
                   "&:hover": {
                     background:
-                      "linear-gradient(135deg, #D98C00 0%, #F4A300 100%)",
-                    boxShadow: "0 12px 40px rgba(244, 163, 0, 0.45)",
+                      "linear-gradient(135deg, #C77F00 0%, #F0A500 100%)",
+                    boxShadow: "0 12px 40px rgba(240, 165, 0, 0.45)",
                     transform: "translateY(-2px)",
                   },
                 }}

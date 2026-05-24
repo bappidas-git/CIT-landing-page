@@ -25,9 +25,15 @@
   color: var(--primary-dark);
 }
 
+/* Once scrolled the header is white, so amber would be low-contrast — use the
+   brand red for an accessible, on-brand hover state and matching underline. */
 .header.scrolled .navLink:hover,
 .header.scrolled .navLink.active {
-  color: var(--accent-gold);
+  color: var(--accent-red);
+}
+
+.header.scrolled .navLink::after {
+  background: var(--accent-red);
 }
 
 .header.scrolled .mainLogo {
@@ -82,8 +88,8 @@
 
 .scrolled .accreditationStrip {
   color: var(--primary-dark);
-  background: rgba(11, 61, 145, 0.06);
-  border-color: rgba(11, 61, 145, 0.25);
+  background: rgba(12, 45, 72, 0.06);
+  border-color: rgba(12, 45, 72, 0.25);
 }
 
 .mainLogo {
@@ -151,15 +157,17 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background: var(--accent-gold);
+  background: var(--accent-amber);
   transform: translateX(-50%);
   transition: width var(--transition-fast);
   border-radius: var(--radius-full);
 }
 
+/* At the top of the page the header is transparent over the dark hero, so the
+   hover state uses the amber accent — the navy --accent-gold was invisible. */
 .navLink:hover,
 .navLink.active {
-  color: var(--accent-gold);
+  color: var(--accent-amber);
 }
 
 .navLink:hover::after,
@@ -204,11 +212,11 @@
 
 .header.scrolled .callButton {
   color: var(--primary-dark);
-  border-color: rgba(11, 61, 145, 0.3);
+  border-color: rgba(12, 45, 72, 0.3);
 }
 
 .header.scrolled .callButton:hover {
-  background: rgba(11, 61, 145, 0.06);
+  background: rgba(12, 45, 72, 0.06);
   color: var(--primary-dark);
   border-color: var(--primary-dark);
 }
@@ -448,6 +456,6 @@
 /* Focus States */
 .navLink:focus-visible,
 .mobileNavLink:focus-visible {
-  outline: 2px solid var(--accent-gold);
+  outline: 2px solid var(--accent-amber);
   outline-offset: 2px;
 }

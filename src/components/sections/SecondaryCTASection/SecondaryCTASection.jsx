@@ -180,7 +180,7 @@ const SecondaryCTASection = () => {
               <div className={styles.imageWrapper}>
                 <Box
                   component="img"
-                  src="https://placehold.co/600x500/0B3D91/F4A300?text=CIT+B.E.+Admission+2026"
+                  src="https://placehold.co/600x500/0C2D48/F0A500?text=CIT+B.E.+Admission+2026"
                   alt="Direct B.E. admission at CIT Tumakuru for the 2026 intake"
                   className={styles.ctaImage}
                   loading="lazy"
