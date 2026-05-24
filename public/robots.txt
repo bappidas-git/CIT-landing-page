@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /thank-you
 
-Sitemap: https://www.monjoven.com/sitemap.xml
+Sitemap: https://www.cittumkur.org/sitemap.xml
+Host: https://www.cittumkur.org

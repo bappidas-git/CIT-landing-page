@@ -126,7 +126,7 @@ export function generateOrganizationSchema(config) {
   const org = config || seoConfig.organization;
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': 'CollegeOrUniversity',
     name: org.name,
     alternateName: org.alternateName,
     url: org.url,
@@ -148,16 +148,25 @@ export function generateOrganizationSchema(config) {
     schema.sameAs = org.sameAs;
   }
 
-  if (org.founder && org.founder.name) {
-    schema.founder = {
-      '@type': 'Person',
-      name: org.founder.name,
-      ...(org.founder.jobTitle && { jobTitle: org.founder.jobTitle }),
-    };
-  }
-
   if (org.foundingDate) {
     schema.foundingDate = org.foundingDate;
+  }
+
+  if (org.courses && org.courses.length > 0) {
+    schema.hasOfferingCatalog = {
+      '@type': 'OfferCatalog',
+      name: 'B.E. Engineering Programs',
+      itemListElement: org.courses.map((course) => ({
+        '@type': 'Course',
+        name: course.name,
+        description: course.description,
+        provider: {
+          '@type': 'CollegeOrUniversity',
+          name: org.name,
+          sameAs: org.url,
+        },
+      })),
+    };
   }
 
   return schema;
@@ -229,25 +238,20 @@ export function generateLocalBusinessSchema(config) {
     schema.url = org.url;
   }
 
-  // MedicalBusiness-specific properties
-  if (biz.medicalSpecialty) {
-    schema.medicalSpecialty = biz.medicalSpecialty;
-  }
-
-  if (biz.isAcceptingNewPatients !== undefined) {
-    schema.isAcceptingNewPatients = biz.isAcceptingNewPatients;
-  }
-
   if (biz.hasMap) {
     schema.hasMap = biz.hasMap;
   }
 
-  if (biz.availableService && biz.availableService.length > 0) {
-    schema.availableService = biz.availableService.map((service) => ({
-      '@type': 'MedicalProcedure',
-      name: service.name,
-      description: service.description,
-    }));
+  if (org.courses && org.courses.length > 0) {
+    schema.hasOfferingCatalog = {
+      '@type': 'OfferCatalog',
+      name: 'B.E. Engineering Programs',
+      itemListElement: org.courses.map((course) => ({
+        '@type': 'Course',
+        name: course.name,
+        description: course.description,
+      })),
+    };
   }
 
   return schema;
