@@ -86,7 +86,7 @@
 }
 
 .statIconBlue {
-  background: rgba(200, 16, 46, 0.1);
+  background: rgba(216, 38, 24, 0.1);
   color: var(--admin-accent);
 }
 
@@ -156,7 +156,7 @@
   gap: 12px;
   padding: 10px 16px;
   background: #FDECEE;
-  border-bottom: 1px solid rgba(200, 16, 46, 0.2);
+  border-bottom: 1px solid rgba(216, 38, 24, 0.2);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -186,7 +186,7 @@
 }
 
 .leadCardSelected {
-  background: rgba(200, 16, 46, 0.06);
+  background: rgba(216, 38, 24, 0.06);
   border-left: 3px solid var(--admin-accent);
 }
 

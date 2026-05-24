@@ -29,7 +29,7 @@ const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGIT
 const ADMISSIONS_EMAIL = "admin@cittumkur.org";
 
 const CIT_LOGO_URL =
-  "https://placehold.co/200x60/FFFFFF/0B3D91?text=CIT+Logo";
+  "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
 
 // Navigation menu items — match Header anchors
 const menuItems = [
@@ -208,7 +208,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                         py: 1.5,
                         transition: "all 0.2s ease",
                         "&:hover": {
-                          backgroundColor: "rgba(11, 61, 145, 0.08)",
+                          backgroundColor: "rgba(12, 45, 72, 0.08)",
                         },
                       }}
                     >
@@ -217,7 +217,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                         sx={{
                           minWidth: 44,
                           color:
-                            activeSection === item.id ? "#0B3D91" : "#6B7280",
+                            activeSection === item.id ? "#0C2D48" : "#6B7280",
                         }}
                       >
                         <Icon icon={item.icon} style={{ fontSize: 22 }} />
@@ -229,7 +229,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
                           "& .MuiTypography-root": {
                             fontWeight: activeSection === item.id ? 600 : 500,
                             color:
-                              activeSection === item.id ? "#0B3D91" : "#374151",
+                              activeSection === item.id ? "#0C2D48" : "#374151",
                             fontSize: "0.95rem",
                           },
                         }}
@@ -270,7 +270,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
               <Box className={styles.unifiedContactHeader}>
                 <Icon
                   icon="mdi:phone-in-talk-outline"
-                  style={{ color: '#0B3D91', fontSize: 18 }}
+                  style={{ color: '#0C2D48', fontSize: 18 }}
                 />
                 <span className={styles.unifiedContactNumber}>
                   {PRIMARY_PHONE_DISPLAY}
@@ -305,7 +305,7 @@ const MobileDrawer = ({ open, onClose, onOpen, onBookConsultation, activeSection
               href={`mailto:${ADMISSIONS_EMAIL}`}
               className={styles.contactDetailItem}
             >
-              <Icon icon="mdi:email-outline" style={{ color: '#0B3D91', fontSize: 18 }} />
+              <Icon icon="mdi:email-outline" style={{ color: '#0C2D48', fontSize: 18 }} />
               <span>{ADMISSIONS_EMAIL}</span>
             </a>
           </Box>

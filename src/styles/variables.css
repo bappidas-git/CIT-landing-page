@@ -7,51 +7,51 @@
 :root {
   /* ========== CIT Brand Tokens (master palette) ==========
      Source of truth — use these names in new code. */
-  --color-primary: #0B3D91;        /* Deep CIT blue */
-  --color-primary-dark: #072A66;   /* Darker blue — gradients, hovers */
-  --color-secondary: #C8102E;      /* CIT red — accents, labels, badges */
-  --color-accent: #F4A300;         /* Amber — primary CTA buttons only */
-  --color-accent-dark: #D98C00;    /* CTA hover */
+  --color-primary: #0C2D48;        /* Deep CIT navy (official cittumkur.org) */
+  --color-primary-dark: #081F33;   /* Darker navy — gradients, hovers */
+  --color-secondary: #D82618;      /* CIT red (official cittumkur.org) — accents, labels, badges */
+  --color-accent: #F0A500;         /* CIT gold (official cittumkur.org) — primary CTA buttons only */
+  --color-accent-dark: #C77F00;    /* CTA hover */
   --color-success: #1E8E5A;        /* Placement/positive highlights */
-  --color-tint: #EAF1FB;           /* Light blue card/section backgrounds */
+  --color-tint: #EAEFF3;           /* Light slate card/section backgrounds */
   --color-text: #11203A;           /* Body text on light */
   --color-white: #FFFFFF;
 
-  /* ========== Primary Colors (legacy names → CIT blue) ========== */
-  --primary-dark: #0B3D91;
-  --primary-dark-alt: #072A66;
-  --primary-dark-light: #1E5AB8;
-  --primary-dark-lighter: #6B8DD6;
+  /* ========== Primary Colors (legacy names → CIT navy) ========== */
+  --primary-dark: #0C2D48;
+  --primary-dark-alt: #081F33;
+  --primary-dark-light: #1A5276;
+  --primary-dark-lighter: #7390A6;
 
-  /* ========== Accent Colors — remapped from teal → CIT blue ==========
-     The boilerplate used `--accent-gold` for structural teal accents.
-     We map them all to CIT blue so existing CSS references stay valid
-     and the page reads as blue, not teal. */
-  --accent-gold: #0B3D91;
-  --accent-gold-light: #1E5AB8;
-  --accent-gold-dark: #072A66;
-  --accent-gold-hover: #154FA8;
-  --accent-gold-gradient: linear-gradient(135deg, #0B3D91 0%, #1E5AB8 100%);
-  --accent-gold-gradient-reverse: linear-gradient(135deg, #1E5AB8 0%, #0B3D91 100%);
-  --accent-gold-gradient-horizontal: linear-gradient(90deg, #0B3D91 0%, #1E5AB8 50%, #0B3D91 100%);
+  /* ========== Accent Colors — remapped to CIT navy ==========
+     The boilerplate used `--accent-gold` for structural accents.
+     We map them all to CIT navy so existing CSS references stay valid
+     and the page reads as navy, matching the official site. */
+  --accent-gold: #0C2D48;
+  --accent-gold-light: #1A5276;
+  --accent-gold-dark: #081F33;
+  --accent-gold-hover: #143F5C;
+  --accent-gold-gradient: linear-gradient(135deg, #0C2D48 0%, #1A5276 100%);
+  --accent-gold-gradient-reverse: linear-gradient(135deg, #1A5276 0%, #0C2D48 100%);
+  --accent-gold-gradient-horizontal: linear-gradient(90deg, #0C2D48 0%, #1A5276 50%, #0C2D48 100%);
 
   /* ========== Accent Amber — CTAs Only (legacy `--accent-orange`) ========== */
-  --accent-orange: #F4A300;
-  --accent-orange-light: #FFB733;
-  --accent-orange-dark: #D98C00;
-  --accent-orange-gradient: linear-gradient(135deg, #F4A300 0%, #FFB733 100%);
-  --accent-orange-gradient-reverse: linear-gradient(135deg, #FFB733 0%, #F4A300 100%);
+  --accent-orange: #F0A500;
+  --accent-orange-light: #F5C842;
+  --accent-orange-dark: #C77F00;
+  --accent-orange-gradient: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
+  --accent-orange-gradient-reverse: linear-gradient(135deg, #F5C842 0%, #F0A500 100%);
 
   /* CIT-named CTA aliases (preferred for new code) */
-  --accent-amber: #F4A300;
-  --accent-amber-light: #FFB733;
-  --accent-amber-dark: #D98C00;
-  --accent-amber-gradient: linear-gradient(135deg, #F4A300 0%, #FFB733 100%);
+  --accent-amber: #F0A500;
+  --accent-amber-light: #F5C842;
+  --accent-amber-dark: #C77F00;
+  --accent-amber-gradient: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
 
   /* ========== Secondary Red (CIT) ========== */
-  --accent-red: #C8102E;
-  --accent-red-light: #E63950;
-  --accent-red-dark: #9E0C24;
+  --accent-red: #D82618;
+  --accent-red-light: #E8503D;
+  --accent-red-dark: #A81B10;
 
   /* ========== Neutral Colors ========== */
   --white: #FFFFFF;
@@ -61,25 +61,25 @@
   --border-gray: #D1D9E6;
   --text-gray: #546E7A;
   --text-dark-gray: #11203A;
-  --dark-gray: #2A3A5C;
+  --dark-gray: #22344A;
 
   /* ========== Icon Background Colors ========== */
-  --icon-gold: #0B3D91;
-  --icon-gold-bg: rgba(11, 61, 145, 0.12);
+  --icon-gold: #0C2D48;
+  --icon-gold-bg: rgba(12, 45, 72, 0.12);
   --icon-green: #1E8E5A;
   --icon-green-bg: rgba(30, 142, 90, 0.15);
   --icon-purple: #6B3FA0;
   --icon-purple-bg: rgba(107, 63, 160, 0.15);
-  --icon-orange: #F4A300;
-  --icon-orange-bg: rgba(244, 163, 0, 0.15);
-  --icon-pink: #C8102E;
-  --icon-pink-bg: rgba(200, 16, 46, 0.12);
-  --icon-red: #C8102E;
-  --icon-red-bg: rgba(200, 16, 46, 0.12);
-  --icon-teal: #0B3D91;
-  --icon-teal-bg: rgba(11, 61, 145, 0.12);
-  --icon-blue: #0B3D91;
-  --icon-blue-bg: rgba(11, 61, 145, 0.12);
+  --icon-orange: #F0A500;
+  --icon-orange-bg: rgba(240, 165, 0, 0.15);
+  --icon-pink: #D82618;
+  --icon-pink-bg: rgba(216, 38, 24, 0.12);
+  --icon-red: #D82618;
+  --icon-red-bg: rgba(216, 38, 24, 0.12);
+  --icon-teal: #0C2D48;
+  --icon-teal-bg: rgba(12, 45, 72, 0.12);
+  --icon-blue: #0C2D48;
+  --icon-blue-bg: rgba(12, 45, 72, 0.12);
 
   /* ========== Card Backgrounds ========== */
   --card-yellow: #FFF4D6;
@@ -87,29 +87,29 @@
   --card-pink: #FCE4E8;
   --card-purple: #EFE7F7;
   --card-orange: #FFF1D6;
-  --card-blue: #EAF1FB;
-  --card-gold-gradient: linear-gradient(135deg, #0B3D91 0%, #072A66 100%);
-  --card-dark-gradient: linear-gradient(135deg, #0B3D91 0%, #1E5AB8 100%);
+  --card-blue: #EAEFF3;
+  --card-gold-gradient: linear-gradient(135deg, #0C2D48 0%, #081F33 100%);
+  --card-dark-gradient: linear-gradient(135deg, #0C2D48 0%, #1A5276 100%);
 
   /* ========== Semantic Colors ========== */
   --success: #1E8E5A;
   --success-light: #4FB07F;
-  --warning: #F4A300;
-  --warning-light: #FFB733;
-  --error: #C8102E;
-  --error-light: #E63950;
-  --info: #0B3D91;
-  --info-light: #1E5AB8;
+  --warning: #F0A500;
+  --warning-light: #F5C842;
+  --error: #D82618;
+  --error-light: #E8503D;
+  --info: #0C2D48;
+  --info-light: #1A5276;
 
   /* ========== Shadow Colors ========== */
   --shadow-light: rgba(0, 0, 0, 0.05);
   --shadow-medium: rgba(0, 0, 0, 0.1);
   --shadow-dark: rgba(0, 0, 0, 0.15);
-  --shadow-gold: rgba(11, 61, 145, 0.3);
-  --shadow-card: 0 2px 12px rgba(11, 61, 145, 0.08);
-  --shadow-card-hover: 0 8px 30px rgba(11, 61, 145, 0.14);
-  --shadow-button: 0 4px 14px rgba(244, 163, 0, 0.35);
-  --shadow-button-hover: 0 6px 20px rgba(244, 163, 0, 0.45);
+  --shadow-gold: rgba(12, 45, 72, 0.3);
+  --shadow-card: 0 2px 12px rgba(12, 45, 72, 0.08);
+  --shadow-card-hover: 0 8px 30px rgba(12, 45, 72, 0.14);
+  --shadow-button: 0 4px 14px rgba(240, 165, 0, 0.35);
+  --shadow-button-hover: 0 6px 20px rgba(240, 165, 0, 0.45);
 
   /* ========== Typography ========== */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -239,10 +239,10 @@
 
   /* ========== Overlays ========== */
   --overlay-light: rgba(255, 255, 255, 0.8);
-  --overlay-dark: rgba(11, 61, 145, 0.7);
-  --overlay-darker: rgba(11, 61, 145, 0.85);
-  --overlay-gradient: linear-gradient(180deg, rgba(11, 61, 145, 0.9) 0%, rgba(11, 61, 145, 0.4) 100%);
-  --overlay-gradient-reverse: linear-gradient(0deg, rgba(11, 61, 145, 0.9) 0%, rgba(11, 61, 145, 0.2) 100%);
+  --overlay-dark: rgba(12, 45, 72, 0.7);
+  --overlay-darker: rgba(12, 45, 72, 0.85);
+  --overlay-gradient: linear-gradient(180deg, rgba(12, 45, 72, 0.9) 0%, rgba(12, 45, 72, 0.4) 100%);
+  --overlay-gradient-reverse: linear-gradient(0deg, rgba(12, 45, 72, 0.9) 0%, rgba(12, 45, 72, 0.2) 100%);
 
   /* ========== Aspect Ratios ========== */
   --aspect-square: 1 / 1;
@@ -268,27 +268,27 @@
 
 /* ========== Admin Panel Colors (Assam Digital) ========== */
 :root {
-  --admin-primary: #0B3D91;
-  --admin-primary-light: #1E5AB8;
-  --admin-primary-dark: #072A66;
-  --admin-accent: #C8102E;
-  --admin-accent-light: #E63950;
-  --admin-magenta: #C8102E;
-  --admin-magenta-light: #E63950;
-  --admin-cyan: #0B3D91;
-  --admin-cyan-light: #1E5AB8;
-  --admin-gradient: linear-gradient(135deg, #0B3D91 0%, #1E5AB8 100%);
-  --admin-gradient-accent: linear-gradient(135deg, #0B3D91 0%, #C8102E 100%);
-  --admin-bg: #F4F7FC;
+  --admin-primary: #0C2D48;
+  --admin-primary-light: #1A5276;
+  --admin-primary-dark: #081F33;
+  --admin-accent: #D82618;
+  --admin-accent-light: #E8503D;
+  --admin-magenta: #D82618;
+  --admin-magenta-light: #E8503D;
+  --admin-cyan: #0C2D48;
+  --admin-cyan-light: #1A5276;
+  --admin-gradient: linear-gradient(135deg, #0C2D48 0%, #1A5276 100%);
+  --admin-gradient-accent: linear-gradient(135deg, #0C2D48 0%, #D82618 100%);
+  --admin-bg: #F2F5F8;
   --admin-card-bg: #FFFFFF;
   --admin-border: #E2E8F0;
   --admin-text-primary: #11203A;
   --admin-text-secondary: #5A6B7F;
   --admin-text-muted: #8E9BAD;
   --admin-success: #1E8E5A;
-  --admin-warning: #F4A300;
-  --admin-error: #C8102E;
-  --admin-info: #0B3D91;
+  --admin-warning: #F0A500;
+  --admin-error: #D82618;
+  --admin-info: #0C2D48;
 }
 
 /* ========== Dark Mode Variables (for potential future use) ========== */

@@ -6,34 +6,34 @@
 
 import { createTheme, alpha } from '@mui/material/styles';
 
-// Color palette — CIT blue / red / amber.
+// Color palette — CIT navy / red / gold (official cittumkur.org).
 // Matches the tokens in src/styles/variables.css.
 const colors = {
   primary: {
-    main: '#0B3D91',
-    light: '#1E5AB8',
-    dark: '#072A66',
+    main: '#0C2D48',
+    light: '#1A5276',
+    dark: '#081F33',
     contrastText: '#FFFFFF',
   },
   secondary: {
-    main: '#C8102E',
-    light: '#E63950',
-    dark: '#9E0C24',
+    main: '#D82618',
+    light: '#E8503D',
+    dark: '#A81B10',
     contrastText: '#FFFFFF',
   },
   // CTA amber — primary CTA buttons only.
   accent: {
-    main: '#F4A300',
-    light: '#FFB733',
-    dark: '#D98C00',
+    main: '#F0A500',
+    light: '#F5C842',
+    dark: '#C77F00',
     contrastText: '#11203A',
-    50: '#FFF7E0',
-    100: '#FFE9B3',
-    200: '#FFD980',
-    300: '#FFC94D',
-    400: '#FFB733',
-    500: '#F4A300',
-    600: '#D98C00',
+    50: '#FDF6E0',
+    100: '#FAEAB6',
+    200: '#F7D277',
+    300: '#F6CB5B',
+    400: '#F5C842',
+    500: '#F0A500',
+    600: '#C77F00',
     700: '#B57400',
     800: '#8F5C00',
     900: '#6B4400',
@@ -41,34 +41,34 @@ const colors = {
   // Legacy alias — many components still reference `palette.orange.*`.
   // Mapped to amber so CTAs render correctly without sweeping renames.
   orange: {
-    main: '#F4A300',
-    light: '#FFB733',
-    dark: '#D98C00',
-    50: '#FFF7E0',
-    100: '#FFE9B3',
-    200: '#FFD980',
-    300: '#FFC94D',
-    400: '#FFB733',
-    500: '#F4A300',
-    600: '#D98C00',
+    main: '#F0A500',
+    light: '#F5C842',
+    dark: '#C77F00',
+    50: '#FDF6E0',
+    100: '#FAEAB6',
+    200: '#F7D277',
+    300: '#F6CB5B',
+    400: '#F5C842',
+    500: '#F0A500',
+    600: '#C77F00',
     700: '#B57400',
     800: '#8F5C00',
     900: '#6B4400',
   },
   navy: {
-    main: '#0B3D91',
-    light: '#1E5AB8',
-    dark: '#072A66',
-    50: '#EAF1FB',
-    100: '#D0DEF5',
-    200: '#A6BEEB',
-    300: '#7C9FE1',
-    400: '#527FD7',
-    500: '#1E5AB8',
-    600: '#1747A0',
-    700: '#0B3D91',
-    800: '#072A66',
-    900: '#041C45',
+    main: '#0C2D48',
+    light: '#1A5276',
+    dark: '#081F33',
+    50: '#EAEFF3',
+    100: '#CBD8E1',
+    200: '#9DB0BF',
+    300: '#6E8699',
+    400: '#3F6178',
+    500: '#1A5276',
+    600: '#143F5C',
+    700: '#0C2D48',
+    800: '#081F33',
+    900: '#05131F',
   },
   success: {
     main: '#1E8E5A',
@@ -77,21 +77,21 @@ const colors = {
     contrastText: '#FFFFFF',
   },
   warning: {
-    main: '#F4A300',
-    light: '#FFB733',
-    dark: '#D98C00',
+    main: '#F0A500',
+    light: '#F5C842',
+    dark: '#C77F00',
     contrastText: '#11203A',
   },
   error: {
-    main: '#C8102E',
-    light: '#E63950',
-    dark: '#9E0C24',
+    main: '#D82618',
+    light: '#E8503D',
+    dark: '#A81B10',
     contrastText: '#FFFFFF',
   },
   info: {
-    main: '#0B3D91',
-    light: '#1E5AB8',
-    dark: '#072A66',
+    main: '#0C2D48',
+    light: '#1A5276',
+    dark: '#081F33',
     contrastText: '#FFFFFF',
   },
   grey: {
@@ -109,8 +109,8 @@ const colors = {
   background: {
     default: '#FFFFFF',
     paper: '#FFFFFF',
-    dark: '#0B3D91',
-    light: '#EAF1FB',
+    dark: '#0C2D48',
+    light: '#EAEFF3',
   },
   text: {
     primary: '#11203A',
@@ -120,14 +120,14 @@ const colors = {
     light: '#FFFFFF',
   },
   iconColors: {
-    gold: '#0B3D91',
+    gold: '#0C2D48',
     green: '#1E8E5A',
     purple: '#6B3FA0',
-    orange: '#F4A300',
-    pink: '#C8102E',
-    red: '#C8102E',
-    teal: '#0B3D91',
-    blue: '#0B3D91',
+    orange: '#F0A500',
+    pink: '#D82618',
+    red: '#D82618',
+    teal: '#0C2D48',
+    blue: '#0C2D48',
   },
   cardBg: {
     yellow: '#FFF4D6',
@@ -135,7 +135,7 @@ const colors = {
     pink: '#FCE4E8',
     purple: '#EFE7F7',
     orange: '#FFF1D6',
-    blue: '#EAF1FB',
+    blue: '#EAEFF3',
   },
 };
 
@@ -290,8 +290,8 @@ const shadows = [
 
 // Amber shadow for CTA buttons and highlights.
 // Legacy exports kept as `orangeShadow*` so existing imports keep working.
-const orangeShadow = '0 4px 14px rgba(244, 163, 0, 0.35)';
-const orangeShadowHover = '0 6px 20px rgba(244, 163, 0, 0.45)';
+const orangeShadow = '0 4px 14px rgba(240, 165, 0, 0.35)';
+const orangeShadowHover = '0 6px 20px rgba(240, 165, 0, 0.45)';
 const amberShadow = orangeShadow;
 const amberShadowHover = orangeShadowHover;
 

@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: var(--admin-bg, #F4F7FC);
+  background: var(--admin-bg, #F2F5F8);
   /* Remove 300ms tap delay on all touch elements */
   -webkit-tap-highlight-color: transparent;
 }

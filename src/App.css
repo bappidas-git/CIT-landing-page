@@ -132,7 +132,7 @@ section[id] {
   position: absolute;
   top: -50px;
   left: 0;
-  background: var(--color-primary, #0B3D91);
+  background: var(--color-primary, #0C2D48);
   color: var(--white, #FFFFFF);
   padding: 12px 24px;
   z-index: 10000;
@@ -150,18 +150,18 @@ section[id] {
 
 /* Custom focus outlines */
 *:focus-visible {
-  outline: 2px solid var(--color-primary, #0B3D91);
+  outline: 2px solid var(--color-primary, #0C2D48);
   outline-offset: 2px;
 }
 
 /* Selection highlight */
 ::selection {
-  background-color: var(--color-primary, #0B3D91);
+  background-color: var(--color-primary, #0C2D48);
   color: var(--white, #FFFFFF);
 }
 
 ::-moz-selection {
-  background-color: var(--color-primary, #0B3D91);
+  background-color: var(--color-primary, #0C2D48);
   color: var(--white, #FFFFFF);
 }
 
@@ -259,9 +259,9 @@ html {
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(11, 61, 145, 0.05) 25%,
-    rgba(11, 61, 145, 0.1) 50%,
-    rgba(11, 61, 145, 0.05) 75%
+    rgba(12, 45, 72, 0.05) 25%,
+    rgba(12, 45, 72, 0.1) 50%,
+    rgba(12, 45, 72, 0.05) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;

@@ -2,7 +2,7 @@ export const serviceDetailsData = [
   {
     id: "ai-data-science",
     title: "B.E. Artificial Intelligence & Data Science",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=AI+%26+DS+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=AI+%26+DS+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [
@@ -15,7 +15,7 @@ export const serviceDetailsData = [
   {
     id: "computer-science",
     title: "B.E. Computer Science & Engineering",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=CSE+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=CSE+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [
@@ -28,7 +28,7 @@ export const serviceDetailsData = [
   {
     id: "information-science",
     title: "B.E. Information Science & Engineering",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=ISE+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=ISE+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [
@@ -41,7 +41,7 @@ export const serviceDetailsData = [
   {
     id: "electronics-communication",
     title: "B.E. Electronics & Communication Engineering",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=ECE+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=ECE+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [
@@ -54,7 +54,7 @@ export const serviceDetailsData = [
   {
     id: "electrical-electronics",
     title: "B.E. Electrical & Electronics Engineering",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=EEE+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=EEE+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [
@@ -67,7 +67,7 @@ export const serviceDetailsData = [
   {
     id: "mechanical",
     title: "B.E. Mechanical Engineering",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=Mechanical+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=Mechanical+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [
@@ -80,7 +80,7 @@ export const serviceDetailsData = [
   {
     id: "civil",
     title: "B.E. Civil Engineering",
-    image: "https://placehold.co/600x400/0B3D91/FFFFFF?text=Civil+Lab",
+    image: "https://placehold.co/600x400/0C2D48/FFFFFF?text=Civil+Lab",
     commencement: "2026 Intake — Direct Admission Open",
     frequency: "4-Year VTU Degree | NAAC Accredited | AICTE Approved",
     highlights: [

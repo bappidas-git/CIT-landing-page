@@ -21,7 +21,7 @@
   border-radius: var(--radius-2xl);
   padding: var(--space-6);
   height: 100%;
-  box-shadow: 0 10px 40px rgba(11, 61, 145, 0.08);
+  box-shadow: 0 10px 40px rgba(12, 45, 72, 0.08);
   border: 1px solid var(--medium-gray);
   display: flex;
   flex-direction: column;
@@ -91,7 +91,7 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background: rgba(11, 61, 145, 0.12);
+  background: rgba(12, 45, 72, 0.12);
   color: var(--primary-dark);
   display: flex;
   align-items: center;
@@ -133,7 +133,7 @@
   position: relative;
   border-radius: var(--radius-2xl);
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(11, 61, 145, 0.14);
+  box-shadow: 0 20px 60px rgba(12, 45, 72, 0.14);
   height: 100%;
 }
 
@@ -158,7 +158,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, rgba(11, 61, 145, 0.25) 0%, rgba(11, 61, 145, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(12, 45, 72, 0.25) 0%, rgba(12, 45, 72, 0.78) 100%);
   padding: var(--space-6);
   text-align: center;
 }
@@ -167,7 +167,7 @@
   font-size: 3rem;
   color: var(--accent-amber);
   margin-bottom: var(--space-2);
-  filter: drop-shadow(0 2px 8px rgba(244, 163, 0, 0.45));
+  filter: drop-shadow(0 2px 8px rgba(240, 165, 0, 0.45));
 }
 
 .mapTitle {
@@ -246,7 +246,7 @@
 
 .connectivityCard:hover {
   border-color: var(--primary-dark);
-  box-shadow: 0 8px 24px rgba(11, 61, 145, 0.12);
+  box-shadow: 0 8px 24px rgba(12, 45, 72, 0.12);
 }
 
 .connectivityIcon {
@@ -329,7 +329,7 @@
   color: var(--white);
   border-color: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(11, 61, 145, 0.25);
+  box-shadow: 0 4px 12px rgba(12, 45, 72, 0.25);
 }
 
 .statePill:hover svg {
@@ -343,7 +343,7 @@
   padding: var(--space-10) var(--space-6);
   background: var(--card-dark-gradient);
   border-radius: var(--radius-2xl);
-  box-shadow: 0 20px 60px rgba(11, 61, 145, 0.18);
+  box-shadow: 0 20px 60px rgba(12, 45, 72, 0.18);
 }
 
 .ctaTitle {
@@ -389,7 +389,7 @@
   left: -100px;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(11, 61, 145, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(12, 45, 72, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(60px);
@@ -401,7 +401,7 @@
   right: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(244, 163, 0, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(240, 165, 0, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(80px);

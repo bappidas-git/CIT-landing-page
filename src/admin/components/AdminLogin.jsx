@@ -41,7 +41,7 @@ const AdminLogin = () => {
         <div className={styles.loginHeader}>
           <div className={styles.loginLogo}>
             <img
-              src="https://placehold.co/200x60/0B3D91/FFFFFF?text=CIT+Admin"
+              src="https://placehold.co/200x60/0C2D48/FFFFFF?text=CIT+Admin"
               alt="CIT Admin"
             />
           </div>

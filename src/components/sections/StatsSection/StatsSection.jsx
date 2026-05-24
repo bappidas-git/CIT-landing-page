@@ -35,7 +35,7 @@ const RECRUITERS = [
 ];
 
 const recruiterLogoUrl = (name) =>
-  `https://placehold.co/160x80/FFFFFF/0B3D91?text=${encodeURIComponent(name)}`;
+  `https://placehold.co/160x80/FFFFFF/0C2D48?text=${encodeURIComponent(name)}`;
 
 // Animation variants
 const containerVariants = {
@@ -140,7 +140,7 @@ const StatsSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 700,
                 fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
-                color: '#0B3D91',
+                color: '#0C2D48',
                 marginBottom: { xs: '0.75rem', md: '1rem' },
               }}
             >
@@ -175,7 +175,7 @@ const StatsSection = () => {
                     variants={cardVariants}
                     whileHover={{
                       y: -4,
-                      boxShadow: '0 14px 28px rgba(11, 61, 145, 0.12)',
+                      boxShadow: '0 14px 28px rgba(12, 45, 72, 0.12)',
                       transition: { duration: 0.25 },
                     }}
                   >

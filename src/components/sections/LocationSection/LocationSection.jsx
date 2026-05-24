@@ -51,7 +51,7 @@ const LocationSection = () => {
     },
     hover: {
       y: -5,
-      boxShadow: "0 15px 40px rgba(11, 61, 145, 0.18)",
+      boxShadow: "0 15px 40px rgba(12, 45, 72, 0.18)",
       transition: {
         duration: 0.3,
       },
@@ -76,7 +76,7 @@ const LocationSection = () => {
       icon: "mdi:train",
       title: "Well-connected via Bengaluru",
       text: "~70 km from Bengaluru. Daily trains, buses & flights from all 8 North East states via Kempegowda International Airport.",
-      color: "#0B3D91",
+      color: "#0C2D48",
     },
     {
       icon: "mdi:home-heart",
@@ -88,13 +88,13 @@ const LocationSection = () => {
       icon: "mdi:account-tie",
       title: "CIT North East admission desk",
       text: "Our team helps with travel planning, documents, hostel allocation and settling in — in your language.",
-      color: "#C8102E",
+      color: "#D82618",
     },
     {
       icon: "mdi:account-group",
       title: "Familiar faces on campus",
       text: "An active North East student community — seniors who've made the same journey, ready to help juniors.",
-      color: "#F4A300",
+      color: "#F0A500",
     },
   ];
 

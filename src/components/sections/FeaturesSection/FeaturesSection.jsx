@@ -127,7 +127,7 @@ const FeaturesSection = () => {
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600,
                 fontSize: { xs: "0.75rem", md: "0.85rem" },
-                color: "#C8102E",
+                color: "#D82618",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
                 textAlign: "center",
@@ -143,7 +143,7 @@ const FeaturesSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 700,
                 fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2.25rem" },
-                color: "#0B3D91",
+                color: "#0C2D48",
                 textAlign: "center",
                 lineHeight: 1.2,
               }}
@@ -208,7 +208,7 @@ const FeaturesSection = () => {
                   <Icon
                     icon={categoryAccentIcons[activeTab]}
                     className={styles.lottiePlayer}
-                    style={{ width: "100%", height: "100%", color: "#0B3D91" }}
+                    style={{ width: "100%", height: "100%", color: "#0C2D48" }}
                   />
                 </div>
 
@@ -252,7 +252,7 @@ const FeaturesSection = () => {
                       style={{
                         width: "100%",
                         height: "100%",
-                        color: "#0B3D91",
+                        color: "#0C2D48",
                       }}
                     />
                   </div>
@@ -331,7 +331,7 @@ const FeaturesSection = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 600,
                 fontSize: { xs: "1.1rem", md: "1.35rem" },
-                color: "#0B3D91",
+                color: "#0C2D48",
                 textAlign: "center",
                 marginBottom: "1rem",
               }}
@@ -344,18 +344,18 @@ const FeaturesSection = () => {
               onClick={handleApply}
               endIcon={<Icon icon="mdi:arrow-right" />}
               sx={{
-                background: "linear-gradient(135deg, #F4A300 0%, #D98C00 100%)",
+                background: "linear-gradient(135deg, #F0A500 0%, #C77F00 100%)",
                 color: "#11203A",
                 fontWeight: 700,
                 fontSize: { xs: "0.9rem", md: "1rem" },
                 padding: { xs: "12px 28px", md: "14px 36px" },
                 borderRadius: "50px",
                 textTransform: "none",
-                boxShadow: "0 8px 32px rgba(244, 163, 0, 0.3)",
+                boxShadow: "0 8px 32px rgba(240, 165, 0, 0.3)",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #D98C00 0%, #F4A300 100%)",
-                  boxShadow: "0 12px 40px rgba(244, 163, 0, 0.4)",
+                    "linear-gradient(135deg, #C77F00 0%, #F0A500 100%)",
+                  boxShadow: "0 12px 40px rgba(240, 165, 0, 0.4)",
                   transform: "translateY(-2px)",
                 },
               }}
