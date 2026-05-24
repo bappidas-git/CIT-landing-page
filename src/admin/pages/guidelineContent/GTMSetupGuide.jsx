@@ -29,7 +29,7 @@ const GTMSetupGuide = ({ styles }) => {
           </li>
           <li className={styles.guideStepItem}>Click "Create Account"</li>
           <li className={styles.guideStepItem}>
-            Account name: Monjoven. Container name: landing.monjoven.com. Platform: "Web"
+            Account name: CIT Admissions. Container name: landing.cittumkur.org. Platform: "Web"
           </li>
           <li className={styles.guideStepItem}>
             Accept the terms of service — you'll get a container ID like{' '}

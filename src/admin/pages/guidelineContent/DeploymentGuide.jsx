@@ -197,7 +197,7 @@ cp -r build/* /home/master/applications/your-app/public_html/`}
           Your landing page is a Single Page Application (SPA) — all routes (<code className={styles.guideInlineCode}>/thank-you</code>, <code className={styles.guideInlineCode}>/admin/dashboard</code>) are handled by JavaScript, not by separate HTML files.
         </p>
         <p className={styles.guideParagraph}>
-          When someone directly visits <code className={styles.guideInlineCode}>landing.monjoven.com/admin/login</code>, the server looks for a file at <code className={styles.guideInlineCode}>/admin/login</code> — which doesn't exist. The solution is to tell the server to always serve <code className={styles.guideInlineCode}>index.html</code> for any URL, and let React Router handle the routing.
+          When someone directly visits <code className={styles.guideInlineCode}>landing.cittumkur.org/admin/login</code>, the server looks for a file at <code className={styles.guideInlineCode}>/admin/login</code> — which doesn't exist. The solution is to tell the server to always serve <code className={styles.guideInlineCode}>index.html</code> for any URL, and let React Router handle the routing.
         </p>
 
         <h3 className={styles.guideSubtitle}>Routing Fixes by Platform</h3>
@@ -351,7 +351,7 @@ REACT_APP_LEADS_ADMIN_KEY="Zk8pQ3mX9yL2wN7bV5rT1jH6cD4fG0aE"`}
             <tr>
               <td className={styles.guideTableCell}>5</td>
               <td className={styles.guideTableCell}>Admin panel accessible at <code className={styles.guideInlineCode}>/admin</code></td>
-              <td className={styles.guideTableCell}>Visit <code className={styles.guideInlineCode}>landing.monjoven.com/admin</code></td>
+              <td className={styles.guideTableCell}>Visit <code className={styles.guideInlineCode}>landing.cittumkur.org/admin</code></td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}>6</td>

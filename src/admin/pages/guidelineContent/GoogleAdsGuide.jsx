@@ -58,7 +58,7 @@ const GoogleAdsGuide = ({ styles }) => {
           <li className={styles.guideStepItem}>Select campaign type: "Search"</li>
           <li className={styles.guideStepItem}>
             Campaign name: something descriptive like{' '}
-            <code className={styles.guideInlineCode}>Monjoven - Hair Transplant - Guwahati</code>
+            <code className={styles.guideInlineCode}>CIT - B.E. Direct Admission 2026 - North East</code>
           </li>
           <li className={styles.guideStepItem}>
             Networks: Uncheck "Display Network" and "Search Partners" (focus budget on Google
@@ -98,16 +98,17 @@ const GoogleAdsGuide = ({ styles }) => {
 
         <h3 className={styles.guideSubtitle}>Example Keywords</h3>
         <p className={styles.guideParagraph}>
-          For Monjoven Hair Transplant & Cosmetic Surgery, your keywords might look like:
+          For CIT Tumakuru's B.E. 2026 direct-admission campaign aimed at North East students, your
+          keywords might look like:
         </p>
         <pre className={styles.guideCode}>
-{`"best hair transplant in guwahati"
-"hair transplant near me"
-"hair transplant cost guwahati"
-"fue hair transplant assam"
-"rhinoplasty guwahati"
-"cosmetic surgery guwahati"
-"prp hair treatment guwahati"`}
+{`"direct b.e. admission karnataka 2026"
+"b.e. admission for assam students"
+"cit tumakuru admission"
+"engineering college with hostel for ne students"
+"best computer science engineering karnataka"
+"vtu engineering admission 2026"
+"ai ds engineering admission"`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>Match Types</h3>
@@ -181,25 +182,25 @@ Wikipedia`}
 
         <h3 className={styles.guideSubtitle}>Example Headlines</h3>
         <pre className={styles.guideCode}>
-{`Best Hair Transplant in Guwahati
-FUE Hair Transplant by Dr. Neog
-Book Consultation Today
-Hair Transplant Starting at ₹40,000
-#1 Cosmetic Surgery in Assam
-Natural-Looking Hair Restoration`}
+{`Direct B.E. Admission 2026 — CIT
+NAAC-Accredited Engineering College
+Apply for CIT B.E. Admission Today
+Hostel + Mess for NE Students
+25 Years of Academic Excellence
+85%+ Placement | Highest 15 LPA`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>Example Descriptions</h3>
         <pre className={styles.guideCode}>
-{`Looking for hair transplant in Guwahati? Get a consultation with Dr. Porag Neog. Advanced FUE technique. Book now!
-Professional hair transplant & cosmetic surgery at Monjoven. Natural results guaranteed. Limited consultation slots available.`}
+{`Direct B.E. admission for 2026 at CIT Tumakuru. NAAC-accredited, AICTE-approved, VTU-affiliated. Guided admission for NE students. Apply now!
+Channabasaveshwara Institute of Technology — 25 years of excellence, 90+ recruiters, strong placement track record. Limited 2026 seats. Enquire today.`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>Tips for Better Ads</h3>
         <ol className={styles.guideStepList}>
-          <li className={styles.guideStepItem}>Include your unique selling points (Dr. Neog's expertise, FUE technique, natural results)</li>
-          <li className={styles.guideStepItem}>Use numbers and statistics ("1000+ procedures", "10+ years experience")</li>
-          <li className={styles.guideStepItem}>Include a clear call-to-action ("Book Consultation", "Call Now", "Get Expert Advice")</li>
+          <li className={styles.guideStepItem}>Include your unique selling points (NAAC accreditation, AICTE approval, hostel for NE students, 85%+ placement)</li>
+          <li className={styles.guideStepItem}>Use numbers and statistics ("25 years", "90+ recruiters", "Highest 15 LPA")</li>
+          <li className={styles.guideStepItem}>Include a clear call-to-action ("Apply Now", "Get Admission Details", "Talk to Admission Counsellor")</li>
           <li className={styles.guideStepItem}>Include your target keyword in at least 2-3 headlines</li>
           <li className={styles.guideStepItem}>Write at least 10 headlines and 4 descriptions for best results</li>
         </ol>
@@ -218,15 +219,15 @@ Professional hair transplant & cosmetic surgery at Monjoven. Natural results gua
           <tbody>
             <tr>
               <td className={styles.guideTableCell}>Sitelinks</td>
-              <td className={styles.guideTableCell}>Additional links below your ad (e.g., "Hair Transplant", "Rhinoplasty", "Contact Us")</td>
+              <td className={styles.guideTableCell}>Additional links below your ad (e.g., "B.E. Courses", "Placements", "Hostel &amp; Campus")</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}>Callouts</td>
-              <td className={styles.guideTableCell}>Short highlight phrases (e.g., "Consultation", "Advanced FUE", "Natural Results")</td>
+              <td className={styles.guideTableCell}>Short highlight phrases (e.g., "NAAC Accredited", "AICTE Approved", "Hostel for NE Students")</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}>Structured Snippets</td>
-              <td className={styles.guideTableCell}>List of services under a category header (e.g., "Services: Hair Transplant, Rhinoplasty, PRP Therapy, Liposuction")</td>
+              <td className={styles.guideTableCell}>List of branches under a category header (e.g., "Courses: CSE, AI&amp;DS, ISE, ECE, EEE, Mechanical, Civil")</td>
             </tr>
           </tbody>
         </table>
@@ -248,7 +249,7 @@ Professional hair transplant & cosmetic surgery at Monjoven. Natural results gua
           <li className={styles.guideStepItem}>Select "Website"</li>
           <li className={styles.guideStepItem}>Category: "Submit lead form"</li>
           <li className={styles.guideStepItem}>
-            Conversion name: <code className={styles.guideInlineCode}>Lead Form Submission</code>
+            Conversion name: <code className={styles.guideInlineCode}>CIT Admission Enquiry Submitted</code>
           </li>
           <li className={styles.guideStepItem}>
             Value: "Don't use a value" (or set a fixed value like ₹500 if you know your average lead

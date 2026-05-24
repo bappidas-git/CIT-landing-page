@@ -140,7 +140,7 @@ npm start
 
 # 5. Access admin panel
 # Go to http://localhost:3000/admin
-# Credentials: monjoven / monjoven@2026vip`}
+# Credentials: citadmin / cit@admissions2026`}
         </pre>
 
         <div className={styles.guideNote}>
@@ -166,33 +166,33 @@ npm start
           <tbody>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>.env</code></td>
-              <td className={styles.guideTableCell}>Business name, phone, email, admin credentials</td>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>REACT_APP_NAME="Monjoven"</code></td>
+              <td className={styles.guideTableCell}>Institution name, phone, email, admin credentials</td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>REACT_APP_NAME="CIT Admissions 2026"</code></td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/data/servicesData.js</code></td>
-              <td className={styles.guideTableCell}>Service plans/pricing cards</td>
-              <td className={styles.guideTableCell}>Plan names, features, prices</td>
+              <td className={styles.guideTableCell}>B.E. course cards (legacy filename — holds the 7 CIT B.E. branches)</td>
+              <td className={styles.guideTableCell}>Branch name, badge, description, features</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/data/featuresData.js</code></td>
-              <td className={styles.guideTableCell}>Feature categories and items</td>
-              <td className={styles.guideTableCell}>Your service features</td>
+              <td className={styles.guideTableCell}>Infrastructure / "Why CIT" highlight items</td>
+              <td className={styles.guideTableCell}>Labs, accreditations, campus features</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/data/statsData.js</code></td>
-              <td className={styles.guideTableCell}>Key statistics/highlights</td>
-              <td className={styles.guideTableCell}>"10+ Years", "500+ Stores"</td>
+              <td className={styles.guideTableCell}>Placement &amp; outcome stats</td>
+              <td className={styles.guideTableCell}>"25 Years", "85%+ Placement", "15 LPA"</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/data/locationData.js</code></td>
-              <td className={styles.guideTableCell}>Office address, contact info, nearby areas</td>
-              <td className={styles.guideTableCell}>Your actual address</td>
+              <td className={styles.guideTableCell}>Campus address, phone, WhatsApp, nearby cities</td>
+              <td className={styles.guideTableCell}>Tumakuru campus + admission office contact</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/styles/variables.css</code></td>
               <td className={styles.guideTableCell}>Brand colors (landing page only)</td>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--primary-dark: #1A5276</code></td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--color-primary: #0B3D91</code></td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/theme/muiTheme.js</code></td>
@@ -251,19 +251,19 @@ npm start
           </thead>
           <tbody>
             <tr>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--primary-dark</code></td>
-              <td className={styles.guideTableCell}>#1A5276 (Deep Navy)</td>
-              <td className={styles.guideTableCell}>Headers, text</td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--color-primary</code></td>
+              <td className={styles.guideTableCell}>#0B3D91 (CIT Blue)</td>
+              <td className={styles.guideTableCell}>Headers, primary surfaces</td>
             </tr>
             <tr>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--accent-gold</code></td>
-              <td className={styles.guideTableCell}>#148F77 (Teal)</td>
-              <td className={styles.guideTableCell}>Buttons, highlights, links</td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--color-secondary</code></td>
+              <td className={styles.guideTableCell}>#C8102E (CIT Red)</td>
+              <td className={styles.guideTableCell}>Accents, section labels, badges</td>
             </tr>
             <tr>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--accent-orange</code></td>
-              <td className={styles.guideTableCell}>#E74C3C (Orange)</td>
-              <td className={styles.guideTableCell}>CTA buttons only</td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>--color-accent</code></td>
+              <td className={styles.guideTableCell}>#F4A300 (Amber / Gold)</td>
+              <td className={styles.guideTableCell}>Primary CTA buttons only</td>
             </tr>
           </tbody>
         </table>
@@ -307,10 +307,10 @@ npm start
         </p>
 
         <pre className={styles.guideCode}>
-{`Patient fills UnifiedLeadForm → handleSubmit()
+{`Applicant fills UnifiedLeadForm → handleSubmit()
   ↓
 Form validation (validators.js)
-  Fields: name, mobile, email, service_interest, message
+  Fields: name, mobile, email, service_interest (course), state, message
   ↓
 Duplicate check (isDuplicateLead — checks localStorage by mobile number)
   ↓
@@ -319,7 +319,7 @@ submitLeadToWebhook() in webhookSubmit.js
   └── If USE_PABBLY: POST to Pabbly webhook URL + store in localStorage (lp_submitted_leads)
   ↓
 Tracking fires (in parallel):
-  ├── GTM: trackFormSubmission() → dataLayer push (serviceInterest)
+  ├── GTM: trackFormSubmission() → dataLayer push (course interest, state)
   ├── Google Ads: trackFormSubmission() → gtag conversion
   ├── Meta Pixel: trackLead() → fbq('track', 'Lead')
   ├── Meta CAPI: sendLeadEvent() → POST to /api/meta-capi.php
@@ -401,13 +401,13 @@ Navigate to /thank-you`}
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>REACT_APP_ADMIN_USERNAME</code></td>
               <td className={styles.guideTableCell}>Yes</td>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>monjoven</code></td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>citadmin</code></td>
               <td className={styles.guideTableCell}>Admin login username</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>REACT_APP_ADMIN_PASSWORD</code></td>
               <td className={styles.guideTableCell}>Yes</td>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>monjoven@2026vip</code></td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>cit@admissions2026</code></td>
               <td className={styles.guideTableCell}>Admin login password</td>
             </tr>
             <tr>
