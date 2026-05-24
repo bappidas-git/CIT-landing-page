@@ -1,6 +1,6 @@
 /* ============================================
-   LocationSection Styles - Landing Page Boilerplate
-   Our Centre section with light background
+   LocationSection Styles — CIT Tumakuru
+   Campus location + NE travel reassurance band
    ============================================ */
 
 /* Section Container */
@@ -11,18 +11,17 @@
   overflow: hidden;
 }
 
-/* Main Content Grid */
 .mainContent {
   margin-top: var(--space-8);
 }
 
-/* ========== Centre Info Card ========== */
+/* ========== Campus Info Card ========== */
 .centreInfoCard {
   background: var(--white);
   border-radius: var(--radius-2xl);
   padding: var(--space-6);
   height: 100%;
-  box-shadow: 0 10px 40px rgba(26, 82, 118, 0.08);
+  box-shadow: 0 10px 40px rgba(11, 61, 145, 0.08);
   border: 1px solid var(--medium-gray);
   display: flex;
   flex-direction: column;
@@ -66,7 +65,7 @@
 .contactList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .contactItem {
@@ -77,24 +76,33 @@
   background: var(--off-white);
   border-radius: var(--radius-lg);
   transition: all var(--transition-base);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid transparent;
 }
 
 .contactItem:hover {
-  background: var(--light-gray);
+  background: var(--card-blue);
   transform: translateX(4px);
+  border-color: var(--primary-dark);
 }
 
 .contactIcon {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background: rgba(20, 143, 119, 0.1);
-  color: var(--accent-gold);
+  background: rgba(11, 61, 145, 0.12);
+  color: var(--primary-dark);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
   flex-shrink: 0;
+}
+
+.contactIconWhatsapp {
+  background: rgba(30, 142, 90, 0.15);
+  color: #1E8E5A;
 }
 
 .contactLabel {
@@ -111,19 +119,10 @@
   color: var(--primary-dark);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-sm);
+  word-break: break-word;
 }
 
-.contactValue a {
-  color: var(--primary-dark);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.contactValue a:hover {
-  color: var(--accent-gold);
-}
-
-/* ========== Map Section ========== */
+/* ========== Map ========== */
 .mapWrapper {
   display: flex;
   flex-direction: column;
@@ -134,7 +133,7 @@
   position: relative;
   border-radius: var(--radius-2xl);
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(26, 82, 118, 0.12);
+  box-shadow: 0 20px 60px rgba(11, 61, 145, 0.14);
   height: 100%;
 }
 
@@ -159,16 +158,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, rgba(26, 82, 118, 0.3) 0%, rgba(26, 82, 118, 0.8) 100%);
+  background: linear-gradient(180deg, rgba(11, 61, 145, 0.25) 0%, rgba(11, 61, 145, 0.78) 100%);
   padding: var(--space-6);
   text-align: center;
 }
 
 .mapPinIcon {
   font-size: 3rem;
-  color: var(--accent-gold);
+  color: var(--accent-amber);
   margin-bottom: var(--space-2);
-  filter: drop-shadow(0 2px 8px rgba(20, 143, 119, 0.5));
+  filter: drop-shadow(0 2px 8px rgba(244, 163, 0, 0.45));
 }
 
 .mapTitle {
@@ -188,66 +187,53 @@
   z-index: 1;
 }
 
-/* ========== Areas Served Section ========== */
-.areasSection {
-  margin-top: var(--space-12);
-  text-align: center;
+/* ========== NE Helper Block ========== */
+.neBlock {
+  margin-top: var(--space-16);
+  padding: var(--space-10) var(--space-6);
+  background: var(--card-blue);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--medium-gray);
 }
 
-.areasTitle {
+.neBlockHead {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto var(--space-8);
+}
+
+.neBlockEyebrow {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-widest);
+  color: var(--accent-red);
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.neBlockTitle {
   font-family: var(--font-heading);
   font-weight: var(--fw-bold);
   color: var(--primary-dark);
-  margin-bottom: var(--space-6);
-  font-size: var(--fs-xl);
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-snug);
+  margin-bottom: var(--space-3);
 }
 
-.areasGrid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-3);
-  max-width: 900px;
-  margin: 0 auto;
+.neBlockSubtitle {
+  color: var(--text-gray);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
 }
 
-.areaPill {
-  height: 36px;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  background: var(--white);
-  color: var(--primary-dark);
-  border: 1px solid var(--medium-gray);
-  border-radius: var(--radius-full);
-  padding: var(--space-1) var(--space-2);
-  transition: all var(--transition-base);
-}
-
-.areaPill:hover {
-  background: var(--primary-dark);
-  color: var(--white);
-  border-color: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(26, 82, 118, 0.2);
-}
-
-.areaPill :global(.MuiChip-icon) {
-  font-size: 1rem;
-  color: var(--accent-gold);
-}
-
-.areaPill:hover :global(.MuiChip-icon) {
-  color: var(--accent-gold-light);
-}
-
-/* ========== Connectivity Highlights ========== */
-.connectivitySection {
-  margin-top: var(--space-12);
+.neGrid {
+  margin-top: 0;
 }
 
 .connectivityCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-4);
   padding: var(--space-5);
   background: var(--white);
@@ -255,11 +241,12 @@
   border: 1px solid var(--medium-gray);
   transition: all var(--transition-base);
   cursor: default;
+  height: 100%;
 }
 
 .connectivityCard:hover {
-  border-color: var(--accent-gold);
-  box-shadow: 0 8px 24px rgba(26, 82, 118, 0.1);
+  border-color: var(--primary-dark);
+  box-shadow: 0 8px 24px rgba(11, 61, 145, 0.12);
 }
 
 .connectivityIcon {
@@ -273,11 +260,80 @@
   flex-shrink: 0;
 }
 
-.connectivityText {
-  font-weight: var(--fw-medium);
+.connectivityBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.connectivityTitle {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-semibold);
   color: var(--primary-dark);
   font-size: var(--fs-base);
   line-height: var(--lh-snug);
+}
+
+.connectivityText {
+  font-weight: var(--fw-regular);
+  color: var(--text-gray);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-relaxed);
+}
+
+/* ========== States Band ========== */
+.statesBand {
+  margin-top: var(--space-12);
+  text-align: center;
+}
+
+.statesTitle {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-semibold);
+  color: var(--primary-dark);
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-6);
+}
+
+.statesPills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.statePill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 38px;
+  padding: 0 var(--space-4);
+  background: var(--white);
+  color: var(--primary-dark);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  transition: all var(--transition-base);
+}
+
+.statePill svg {
+  font-size: 1rem;
+  color: var(--accent-red);
+}
+
+.statePill:hover {
+  background: var(--primary-dark);
+  color: var(--white);
+  border-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(11, 61, 145, 0.25);
+}
+
+.statePill:hover svg {
+  color: var(--accent-amber);
 }
 
 /* ========== Bottom CTA ========== */
@@ -287,15 +343,23 @@
   padding: var(--space-10) var(--space-6);
   background: var(--card-dark-gradient);
   border-radius: var(--radius-2xl);
-  box-shadow: 0 20px 60px rgba(26, 82, 118, 0.15);
+  box-shadow: 0 20px 60px rgba(11, 61, 145, 0.18);
 }
 
 .ctaTitle {
   font-family: var(--font-heading);
   font-weight: var(--fw-bold);
   color: var(--white);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-3);
   font-size: var(--fs-2xl);
+}
+
+.ctaSubtitle {
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 640px;
+  margin: 0 auto var(--space-6);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
 }
 
 .ctaButtons {
@@ -325,7 +389,7 @@
   left: -100px;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(26, 82, 118, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(11, 61, 145, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(60px);
@@ -337,13 +401,13 @@
   right: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(20, 143, 119, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(244, 163, 0, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(80px);
 }
 
-/* ========== Responsive Styles ========== */
+/* ========== Responsive ========== */
 @media (max-width: 1024px) {
   .section {
     padding: var(--space-16) 0;
@@ -351,6 +415,10 @@
 
   .connectivityCard {
     padding: var(--space-4);
+  }
+
+  .neBlock {
+    padding: var(--space-8) var(--space-5);
   }
 }
 
@@ -384,29 +452,21 @@
   }
 
   .mapPlaceholder {
-    min-height: 280px;
+    min-height: 260px;
   }
 
-  .areasSection {
-    margin-top: var(--space-8);
+  .neBlock {
+    margin-top: var(--space-10);
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-xl);
   }
 
-  .areasTitle {
-    font-size: var(--fs-lg);
-    margin-bottom: var(--space-4);
+  .neBlockTitle {
+    font-size: var(--fs-xl);
   }
 
-  .areasGrid {
-    gap: var(--space-2);
-  }
-
-  .areaPill {
-    height: 32px;
-    font-size: var(--fs-xs);
-  }
-
-  .connectivitySection {
-    margin-top: var(--space-8);
+  .neBlockHead {
+    margin-bottom: var(--space-6);
   }
 
   .connectivityIcon {
@@ -415,8 +475,31 @@
     font-size: 1.3rem;
   }
 
-  .connectivityText {
+  .connectivityTitle {
     font-size: var(--fs-sm);
+  }
+
+  .connectivityText {
+    font-size: var(--fs-xs);
+  }
+
+  .statesBand {
+    margin-top: var(--space-8);
+  }
+
+  .statesTitle {
+    font-size: var(--fs-base);
+    margin-bottom: var(--space-4);
+  }
+
+  .statesPills {
+    gap: var(--space-2);
+  }
+
+  .statePill {
+    height: 32px;
+    padding: 0 var(--space-3);
+    font-size: var(--fs-xs);
   }
 
   .bottomCta {
@@ -427,6 +510,11 @@
 
   .ctaTitle {
     font-size: var(--fs-xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .ctaSubtitle {
+    font-size: var(--fs-sm);
     margin-bottom: var(--space-4);
   }
 }
@@ -480,10 +568,6 @@
     font-size: 1.2rem;
   }
 
-  .connectivityText {
-    font-size: var(--fs-xs);
-  }
-
   .bottomCta {
     padding: var(--space-6) var(--space-3);
   }
@@ -498,16 +582,16 @@
   }
 }
 
-/* Touch Device Optimizations */
+/* Touch device fix */
 @media (hover: none) and (pointer: coarse) {
   .contactItem:hover,
-  .areaPill:hover,
+  .statePill:hover,
   .connectivityCard:hover {
     transform: none;
   }
 }
 
-/* Print Styles */
+/* Print */
 @media print {
   .section {
     background: var(--white);
@@ -520,7 +604,8 @@
     display: none;
   }
 
-  .centreInfoCard {
+  .centreInfoCard,
+  .neBlock {
     box-shadow: none;
     border: 1px solid var(--medium-gray);
   }
@@ -531,7 +616,8 @@
     border: 1px solid var(--medium-gray);
   }
 
-  .ctaTitle {
+  .ctaTitle,
+  .ctaSubtitle {
     color: var(--primary-dark);
   }
 }
