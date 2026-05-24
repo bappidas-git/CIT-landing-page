@@ -18,8 +18,8 @@ import styles from "./Header.module.css";
 const logoUrl =
   "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
 
-const PRIMARY_PHONE = "+918867354168";
-const PRIMARY_PHONE_DISPLAY = "+91 88673 54168";
+const PRIMARY_PHONE = "+919403891805";
+const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";
 
 // Navigation items — admission-focused anchors. Section IDs are set
 // alongside each section component (about / courses / placements / campus / contact).

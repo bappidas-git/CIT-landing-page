@@ -357,9 +357,7 @@ const PrivacyPolicyContent = () => (
         <br />
         NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
         <br />
-        Email: admin@cittumkur.org
-        <br />
-        Phone: +91 88673 54168
+        Phone: +91 94038 91805
       </p>
     </section>
 
@@ -763,7 +761,7 @@ const UnifiedLeadForm = ({
       console.error('Form submission error:', error);
       await showError(
         'Something went wrong',
-        'Please try again or call us directly at +91 88673 54168.'
+        'Please try again or call us directly at +91 94038 91805.'
       );
     } finally {
       setIsSubmitting(false);
@@ -1279,9 +1277,9 @@ const UnifiedLeadForm = ({
           >
             Or call us directly
           </Typography>
-          <a href="tel:+918867354168" className={styles.phoneLink}>
+          <a href="tel:+919403891805" className={styles.phoneLink}>
             <Icon icon="mdi:phone" />
-            <span>+91 88673 54168</span>
+            <span>+91 94038 91805</span>
           </a>
         </div>
       )}

@@ -136,8 +136,8 @@
 
 /* Primary CTA Item (Apply Now) — CIT amber */
 .primaryItem .navButton {
-  background: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
-  box-shadow: 0 4px 12px rgba(240, 165, 0, 0.4);
+  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
+  box-shadow: 0 4px 12px rgba(224, 48, 30, 0.4);
   width: 52px;
   height: 52px;
   margin-top: -6px;
@@ -148,17 +148,17 @@
 }
 
 .primaryItem .navLabel {
-  color: #C77F00 !important;
+  color: #B71F12 !important;
   font-weight: 700 !important;
 }
 
 .primaryItem .navButton:hover {
-  background: linear-gradient(135deg, #C77F00 0%, #F0A500 100%);
-  box-shadow: 0 6px 16px rgba(240, 165, 0, 0.5);
+  background: linear-gradient(135deg, #B71F12 0%, #E0301E 100%);
+  box-shadow: 0 6px 16px rgba(224, 48, 30, 0.5);
 }
 
 .primaryItem .navButton:active {
-  background: linear-gradient(135deg, #B87600 0%, #C77F00 100%);
+  background: linear-gradient(135deg, #9A1A0E 0%, #B71F12 100%);
 }
 
 /* WhatsApp Button Special Styling */

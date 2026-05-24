@@ -10,8 +10,8 @@
   --color-primary: #0C2D48;        /* Deep CIT navy (official cittumkur.org) */
   --color-primary-dark: #081F33;   /* Darker navy — gradients, hovers */
   --color-secondary: #D82618;      /* CIT red (official cittumkur.org) — accents, labels, badges */
-  --color-accent: #F0A500;         /* CIT gold (official cittumkur.org) — primary CTA buttons only */
-  --color-accent-dark: #C77F00;    /* CTA hover */
+  --color-accent: #E0301E;         /* CIT CTA red — primary CTA buttons only */
+  --color-accent-dark: #B71F12;    /* CTA hover */
   --color-success: #1E8E5A;        /* Placement/positive highlights */
   --color-tint: #EAEFF3;           /* Light slate card/section backgrounds */
   --color-text: #11203A;           /* Body text on light */
@@ -36,17 +36,17 @@
   --accent-gold-gradient-horizontal: linear-gradient(90deg, #0C2D48 0%, #1A5276 50%, #0C2D48 100%);
 
   /* ========== Accent Amber — CTAs Only (legacy `--accent-orange`) ========== */
-  --accent-orange: #F0A500;
-  --accent-orange-light: #F5C842;
-  --accent-orange-dark: #C77F00;
-  --accent-orange-gradient: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
-  --accent-orange-gradient-reverse: linear-gradient(135deg, #F5C842 0%, #F0A500 100%);
+  --accent-orange: #E0301E;
+  --accent-orange-light: #F0584A;
+  --accent-orange-dark: #B71F12;
+  --accent-orange-gradient: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
+  --accent-orange-gradient-reverse: linear-gradient(135deg, #F0584A 0%, #E0301E 100%);
 
   /* CIT-named CTA aliases (preferred for new code) */
-  --accent-amber: #F0A500;
-  --accent-amber-light: #F5C842;
-  --accent-amber-dark: #C77F00;
-  --accent-amber-gradient: linear-gradient(135deg, #F0A500 0%, #F5C842 100%);
+  --accent-amber: #E0301E;
+  --accent-amber-light: #F0584A;
+  --accent-amber-dark: #B71F12;
+  --accent-amber-gradient: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
 
   /* ========== Secondary Red (CIT) ========== */
   --accent-red: #D82618;
@@ -70,8 +70,8 @@
   --icon-green-bg: rgba(30, 142, 90, 0.15);
   --icon-purple: #6B3FA0;
   --icon-purple-bg: rgba(107, 63, 160, 0.15);
-  --icon-orange: #F0A500;
-  --icon-orange-bg: rgba(240, 165, 0, 0.15);
+  --icon-orange: #E0301E;
+  --icon-orange-bg: rgba(224, 48, 30, 0.15);
   --icon-pink: #D82618;
   --icon-pink-bg: rgba(216, 38, 24, 0.12);
   --icon-red: #D82618;
@@ -82,11 +82,11 @@
   --icon-blue-bg: rgba(12, 45, 72, 0.12);
 
   /* ========== Card Backgrounds ========== */
-  --card-yellow: #FFF4D6;
+  --card-yellow: #FDEAE8;
   --card-green: #E5F5EC;
   --card-pink: #FCE4E8;
   --card-purple: #EFE7F7;
-  --card-orange: #FFF1D6;
+  --card-orange: #FCEEEB;
   --card-blue: #EAEFF3;
   --card-gold-gradient: linear-gradient(135deg, #0C2D48 0%, #081F33 100%);
   --card-dark-gradient: linear-gradient(135deg, #0C2D48 0%, #1A5276 100%);
@@ -94,8 +94,8 @@
   /* ========== Semantic Colors ========== */
   --success: #1E8E5A;
   --success-light: #4FB07F;
-  --warning: #F0A500;
-  --warning-light: #F5C842;
+  --warning: #E0301E;
+  --warning-light: #F0584A;
   --error: #D82618;
   --error-light: #E8503D;
   --info: #0C2D48;
@@ -108,8 +108,8 @@
   --shadow-gold: rgba(12, 45, 72, 0.3);
   --shadow-card: 0 2px 12px rgba(12, 45, 72, 0.08);
   --shadow-card-hover: 0 8px 30px rgba(12, 45, 72, 0.14);
-  --shadow-button: 0 4px 14px rgba(240, 165, 0, 0.35);
-  --shadow-button-hover: 0 6px 20px rgba(240, 165, 0, 0.45);
+  --shadow-button: 0 4px 14px rgba(224, 48, 30, 0.35);
+  --shadow-button-hover: 0 6px 20px rgba(224, 48, 30, 0.45);
 
   /* ========== Typography ========== */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -286,7 +286,7 @@
   --admin-text-secondary: #5A6B7F;
   --admin-text-muted: #8E9BAD;
   --admin-success: #1E8E5A;
-  --admin-warning: #F0A500;
+  --admin-warning: #E0301E;
   --admin-error: #D82618;
   --admin-info: #0C2D48;
 }

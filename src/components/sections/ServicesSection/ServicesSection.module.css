@@ -51,7 +51,7 @@
 }
 
 .accentText {
-  color: #F0A500;
+  color: #E0301E;
   font-style: italic;
 }
 
@@ -119,10 +119,10 @@
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  background: linear-gradient(135deg, #F0A500 0%, #C77F00 100%);
+  background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
   color: #11203A;
   z-index: 2;
-  box-shadow: 0 2px 6px rgba(240, 165, 0, 0.25);
+  box-shadow: 0 2px 6px rgba(224, 48, 30, 0.25);
 }
 
 .courseBadge svg {
@@ -236,7 +236,7 @@
   gap: 0.5rem;
   width: 100%;
   padding: 11px 20px;
-  background: linear-gradient(135deg, #F0A500 0%, #C77F00 100%);
+  background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
   border: none;
   border-radius: 10px;
   color: #11203A;
@@ -248,7 +248,7 @@
 }
 
 .courseCtaBtn:hover {
-  box-shadow: 0 6px 20px rgba(240, 165, 0, 0.45);
+  box-shadow: 0 6px 20px rgba(224, 48, 30, 0.45);
 }
 
 .courseCtaBtn svg {
@@ -276,7 +276,7 @@
 
 .ctaIcon {
   font-size: 28px;
-  color: #F0A500;
+  color: #E0301E;
 }
 
 .ctaText {
@@ -300,7 +300,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 11px 22px;
-  background: linear-gradient(135deg, #F0A500 0%, #C77F00 100%);
+  background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
   border: none;
   border-radius: 10px;
   color: #11203A;
@@ -313,7 +313,7 @@
 
 .ctaBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(240, 165, 0, 0.5);
+  box-shadow: 0 6px 16px rgba(224, 48, 30, 0.5);
 }
 
 .ctaBtn svg {
@@ -513,7 +513,7 @@
 /* ========== Focus Styles for Accessibility ========== */
 .courseCtaBtn:focus-visible,
 .ctaBtn:focus-visible {
-  outline: 2px solid #F0A500;
+  outline: 2px solid #E0301E;
   outline-offset: 2px;
 }
 

@@ -14,18 +14,10 @@ import styles from "./Footer.module.css";
 const CIT_LOGO_URL =
   "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
 
-const PRIMARY_PHONE = "+918867354168";
-const PRIMARY_PHONE_DISPLAY = "+91 88673 54168";
-const SECONDARY_PHONE_DISPLAY = "+91 93421 23255";
-const TERTIARY_PHONE_DISPLAY = "+91 98861 15105";
-const SECONDARY_PHONE = "+919342123255";
-const TERTIARY_PHONE = "+919886115105";
-const PRIMARY_EMAIL = "admin@cittumkur.org";
-const SECONDARY_EMAIL = "hr@cittumkur.org";
-const WEBSITE_URL = "https://www.cittumkur.org";
-const WEBSITE_DISPLAY = "www.cittumkur.org";
+const PRIMARY_PHONE = "+919403891805";
+const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";
 const WHATSAPP_LINK =
-  "https://api.whatsapp.com/send?phone=918867354168&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.";
+  "https://api.whatsapp.com/send?phone=919403891805&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.";
 
 // Privacy Policy Content — CIT / Assam Digital admissions campaign
 const PrivacyPolicyContent = () => (
@@ -74,7 +66,7 @@ const PrivacyPolicyContent = () => (
         <li>To contact you about Direct B.E. admission 2026 at CIT.</li>
         <li>
           To answer questions about courses, fees, hostel facilities, scholarships
-          and the admission process — by call, WhatsApp or email.
+          and the admission process — by call or WhatsApp.
         </li>
         <li>
           To improve our campaigns, the landing page experience, and the
@@ -128,8 +120,6 @@ const PrivacyPolicyContent = () => (
         <strong>Channabasaveshwara Institute of Technology</strong>
         <br />
         NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
-        <br />
-        Email: {PRIMARY_EMAIL}
         <br />
         Phone: {PRIMARY_PHONE_DISPLAY}
       </p>
@@ -297,62 +287,6 @@ const Footer = () => {
                         <span>Chat</span>
                       </a>
                     </div>
-                  </li>
-
-                  <li className={styles.contactItem}>
-                    <div className={styles.contactLabelRow}>
-                      <Icon
-                        icon="mdi:phone-outline"
-                        className={styles.contactIcon}
-                      />
-                      <span className={styles.contactLabel}>More lines</span>
-                    </div>
-                    <a
-                      href={`tel:${SECONDARY_PHONE}`}
-                      className={styles.contactValue}
-                    >
-                      {SECONDARY_PHONE_DISPLAY}
-                    </a>
-                    <a
-                      href={`tel:${TERTIARY_PHONE}`}
-                      className={styles.contactValue}
-                    >
-                      {TERTIARY_PHONE_DISPLAY}
-                    </a>
-                  </li>
-
-                  <li className={styles.contactItem}>
-                    <div className={styles.contactLabelRow}>
-                      <Icon icon="mdi:email" className={styles.contactIcon} />
-                      <span className={styles.contactLabel}>Email</span>
-                    </div>
-                    <a
-                      href={`mailto:${PRIMARY_EMAIL}`}
-                      className={styles.contactValue}
-                    >
-                      {PRIMARY_EMAIL}
-                    </a>
-                    <a
-                      href={`mailto:${SECONDARY_EMAIL}`}
-                      className={styles.contactValue}
-                    >
-                      {SECONDARY_EMAIL}
-                    </a>
-                  </li>
-
-                  <li className={styles.contactItem}>
-                    <div className={styles.contactLabelRow}>
-                      <Icon icon="mdi:web" className={styles.contactIcon} />
-                      <span className={styles.contactLabel}>Website</span>
-                    </div>
-                    <a
-                      href={WEBSITE_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.contactValue}
-                    >
-                      {WEBSITE_DISPLAY}
-                    </a>
                   </li>
 
                   <li className={styles.contactItem}>

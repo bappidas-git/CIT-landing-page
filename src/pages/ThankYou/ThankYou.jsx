@@ -34,9 +34,8 @@ const trustBadges = [
 
 // Contact details
 const contactInfo = {
-  phone: "+91 88673 54168",
-  whatsapp: "+91 88673 54168",
-  email: "admin@cittumkur.org",
+  phone: "+91 94038 91805",
+  whatsapp: "+91 94038 91805",
   officeHours: "Mon - Sat: 9:00 AM - 5:00 PM",
 };
 
@@ -125,7 +124,7 @@ const ThankYou = () => {
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        colors: ["#0C2D48", "#1A5276", "#F0A500", "#D82618"],
+        colors: ["#0C2D48", "#1A5276", "#E0301E", "#D82618"],
       });
 
       // Right side confetti
@@ -133,7 +132,7 @@ const ThankYou = () => {
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        colors: ["#0C2D48", "#1A5276", "#F0A500", "#D82618"],
+        colors: ["#0C2D48", "#1A5276", "#E0301E", "#D82618"],
       });
     }, 250);
 
@@ -142,7 +141,7 @@ const ThankYou = () => {
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ["#0C2D48", "#1A5276", "#F0A500", "#D82618", "#1E8E5A"],
+      colors: ["#0C2D48", "#1A5276", "#E0301E", "#D82618", "#1E8E5A"],
     });
   }, []);
 
@@ -331,7 +330,7 @@ const ThankYou = () => {
                       Call Us
                     </span>
                     <a
-                      href="tel:+918867354168"
+                      href="tel:+919403891805"
                       className={styles.contactValue}
                     >
                       {contactInfo.phone}
@@ -354,35 +353,12 @@ const ThankYou = () => {
                       WhatsApp
                     </span>
                     <a
-                      href="https://wa.me/918867354168?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
+                      href="https://wa.me/919403891805?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.contactValue}
                     >
                       {contactInfo.whatsapp}
-                    </a>
-                  </div>
-                </div>
-              </Grid>
-
-              {/* Email */}
-              <Grid item xs={12} sm={6}>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIconWrapper}>
-                    <Icon icon="mdi:email" />
-                  </div>
-                  <div className={styles.contactDetails}>
-                    <span
-                      className={styles.contactLabel}
-                      style={{ color: "#FFFFFF80" }}
-                    >
-                      Email Us
-                    </span>
-                    <a
-                      href="mailto:admin@cittumkur.org"
-                      className={styles.contactValue}
-                    >
-                      {contactInfo.email}
                     </a>
                   </div>
                 </div>
@@ -425,7 +401,7 @@ const ThankYou = () => {
               <span>Back to Home</span>
             </motion.a>
             <motion.a
-              href="https://wa.me/918867354168?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
+              href="https://wa.me/919403891805?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
               target="_blank"
               rel="noopener noreferrer"
               className={styles.whatsappBtn}

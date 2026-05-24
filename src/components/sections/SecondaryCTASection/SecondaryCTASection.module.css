@@ -28,7 +28,7 @@
     ),
     radial-gradient(
       circle at 85% 70%,
-      rgba(240, 165, 0, 0.1) 0%,
+      rgba(224, 48, 30, 0.1) 0%,
       transparent 40%
     ),
     repeating-linear-gradient(
@@ -72,14 +72,14 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-5);
-  background: rgba(240, 165, 0, 0.15);
+  background: rgba(224, 48, 30, 0.15);
   backdrop-filter: blur(8px);
   border-radius: var(--radius-full);
   color: #ffffff;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-wide);
-  border: 1px solid rgba(240, 165, 0, 0.45);
+  border: 1px solid rgba(224, 48, 30, 0.45);
   text-transform: uppercase;
 }
 
@@ -158,11 +158,11 @@
 }
 
 .primaryCta {
-  box-shadow: 0 6px 24px rgba(240, 165, 0, 0.45);
+  box-shadow: 0 6px 24px rgba(224, 48, 30, 0.45);
 }
 
 .primaryCta:hover {
-  box-shadow: 0 10px 30px rgba(240, 165, 0, 0.55);
+  box-shadow: 0 10px 30px rgba(224, 48, 30, 0.55);
 }
 
 .whatsappBtn {
@@ -271,7 +271,7 @@
   background: var(--accent-amber-gradient);
   color: #ffffff;
   border-radius: var(--radius-xl);
-  box-shadow: 0 12px 30px rgba(240, 165, 0, 0.45);
+  box-shadow: 0 12px 30px rgba(224, 48, 30, 0.45);
 }
 
 .seatBadgeIcon {

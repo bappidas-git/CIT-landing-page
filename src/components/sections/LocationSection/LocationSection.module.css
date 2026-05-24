@@ -167,7 +167,7 @@
   font-size: 3rem;
   color: var(--accent-amber);
   margin-bottom: var(--space-2);
-  filter: drop-shadow(0 2px 8px rgba(240, 165, 0, 0.45));
+  filter: drop-shadow(0 2px 8px rgba(224, 48, 30, 0.45));
 }
 
 .mapTitle {
@@ -401,7 +401,7 @@
   right: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(240, 165, 0, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(224, 48, 30, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(80px);

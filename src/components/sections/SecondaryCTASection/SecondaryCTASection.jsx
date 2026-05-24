@@ -27,7 +27,7 @@ const trustIndicators = [
 ];
 
 const WHATSAPP_URL =
-  "https://api.whatsapp.com/send?phone=918867354168&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
+  "https://api.whatsapp.com/send?phone=919403891805&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
 
 const SecondaryCTASection = () => {
   const { openLeadDrawer } = useModal();
@@ -150,7 +150,7 @@ const SecondaryCTASection = () => {
 
               <motion.div variants={itemVariants}>
                 <a
-                  href="tel:+918867354168"
+                  href="tel:+919403891805"
                   className={styles.phoneLink}
                   onClick={() =>
                     trackCTAClick(
@@ -161,7 +161,7 @@ const SecondaryCTASection = () => {
                   }
                 >
                   <Icon icon="mdi:phone" className={styles.phoneIcon} />
-                  +91 88673 54168
+                  +91 94038 91805
                 </a>
               </motion.div>
 

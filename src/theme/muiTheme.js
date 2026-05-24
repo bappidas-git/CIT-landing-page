@@ -21,39 +21,39 @@ const colors = {
     dark: '#A81B10',
     contrastText: '#FFFFFF',
   },
-  // CTA amber — primary CTA buttons only.
+  // CTA red — primary CTA buttons only.
   accent: {
-    main: '#F0A500',
-    light: '#F5C842',
-    dark: '#C77F00',
-    contrastText: '#11203A',
-    50: '#FDF6E0',
-    100: '#FAEAB6',
-    200: '#F7D277',
-    300: '#F6CB5B',
-    400: '#F5C842',
-    500: '#F0A500',
-    600: '#C77F00',
-    700: '#B57400',
-    800: '#8F5C00',
-    900: '#6B4400',
+    main: '#E0301E',
+    light: '#F0584A',
+    dark: '#B71F12',
+    contrastText: '#FFFFFF',
+    50: '#FDEAE8',
+    100: '#F9C7C2',
+    200: '#F39C92',
+    300: '#ED7163',
+    400: '#F0584A',
+    500: '#E0301E',
+    600: '#B71F12',
+    700: '#A52015',
+    800: '#861910',
+    900: '#66120B',
   },
   // Legacy alias — many components still reference `palette.orange.*`.
   // Mapped to amber so CTAs render correctly without sweeping renames.
   orange: {
-    main: '#F0A500',
-    light: '#F5C842',
-    dark: '#C77F00',
-    50: '#FDF6E0',
-    100: '#FAEAB6',
-    200: '#F7D277',
-    300: '#F6CB5B',
-    400: '#F5C842',
-    500: '#F0A500',
-    600: '#C77F00',
-    700: '#B57400',
-    800: '#8F5C00',
-    900: '#6B4400',
+    main: '#E0301E',
+    light: '#F0584A',
+    dark: '#B71F12',
+    50: '#FDEAE8',
+    100: '#F9C7C2',
+    200: '#F39C92',
+    300: '#ED7163',
+    400: '#F0584A',
+    500: '#E0301E',
+    600: '#B71F12',
+    700: '#A52015',
+    800: '#861910',
+    900: '#66120B',
   },
   navy: {
     main: '#0C2D48',
@@ -77,10 +77,10 @@ const colors = {
     contrastText: '#FFFFFF',
   },
   warning: {
-    main: '#F0A500',
-    light: '#F5C842',
-    dark: '#C77F00',
-    contrastText: '#11203A',
+    main: '#E0301E',
+    light: '#F0584A',
+    dark: '#B71F12',
+    contrastText: '#FFFFFF',
   },
   error: {
     main: '#D82618',
@@ -123,18 +123,18 @@ const colors = {
     gold: '#0C2D48',
     green: '#1E8E5A',
     purple: '#6B3FA0',
-    orange: '#F0A500',
+    orange: '#E0301E',
     pink: '#D82618',
     red: '#D82618',
     teal: '#0C2D48',
     blue: '#0C2D48',
   },
   cardBg: {
-    yellow: '#FFF4D6',
+    yellow: '#FDEAE8',
     green: '#E5F5EC',
     pink: '#FCE4E8',
     purple: '#EFE7F7',
-    orange: '#FFF1D6',
+    orange: '#FCEEEB',
     blue: '#EAEFF3',
   },
 };
@@ -290,8 +290,8 @@ const shadows = [
 
 // Amber shadow for CTA buttons and highlights.
 // Legacy exports kept as `orangeShadow*` so existing imports keep working.
-const orangeShadow = '0 4px 14px rgba(240, 165, 0, 0.35)';
-const orangeShadowHover = '0 6px 20px rgba(240, 165, 0, 0.45)';
+const orangeShadow = '0 4px 14px rgba(224, 48, 30, 0.35)';
+const orangeShadowHover = '0 6px 20px rgba(224, 48, 30, 0.45)';
 const amberShadow = orangeShadow;
 const amberShadowHover = orangeShadowHover;
 
