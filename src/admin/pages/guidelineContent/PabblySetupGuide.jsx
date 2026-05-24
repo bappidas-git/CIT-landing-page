@@ -530,7 +530,7 @@ UTM Source: {{utm_source}} | Campaign: {{utm_campaign}}`}
       <div className={styles.guideSection}>
         <p className={styles.guideParagraph}>
           The Admin Panel needs to see leads from <strong>every</strong> device — an applicant could
-          submit a form from their phone in Guwahati, and your admission team should be able to see
+          submit a form from their phone in Shillong, and your admission team should be able to see
           that lead from their laptop in Tumakuru. To make this possible, the project ships a tiny
           PHP file (<code className={styles.guideInlineCode}>public/api/leads.php</code>) that
           stores every lead in a shared file on your server.
