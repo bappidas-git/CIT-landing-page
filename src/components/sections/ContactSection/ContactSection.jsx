@@ -1,7 +1,7 @@
 /* ============================================
    ContactSection Component
-   "Get in Touch" contact section with contact cards
-   and embedded lead form
+   "Contact / Admissions" — CIT admission contact details
+   alongside the unified lead form.
    ============================================ */
 
 import React from "react";
@@ -9,13 +9,10 @@ import { Container, Grid, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import UnifiedLeadForm from "../../common/UnifiedLeadForm/UnifiedLeadForm";
-import { useModal } from "../../../context/ModalContext";
+import { locationData } from "../../../data/locationData";
 import styles from "./ContactSection.module.css";
 
 const ContactSection = () => {
-  const { openLeadDrawer } = useModal();
-
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -51,58 +48,84 @@ const ContactSection = () => {
     },
   };
 
-  // Contact info items
+  const mapsQuery = encodeURIComponent(
+    `${locationData.name}, ${locationData.address}`,
+  );
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+  const whatsappUrl = `https://wa.me/${locationData.whatsapp}?text=${encodeURIComponent(
+    "Hi CIT, I'd like guidance on the 2026 B.E. direct admission from North East.",
+  )}`;
+
   const contactInfo = [
     {
       icon: "mdi:map-marker-outline",
-      title: "Clinic Address",
-      content: "VIP Road, Borbari, Six Mile, Near Pratiksha Hospital, Guwahati, Assam",
+      title: "Campus Address",
+      content: locationData.address,
+      href: mapsUrl,
+      external: true,
     },
     {
       icon: "mdi:phone-in-talk-outline",
       title: "Call or WhatsApp",
       primary: {
-        display: "+91 9181956562",
-        ariaLabel: "Primary contact number +91 9181956562",
+        display: locationData.phoneDisplay,
+        ariaLabel: `Primary admission helpline ${locationData.phoneDisplay}`,
       },
       actions: [
         {
           icon: "mdi:phone",
           label: "Call",
-          href: "tel:+919181956562",
-          ariaLabel: "Call us at +91 9181956562",
+          href: `tel:${locationData.phone}`,
+          ariaLabel: `Call CIT admissions at ${locationData.phoneDisplay}`,
           variant: "call",
         },
         {
           icon: "mdi:whatsapp",
           label: "Chat",
-          href: "https://api.whatsapp.com/send?phone=919181956562&text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant.",
+          href: whatsappUrl,
           external: true,
-          ariaLabel: "Chat with us on WhatsApp at +91 9181956562",
+          ariaLabel: `Chat with CIT admissions on WhatsApp at ${locationData.phoneDisplay}`,
           variant: "whatsapp",
+        },
+      ],
+      secondaryLinks: [
+        {
+          display: locationData.altPhoneDisplay,
+          href: `tel:${locationData.altPhone}`,
+        },
+        {
+          display: locationData.secondaryPhoneDisplay,
+          href: `tel:${locationData.secondaryPhone}`,
         },
       ],
     },
     {
       icon: "mdi:email-outline",
-      title: "Email Us",
-      content: "dr@monjoven.com",
-      href: "mailto:dr@monjoven.com",
+      title: "Email Admissions",
+      content: locationData.email,
+      href: `mailto:${locationData.email}`,
+      subText: `Also: ${locationData.altEmail}`,
+      subHref: `mailto:${locationData.altEmail}`,
     },
     {
-      icon: "mdi:clock-outline",
-      title: "Clinic Hours",
-      content: "Mon - Sat: 9:00 AM - 6:00 PM",
+      icon: "mdi:web",
+      title: "Website",
+      content: locationData.website,
+      href: `https://${locationData.website}`,
+      external: true,
+    },
+    {
+      icon: "mdi:clock-fast",
+      title: "Response Time",
+      content: "Our admission team responds within 24 hours — every enquiry, every weekday.",
+    },
+    {
+      icon: "mdi:school-outline",
+      title: "PG & Research",
+      content: "PG (M.Tech / MBA / MCA) and research programs are also available — ask us.",
     },
   ];
-
-  const handleRequestCallback = () => {
-    openLeadDrawer("contact", {
-      title: "Request a Callback",
-      subtitle:
-        "Fill in your details and our team will reach out to you",
-    });
-  };
 
   return (
     <section id="contact" className={styles.section}>
@@ -116,43 +139,43 @@ const ContactSection = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className={styles.sectionHeader}>
             <Typography variant="overline" className={styles.sectionOverline}>
-              Get In Touch
+              Contact / Admissions
             </Typography>
             <Typography variant="h2" className={styles.sectionTitle}>
-              Visit Our Clinic or Book a{" "}
-              <span className={styles.highlight}>Consultation</span>
+              Talk to CIT's{" "}
+              <span className={styles.highlight}>Admission Team</span>
             </Typography>
             <Typography variant="body1" className={styles.sectionSubtitle}>
-              Located in Guwahati, Assam — easily accessible from all parts of
-              Northeast India
+              Reach us directly, or send your details — we'll guide you through
+              the 2026 B.E. direct-admission process.
             </Typography>
           </motion.div>
 
-          {/* Quick Action Buttons (mobile-first, visible on all) */}
+          {/* Quick Action Buttons */}
           <motion.div variants={itemVariants} className={styles.quickActions}>
-            <a href="tel:+919181956562" className={styles.quickActionBtn}>
+            <a
+              href={`tel:${locationData.phone}`}
+              className={styles.quickActionBtn}
+            >
               <Icon icon="mdi:phone" className={styles.quickActionIcon} />
-              <span>Call Now</span>
+              <span>Call {locationData.phoneDisplay}</span>
             </a>
             <a
-              href="https://api.whatsapp.com/send?phone=919181956562&text=Hi%20Doctor%2C%0AI%20want%20to%20check%20if%20i%20am%20suitable%20for%20transplant."
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={`${styles.quickActionBtn} ${styles.quickActionWhatsapp}`}
             >
               <Icon icon="mdi:whatsapp" className={styles.quickActionIcon} />
-              <span>WhatsApp Us</span>
+              <span>WhatsApp Admissions</span>
             </a>
-            <button
-              onClick={handleRequestCallback}
-              className={`${styles.quickActionBtn} ${styles.quickActionCallback}`}
+            <a
+              href={`mailto:${locationData.email}`}
+              className={`${styles.quickActionBtn} ${styles.quickActionEmail}`}
             >
-              <Icon
-                icon="mdi:phone-callback"
-                className={styles.quickActionIcon}
-              />
-              <span>Request Callback</span>
-            </button>
+              <Icon icon="mdi:email-fast-outline" className={styles.quickActionIcon} />
+              <span>Email Us</span>
+            </a>
           </motion.div>
 
           <Grid container spacing={6} alignItems="flex-start">
@@ -210,20 +233,52 @@ const ContactSection = () => {
                                 </a>
                               ))}
                             </div>
+                            {item.secondaryLinks && (
+                              <div className={styles.contactSecondaryLinks}>
+                                <span className={styles.contactSecondaryLabel}>
+                                  Also:
+                                </span>
+                                {item.secondaryLinks.map((link, linkIndex) => (
+                                  <React.Fragment key={linkIndex}>
+                                    {linkIndex > 0 && (
+                                      <span className={styles.contactSecondaryDot}>
+                                        ·
+                                      </span>
+                                    )}
+                                    <a
+                                      href={link.href}
+                                      className={styles.contactSecondaryLink}
+                                    >
+                                      {link.display}
+                                    </a>
+                                  </React.Fragment>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         ) : item.href ? (
-                          <a
-                            href={item.href}
-                            className={styles.contactLink}
-                            {...(item.external
-                              ? {
-                                  target: "_blank",
-                                  rel: "noopener noreferrer",
-                                }
-                              : {})}
-                          >
-                            {item.content}
-                          </a>
+                          <>
+                            <a
+                              href={item.href}
+                              className={styles.contactLink}
+                              {...(item.external
+                                ? {
+                                    target: "_blank",
+                                    rel: "noopener noreferrer",
+                                  }
+                                : {})}
+                            >
+                              {item.content}
+                            </a>
+                            {item.subText && item.subHref && (
+                              <a
+                                href={item.subHref}
+                                className={styles.contactSubLink}
+                              >
+                                {item.subText}
+                              </a>
+                            )}
+                          </>
                         ) : (
                           <Typography
                             variant="body2"
@@ -248,10 +303,11 @@ const ContactSection = () => {
                 {/* Form Header */}
                 <div className={styles.formHeader}>
                   <Typography variant="h5" className={styles.formTitle}>
-                    Request a Callback
+                    Get Admission Details
                   </Typography>
                   <Typography variant="body2" className={styles.formSubtitle}>
-                    Fill in your details and our team will reach out to you
+                    Share your details — our CIT admission counsellor will call
+                    you within 24 hours.
                   </Typography>
                 </div>
 
@@ -264,7 +320,7 @@ const ContactSection = () => {
                   showTrustBadges={true}
                   showConsent={true}
                   showPhoneButton={false}
-                  submitButtonText="Submit Enquiry"
+                  submitButtonText="Get Admission Details"
                   formId="contact-form"
                   className={styles.formContent}
                 />
