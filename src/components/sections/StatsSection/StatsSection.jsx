@@ -56,7 +56,7 @@ const parseStatValue = (stat) => {
   // Handle "98%" -> { value: 98, suffix: "%", decimals: 0 }
   // Handle "25+" -> { value: 25, suffix: "+", decimals: 0 }
   const match = String(stat).match(/^([\d.]+)(.*)$/);
-  if (!match) return { value: 0, suffix: '', decimals: 0 };
+  if (!match) return { value: 0, suffix: '', decimals: 0, text: String(stat) };
 
   const numStr = match[1];
   const suffix = match[2] || '';
@@ -139,14 +139,18 @@ const StatsSection = () => {
                       />
                     </div>
                     <div className={styles.statValue}>
-                      <AnimatedCounter
-                        value={parsed.value}
-                        suffix={parsed.suffix}
-                        decimals={parsed.decimals}
-                        duration={1.5}
-                        delay={0.2 + index * 0.1}
-                        color="dark"
-                      />
+                      {parsed.text ? (
+                        <span>{parsed.text}</span>
+                      ) : (
+                        <AnimatedCounter
+                          value={parsed.value}
+                          suffix={parsed.suffix}
+                          decimals={parsed.decimals}
+                          duration={1.5}
+                          delay={0.2 + index * 0.1}
+                          color="dark"
+                        />
+                      )}
                     </div>
                     <Typography className={styles.statLabel}>
                       {stat.statLabel}
