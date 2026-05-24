@@ -1,67 +1,85 @@
 export const featuresData = [
   {
     id: 1,
-    category: "Techniques",
+    category: "Academics & Innovation",
     items: [
       {
-        icon: "mdi:microscope",
-        title: "FUE & DHI Techniques",
+        icon: "mdi:monitor-dashboard",
+        title: "ICT-Enabled Smart Classrooms",
         description:
-          "Hair transplant procedures performed using established techniques such as Follicular Unit Extraction (FUE) and Direct Hair Implantation (DHI), selected based on individual assessment.",
+          "State-of-the-art computing facilities and ICT-enabled classrooms designed for modern, project-based engineering learning.",
       },
       {
-        icon: "mdi:needle",
-        title: "PRP Therapy",
+        icon: "mdi:rocket-launch-outline",
+        title: "Centre for Creativity & Incubation",
         description:
-          "Platelet-Rich Plasma (PRP) therapy may be used in selected cases as an adjunct to support hair growth.",
+          "Centre for Creativity in Engineering with start-up incubation, an in-house data centre, and private cloud infrastructure.",
+      },
+      {
+        icon: "mdi:flask-outline",
+        title: "Advanced R&D Labs",
+        description:
+          "IOS-MCN R&D Centre with Bharat 6G Labs, AICTE-sponsored Aero-vision Drone Lab CoE, plus BCI and IoT & Embedded Systems labs.",
+      },
+      {
+        icon: "mdi:certificate-outline",
+        title: "Recognised Research Output",
+        description:
+          "4-Star IIC (MHRD) rating, 21 patents filed, and ₹2 crore in research grants secured by the institution.",
       },
     ],
   },
   {
     id: 2,
-    category: "Patient Care & Support",
+    category: "Placements & Industry",
     items: [
       {
-        icon: "mdi:clipboard-pulse-outline",
-        title: "Post-Procedure Care",
+        icon: "mdi:briefcase-check-outline",
+        title: "90+ Recruiters, 85%+ Placement",
         description:
-          "Structured guidance provided for recovery, including instructions, follow-up evaluation, and ongoing support.",
+          "90+ companies visit campus every year with 85%+ placement; top recruiters include Accenture, Infosys, Deloitte and TCS.",
       },
       {
-        icon: "mdi:calendar-check",
-        title: "Follow-Up & Monitoring",
+        icon: "mdi:handshake-outline",
+        title: "Institution–Industry Cell",
         description:
-          "Patients are advised follow-up based on individual requirements to monitor progress and address concerns.",
+          "Active Institution–Industry Cell facilitates internships in cutting-edge tech and continuous industry exposure.",
+      },
+      {
+        icon: "mdi:trophy-outline",
+        title: "VTU Rank Holders Every Year",
+        description:
+          "Consistent VTU rank holders and gold medalists across branches, year after year.",
       },
     ],
   },
   {
     id: 3,
-    category: "Experience & Trust",
+    category: "Campus Life & NE Student Support",
     items: [
       {
-        icon: "mdi:doctor",
-        title: "Experienced Surgeon",
+        icon: "mdi:home-city-outline",
+        title: "Safe Hostel & Mess Facilities",
         description:
-          "Led by Dr. Porag Neog (MBBS, MS) with over 25+ years of experience in plastic and reconstructive surgery and more than a decade of experience in hair transplant procedures.",
+          "On-campus hostel and mess facilities offer a safe, supportive home away from home for North East students.",
       },
       {
-        icon: "mdi:trophy-outline",
-        title: "Early Practice in Hair Transplant in Northeast India",
+        icon: "mdi:account-tie-voice-outline",
+        title: "Guided Direct-Admission Support",
         description:
-          "Earliest centre to offer dedicated hair transplant services in Northeast India since 2012.",
+          "End-to-end direct-admission guidance from the CIT NE admission desk — no confusing counselling trips.",
       },
       {
-        icon: "mdi:earth",
-        title: "Patients from India and Abroad",
+        icon: "mdi:hand-heart-outline",
+        title: "Inclusive, Welcoming Campus",
         description:
-          "Patients from Northeast India as well as international locations including the USA, UK, Canada, Middle East, Bhutan and Nepal.",
+          "A supportive, inclusive campus community with help for travel planning and settling in at Tumakuru.",
       },
       {
-        icon: "mdi:shield-lock-outline",
-        title: "Confidential & Individualized Care",
+        icon: "mdi:shield-check-outline",
+        title: "Accredited Degree, Pan-India Value",
         description:
-          "Treatment plans are discussed privately with each patient, with focus on individualized planning and discretion.",
+          "NAAC-accredited, AICTE-approved B.E. degree affiliated to VTU, Belagavi — recognised across India.",
       },
     ],
   },
