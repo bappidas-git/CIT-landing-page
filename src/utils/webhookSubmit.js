@@ -94,9 +94,13 @@ const storeLeadForLMS = (leadData, isTest = false) => {
  * Submit lead data to Pabbly webhook or dummy endpoint
  * @param {Object} leadData - The form data to submit
  * @param {string} leadData.name - Applicant's full name
- * @param {string} leadData.mobile - Mobile number
- * @param {string} leadData.email - Email address
- * @param {string} leadData.service_interest - Selected service of interest
+ * @param {string} leadData.mobile - Mobile number (10 digits, +91 prefix added separately)
+ * @param {string} leadData.email - Email address (optional)
+ * @param {string} leadData.service_interest - Selected B.E. course (legacy key — value is
+ *   the course label, e.g. "B.E. — Computer Science & Engineering"). Kept as
+ *   `service_interest` to preserve the existing admin panel + Pabbly mapping.
+ * @param {string} leadData.state - Applicant's home state (NE India + "Other")
+ * @param {string} [leadData.message] - Optional free-text question
  * @param {string} leadData.source - Form source identifier (e.g., 'hero-form', 'apply-now', 'contact-form')
  * @param {Object} [leadData.metadata] - Additional metadata
  * @returns {Promise<{success: boolean, message: string}>}

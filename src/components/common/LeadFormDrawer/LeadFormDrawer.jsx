@@ -15,8 +15,8 @@ import styles from './LeadFormDrawer.module.css';
 const LeadFormDrawer = ({
   isOpen,
   onClose,
-  title = 'Book Your Consultation',
-  subtitle = 'Fill in your details and our specialist will contact you',
+  title = 'Enquire About Admission',
+  subtitle = "Fill the form — we'll assist you with 2026 B.E. admission",
   source = 'general',
   onSubmitSuccess,
 }) => {
@@ -130,7 +130,7 @@ const LeadFormDrawer = ({
                 animate="visible"
               >
                 <div className={styles.headerIcon}>
-                  <Icon icon="mdi:stethoscope" />
+                  <Icon icon="mdi:school-outline" />
                 </div>
                 <Typography variant="h4" id="drawer-title" className={styles.title}>
                   {title}
@@ -150,7 +150,7 @@ const LeadFormDrawer = ({
                 showTrustBadges={true}
                 showConsent={true}
                 showPhoneButton={true}
-                submitButtonText="Book Consultation"
+                submitButtonText="Apply for 2026 Admission"
                 onClose={onClose}
                 onSubmitSuccess={onSubmitSuccess}
                 formId={`drawer-form-${source}`}

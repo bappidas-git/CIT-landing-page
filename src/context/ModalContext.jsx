@@ -23,35 +23,35 @@ export const MODAL_TYPES = {
 };
 
 // Drawer title mapping based on source/context
-// Monjoven drawer title configuration
+// CIT — Direct B.E. Engineering Admissions 2026 drawer title configuration
 export const DRAWER_TITLES = {
   'apply-now': {
-    title: 'Get Started',
-    subtitle: 'Fill in your details and our team will assist you',
+    title: 'Apply for 2026 Admission',
+    subtitle: 'Share your details — our team will guide you',
   },
   'get-details': {
-    title: 'Get Details',
-    subtitle: 'Receive complete information about our services and plans',
-  },
-  'book-meeting': {
-    title: 'Book a Meeting',
-    subtitle: 'Meet our team for a detailed discussion',
-  },
-  'download-brochure': {
-    title: 'Download Brochure',
-    subtitle: 'Get the complete brochure with all details',
+    title: 'Get Admission Details',
+    subtitle: 'Courses, fees, hostel & placements',
   },
   'request-callback': {
     title: 'Request a Callback',
-    subtitle: 'Our team will reach out within 24 hours',
+    subtitle: 'Our admission team will call you',
   },
-  'investment-plans': {
-    title: 'View Plans',
-    subtitle: 'Explore our plans and pricing options',
+  'book-meeting': {
+    title: 'Talk to an Admission Counsellor',
+    subtitle: 'Book a free counselling call',
+  },
+  'download-brochure': {
+    title: 'Download CIT Brochure',
+    subtitle: 'Get the full 2026 prospectus',
+  },
+  'fees-scholarship': {
+    title: 'Fees & Scholarship Info',
+    subtitle: 'Get the latest 2026 fee structure and scholarship details',
   },
   'default': {
-    title: 'Enquiry',
-    subtitle: 'Fill the form and our team will assist you',
+    title: 'Enquire About Admission',
+    subtitle: "Fill the form — we'll assist you",
   },
 };
 
