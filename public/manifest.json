@@ -1,7 +1,7 @@
 {
-  "short_name": "Monjoven",
-  "name": "Monjoven - Hair Transplant & Cosmetic Surgery",
-  "description": "Northeast India's premier hair transplant and cosmetic surgery clinic",
+  "short_name": "CIT 2026",
+  "name": "CIT — Direct B.E. Admissions 2026",
+  "description": "Direct B.E. Engineering Admissions 2026 at Channabasaveshwara Institute of Technology, Tumakuru — guided admission pathway for students across North East India.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -24,9 +24,9 @@
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#1A5276",
+  "theme_color": "#0B3D91",
   "background_color": "#FFFFFF",
-  "categories": ["business", "health"],
+  "categories": ["education", "business"],
   "lang": "en",
   "dir": "ltr",
   "scope": "/",

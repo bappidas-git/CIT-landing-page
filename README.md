@@ -1,6 +1,6 @@
-# Landing Page Boilerplate
+# CIT — Direct B.E. Engineering Admissions 2026
 
-A high-converting, mobile-first landing page boilerplate for lead generation via Google Ads or any paid traffic source. Built with React 18, Material UI v5, and Framer Motion.
+A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumakuru**, built to capture quality leads for **Direct B.E. (Engineering) Admissions — 2026 intake**. Targeted at students and parents across North East India and run by **Assam Digital** through Google Ads and Meta. Built with React 18, Material UI v5, and Framer Motion.
 
 ## Features
 
@@ -67,7 +67,7 @@ npm start
 npm run build
 ```
 
-Admin credentials: `monjoven` / `monjoven@2026vip` (configured in `.env`).
+Admin credentials: `citadmin` / `cit@admissions2026` (configured in `.env`).
 
 ## Folder Structure
 
