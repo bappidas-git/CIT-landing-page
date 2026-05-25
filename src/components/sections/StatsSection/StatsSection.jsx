@@ -223,7 +223,15 @@ const StatsSection = () => {
                   90+ leading companies
                 </span>
               </Typography>
-              <Typography className={styles.recruiterCaption}>
+              <Typography
+                className={styles.recruiterCaption}
+                sx={{
+                  maxWidth: '640px',
+                  mx: 'auto',
+                  textAlign: 'center',
+                  color: '#475569',
+                }}
+              >
                 From global IT majors to product engineering, banking, and core
                 manufacturing — top recruiters trust CIT talent.
               </Typography>
