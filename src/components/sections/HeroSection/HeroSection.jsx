@@ -271,7 +271,7 @@ const HeroSection = () => {
                   size="large"
                   className={styles.secondaryCta}
                   component="a"
-                  href="tel:+9108069645014"
+                  href="tel:+918069645014"
                   onClick={() => {
                     trackCTAClick("hero_secondary_cta", "hero", "Call Now");
                   }}
@@ -293,7 +293,7 @@ const HeroSection = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Call +91 08069645014
+                  Call +91 8069645014
                 </Button>
               </motion.div>
 

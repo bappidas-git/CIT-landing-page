@@ -18,8 +18,8 @@ import styles from "./Header.module.css";
 const logoUrl =
   "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
 
-const PRIMARY_PHONE = "+9108069645014";
-const PRIMARY_PHONE_DISPLAY = "+91 08069645014";
+const PRIMARY_PHONE = "+918069645014";
+const PRIMARY_PHONE_DISPLAY = "+91 8069645014";
 
 // Navigation items — admission-focused anchors. Section IDs are set
 // alongside each section component (about / courses / placements / campus / contact).
