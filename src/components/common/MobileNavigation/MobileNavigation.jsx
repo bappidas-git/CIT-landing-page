@@ -11,8 +11,8 @@ import { trackPhoneClick, trackWhatsAppClick, trackNavigation } from "../../../u
 import styles from "./MobileNavigation.module.css";
 
 // Primary CIT admissions contact (Assam Digital campaign)
-const PRIMARY_PHONE = "+9108069645014";
-const PRIMARY_PHONE_DIGITS = "9108069645014";
+const PRIMARY_PHONE = "+918069645014";
+const PRIMARY_PHONE_DIGITS = "918069645014";
 const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
 
 // Navigation items configuration — CIT admissions actions

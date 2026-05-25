@@ -14,8 +14,8 @@ import { useModal } from "../../../context/ModalContext";
 import { trackCTAClick } from "../../../utils/gtm";
 import styles from "./WhyChooseCIT.module.css";
 
-const CIT_PHONE_DISPLAY = "+91 94038 91805";
-const CIT_PHONE_DIAL = "+9108069645014";
+const CIT_PHONE_DISPLAY = "+91 8069645014";
+const CIT_PHONE_DIAL = "+918069645014";
 
 // NE student/parent objections, answered by CIT
 const objections = [

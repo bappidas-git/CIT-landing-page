@@ -34,8 +34,8 @@ const trustBadges = [
 
 // Contact details
 const contactInfo = {
-  phone: "+91 94038 91805",
-  whatsapp: "+91 94038 91805",
+  phone: "+91 8069645014",
+  whatsapp: "+91 8069645014",
   officeHours: "Mon - Sat: 9:00 AM - 5:00 PM",
 };
 
@@ -330,7 +330,7 @@ const ThankYou = () => {
                       Call Us
                     </span>
                     <a
-                      href="tel:+9108069645014"
+                      href="tel:+918069645014"
                       className={styles.contactValue}
                     >
                       {contactInfo.phone}
@@ -353,7 +353,7 @@ const ThankYou = () => {
                       WhatsApp
                     </span>
                     <a
-                      href="https://wa.me/9108069645014?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
+                      href="https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.contactValue}
@@ -401,7 +401,7 @@ const ThankYou = () => {
               <span>Back to Home</span>
             </motion.a>
             <motion.a
-              href="https://wa.me/9108069645014?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
+              href="https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
               target="_blank"
               rel="noopener noreferrer"
               className={styles.whatsappBtn}
