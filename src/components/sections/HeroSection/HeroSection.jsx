@@ -247,7 +247,7 @@ const HeroSection = () => {
                   }}
                   sx={{
                     backgroundColor: "#E0301E",
-                    color: "#11203A",
+                    color: "#FFFFFF",
                     fontWeight: 700,
                     fontSize: "1rem",
                     padding: "0.875rem 2rem",
@@ -257,7 +257,8 @@ const HeroSection = () => {
                     boxShadow: "0 4px 20px rgba(224, 48, 30, 0.45)",
                     "&:hover": {
                       backgroundColor: "#B71F12",
-                      boxShadow: "0 6px 24px rgba(224, 48, 30, 0.6)",
+                      color: "#FFFFFF",
+                      boxShadow: "0 8px 28px rgba(224, 48, 30, 0.6)",
                       transform: "translateY(-2px)",
                     },
                     transition: "all 0.3s ease",
