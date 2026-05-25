@@ -14,10 +14,22 @@ import Button from "../../common/Button/Button";
 import styles from "./SecondaryCTASection.module.css";
 
 const reassurances = [
-  { text: "NAAC Accredited · AICTE Approved · VTU Affiliated", icon: "mdi:shield-check" },
-  { text: "85%+ placements over the last 8 years (90+ recruiters on campus)", icon: "mdi:briefcase-check" },
-  { text: "Safe hostel & mess facilities for North-East students", icon: "mdi:home-heart" },
-  { text: "End-to-end admission guidance — no Karnataka trip needed", icon: "mdi:compass-outline" },
+  {
+    text: "NAAC Accredited · AICTE Approved · VTU Affiliated",
+    icon: "mdi:shield-check",
+  },
+  {
+    text: "85%+ placements over the last 8 years (90+ recruiters on campus)",
+    icon: "mdi:briefcase-check",
+  },
+  {
+    text: "Safe hostel & mess facilities for North-East students",
+    icon: "mdi:home-heart",
+  },
+  {
+    text: "End-to-end admission guidance — no Karnataka trip needed",
+    icon: "mdi:compass-outline",
+  },
 ];
 
 const trustIndicators = [
@@ -180,7 +192,7 @@ const SecondaryCTASection = () => {
               <div className={styles.imageWrapper}>
                 <Box
                   component="img"
-                  src="https://placehold.co/600x500/0C2D48/F0A500?text=CIT+B.E.+Admission+2026"
+                  src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1779670911/CTA-Image_ntt9ql.png"
                   alt="Direct B.E. admission at CIT Tumakuru for the 2026 intake"
                   className={styles.ctaImage}
                   loading="lazy"

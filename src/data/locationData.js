@@ -7,7 +7,7 @@ export const locationData = {
   phoneDisplay: "+91 94038 91805",
   whatsapp: "919403891805",
   mapUrl:
-    "https://placehold.co/800x500/EAEFF3/0C2D48?text=CIT+Tumakuru+Campus+Map",
+    "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779671141/CIT-Map_jqtimx.png",
   warehouses: [],
   nearbyAreas: [
     "Gubbi",
