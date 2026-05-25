@@ -18,7 +18,7 @@ import styles from "./Header.module.css";
 const logoUrl =
   "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
 
-const PRIMARY_PHONE = "+919403891805";
+const PRIMARY_PHONE = "+9108069645014";
 const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";
 
 // Navigation items — admission-focused anchors. Section IDs are set

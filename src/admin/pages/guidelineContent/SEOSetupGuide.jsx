@@ -119,7 +119,7 @@ const SEOSetupGuide = ({ styles }) => {
 organization.name       → Channabasaveshwara Institute of Technology
 organization.url        → https://landing.cittumkur.org
 organization.logo       → URL to the CIT logo image
-organization.phone      → +91-9403891805
+organization.phone      → +91-08069645014
 organization.email      → admin@cittumkur.org
 organization.address    → NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
 

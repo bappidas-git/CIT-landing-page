@@ -39,7 +39,7 @@ const trustIndicators = [
 ];
 
 const WHATSAPP_URL =
-  "https://api.whatsapp.com/send?phone=919403891805&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
+  "https://api.whatsapp.com/send?phone=9108069645014&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
 
 const SecondaryCTASection = () => {
   const { openLeadDrawer } = useModal();
@@ -162,7 +162,7 @@ const SecondaryCTASection = () => {
 
               <motion.div variants={itemVariants}>
                 <a
-                  href="tel:+919403891805"
+                  href="tel:+9108069645014"
                   className={styles.phoneLink}
                   onClick={() =>
                     trackCTAClick(

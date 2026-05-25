@@ -271,7 +271,7 @@ const HeroSection = () => {
                   size="large"
                   className={styles.secondaryCta}
                   component="a"
-                  href="tel:+919403891805"
+                  href="tel:+9108069645014"
                   onClick={() => {
                     trackCTAClick("hero_secondary_cta", "hero", "Call Now");
                   }}
