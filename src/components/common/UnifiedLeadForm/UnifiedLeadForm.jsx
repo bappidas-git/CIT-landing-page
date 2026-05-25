@@ -357,7 +357,7 @@ const PrivacyPolicyContent = () => (
         <br />
         NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
         <br />
-        Phone: +91 94038 91805
+        Phone: +91 08069645014
       </p>
     </section>
 
@@ -761,7 +761,7 @@ const UnifiedLeadForm = ({
       console.error('Form submission error:', error);
       await showError(
         'Something went wrong',
-        'Please try again or call us directly at +91 94038 91805.'
+        'Please try again or call us directly at +91 08069645014.'
       );
     } finally {
       setIsSubmitting(false);
@@ -1279,7 +1279,7 @@ const UnifiedLeadForm = ({
           </Typography>
           <a href="tel:+9108069645014" className={styles.phoneLink}>
             <Icon icon="mdi:phone" />
-            <span>+91 94038 91805</span>
+            <span>+91 08069645014</span>
           </a>
         </div>
       )}

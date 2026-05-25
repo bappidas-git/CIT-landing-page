@@ -4,7 +4,7 @@ export const locationData = {
   city: "Tumakuru",
   state: "Karnataka",
   phone: "+9108069645014",
-  phoneDisplay: "+91 94038 91805",
+  phoneDisplay: "+91 08069645014",
   whatsapp: "9108069645014",
   mapUrl:
     "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779671141/CIT-Map_jqtimx.png",

@@ -173,7 +173,7 @@ const SecondaryCTASection = () => {
                   }
                 >
                   <Icon icon="mdi:phone" className={styles.phoneIcon} />
-                  +91 94038 91805
+                  +91 08069645014
                 </a>
               </motion.div>
 

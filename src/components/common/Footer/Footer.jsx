@@ -15,7 +15,7 @@ const CIT_LOGO_URL =
   "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
 
 const PRIMARY_PHONE = "+9108069645014";
-const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";
+const PRIMARY_PHONE_DISPLAY = "+91 08069645014";
 const WHATSAPP_LINK =
   "https://api.whatsapp.com/send?phone=9108069645014&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.";
 

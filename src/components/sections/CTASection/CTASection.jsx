@@ -129,7 +129,7 @@ const CTASection = () => {
               onClick={handleCallClick}
               className={styles.secondaryBtn}
             >
-              Call +91 94038 91805
+              Call +91 08069645014
             </Button>
           </motion.div>
 

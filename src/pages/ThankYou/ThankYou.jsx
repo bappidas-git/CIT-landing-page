@@ -34,8 +34,8 @@ const trustBadges = [
 
 // Contact details
 const contactInfo = {
-  phone: "+91 94038 91805",
-  whatsapp: "+91 94038 91805",
+  phone: "+91 08069645014",
+  whatsapp: "+91 08069645014",
   officeHours: "Mon - Sat: 9:00 AM - 5:00 PM",
 };
 
