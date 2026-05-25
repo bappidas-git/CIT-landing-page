@@ -27,7 +27,7 @@ export const seoConfig = {
     name: "Channabasaveshwara Institute of Technology",
     alternateName: "CIT Tumakuru",
     url: "https://www.cittumkur.org",
-    logo: "https://placehold.co/200x60/0C2D48/FFFFFF?text=CIT+Logo",
+    logo: "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png",
     phone: "+91 9403891805",
     description:
       "Channabasaveshwara Institute of Technology (CIT), Tumakuru is a NAAC-accredited, AICTE-approved engineering college affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements and guided direct B.E. admissions for the 2026 intake.",

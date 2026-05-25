@@ -37,7 +37,7 @@
 }
 
 .header.scrolled .mainLogo {
-  filter: brightness(1);
+  filter: none;
 }
 
 .header.scrolled .menuIcon {
@@ -96,7 +96,8 @@
   height: 60px;
   width: auto;
   object-fit: contain;
-  transition: opacity var(--transition-base);
+  filter: brightness(0) invert(1);
+  transition: opacity var(--transition-base), filter var(--transition-base);
 }
 
 .logoDivider {
