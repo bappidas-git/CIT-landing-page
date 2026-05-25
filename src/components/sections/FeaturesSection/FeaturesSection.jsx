@@ -345,17 +345,19 @@ const FeaturesSection = () => {
               endIcon={<Icon icon="mdi:arrow-right" />}
               sx={{
                 background: "linear-gradient(135deg, #E0301E 0%, #B71F12 100%)",
-                color: "#11203A",
+                color: "#FFFFFF",
                 fontWeight: 700,
                 fontSize: { xs: "0.9rem", md: "1rem" },
                 padding: { xs: "12px 28px", md: "14px 36px" },
                 borderRadius: "50px",
                 textTransform: "none",
                 boxShadow: "0 8px 32px rgba(224, 48, 30, 0.3)",
+                transition: "all 0.3s ease",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #B71F12 0%, #E0301E 100%)",
-                  boxShadow: "0 12px 40px rgba(224, 48, 30, 0.4)",
+                    "linear-gradient(135deg, #F0584A 0%, #E0301E 100%)",
+                  color: "#FFFFFF",
+                  boxShadow: "0 14px 40px rgba(224, 48, 30, 0.4)",
                   transform: "translateY(-2px)",
                 },
               }}

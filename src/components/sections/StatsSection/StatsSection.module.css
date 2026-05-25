@@ -233,7 +233,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 700;
-  color: #11203A;
+  color: #FFFFFF;
   background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
   border: none;
   border-radius: 999px;
@@ -244,8 +244,8 @@
 
 .ctaButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(224, 48, 30, 0.4);
-  background: linear-gradient(135deg, #B71F12 0%, #9A1A0E 100%);
+  box-shadow: 0 16px 30px rgba(224, 48, 30, 0.45);
+  background: linear-gradient(135deg, #F0584A 0%, #E0301E 100%);
 }
 
 .ctaButton:focus-visible {

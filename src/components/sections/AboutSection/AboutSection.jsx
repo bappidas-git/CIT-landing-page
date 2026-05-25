@@ -137,7 +137,7 @@ const AboutSection = () => {
                 sx={{
                   background:
                     "linear-gradient(135deg, #E0301E 0%, #B71F12 100%)",
-                  color: "#11203A",
+                  color: "#FFFFFF",
                   fontWeight: 700,
                   fontSize: { xs: "0.9375rem", md: "1rem" },
                   padding: { xs: "12px 28px", md: "14px 36px" },
@@ -145,10 +145,12 @@ const AboutSection = () => {
                   textTransform: "none",
                   boxShadow: "0 8px 30px rgba(224, 48, 30, 0.3)",
                   marginTop: "1rem",
+                  transition: "all 0.3s ease",
                   "&:hover": {
                     background:
-                      "linear-gradient(135deg, #B71F12 0%, #E0301E 100%)",
-                    boxShadow: "0 12px 40px rgba(224, 48, 30, 0.45)",
+                      "linear-gradient(135deg, #F0584A 0%, #E0301E 100%)",
+                    color: "#FFFFFF",
+                    boxShadow: "0 14px 40px rgba(224, 48, 30, 0.45)",
                     transform: "translateY(-2px)",
                   },
                 }}

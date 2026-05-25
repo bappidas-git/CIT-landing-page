@@ -120,7 +120,7 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
-  color: #11203A;
+  color: #FFFFFF;
   z-index: 2;
   box-shadow: 0 2px 6px rgba(224, 48, 30, 0.25);
 }
@@ -239,7 +239,7 @@
   background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
   border: none;
   border-radius: 10px;
-  color: #11203A;
+  color: #FFFFFF;
   font-size: 0.8375rem;
   font-weight: 700;
   cursor: pointer;
@@ -248,7 +248,10 @@
 }
 
 .courseCtaBtn:hover {
-  box-shadow: 0 6px 20px rgba(224, 48, 30, 0.45);
+  background: linear-gradient(135deg, #F0584A 0%, #E0301E 100%);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(224, 48, 30, 0.45);
 }
 
 .courseCtaBtn svg {
@@ -303,7 +306,7 @@
   background: linear-gradient(135deg, #E0301E 0%, #B71F12 100%);
   border: none;
   border-radius: 10px;
-  color: #11203A;
+  color: #FFFFFF;
   font-size: 0.8375rem;
   font-weight: 700;
   cursor: pointer;
@@ -312,8 +315,10 @@
 }
 
 .ctaBtn:hover {
+  background: linear-gradient(135deg, #F0584A 0%, #E0301E 100%);
+  color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(224, 48, 30, 0.5);
+  box-shadow: 0 8px 18px rgba(224, 48, 30, 0.5);
 }
 
 .ctaBtn svg {
