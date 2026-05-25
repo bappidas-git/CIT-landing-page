@@ -24,10 +24,10 @@ import styles from "./HeroSection.module.css";
 // Hero images with fallbacks
 const HERO_IMAGES = {
   desktop: [
-    "https://placehold.co/1600x900/0C2D48/FFFFFF?text=CIT+Campus+Hero+Desktop",
+    "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669894/CIT-Campus_nndyrh.png",
   ],
   mobile: [
-    "https://placehold.co/800x1000/0C2D48/FFFFFF?text=CIT+Campus+Hero+Mobile",
+    "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669894/CIT-Campus_nndyrh.png",
   ],
 };
 

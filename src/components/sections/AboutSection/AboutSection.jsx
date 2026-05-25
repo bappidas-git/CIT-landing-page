@@ -34,7 +34,7 @@ const itemVariants = {
 };
 
 const campusImage = {
-  src: "https://placehold.co/600x400/0C2D48/FFFFFF?text=CIT+Campus",
+  src: "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669894/CIT-Campus_nndyrh.png",
   alt: "CIT Tumakuru campus",
 };
 
