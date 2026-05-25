@@ -213,10 +213,18 @@ const LocationSection = () => {
                         icon="mdi:map-marker"
                         className={styles.mapPinIcon}
                       />
-                      <Typography variant="h6" className={styles.mapTitle}>
+                      <Typography
+                        variant="h6"
+                        className={styles.mapTitle}
+                        sx={{ color: '#FFFFFF' }}
+                      >
                         CIT Campus, Gubbi
                       </Typography>
-                      <Typography variant="body2" className={styles.mapAddress}>
+                      <Typography
+                        variant="body2"
+                        className={styles.mapAddress}
+                        sx={{ color: '#E6E8EA' }}
+                      >
                         NH-206, B.H. Road, Tumakuru — Karnataka
                       </Typography>
                       <Button
@@ -324,10 +332,23 @@ const LocationSection = () => {
           className={styles.bottomCta}
         >
           <motion.div variants={itemVariants}>
-            <Typography variant="h5" className={styles.ctaTitle}>
+            <Typography
+              variant="h5"
+              className={styles.ctaTitle}
+              sx={{ color: '#FFFFFF', textAlign: 'center' }}
+            >
               Need help planning your journey to CIT?
             </Typography>
-            <Typography variant="body1" className={styles.ctaSubtitle}>
+            <Typography
+              variant="body1"
+              className={styles.ctaSubtitle}
+              sx={{
+                color: 'rgba(255, 255, 255, 0.85)',
+                maxWidth: '640px',
+                mx: 'auto',
+                textAlign: 'center',
+              }}
+            >
               Our admission counsellor will call you and walk you through travel,
               documents, hostel and the 2026 B.E. direct-admission process.
             </Typography>
