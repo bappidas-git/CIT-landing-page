@@ -125,7 +125,7 @@ const CTASection = () => {
               variant="outline"
               size="large"
               startIcon="mdi:phone-outline"
-              href="tel:+919403891805"
+              href="tel:+9108069645014"
               onClick={handleCallClick}
               className={styles.secondaryBtn}
             >
