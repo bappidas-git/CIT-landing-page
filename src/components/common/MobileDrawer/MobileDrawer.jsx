@@ -28,7 +28,7 @@ const PRIMARY_PHONE_DIGITS = "919403891805";
 const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
 
 const CIT_LOGO_URL =
-  "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
+  "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
 
 // Navigation menu items — match Header anchors
 const menuItems = [

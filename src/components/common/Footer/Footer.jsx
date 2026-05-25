@@ -12,7 +12,7 @@ import { Icon } from "@iconify/react";
 import styles from "./Footer.module.css";
 
 const CIT_LOGO_URL =
-  "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
+  "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
 
 const PRIMARY_PHONE = "+919403891805";
 const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";

@@ -35,6 +35,11 @@
   gap: var(--space-3);
 }
 
+/* Footer sits on a dark navy background — render the brand logo in white */
+.logoWrapper img {
+  filter: brightness(0) invert(1);
+}
+
 .logoIcon {
   font-size: 2.5rem;
   color: var(--accent-gold);

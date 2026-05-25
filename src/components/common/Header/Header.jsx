@@ -16,7 +16,7 @@ import { useModal } from "../../../context/ModalContext";
 import styles from "./Header.module.css";
 
 const logoUrl =
-  "https://placehold.co/200x60/FFFFFF/0C2D48?text=CIT+Logo";
+  "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
 
 const PRIMARY_PHONE = "+919403891805";
 const PRIMARY_PHONE_DISPLAY = "+91 94038 91805";

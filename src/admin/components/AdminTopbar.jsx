@@ -58,7 +58,7 @@ const AdminTopbar = () => {
     <header className={styles.topbar}>
       <div className={styles.topbarLeft}>
         <img
-          src="https://placehold.co/200x60/0C2D48/FFFFFF?text=CIT+Admin"
+          src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png"
           alt="CIT Admin"
           className={styles.logo}
         />
@@ -111,7 +111,7 @@ const AdminTopbar = () => {
             {/* Logo at top */}
             <div className={styles.mobileMenuHeader}>
               <img
-                src="https://placehold.co/200x60/0C2D48/FFFFFF?text=CIT+Admin"
+                src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png"
                 alt="CIT Admin"
                 className={styles.mobileMenuLogo}
               />
