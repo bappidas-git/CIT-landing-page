@@ -31,7 +31,7 @@ Key variables to update:
 | `REACT_APP_ADMIN_USERNAME` | Admin panel username (default: `monjoven`) |
 | `REACT_APP_ADMIN_PASSWORD` | Admin panel password (default: `monjoven@2026vip`) |
 | `REACT_APP_LEADS_API_URL` | Path to `leads.php` (default: `/api/leads.php`). Required for Admin Panel. |
-| `REACT_APP_LEADS_ADMIN_KEY` | Secret shared with `ADMIN_API_KEY` in `public/api/config.php`. Required for Admin Panel. |
+| `REACT_APP_LEADS_ADMIN_KEY` | Key shared with the `leads.php` API so the Admin Panel can read leads from any device. Has a working default; override it (plus `ADMIN_API_KEY` on the server) for a private key. |
 | `REACT_APP_ADMIN_PABBLY_WEBHOOK_URL` | Optional — only for mirroring admin actions to a second Pabbly workflow. Leave blank otherwise. |
 
 ## 3. Update Brand Colors
@@ -141,22 +141,27 @@ See `PABBLY_GUIDE.md` Part A for a full, step-by-step walkthrough (including Goo
 
 ## 8b. Configure Lead Management (Admin Panel)
 
-The Admin Panel (`/admin`) must be able to see leads submitted from **any** device. To do this, the project stores every lead on your server in a small JSON file via `public/api/leads.php`. Set it up once:
+The Admin Panel (`/admin`) must be able to see leads submitted from **any** device. To do this, the project stores every lead on your server in a small JSON file via `public/api/leads.php`. The admin panel polls this endpoint, so a lead submitted on a phone shows up in the admin panel on your laptop within ~15 seconds.
 
-1. On your server, copy **`public/api/config.example.php`** to **`public/api/config.php`**.
-2. Open `config.php` and set `ADMIN_API_KEY` to a long random string:
+**This works out of the box** — `leads.php` ships with a built-in admin key that matches the `REACT_APP_LEADS_ADMIN_KEY` already in `.env`, so you do **not** need to create `config.php` just to use Lead Management.
+
+To lock the API down to your **own** private key (recommended for production), change the key in two places so they match:
+
+1. On your server, copy **`public/api/config.example.php`** to **`public/api/config.php`** and set `ADMIN_API_KEY` to a long random string (this overrides the built-in default):
    ```php
    define('ADMIN_API_KEY', 'Zk8pQ3mX9yL2wN7bV5rT1jH6cD4fG0aE');
    ```
-3. Put the **same value** in your project's `.env` file:
+   _(Alternatively, set a `LEADS_ADMIN_KEY` environment variable in your Cloudways application settings — no file needed.)_
+2. Put the **same value** in your project's `.env` file:
    ```env
    REACT_APP_LEADS_API_URL="/api/leads.php"
    REACT_APP_LEADS_ADMIN_KEY="Zk8pQ3mX9yL2wN7bV5rT1jH6cD4fG0aE"
    ```
-4. Run `npm run build` and redeploy (env values are baked in at build time).
-5. Make sure the `public/api/data/` folder is writable by the PHP process (usually automatic on cPanel).
+3. Run `npm run build` and redeploy (env values are baked in at build time).
 
-> **Requirement:** Your hosting must support PHP. If you're on Netlify/Vercel (static only), host `leads.php` on any cheap PHP host (Hostinger, cPanel, etc.) and use the full URL in `REACT_APP_LEADS_API_URL`.
+Make sure the `public/api/data/` folder is writable by the PHP process (usually automatic on Cloudways/cPanel).
+
+> **Requirement:** Your hosting must support PHP (Cloudways, Hostinger, cPanel, etc. all do). If you're on Netlify/Vercel (static only), host `leads.php` on any cheap PHP host and use the full URL in `REACT_APP_LEADS_API_URL`.
 
 > **Optional — skip by default:** `REACT_APP_ADMIN_PABBLY_WEBHOOK_URL` is only needed if you want admin actions (status changes, notes, deletions) to also flow into a **second** Pabbly workflow. Lead Management works perfectly without it.
 
