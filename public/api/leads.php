@@ -52,14 +52,46 @@ if (!is_dir($dataDir)) {
     @file_put_contents($dataDir . '/index.html', '');
 }
 
-// ----- Load optional config for admin key -----
-$adminKey  = '';
+// ----- Resolve the admin key used to gate list/update/delete -----
+//
+// The admin panel reads the shared lead store using REACT_APP_LEADS_ADMIN_KEY,
+// which is compiled into the public client bundle — so this value is NOT a
+// real secret, it is just the handshake that keeps the admin panel and this
+// API in sync. Previously the key lived ONLY in config.php, which is
+// .gitignore'd and therefore never reaches the server on a fresh deploy. When
+// it was missing, list/update/delete returned 503 and the admin panel could
+// never load leads submitted from other devices. We now resolve the key from
+// several sources, falling back to a committed default that matches the value
+// in .env so cross-device sync works out of the box without a manual
+// server-side config step.
+//
+// Resolution order (first non-empty wins):
+//   1. ADMIN_API_KEY defined in config.php (highest priority — lets an
+//      operator override the default with their own secret).
+//   2. LEADS_ADMIN_KEY / ADMIN_API_KEY environment variable (e.g. set in the
+//      Cloudways application settings).
+//   3. The committed default below, which MUST match REACT_APP_LEADS_ADMIN_KEY
+//      in .env. Change BOTH together to lock the API down to a private key.
+$adminKey   = '';
 $configFile = __DIR__ . '/config.php';
 if (file_exists($configFile)) {
     require_once $configFile;
     if (defined('ADMIN_API_KEY')) {
         $adminKey = ADMIN_API_KEY;
     }
+}
+if ($adminKey === '') {
+    $envKey = getenv('LEADS_ADMIN_KEY');
+    if (!$envKey) {
+        $envKey = getenv('ADMIN_API_KEY');
+    }
+    if ($envKey) {
+        $adminKey = $envKey;
+    }
+}
+if ($adminKey === '') {
+    // Default — keep in sync with REACT_APP_LEADS_ADMIN_KEY in .env.
+    $adminKey = 'skdfjsdfweiormcnzxmzdlkfjds';
 }
 
 // ----- Helpers -----
