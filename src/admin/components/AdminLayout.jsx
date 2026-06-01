@@ -7,11 +7,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
 import AdminTopbar from './AdminTopbar';
 import { syncLeadsFromServer } from '../utils/leadService';
+import { syncTelecallsFromServer } from '../utils/telecallService';
 import styles from './AdminLayout.module.css';
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const LeadManagement = lazy(() => import('../pages/LeadManagement'));
 const LeadDetail = lazy(() => import('../pages/LeadDetail'));
+const TeleCalling = lazy(() => import('../pages/TeleCalling'));
+const TeleCallDetail = lazy(() => import('../pages/TeleCallDetail'));
 const Guideline = lazy(() => import('../pages/Guideline'));
 
 const PageLoader = () => (
@@ -33,6 +36,15 @@ const AdminLayout = () => {
         console.log(`[Admin] Synced ${result.added} lead(s) from server`);
       }
     });
+    // Warm the tele-calling cache too so its module renders every record
+    // entered from any browser/device the moment the admin loads.
+    syncTelecallsFromServer().then((result) => {
+      if (result.error) {
+        console.warn('[Admin] Tele-calling sync skipped:', result.error);
+      } else if (result.added > 0) {
+        console.log(`[Admin] Synced ${result.added} tele-calling record(s) from server`);
+      }
+    });
   }, []);
 
   return (
@@ -46,6 +58,8 @@ const AdminLayout = () => {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="lms" element={<LeadManagement />} />
               <Route path="lms/lead/:leadId" element={<LeadDetail />} />
+              <Route path="tele-calling" element={<TeleCalling />} />
+              <Route path="tele-calling/lead/:telecallId" element={<TeleCallDetail />} />
               <Route path="guideline" element={<Guideline />} />
             </Routes>
           </Suspense>

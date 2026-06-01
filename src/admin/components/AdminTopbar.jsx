@@ -11,6 +11,7 @@ import styles from './AdminTopbar.module.css';
 const navItems = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: 'mdi:view-dashboard' },
   { label: 'Leads', path: '/admin/lms', icon: 'mdi:account-group' },
+  { label: 'Tele-Calling', path: '/admin/tele-calling', icon: 'mdi:phone-in-talk' },
   { label: 'Guidelines', path: '/admin/guideline', icon: 'mdi:book-open-page-variant' },
 ];
 
