@@ -87,25 +87,57 @@ export const onLeadsChanged = (handler) => {
   };
 };
 
-// Admin-only fields that live alongside a lead and are mutated from the admin
-// panel (status changes, notes, conversion tracking). These are the fields we
-// merge back from the shared server store so changes made on one browser /
-// device appear on all of them. `updated_at` is the last-write-wins marker.
-const ADMIN_SYNC_FIELDS = [
-  "status",
-  "notes",
-  "activity",
-  "conversion_value",
-  "conversion_type",
-  "converted_at",
-  "updated_at",
-];
+// Admin-only state that lives alongside a lead and is mutated from the admin
+// panel is merged back from the shared server store so changes made on one
+// browser/device appear on all of them. The append-only arrays (notes,
+// activity) are union-merged, while scalar fields (see SCALAR_SYNC_FIELDS
+// below) are last-write-wins keyed on the `updated_at` marker.
 
 const toMillis = (ts) => {
   if (!ts) return 0;
   const t = new Date(ts).getTime();
   return Number.isNaN(t) ? 0 : t;
 };
+
+// Stable de-dupe keys for the two append-only arrays that live on a lead.
+// A note carries its own `id`; we fall back to timestamp+text in case an old
+// note predates the id field. An activity entry has no id, so it is keyed by
+// timestamp+action. These keys let us union the same array coming from two
+// devices without creating duplicates.
+const noteKey = (n) =>
+  !n ? "" : n.id ? `id:${n.id}` : `t:${n.timestamp || ""}|${n.text || ""}`;
+const activityKey = (a) => (a ? `${a.timestamp || ""}|${a.action || ""}` : "");
+
+// Union two arrays (local + server) into one, de-duping by `keyFn` and sorting
+// chronologically so every device converges to the SAME ordered list. Notes and
+// activity are append-only, so a union never loses an entry — unlike the old
+// last-write-wins replace, which let one device's stale array overwrite the
+// other device's additions.
+const unionByKey = (localArr, serverArr, keyFn) => {
+  const seen = new Map();
+  const all = [
+    ...(Array.isArray(localArr) ? localArr : []),
+    ...(Array.isArray(serverArr) ? serverArr : []),
+  ];
+  all.forEach((item) => {
+    const k = keyFn(item);
+    if (!k || seen.has(k)) return;
+    seen.set(k, item);
+  });
+  return Array.from(seen.values()).sort(
+    (a, b) => toMillis(a && a.timestamp) - toMillis(b && b.timestamp)
+  );
+};
+
+// Scalar admin fields resolved by last-write-wins (the array fields notes /
+// activity are union-merged separately and intentionally excluded here).
+const SCALAR_SYNC_FIELDS = [
+  "status",
+  "conversion_value",
+  "conversion_type",
+  "converted_at",
+  "updated_at",
+];
 
 /**
  * Build the URL for the leads API. Returns empty string when disabled.
@@ -180,11 +212,13 @@ export const syncLeadsFromServer = async () => {
 
     const localLeads = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
     const localById = new Map(localLeads.map((l) => [l.lead_id, l]));
+    const serverIds = new Set();
 
     let added = 0;
     let updated = 0;
     serverLeads.forEach((lead) => {
       if (!lead || !lead.lead_id) return;
+      serverIds.add(lead.lead_id);
       const local = localById.get(lead.lead_id);
       if (!local) {
         // New lead from another browser/device — import it with sensible
@@ -207,21 +241,54 @@ export const syncLeadsFromServer = async () => {
         return;
       }
 
-      // Existing lead — adopt the server's admin fields only when its copy is
-      // newer, so admin updates made on another device become visible here
-      // without overwriting edits we made more recently.
+      // Existing lead — reconcile admin state from the shared store.
+      let changed = false;
+
+      // Notes and activity are append-only, so we UNION them rather than
+      // letting the newer copy replace the older one. This is what makes notes
+      // and the activity timeline converge across devices: without it, each
+      // device kept overwriting the other's array and they never matched.
+      const mergedNotes = unionByKey(local.notes, lead.notes, noteKey);
+      if (mergedNotes.length !== (local.notes || []).length) changed = true;
+      local.notes = mergedNotes;
+
+      const mergedActivity = unionByKey(local.activity, lead.activity, activityKey);
+      if (mergedActivity.length !== (local.activity || []).length) changed = true;
+      local.activity = mergedActivity;
+
+      // Scalar fields (status, conversion tracking) are last-write-wins: adopt
+      // the server's copy only when it was updated more recently than ours, so
+      // a change made on another device shows up here without clobbering a more
+      // recent local edit.
       if (toMillis(lead.updated_at) > toMillis(local.updated_at)) {
-        ADMIN_SYNC_FIELDS.forEach((field) => {
-          if (lead[field] !== undefined) local[field] = lead[field];
+        SCALAR_SYNC_FIELDS.forEach((field) => {
+          if (lead[field] !== undefined && lead[field] !== local[field]) {
+            local[field] = lead[field];
+            changed = true;
+          }
         });
-        updated++;
       }
+
+      if (changed) updated++;
     });
 
-    if (added > 0 || updated > 0) {
-      localStorage.setItem(LEADS_KEY, JSON.stringify(localLeads));
+    // Propagate deletions: any lead we hold locally that the server no longer
+    // has was deleted on another device, so drop it here too. The server is the
+    // source of truth for production leads, and test leads live in a separate
+    // localStorage key that this sync never touches, so this only prunes real
+    // leads removed elsewhere. Without this, a lead deleted on one device
+    // lingered forever on every other device.
+    let removed = 0;
+    const reconciled = localLeads.filter((l) => {
+      if (serverIds.has(l.lead_id)) return true;
+      removed++;
+      return false;
+    });
+
+    if (added > 0 || updated > 0 || removed > 0) {
+      localStorage.setItem(LEADS_KEY, JSON.stringify(reconciled));
     }
-    return { synced: serverLeads.length, added, updated };
+    return { synced: serverLeads.length, added, updated, removed };
   } catch (err) {
     console.error("[LeadsAPI] sync failed:", err);
     return { synced: 0, added: 0, updated: 0, error: err.message || "Network error" };

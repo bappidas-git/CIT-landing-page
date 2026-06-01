@@ -160,7 +160,8 @@ const LeadDetail = () => {
       if (document.visibilityState !== "visible") return;
       syncLeadsFromServer().then((result) => {
         if (cancelled || result.error) return;
-        if (result.added > 0 || result.updated > 0) loadLead();
+        if (result.added > 0 || result.updated > 0 || result.removed > 0)
+          loadLead();
       });
     };
 
@@ -190,7 +191,8 @@ const LeadDetail = () => {
     // Initial sync on mount (independent of visibility-change events).
     syncLeadsFromServer().then((result) => {
       if (cancelled || result.error) return;
-      if (result.added > 0 || result.updated > 0) loadLead();
+      if (result.added > 0 || result.updated > 0 || result.removed > 0)
+        loadLead();
     });
 
     if (document.visibilityState === "visible") start();
