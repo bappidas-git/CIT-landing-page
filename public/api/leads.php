@@ -119,6 +119,36 @@ function save_leads($file, $leads) {
     return true;
 }
 
+// Union-merge two append-only arrays (notes or activity) coming from different
+// devices, de-duping by a stable key and sorting chronologically. This is what
+// keeps notes and the activity timeline in sync: each admin device mirrors its
+// own (possibly stale) full array, so a plain overwrite would let one device
+// drop entries another device added. Merging instead accumulates every entry.
+function merge_lead_array($existing, $incoming, $type) {
+    $existing = is_array($existing) ? $existing : [];
+    $incoming = is_array($incoming) ? $incoming : [];
+    $byKey = [];
+    foreach (array_merge($existing, $incoming) as $item) {
+        if (!is_array($item)) continue;
+        if ($type === 'notes') {
+            $key = (isset($item['id']) && $item['id'] !== '')
+                ? 'id:' . $item['id']
+                : 't:' . ($item['timestamp'] ?? '') . '|' . ($item['text'] ?? '');
+        } else {
+            $key = ($item['timestamp'] ?? '') . '|' . ($item['action'] ?? '');
+        }
+        if (!isset($byKey[$key])) {
+            $byKey[$key] = $item;
+        }
+    }
+    $result = array_values($byKey);
+    // ISO 8601 timestamps sort correctly as plain strings.
+    usort($result, function ($a, $b) {
+        return strcmp($a['timestamp'] ?? '', $b['timestamp'] ?? '');
+    });
+    return $result;
+}
+
 function require_admin_auth($expected) {
     if (empty($expected)) {
         http_response_code(503);
@@ -186,7 +216,16 @@ if ($method === 'POST' && $action === 'update') {
     foreach ($leads as &$lead) {
         if (($lead['lead_id'] ?? null) === $id) {
             foreach ($patch as $k => $v) {
-                $lead[$k] = $v;
+                if (($k === 'notes' || $k === 'activity') && is_array($v)) {
+                    // Append-only arrays: union with what we already have so a
+                    // stale array from one device can't erase another device's
+                    // entries.
+                    $lead[$k] = merge_lead_array($lead[$k] ?? [], $v, $k);
+                } else {
+                    // Scalar fields (status, conversion tracking, updated_at):
+                    // last-write-wins straight replace.
+                    $lead[$k] = $v;
+                }
             }
             $found = true;
             break;
