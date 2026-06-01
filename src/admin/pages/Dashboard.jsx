@@ -12,19 +12,19 @@ import styles from './Dashboard.module.css';
 
 const STATUS_COLORS = {
   new: { color: "#2196F3", bg: "#E3F2FD" },
-  contacted: { color: "#FF9800", bg: "#FFF3E0" },
-  consultation_booked: { color: "#9C27B0", bg: "#F3E5F5" },
+  contacted: { color: "#EF4444", bg: "#FEF2F2" },
+  consultation_booked: { color: "#FF9800", bg: "#FFF3E0" },
   procedure_scheduled: { color: "#0097A7", bg: "#E0F7FA" },
   completed: { color: "#4CAF50", bg: "#E8F5E9" },
-  not_interested: { color: "#F44336", bg: "#FFEBEE" },
+  not_interested: { color: "#6B7280", bg: "#F3F4F6" },
 };
 
 const STATUS_LABELS = {
   new: "New",
-  contacted: "Contacted",
-  consultation_booked: "Counselling Booked",
-  procedure_scheduled: "Visit Scheduled",
-  completed: "Admitted",
+  contacted: "Hot",
+  consultation_booked: "Warm",
+  procedure_scheduled: "Cold",
+  completed: "Seat Booked",
   not_interested: "Not Interested",
 };
 
