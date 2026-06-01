@@ -12,7 +12,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { submitLeadToWebhook, isDuplicateLead, markLeadAsSubmitted } from "../../../utils/webhookSubmit";
+import { submitLeadToWebhook } from "../../../utils/webhookSubmit";
 import {
   Box,
   TextField,
@@ -655,23 +655,12 @@ const UnifiedLeadForm = ({
       return;
     }
 
-    // Check for duplicate by mobile OR email — show alert ON TOP of drawer
-    // (don't close drawer). Prevents the same user from submitting twice
-    // from this device.
-    if (isDuplicateLead(formData.mobile, formData.email)) {
-      await showInfo(
-        'Already Registered!',
-        'An enquiry with this mobile number or email has already been submitted. Our team will contact you soon.'
-      );
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
       // Prepare lead data
       // `service_interest` holds the selected B.E. course (legacy key kept
-      // for webhook + admin panel compatibility — see COURSE_OPTIONS above).
+      // for admin panel compatibility — see COURSE_OPTIONS above).
       const leadData = {
         name: formData.name.trim(),
         mobile: formData.mobile.trim(),
@@ -682,8 +671,18 @@ const UnifiedLeadForm = ({
         source: formId || 'general',
       };
 
-      // Submit to webhook (Pabbly or dummy)
+      // Submit to the shared server-side lead store (single source of truth).
       const result = await submitLeadToWebhook(leadData);
+
+      // The server dedupes by mobile/email across all devices — surface a
+      // friendly "already registered" message instead of a second lead.
+      if (result.duplicate) {
+        await showInfo(
+          'Already Registered!',
+          'An enquiry with this mobile number has already been submitted. Our team will contact you soon.'
+        );
+        return;
+      }
 
       if (result.success) {
         // Push lead form submission + generate_lead conversion events to GTM
@@ -723,9 +722,6 @@ const UnifiedLeadForm = ({
         ).catch((err) => {
           console.error('[EnhancedConversions] Failed:', err);
         });
-
-        // Mark as submitted for duplicate prevention
-        markLeadAsSubmitted(formData.mobile);
 
         // Set lead submitted flag for thank you page access
         sessionStorage.setItem("lead_submitted", "true");

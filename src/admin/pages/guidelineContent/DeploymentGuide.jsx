@@ -309,10 +309,9 @@ REACT_APP_LEADS_ADMIN_KEY="Zk8pQ3mX9yL2wN7bV5rT1jH6cD4fG0aE"`}
           </li>
         </ol>
         <div className={styles.guideTip}>
-          <strong>Optional:</strong>{' '}
-          <code className={styles.guideInlineCode}>REACT_APP_ADMIN_PABBLY_WEBHOOK_URL</code> is
-          NOT required. Only set it if you want admin actions (status changes, notes, deletions)
-          to also flow into a second Pabbly workflow. See the Pabbly Setup tab for details.
+          <strong>Sync:</strong> All leads and admin actions (status changes, notes, deletions)
+          flow through <code className={styles.guideInlineCode}>/api/leads.php</code>, so every
+          browser and device shows the same data. See the Lead Storage tab for details.
         </div>
       </div>
 
@@ -360,8 +359,8 @@ REACT_APP_LEADS_ADMIN_KEY="Zk8pQ3mX9yL2wN7bV5rT1jH6cD4fG0aE"`}
             </tr>
             <tr>
               <td className={styles.guideTableCell}>7</td>
-              <td className={styles.guideTableCell}>Pabbly receives form data</td>
-              <td className={styles.guideTableCell}>Check Pabbly workflow history</td>
+              <td className={styles.guideTableCell}>Server receives form data</td>
+              <td className={styles.guideTableCell}>Check <code className={styles.guideInlineCode}>api/data/leads.json</code> / Admin Panel</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}>7b</td>

@@ -1,28 +1,34 @@
 /* ============================================
    Lead Service Utility
-   CRUD operations for leads stored in localStorage
-   With Pabbly webhook support for admin actions
+   The shared server-side store (public/api/leads.php)
+   is the SINGLE SOURCE OF TRUTH for leads. This module
+   keeps an in-memory cache that is hydrated from the
+   server and refreshed on a poll interval, so every
+   admin browser/device shows the same data.
+
+   There is NO localStorage copy of leads — that was the
+   cause of cross-device data never matching. All reads
+   come from the server-backed cache and all writes are
+   mirrored to the server immediately.
    ============================================ */
 
-import { isPabblyMode } from './adminConfig';
-import { getConfig } from '../../utils/webhookSubmit';
-import { describeStatusChange } from './leadStatus';
-
-// Pabbly webhook for admin actions (status change, notes, deletions)
-// Set this to your Pabbly admin workflow webhook URL
-const ADMIN_WEBHOOK_URL = process.env.REACT_APP_ADMIN_PABBLY_WEBHOOK_URL || "";
+import { getConfig } from "../../utils/webhookSubmit";
+import { describeStatusChange } from "./leadStatus";
 
 // Shared secret used to authenticate against /api/leads.php admin actions.
-// Must match ADMIN_API_KEY in public/api/config.php on the server.
+// Must match ADMIN_API_KEY in public/api/config.php (or the committed default
+// in leads.php) on the server.
 const LEADS_ADMIN_KEY = process.env.REACT_APP_LEADS_ADMIN_KEY || "";
 
-const LEADS_KEY = "lp_submitted_leads";
-const TEST_LEADS_KEY = "lp_test_leads";
+// In-memory cache of all leads, hydrated from the server by
+// syncLeadsFromServer(). Lives for the lifetime of the admin SPA session.
+// Reads filter this cache; writes update it optimistically AND mirror to the
+// server so the change is durable and visible to every other device.
+let _cache = [];
 
-// Name of the BroadcastChannel used to notify every admin tab/window in the
-// SAME browser that a lead changed. The native `storage` event only covers
-// cross-tab changes and can be missed in edge cases; broadcasting explicitly
-// after every admin mutation makes same-browser sync instant and reliable.
+// BroadcastChannel notifies every admin tab/window in the SAME browser that a
+// lead changed, so a mutation made in one window refreshes the others
+// instantly (cross-device sync is handled by the server poll).
 const LEADS_CHANNEL = "lp_leads_channel";
 
 let leadsChannel = null;
@@ -39,9 +45,8 @@ const getLeadsChannel = () => {
 
 /**
  * Notify every admin view (this tab and other tabs/windows of the same
- * browser) that the lead store changed, so they reload without waiting for
- * the next server poll. Also dispatches a same-tab DOM event because the
- * originating tab never receives its own `storage` / BroadcastChannel message.
+ * browser) that the lead store changed, so they reload without waiting for the
+ * next server poll.
  */
 const notifyLeadsChanged = () => {
   const channel = getLeadsChannel();
@@ -58,10 +63,9 @@ const notifyLeadsChanged = () => {
 };
 
 /**
- * Subscribe an admin page to lead-store changes coming from any source:
- * another tab/window (BroadcastChannel), a cross-tab localStorage write
- * (`storage`), a new public submission (`lp:lead-submitted`), or a mutation in
- * this same tab (`lp:leads-changed`). Returns an unsubscribe function.
+ * Subscribe an admin page to lead-store changes: a mutation in this tab
+ * (`lp:leads-changed`) or a BroadcastChannel message from another window of the
+ * same browser. Returns an unsubscribe function.
  */
 export const onLeadsChanged = (handler) => {
   if (typeof window === "undefined") return () => {};
@@ -70,74 +74,15 @@ export const onLeadsChanged = (handler) => {
   const onMessage = (e) => {
     if (e?.data?.type === "leads-changed") handler();
   };
-  const onStorage = (e) => {
-    if (e.key === LEADS_KEY || e.key === TEST_LEADS_KEY) handler();
-  };
 
   if (channel) channel.addEventListener("message", onMessage);
-  window.addEventListener("storage", onStorage);
-  window.addEventListener("lp:lead-submitted", handler);
   window.addEventListener("lp:leads-changed", handler);
 
   return () => {
     if (channel) channel.removeEventListener("message", onMessage);
-    window.removeEventListener("storage", onStorage);
-    window.removeEventListener("lp:lead-submitted", handler);
     window.removeEventListener("lp:leads-changed", handler);
   };
 };
-
-// Admin-only state that lives alongside a lead and is mutated from the admin
-// panel is merged back from the shared server store so changes made on one
-// browser/device appear on all of them. The append-only arrays (notes,
-// activity) are union-merged, while scalar fields (see SCALAR_SYNC_FIELDS
-// below) are last-write-wins keyed on the `updated_at` marker.
-
-const toMillis = (ts) => {
-  if (!ts) return 0;
-  const t = new Date(ts).getTime();
-  return Number.isNaN(t) ? 0 : t;
-};
-
-// Stable de-dupe keys for the two append-only arrays that live on a lead.
-// A note carries its own `id`; we fall back to timestamp+text in case an old
-// note predates the id field. An activity entry has no id, so it is keyed by
-// timestamp+action. These keys let us union the same array coming from two
-// devices without creating duplicates.
-const noteKey = (n) =>
-  !n ? "" : n.id ? `id:${n.id}` : `t:${n.timestamp || ""}|${n.text || ""}`;
-const activityKey = (a) => (a ? `${a.timestamp || ""}|${a.action || ""}` : "");
-
-// Union two arrays (local + server) into one, de-duping by `keyFn` and sorting
-// chronologically so every device converges to the SAME ordered list. Notes and
-// activity are append-only, so a union never loses an entry — unlike the old
-// last-write-wins replace, which let one device's stale array overwrite the
-// other device's additions.
-const unionByKey = (localArr, serverArr, keyFn) => {
-  const seen = new Map();
-  const all = [
-    ...(Array.isArray(localArr) ? localArr : []),
-    ...(Array.isArray(serverArr) ? serverArr : []),
-  ];
-  all.forEach((item) => {
-    const k = keyFn(item);
-    if (!k || seen.has(k)) return;
-    seen.set(k, item);
-  });
-  return Array.from(seen.values()).sort(
-    (a, b) => toMillis(a && a.timestamp) - toMillis(b && b.timestamp)
-  );
-};
-
-// Scalar admin fields resolved by last-write-wins (the array fields notes /
-// activity are union-merged separately and intentionally excluded here).
-const SCALAR_SYNC_FIELDS = [
-  "status",
-  "conversion_value",
-  "conversion_type",
-  "converted_at",
-  "updated_at",
-];
 
 /**
  * Build the URL for the leads API. Returns empty string when disabled.
@@ -148,7 +93,8 @@ const getLeadsApiUrl = () => {
 };
 
 /**
- * Fire-and-forget admin call to the leads API.
+ * Fire-and-forget admin call to the leads API. Re-syncs from the server once
+ * the write completes so the cache reflects the server's merged copy.
  */
 const callLeadsApi = (action, body) => {
   const url = getLeadsApiUrl();
@@ -165,31 +111,57 @@ const callLeadsApi = (action, body) => {
 };
 
 /**
- * Pull every lead from the server-side store and reconcile it with
- * localStorage. New leads are imported, and admin-only state (status, notes,
- * activity, conversion tracking) on existing leads is merged back when the
- * server copy is newer than the local one.
+ * Normalise a raw server lead so the admin UI always has the fields it expects.
+ */
+const normalizeLead = (lead) => ({
+  ...lead,
+  status: lead.status || "new",
+  notes: Array.isArray(lead.notes) ? lead.notes : [],
+  activity: Array.isArray(lead.activity)
+    ? lead.activity
+    : [
+        {
+          action: "Lead created",
+          status: lead.status || "new",
+          timestamp: lead.submitted_at || new Date().toISOString(),
+        },
+      ],
+});
+
+/**
+ * Replace a lead in the cache with a NEW object built by `updater`. Returning a
+ * fresh object (rather than mutating in place) keeps React reference checks
+ * working so detail/list views re-render after an edit.
+ */
+const replaceInCache = (id, updater) => {
+  let updated = null;
+  _cache = _cache.map((l) => {
+    if (l.lead_id !== id) return l;
+    updated = updater(l);
+    return updated;
+  });
+  return updated;
+};
+
+/**
+ * Pull every lead from the server-side store (the source of truth) and replace
+ * the in-memory cache with it. Returns counts of what changed versus the
+ * previous cache so callers can refresh their UI only when something actually
+ * moved.
  *
- * Why the merge matters: admin actions (status change, note) are mirrored to
- * the shared server store, but each browser/device keeps its own localStorage.
- * Previously existing leads were skipped on sync, so a status/note change made
- * on one device never appeared on another. We now use the per-lead `updated_at`
- * timestamp as a last-write-wins marker: if the server's copy was updated more
- * recently than ours, we adopt its admin fields. The `updated_at` guard means a
- * device with newer unsynced edits is never clobbered by a stale server copy.
- *
- * Returns { synced: number, added: number, updated: number, error?: string }.
+ * Returns { synced, added, updated, removed, error? }.
  */
 export const syncLeadsFromServer = async () => {
   const url = getLeadsApiUrl();
   if (!url) {
-    return { synced: 0, added: 0, updated: 0, error: "LEADS_API_URL not configured" };
+    return { synced: 0, added: 0, updated: 0, removed: 0, error: "LEADS_API_URL not configured" };
   }
   if (!LEADS_ADMIN_KEY) {
     return {
       synced: 0,
       added: 0,
       updated: 0,
+      removed: 0,
       error: "REACT_APP_LEADS_ADMIN_KEY not set — cannot authenticate",
     };
   }
@@ -204,125 +176,45 @@ export const syncLeadsFromServer = async () => {
         synced: 0,
         added: 0,
         updated: 0,
+        removed: 0,
         error: `Server returned ${response.status}`,
       };
     }
     const data = await response.json();
     const serverLeads = Array.isArray(data.leads) ? data.leads : [];
+    const normalized = serverLeads.map(normalizeLead);
 
-    const localLeads = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
-    const localById = new Map(localLeads.map((l) => [l.lead_id, l]));
+    // Diff against the previous cache so the UI only refreshes on real change.
+    const prevById = new Map(_cache.map((l) => [l.lead_id, l]));
     const serverIds = new Set();
-
     let added = 0;
     let updated = 0;
-    serverLeads.forEach((lead) => {
-      if (!lead || !lead.lead_id) return;
+    normalized.forEach((lead) => {
       serverIds.add(lead.lead_id);
-      const local = localById.get(lead.lead_id);
-      if (!local) {
-        // New lead from another browser/device — import it with sensible
-        // defaults for admin-only fields.
-        localLeads.push({
-          ...lead,
-          status: lead.status || "new",
-          notes: Array.isArray(lead.notes) ? lead.notes : [],
-          activity: Array.isArray(lead.activity)
-            ? lead.activity
-            : [
-                {
-                  action: "Lead created",
-                  status: lead.status || "new",
-                  timestamp: lead.submitted_at || new Date().toISOString(),
-                },
-              ],
-        });
+      const prev = prevById.get(lead.lead_id);
+      if (!prev) {
         added++;
-        return;
+      } else if (JSON.stringify(prev) !== JSON.stringify(lead)) {
+        updated++;
       }
-
-      // Existing lead — reconcile admin state from the shared store.
-      let changed = false;
-
-      // Notes and activity are append-only, so we UNION them rather than
-      // letting the newer copy replace the older one. This is what makes notes
-      // and the activity timeline converge across devices: without it, each
-      // device kept overwriting the other's array and they never matched.
-      const mergedNotes = unionByKey(local.notes, lead.notes, noteKey);
-      if (mergedNotes.length !== (local.notes || []).length) changed = true;
-      local.notes = mergedNotes;
-
-      const mergedActivity = unionByKey(local.activity, lead.activity, activityKey);
-      if (mergedActivity.length !== (local.activity || []).length) changed = true;
-      local.activity = mergedActivity;
-
-      // Scalar fields (status, conversion tracking) are last-write-wins: adopt
-      // the server's copy only when it was updated more recently than ours, so
-      // a change made on another device shows up here without clobbering a more
-      // recent local edit.
-      if (toMillis(lead.updated_at) > toMillis(local.updated_at)) {
-        SCALAR_SYNC_FIELDS.forEach((field) => {
-          if (lead[field] !== undefined && lead[field] !== local[field]) {
-            local[field] = lead[field];
-            changed = true;
-          }
-        });
-      }
-
-      if (changed) updated++;
     });
+    const removed = _cache.filter((l) => !serverIds.has(l.lead_id)).length;
 
-    // Propagate deletions: any lead we hold locally that the server no longer
-    // has was deleted on another device, so drop it here too. The server is the
-    // source of truth for production leads, and test leads live in a separate
-    // localStorage key that this sync never touches, so this only prunes real
-    // leads removed elsewhere. Without this, a lead deleted on one device
-    // lingered forever on every other device.
-    let removed = 0;
-    const reconciled = localLeads.filter((l) => {
-      if (serverIds.has(l.lead_id)) return true;
-      removed++;
-      return false;
-    });
-
-    if (added > 0 || updated > 0 || removed > 0) {
-      localStorage.setItem(LEADS_KEY, JSON.stringify(reconciled));
-    }
-    return { synced: serverLeads.length, added, updated, removed };
+    _cache = normalized;
+    return { synced: normalized.length, added, updated, removed };
   } catch (err) {
     console.error("[LeadsAPI] sync failed:", err);
-    return { synced: 0, added: 0, updated: 0, error: err.message || "Network error" };
+    return { synced: 0, added: 0, updated: 0, removed: 0, error: err.message || "Network error" };
   }
 };
 
 /**
- * Get all leads from both production and test storage
- */
-const getAllLeadsRaw = () => {
-  const leads = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
-  const testLeads = JSON.parse(localStorage.getItem(TEST_LEADS_KEY) || "[]").map(
-    (l) => ({ ...l, _isTest: true })
-  );
-  return [...leads, ...testLeads];
-};
-
-/**
- * Save leads back to localStorage (split by test/prod)
- */
-const saveLeads = (allLeads) => {
-  const prodLeads = allLeads.filter((l) => !l._isTest);
-  const testLeads = allLeads.filter((l) => l._isTest);
-  localStorage.setItem(LEADS_KEY, JSON.stringify(prodLeads));
-  localStorage.setItem(TEST_LEADS_KEY, JSON.stringify(testLeads));
-};
-
-/**
- * Get all leads with optional filters
+ * Get all leads with optional filters (read from the server-backed cache).
  * @param {Object} filters - { search, status, source, dateRange, startDate, endDate }
  * @returns {Array} Filtered leads
  */
 export const getLeads = (filters = {}) => {
-  let leads = getAllLeadsRaw();
+  let leads = [..._cache];
 
   // Search filter — name, email, mobile, course (service_interest), state
   if (filters.search) {
@@ -393,115 +285,86 @@ export const getLeads = (filters = {}) => {
  * Get a single lead by ID
  */
 export const getLeadById = (id) => {
-  const leads = getAllLeadsRaw();
-  return leads.find((l) => l.lead_id === id) || null;
+  return _cache.find((l) => l.lead_id === id) || null;
 };
 
 /**
  * Update lead status
  */
 export const updateLeadStatus = (id, status) => {
-  const leads = getAllLeadsRaw();
-  const lead = leads.find((l) => l.lead_id === id);
-  if (!lead) return null;
+  const existing = _cache.find((l) => l.lead_id === id);
+  if (!existing) return null;
 
-  const oldStatus = lead.status;
-  lead.status = status;
-  if (!lead.activity) lead.activity = [];
-  lead.activity.push({
-    // Action text is built from display labels; the timeline also re-maps any
-    // quoted status at render time, so it always shows the present labels.
-    action: describeStatusChange(oldStatus, status),
+  const oldStatus = existing.status;
+  const now = new Date().toISOString();
+  const updated = replaceInCache(id, (l) => ({
+    ...l,
     status,
-    timestamp: new Date().toISOString(),
-  });
-  // Last-write-wins marker so other devices know this edit is newer.
-  lead.updated_at = new Date().toISOString();
+    activity: [
+      ...(l.activity || []),
+      {
+        // Action text is built from display labels; the timeline also re-maps
+        // any quoted status at render time so it always shows present labels.
+        action: describeStatusChange(oldStatus, status),
+        status,
+        timestamp: now,
+      },
+    ],
+    // Last-write-wins marker so the server's merge keeps the newest edit.
+    updated_at: now,
+  }));
 
-  saveLeads(leads);
   notifyLeadsChanged();
 
-  // Mirror to shared server store so other admins see the change.
+  // Mirror to the shared server store so other admins/devices see the change.
   callLeadsApi("update", {
     lead_id: id,
     patch: {
-      status: lead.status,
-      activity: lead.activity,
-      updated_at: lead.updated_at,
+      status: updated.status,
+      activity: updated.activity,
+      updated_at: updated.updated_at,
     },
   });
 
-  // If Pabbly mode, also send to webhook
-  if (isPabblyMode() && ADMIN_WEBHOOK_URL) {
-    fetch(ADMIN_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'status_update',
-        lead_id: id,
-        new_status: status,
-        old_status: oldStatus,
-        timestamp: new Date().toISOString(),
-      }),
-    }).catch(err => console.error('[LeadService] Pabbly webhook failed:', err));
-  }
-
-  return lead;
+  return updated;
 };
 
 /**
  * Add a note to a lead
  */
 export const addLeadNote = (id, noteText) => {
-  const leads = getAllLeadsRaw();
-  const lead = leads.find((l) => l.lead_id === id);
-  if (!lead) return null;
+  const existing = _cache.find((l) => l.lead_id === id);
+  if (!existing) return null;
 
-  if (!lead.notes) lead.notes = [];
+  const now = new Date().toISOString();
   const note = {
     id: Date.now().toString(),
     text: noteText,
-    timestamp: new Date().toISOString(),
+    timestamp: now,
   };
-  lead.notes.push(note);
+  const updated = replaceInCache(id, (l) => ({
+    ...l,
+    notes: [...(l.notes || []), note],
+    activity: [
+      ...(l.activity || []),
+      { action: "Note added", status: l.status, timestamp: now },
+    ],
+    updated_at: now,
+  }));
 
-  if (!lead.activity) lead.activity = [];
-  lead.activity.push({
-    action: "Note added",
-    status: lead.status,
-    timestamp: new Date().toISOString(),
-  });
-  // Last-write-wins marker so other devices know this edit is newer.
-  lead.updated_at = new Date().toISOString();
-
-  saveLeads(leads);
   notifyLeadsChanged();
 
-  // Mirror to shared server store so notes persist across admins.
+  // Mirror to the shared server store so notes persist across admins.
   callLeadsApi("update", {
     lead_id: id,
     patch: {
-      notes: lead.notes,
-      activity: lead.activity,
-      updated_at: lead.updated_at,
+      notes: updated.notes,
+      activity: updated.activity,
+      updated_at: updated.updated_at,
     },
   });
 
-  // If Pabbly mode, also send to webhook
-  if (isPabblyMode() && ADMIN_WEBHOOK_URL) {
-    fetch(ADMIN_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'note_added',
-        lead_id: id,
-        note_text: noteText,
-        timestamp: new Date().toISOString(),
-      }),
-    }).catch(err => console.error('[LeadService] Pabbly webhook failed:', err));
-  }
-
-  return lead;
+  return updated;
 };
 
 /**
@@ -510,58 +373,42 @@ export const addLeadNote = (id, noteText) => {
  * Returns the updated lead, or null if not found.
  */
 export const updateLeadConversion = (id, { conversion_value, conversion_type, converted_at }) => {
-  const leads = getAllLeadsRaw();
-  const lead = leads.find((l) => l.lead_id === id);
-  if (!lead) return null;
+  const existing = _cache.find((l) => l.lead_id === id);
+  if (!existing) return null;
 
-  lead.conversion_value = conversion_value;
-  lead.conversion_type = conversion_type;
-  lead.converted_at = converted_at || new Date().toISOString();
-  // Last-write-wins marker so other devices know this edit is newer.
-  lead.updated_at = new Date().toISOString();
+  const now = new Date().toISOString();
+  const updated = replaceInCache(id, (l) => ({
+    ...l,
+    conversion_value,
+    conversion_type,
+    converted_at: converted_at || now,
+    updated_at: now,
+  }));
 
-  saveLeads(leads);
   notifyLeadsChanged();
 
-  // Mirror to shared server store so conversion data syncs across admins.
+  // Mirror to the shared server store so conversion data syncs across admins.
   callLeadsApi("update", {
     lead_id: id,
     patch: {
-      conversion_value: lead.conversion_value,
-      conversion_type: lead.conversion_type,
-      converted_at: lead.converted_at,
-      updated_at: lead.updated_at,
+      conversion_value: updated.conversion_value,
+      conversion_type: updated.conversion_type,
+      converted_at: updated.converted_at,
+      updated_at: updated.updated_at,
     },
   });
 
-  return lead;
+  return updated;
 };
 
 /**
  * Delete a single lead
  */
 export const deleteLead = (id) => {
-  const leads = getAllLeadsRaw();
-  const filtered = leads.filter((l) => l.lead_id !== id);
-  saveLeads(filtered);
+  _cache = _cache.filter((l) => l.lead_id !== id);
   notifyLeadsChanged();
-
-  // Mirror delete to shared server store.
+  // Mirror delete to the shared server store.
   callLeadsApi("delete", { lead_ids: [id] });
-
-  // If Pabbly mode, also send to webhook
-  if (isPabblyMode() && ADMIN_WEBHOOK_URL) {
-    fetch(ADMIN_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'lead_deleted',
-        lead_id: id,
-        timestamp: new Date().toISOString(),
-      }),
-    }).catch(err => console.error('[LeadService] Pabbly webhook failed:', err));
-  }
-
   return true;
 };
 
@@ -570,31 +417,11 @@ export const deleteLead = (id) => {
  */
 export const deleteLeads = (ids) => {
   const idSet = new Set(ids);
-  const leads = getAllLeadsRaw();
-  const filtered = leads.filter((l) => !idSet.has(l.lead_id));
-  saveLeads(filtered);
+  _cache = _cache.filter((l) => !idSet.has(l.lead_id));
   notifyLeadsChanged();
-
-  // Mirror bulk delete to shared server store.
   if (ids.length > 0) {
     callLeadsApi("delete", { lead_ids: ids });
   }
-
-  // If Pabbly mode, also send to webhook for each deleted lead
-  if (isPabblyMode() && ADMIN_WEBHOOK_URL) {
-    ids.forEach(id => {
-      fetch(ADMIN_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'lead_deleted',
-          lead_id: id,
-          timestamp: new Date().toISOString(),
-        }),
-      }).catch(err => console.error('[LeadService] Pabbly webhook failed:', err));
-    });
-  }
-
   return true;
 };
 
@@ -664,18 +491,19 @@ export const exportLeadsCSV = (leads) => {
 };
 
 /**
- * Import leads from CSV string
+ * Import leads from a CSV string. New leads are created on the server (the
+ * source of truth) and added to the cache. Dedupes by mobile against the
+ * current cache.
  * @param {string} csvText - Raw CSV content
- * @returns {{ imported: number, duplicates: number }}
+ * @returns {Promise<{ imported: number, duplicates: number }>}
  */
-export const importLeadsCSV = (csvText) => {
+export const importLeadsCSV = async (csvText) => {
   const lines = csvText.split("\n").filter((l) => l.trim());
   if (lines.length < 2) return { imported: 0, duplicates: 0 };
 
   const headers = lines[0].split(",").map((h) => h.replace(/"/g, "").trim().toLowerCase());
   const mobileIdx = headers.findIndex((h) => h === "mobile");
-  const existingLeads = getAllLeadsRaw();
-  const existingMobiles = new Set(existingLeads.map((l) => l.mobile));
+  const existingMobiles = new Set(_cache.map((l) => l.mobile));
 
   let imported = 0;
   let duplicates = 0;
@@ -696,6 +524,7 @@ export const importLeadsCSV = (csvText) => {
     "submitted at": "submitted_at",
   };
 
+  const newLeads = [];
   for (let i = 1; i < lines.length; i++) {
     const values = lines[i].split(",").map((v) => v.replace(/^"|"$/g, "").trim());
     const mobile = mobileIdx >= 0 ? values[mobileIdx] : null;
@@ -705,12 +534,16 @@ export const importLeadsCSV = (csvText) => {
       continue;
     }
 
+    const now = new Date().toISOString();
     const lead = {
-      lead_id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString() + Math.random().toString(36).slice(2),
+      lead_id: crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now().toString() + Math.random().toString(36).slice(2),
       status: "new",
-      submitted_at: new Date().toISOString(),
+      submitted_at: now,
+      updated_at: now,
       notes: [],
-      activity: [{ action: "Imported from CSV", status: "new", timestamp: new Date().toISOString() }],
+      activity: [{ action: "Imported from CSV", status: "new", timestamp: now }],
     };
 
     headers.forEach((h, idx) => {
@@ -718,13 +551,29 @@ export const importLeadsCSV = (csvText) => {
       if (values[idx]) lead[key] = values[idx];
     });
 
-    existingLeads.push(lead);
+    newLeads.push(lead);
     if (mobile) existingMobiles.add(mobile);
     imported++;
   }
 
-  saveLeads(existingLeads);
-  notifyLeadsChanged();
+  if (newLeads.length > 0) {
+    _cache = [..._cache, ...newLeads];
+    // Persist each imported lead to the server (the source of truth).
+    const url = getLeadsApiUrl();
+    if (url) {
+      await Promise.all(
+        newLeads.map((lead) =>
+          fetch(`${url}?action=create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lead }),
+          }).catch((err) => console.error("[LeadsAPI] import create failed:", err))
+        )
+      );
+    }
+    notifyLeadsChanged();
+  }
+
   return { imported, duplicates };
 };
 
@@ -732,7 +581,7 @@ export const importLeadsCSV = (csvText) => {
  * Get summary stats for the dashboard
  */
 export const getLeadStats = () => {
-  const leads = getAllLeadsRaw();
+  const leads = _cache;
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekStart = new Date(now);

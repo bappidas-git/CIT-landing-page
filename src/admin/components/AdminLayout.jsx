@@ -6,7 +6,6 @@ import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
 import AdminTopbar from './AdminTopbar';
-import { initAdminConfig } from '../utils/adminConfig';
 import { syncLeadsFromServer } from '../utils/leadService';
 import styles from './AdminLayout.module.css';
 
@@ -23,17 +22,15 @@ const PageLoader = () => (
 
 const AdminLayout = () => {
   useEffect(() => {
-    initAdminConfig();
-    // Pull leads submitted from any browser/device into this admin's
-    // localStorage so the LMS renders every submission, not just leads
-    // captured on this device. Fire-and-forget; pages refresh their
-    // own data via their useEffects once sync completes (storage is
-    // the shared state between this sync and the page reads).
+    // Warm the in-memory cache from the shared server store (the single source
+    // of truth) as soon as the admin loads, so the LMS renders every
+    // submission from any browser/device. Pages refresh their own data via
+    // their useEffects/poll once the cache is hydrated.
     syncLeadsFromServer().then((result) => {
       if (result.error) {
         console.warn('[Admin] Lead sync skipped:', result.error);
       } else if (result.added > 0) {
-        console.log(`[Admin] Synced ${result.added} new lead(s) from server`);
+        console.log(`[Admin] Synced ${result.added} lead(s) from server`);
       }
     });
   }, []);

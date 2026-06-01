@@ -60,41 +60,6 @@ export const getStoredGclid = () => {
 };
 
 /**
- * Associate a stored gclid with a specific lead ID.
- * Updates the lead in localStorage with the gclid if not already present.
- * @param {string} leadId - The lead ID to associate
- * @returns {boolean} True if gclid was associated
- */
-export const associateGclidWithLead = (leadId) => {
-  try {
-    const gclid = getStoredGclid();
-    if (!gclid || !leadId) return false;
-
-    const LEADS_KEY = 'lp_submitted_leads';
-    const TEST_LEADS_KEY = 'lp_test_leads';
-
-    // Check both prod and test leads
-    for (const key of [LEADS_KEY, TEST_LEADS_KEY]) {
-      const leads = JSON.parse(localStorage.getItem(key) || '[]');
-      const lead = leads.find((l) => l.lead_id === leadId);
-
-      if (lead) {
-        if (!lead.gclid) {
-          lead.gclid = gclid;
-          localStorage.setItem(key, JSON.stringify(leads));
-        }
-        return true;
-      }
-    }
-
-    return false;
-  } catch (error) {
-    console.error('[GclidManager] Error associating gclid:', error);
-    return false;
-  }
-};
-
-/**
  * Clear stored gclid (e.g., after successful conversion)
  */
 export const clearStoredGclid = () => {

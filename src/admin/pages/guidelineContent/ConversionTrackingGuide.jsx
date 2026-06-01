@@ -25,7 +25,7 @@ const ConversionTrackingGuide = ({ styles }) => {
             They fill out a form and submit it
           </li>
           <li className={styles.guideStepItem}>
-            Lead data goes to Pabbly (Google Sheets + Email notification)
+            Lead data is saved to the shared server store (<code className={styles.guideInlineCode}>/api/leads.php</code>)
           </li>
           <li className={styles.guideStepItem}>
             Conversion events fire: Google Ads conversion, GA4{' '}
@@ -48,7 +48,7 @@ const ConversionTrackingGuide = ({ styles }) => {
         </ol>
         <div className={styles.guideNote}>
           <strong>Note:</strong> This whole flow is automated. You just need to set up the initial
-          configuration (Pabbly, Google Ads ID, Meta Pixel ID) and the code handles everything else.
+          configuration (Google Ads ID, Meta Pixel ID) and the code handles everything else.
         </div>
       </div>
 
@@ -242,11 +242,9 @@ META_ACCESS_TOKEN = from Events Manager`}
             <strong>Check Admin Panel:</strong> Lead should appear in Lead Management
           </li>
           <li className={styles.guideStepItem}>
-            <strong>Check localStorage:</strong>{' '}
-            <code className={styles.guideInlineCode}>
-              JSON.parse(localStorage.getItem('lp_test_leads'))
-            </code>{' '}
-            should have the lead
+            <strong>Check the server store:</strong> the lead should appear in{' '}
+            <code className={styles.guideInlineCode}>api/data/leads.json</code> on the server
+            (and therefore in the Admin Panel on every device)
           </li>
           <li className={styles.guideStepItem}>
             Mark the lead as Converted in admin → check Meta Events Manager for{' '}

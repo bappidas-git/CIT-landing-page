@@ -16,7 +16,11 @@ A high-converting, mobile-first landing page for **Channabasaveshwara Institute 
 - `src/admin/` — Admin panel (components, pages, context, utils)
 - `src/pages/` — Full pages (ThankYou)
 - `public/` — Static assets, index.html, manifest, robots.txt, sitemap.xml
-- `public/api/` — Server-side endpoints (Meta CAPI, offline conversions)
+- `public/api/` — Server-side endpoints (`leads.php` shared lead store, Meta CAPI, offline conversions)
+
+## Lead Storage & Sync
+
+Leads are stored server-side in `public/api/leads.php` (a shared JSON store) — this is the **single source of truth**. The public form POSTs each submission there, and the admin panel reads/writes only the server (auto-refreshing every 15s), so every browser and device sees the same leads. There is no localStorage copy of leads. Configure with `REACT_APP_LEADS_API_URL` + `REACT_APP_LEADS_ADMIN_KEY` in `.env` (the key must match `ADMIN_API_KEY` in `public/api/config.php`).
 
 ## Brand Color System (Defaults)
 
@@ -35,7 +39,7 @@ To customize colors, update `src/styles/variables.css`, `src/theme/muiTheme.js`,
 2. **Branding**: Replace logo URL in `Header.jsx`, `Footer.jsx`, `MobileDrawer.jsx`, and `public/index.html`
 3. **Contact Info**: Update `.env` file and `src/data/locationData.js`
 4. **SEO**: Update meta tags, JSON-LD schemas, `src/config/seo.js`, and `public/sitemap.xml`
-5. **Forms**: Configure webhook URL in `src/utils/webhookSubmit.js`
+5. **Forms**: Leads POST to the server store (`/api/leads.php`) via `src/utils/webhookSubmit.js` — usually leave the default endpoint
 6. **Analytics**: Set `REACT_APP_GTM_ID` in `.env` and update GTM ID in `public/index.html`
 7. **Admin**: Update `REACT_APP_ADMIN_USERNAME` and `REACT_APP_ADMIN_PASSWORD` in `.env`
 
@@ -44,7 +48,6 @@ See `CUSTOMIZATION_GUIDE.md` for a complete step-by-step walkthrough.
 ## Documentation
 
 - `CUSTOMIZATION_GUIDE.md` — Quick-start guide for new landing pages
-- `PABBLY_GUIDE.md` — Webhook integration setup
 - `GTM_GUIDE.md` — Google Tag Manager setup
 - `SEO_GUIDE.md` — SEO and schema configuration
 - `CHANGELOG.md` — Detailed changelog

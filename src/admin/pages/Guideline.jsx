@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { TextField, IconButton } from "@mui/material";
 import { Icon } from "@iconify/react";
 import styles from "./Guideline.module.css";
-import PabblySetupGuide from "./guidelineContent/PabblySetupGuide";
+import LeadStorageGuide from "./guidelineContent/LeadStorageGuide";
 import GoogleAdsGuide from "./guidelineContent/GoogleAdsGuide";
 import MetaAdsGuide from "./guidelineContent/MetaAdsGuide";
 import GTMSetupGuide from "./guidelineContent/GTMSetupGuide";
@@ -21,7 +21,7 @@ const GUIDELINE_PASSWORD = "ad@9707112233";
 const SESSION_KEY = "guideline_unlocked";
 
 const TABS = [
-  { id: 0, label: "Pabbly Setup", icon: "mdi:webhook" },
+  { id: 0, label: "Lead Storage", icon: "mdi:database-outline" },
   { id: 1, label: "Google Ads", icon: "mdi:google-ads" },
   { id: 2, label: "Meta Ads", icon: "mdi:facebook" },
   { id: 3, label: "GTM Setup", icon: "mdi:tag-outline" },
@@ -177,7 +177,7 @@ const Guideline = () => {
 
       {/* Tab Content */}
       <div className={styles.tabContent}>
-        {activeTab === 0 && <PabblySetupGuide styles={styles} />}
+        {activeTab === 0 && <LeadStorageGuide styles={styles} />}
         {activeTab === 1 && <GoogleAdsGuide styles={styles} />}
         {activeTab === 2 && <MetaAdsGuide styles={styles} />}
         {activeTab === 3 && <GTMSetupGuide styles={styles} />}
