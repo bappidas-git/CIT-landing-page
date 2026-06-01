@@ -58,6 +58,17 @@ const CONVERSION_TYPES = [
 const getStatusConfig = (status) =>
   STATUS_OPTIONS.find((s) => s.value === status) || STATUS_OPTIONS[0];
 
+// Backward-compat: older activity entries stored raw status values (e.g.
+// "new", "consultation_booked") inside the action text. Translate any such
+// quoted value to its display label so the timeline reads "New" → "Warm".
+const formatActivityAction = (action) => {
+  if (!action) return "";
+  return action.replace(/"([^"]+)"/g, (match, value) => {
+    const opt = STATUS_OPTIONS.find((s) => s.value === value);
+    return opt ? `"${opt.label}"` : match;
+  });
+};
+
 const formatDate = (dateStr) => {
   if (!dateStr) return "\u2014";
   const d = new Date(dateStr);
@@ -220,7 +231,7 @@ const LeadDetail = () => {
   const handleStatusChange = (newStatus) => {
     updateLeadStatus(leadId, newStatus);
     loadLead();
-    showSnackbar(`Status updated to "${newStatus}"`);
+    showSnackbar(`Status updated to "${getStatusConfig(newStatus).label}"`);
   };
 
   const handleNoteAdded = (updatedLead) => {
@@ -555,7 +566,7 @@ const LeadDetail = () => {
                         style={{ backgroundColor: actSc.color }}
                       />
                       <div className={styles.timelineContent}>
-                        <p className={styles.timelineAction}>{act.action}</p>
+                        <p className={styles.timelineAction}>{formatActivityAction(act.action)}</p>
                         <p className={styles.timelineTime}>{formatDate(act.timestamp)}</p>
                       </div>
                     </div>
