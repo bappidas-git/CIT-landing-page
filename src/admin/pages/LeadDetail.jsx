@@ -30,21 +30,16 @@ import {
   updateLeadConversion,
   deleteLead,
   syncLeadsFromServer,
+  onLeadsChanged,
 } from "../utils/leadService";
+import {
+  STATUS_OPTIONS,
+  getStatusConfig,
+  formatActivityAction,
+} from "../utils/leadStatus";
 import { sendConversionEvent } from "../../utils/metaCAPI";
 import { generateEventId } from "../../utils/eventDedup";
 import styles from "./LeadDetail.module.css";
-
-// Status config — values are canonical workflow keys (do not rename);
-// labels are CIT-admission friendly.
-const STATUS_OPTIONS = [
-  { value: "new", label: "New", color: "#2B7BD5", bg: "#EBF5FF" },
-  { value: "contacted", label: "Hot", color: "#EF4444", bg: "#FEF2F2" },
-  { value: "consultation_booked", label: "Warm", color: "#F59E0B", bg: "#FFF7ED" },
-  { value: "procedure_scheduled", label: "Cold", color: "#0097A7", bg: "#E0F7FA" },
-  { value: "completed", label: "Seat Booked", color: "#10B981", bg: "#ECFDF5" },
-  { value: "not_interested", label: "Not Interested", color: "#6B7280", bg: "#F3F4F6" },
-];
 
 const CONVERSION_TYPES = [
   "Application Submitted",
@@ -54,20 +49,6 @@ const CONVERSION_TYPES = [
   "Referral",
   "Other",
 ];
-
-const getStatusConfig = (status) =>
-  STATUS_OPTIONS.find((s) => s.value === status) || STATUS_OPTIONS[0];
-
-// Backward-compat: older activity entries stored raw status values (e.g.
-// "new", "consultation_booked") inside the action text. Translate any such
-// quoted value to its display label so the timeline reads "New" → "Warm".
-const formatActivityAction = (action) => {
-  if (!action) return "";
-  return action.replace(/"([^"]+)"/g, (match, value) => {
-    const opt = STATUS_OPTIONS.find((s) => s.value === value);
-    return opt ? `"${opt.label}"` : match;
-  });
-};
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "\u2014";
@@ -202,9 +183,9 @@ const LeadDetail = () => {
       }
     };
 
-    const handleStorage = (e) => {
-      if (e.key === "lp_submitted_leads" || e.key === "lp_test_leads") loadLead();
-    };
+    // Reload instantly when this lead is mutated in another tab/window of the
+    // same browser (BroadcastChannel / storage / same-tab event).
+    const unsubscribe = onLeadsChanged(() => loadLead());
 
     // Initial sync on mount (independent of visibility-change events).
     syncLeadsFromServer().then((result) => {
@@ -214,13 +195,12 @@ const LeadDetail = () => {
 
     if (document.visibilityState === "visible") start();
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("storage", handleStorage);
 
     return () => {
       cancelled = true;
       stop();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("storage", handleStorage);
+      unsubscribe();
     };
   }, [loadLead]);
 

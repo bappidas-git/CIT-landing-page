@@ -7,26 +7,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { Chip, IconButton, Tooltip, Snackbar, Alert } from '@mui/material';
 import { useAdminAuth } from '../context/AdminAuthContext';
-import { getLeadStats, exportLeadsCSV, getLeads, syncLeadsFromServer } from '../utils/leadService';
+import { getLeadStats, exportLeadsCSV, getLeads, syncLeadsFromServer, onLeadsChanged } from '../utils/leadService';
+import { getStatusConfig } from '../utils/leadStatus';
 import styles from './Dashboard.module.css';
-
-const STATUS_COLORS = {
-  new: { color: "#2196F3", bg: "#E3F2FD" },
-  contacted: { color: "#EF4444", bg: "#FEF2F2" },
-  consultation_booked: { color: "#FF9800", bg: "#FFF3E0" },
-  procedure_scheduled: { color: "#0097A7", bg: "#E0F7FA" },
-  completed: { color: "#4CAF50", bg: "#E8F5E9" },
-  not_interested: { color: "#6B7280", bg: "#F3F4F6" },
-};
-
-const STATUS_LABELS = {
-  new: "New",
-  contacted: "Hot",
-  consultation_booked: "Warm",
-  procedure_scheduled: "Cold",
-  completed: "Seat Booked",
-  not_interested: "Not Interested",
-};
 
 const formatDate = () => {
   const d = new Date();
@@ -50,23 +33,23 @@ const Dashboard = () => {
     refresh();
 
     // Initial server sync so leads from ad visitors on other devices appear.
+    // React to BOTH new leads and updated ones (e.g. a status change made on
+    // another device) so the recent-leads status chips stay current.
     syncLeadsFromServer().then((result) => {
-      if (!result.error && result.added > 0) refresh();
+      if (!result.error && (result.added > 0 || result.updated > 0)) refresh();
     });
 
-    const handleStorage = (e) => {
-      if (e.key === "lp_submitted_leads" || e.key === "lp_test_leads") {
-        refresh();
-      }
-    };
+    // Reflect new leads and admin edits from any tab/window of this browser.
+    const unsubscribe = onLeadsChanged(refresh);
 
-    // Poll the server every 15s while visible to catch new ad-driven leads.
+    // Poll the server every 15s while visible to catch new ad-driven leads
+    // and status changes synced from other devices.
     const POLL_MS = 15000;
     let intervalId = null;
     const poll = () => {
       if (document.visibilityState !== "visible") return;
       syncLeadsFromServer().then((result) => {
-        if (!result.error && result.added > 0) refresh();
+        if (!result.error && (result.added > 0 || result.updated > 0)) refresh();
       });
     };
     const startPolling = () => {
@@ -91,14 +74,11 @@ const Dashboard = () => {
 
     if (document.visibilityState === "visible") startPolling();
 
-    window.addEventListener("lp:lead-submitted", refresh);
-    window.addEventListener("storage", handleStorage);
     document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       stopPolling();
-      window.removeEventListener("lp:lead-submitted", refresh);
-      window.removeEventListener("storage", handleStorage);
+      unsubscribe();
       document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);
@@ -254,7 +234,7 @@ const Dashboard = () => {
                 </thead>
                 <tbody>
                   {recentLeads.map((lead, idx) => {
-                    const sc = STATUS_COLORS[lead.status] || STATUS_COLORS.new;
+                    const sc = getStatusConfig(lead.status);
                     return (
                       <tr key={lead.lead_id} className={idx % 2 === 1 ? styles.rowAlt : undefined}>
                         <td className={styles.leadName}>{lead.name || '—'}</td>
@@ -263,7 +243,7 @@ const Dashboard = () => {
                         <td>{lead.state || '—'}</td>
                         <td>
                           <Chip
-                            label={STATUS_LABELS[lead.status] || STATUS_LABELS.new}
+                            label={sc.label}
                             size="small"
                             sx={{
                               bgcolor: sc.bg,
@@ -301,7 +281,7 @@ const Dashboard = () => {
             {/* Mobile Card Layout */}
             <div className={styles.mobileCards}>
               {recentLeads.map((lead) => {
-                const sc = STATUS_COLORS[lead.status] || STATUS_COLORS.new;
+                const sc = getStatusConfig(lead.status);
                 return (
                   <div
                     key={lead.lead_id}
@@ -311,7 +291,7 @@ const Dashboard = () => {
                     <div className={styles.mobileCardTop}>
                       <span className={styles.mobileCardName}>{lead.name || '—'}</span>
                       <Chip
-                        label={STATUS_LABELS[lead.status] || STATUS_LABELS.new}
+                        label={sc.label}
                         size="small"
                         sx={{
                           bgcolor: sc.bg,

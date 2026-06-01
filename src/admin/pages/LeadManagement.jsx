@@ -51,36 +51,12 @@ import {
   importLeadsCSV,
   getLeadStats,
   syncLeadsFromServer,
+  onLeadsChanged,
 } from "../utils/leadService";
+import { STATUS_OPTIONS, getStatusConfig } from "../utils/leadStatus";
 import { exportGoogleAdsCSV } from "../utils/googleAdsExport";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import styles from "./LeadManagement.module.css";
-
-// Status config — values are the canonical workflow keys (do not rename keys);
-// labels are CIT-admission friendly.
-const STATUS_OPTIONS = [
-  { value: "new", label: "New", color: "#2B7BD5", bg: "#EBF5FF" },
-  { value: "contacted", label: "Hot", color: "#EF4444", bg: "#FEF2F2" },
-  {
-    value: "consultation_booked",
-    label: "Warm",
-    color: "#F59E0B",
-    bg: "#FFF7ED",
-  },
-  {
-    value: "procedure_scheduled",
-    label: "Cold",
-    color: "#0097A7",
-    bg: "#E0F7FA",
-  },
-  { value: "completed", label: "Seat Booked", color: "#10B981", bg: "#ECFDF5" },
-  {
-    value: "not_interested",
-    label: "Not Interested",
-    color: "#6B7280",
-    bg: "#F3F4F6",
-  },
-];
 
 const DATE_RANGE_OPTIONS = [
   { value: "all", label: "All Time" },
@@ -89,9 +65,6 @@ const DATE_RANGE_OPTIONS = [
   { value: "month", label: "This Month" },
   { value: "custom", label: "Custom Range" },
 ];
-
-const getStatusConfig = (status) =>
-  STATUS_OPTIONS.find((s) => s.value === status) || STATUS_OPTIONS[0];
 
 const formatShortDate = (dateStr) => {
   if (!dateStr) return "—";
@@ -248,29 +221,12 @@ const LeadManagement = () => {
     };
   }, []);
 
-  // Live-sync: reflect new leads without a hard reload.
-  //
-  // 1. `lp:lead-submitted` — custom event dispatched by webhookSubmit after
-  //    it writes to localStorage. Covers same-tab submissions (native
-  //    `storage` events don't fire in the originating tab).
-  // 2. `storage` — cross-tab changes to lp_submitted_leads.
-  useEffect(() => {
-    const handleLeadSubmitted = () => loadDataRef.current();
-
-    const handleStorage = (e) => {
-      if (e.key === "lp_submitted_leads" || e.key === "lp_test_leads") {
-        loadDataRef.current();
-      }
-    };
-
-    window.addEventListener("lp:lead-submitted", handleLeadSubmitted);
-    window.addEventListener("storage", handleStorage);
-
-    return () => {
-      window.removeEventListener("lp:lead-submitted", handleLeadSubmitted);
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, []);
+  // Live-sync: reflect new leads and admin edits (status, notes, deletes)
+  // without a hard reload. `onLeadsChanged` covers every channel — a new
+  // public submission, a mutation in this same tab, a cross-tab `storage`
+  // write, and a BroadcastChannel message from another window of the same
+  // browser — so a status change in one window appears in all of them.
+  useEffect(() => onLeadsChanged(() => loadDataRef.current()), []);
 
   const handleRefresh = async () => {
     if (refreshing) return;
@@ -358,11 +314,12 @@ const LeadManagement = () => {
   };
 
   const handleBulkStatusChange = (newStatus) => {
+    const count = selected.length;
     selected.forEach((id) => updateLeadStatus(id, newStatus));
     setBulkStatusMenu(null);
     setSelected([]);
     loadData();
-    showSnackbar(`Updated ${selected.length} leads to "${newStatus}"`);
+    showSnackbar(`Updated ${count} leads to "${getStatusConfig(newStatus).label}"`);
   };
 
   const handleViewDetail = (lead) => {

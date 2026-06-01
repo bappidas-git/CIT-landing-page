@@ -6,6 +6,7 @@
 
 import { isPabblyMode } from './adminConfig';
 import { getConfig } from '../../utils/webhookSubmit';
+import { describeStatusChange } from './leadStatus';
 
 // Pabbly webhook for admin actions (status change, notes, deletions)
 // Set this to your Pabbly admin workflow webhook URL
@@ -18,20 +19,73 @@ const LEADS_ADMIN_KEY = process.env.REACT_APP_LEADS_ADMIN_KEY || "";
 const LEADS_KEY = "lp_submitted_leads";
 const TEST_LEADS_KEY = "lp_test_leads";
 
-// Maps internal status values to the human-friendly labels shown in the admin
-// UI. Kept in sync with STATUS_OPTIONS in the admin pages. Used so the activity
-// timeline reads "New" → "Warm" instead of the raw "new" → "consultation_booked".
-const STATUS_LABELS = {
-  new: "New",
-  contacted: "Hot",
-  consultation_booked: "Warm",
-  procedure_scheduled: "Cold",
-  completed: "Seat Booked",
-  not_interested: "Not Interested",
+// Name of the BroadcastChannel used to notify every admin tab/window in the
+// SAME browser that a lead changed. The native `storage` event only covers
+// cross-tab changes and can be missed in edge cases; broadcasting explicitly
+// after every admin mutation makes same-browser sync instant and reliable.
+const LEADS_CHANNEL = "lp_leads_channel";
+
+let leadsChannel = null;
+const getLeadsChannel = () => {
+  if (leadsChannel) return leadsChannel;
+  if (typeof BroadcastChannel === "undefined") return null;
+  try {
+    leadsChannel = new BroadcastChannel(LEADS_CHANNEL);
+  } catch (err) {
+    leadsChannel = null;
+  }
+  return leadsChannel;
 };
 
-// Resolve a status value to its display label, falling back to the raw value.
-const statusLabel = (value) => STATUS_LABELS[value] || value || "";
+/**
+ * Notify every admin view (this tab and other tabs/windows of the same
+ * browser) that the lead store changed, so they reload without waiting for
+ * the next server poll. Also dispatches a same-tab DOM event because the
+ * originating tab never receives its own `storage` / BroadcastChannel message.
+ */
+const notifyLeadsChanged = () => {
+  const channel = getLeadsChannel();
+  if (channel) {
+    try {
+      channel.postMessage({ type: "leads-changed", at: Date.now() });
+    } catch (err) {
+      /* ignore — fall back to the DOM event below */
+    }
+  }
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("lp:leads-changed"));
+  }
+};
+
+/**
+ * Subscribe an admin page to lead-store changes coming from any source:
+ * another tab/window (BroadcastChannel), a cross-tab localStorage write
+ * (`storage`), a new public submission (`lp:lead-submitted`), or a mutation in
+ * this same tab (`lp:leads-changed`). Returns an unsubscribe function.
+ */
+export const onLeadsChanged = (handler) => {
+  if (typeof window === "undefined") return () => {};
+
+  const channel = getLeadsChannel();
+  const onMessage = (e) => {
+    if (e?.data?.type === "leads-changed") handler();
+  };
+  const onStorage = (e) => {
+    if (e.key === LEADS_KEY || e.key === TEST_LEADS_KEY) handler();
+  };
+
+  if (channel) channel.addEventListener("message", onMessage);
+  window.addEventListener("storage", onStorage);
+  window.addEventListener("lp:lead-submitted", handler);
+  window.addEventListener("lp:leads-changed", handler);
+
+  return () => {
+    if (channel) channel.removeEventListener("message", onMessage);
+    window.removeEventListener("storage", onStorage);
+    window.removeEventListener("lp:lead-submitted", handler);
+    window.removeEventListener("lp:leads-changed", handler);
+  };
+};
 
 // Admin-only fields that live alongside a lead and are mutated from the admin
 // panel (status changes, notes, conversion tracking). These are the fields we
@@ -288,7 +342,9 @@ export const updateLeadStatus = (id, status) => {
   lead.status = status;
   if (!lead.activity) lead.activity = [];
   lead.activity.push({
-    action: `Status changed from "${statusLabel(oldStatus)}" to "${statusLabel(status)}"`,
+    // Action text is built from display labels; the timeline also re-maps any
+    // quoted status at render time, so it always shows the present labels.
+    action: describeStatusChange(oldStatus, status),
     status,
     timestamp: new Date().toISOString(),
   });
@@ -296,6 +352,7 @@ export const updateLeadStatus = (id, status) => {
   lead.updated_at = new Date().toISOString();
 
   saveLeads(leads);
+  notifyLeadsChanged();
 
   // Mirror to shared server store so other admins see the change.
   callLeadsApi("update", {
@@ -351,6 +408,7 @@ export const addLeadNote = (id, noteText) => {
   lead.updated_at = new Date().toISOString();
 
   saveLeads(leads);
+  notifyLeadsChanged();
 
   // Mirror to shared server store so notes persist across admins.
   callLeadsApi("update", {
@@ -396,6 +454,7 @@ export const updateLeadConversion = (id, { conversion_value, conversion_type, co
   lead.updated_at = new Date().toISOString();
 
   saveLeads(leads);
+  notifyLeadsChanged();
 
   // Mirror to shared server store so conversion data syncs across admins.
   callLeadsApi("update", {
@@ -418,6 +477,7 @@ export const deleteLead = (id) => {
   const leads = getAllLeadsRaw();
   const filtered = leads.filter((l) => l.lead_id !== id);
   saveLeads(filtered);
+  notifyLeadsChanged();
 
   // Mirror delete to shared server store.
   callLeadsApi("delete", { lead_ids: [id] });
@@ -446,6 +506,7 @@ export const deleteLeads = (ids) => {
   const leads = getAllLeadsRaw();
   const filtered = leads.filter((l) => !idSet.has(l.lead_id));
   saveLeads(filtered);
+  notifyLeadsChanged();
 
   // Mirror bulk delete to shared server store.
   if (ids.length > 0) {
@@ -596,6 +657,7 @@ export const importLeadsCSV = (csvText) => {
   }
 
   saveLeads(existingLeads);
+  notifyLeadsChanged();
   return { imported, duplicates };
 };
 
