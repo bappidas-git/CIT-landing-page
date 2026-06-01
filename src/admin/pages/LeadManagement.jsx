@@ -199,7 +199,7 @@ const LeadManagement = () => {
   // server is. We sync on mount, then poll on an interval below.
   useEffect(() => {
     syncLeadsFromServer().then((result) => {
-      if (!result.error && result.added > 0) {
+      if (!result.error && (result.added > 0 || result.updated > 0)) {
         loadDataRef.current();
       }
     });
@@ -215,7 +215,7 @@ const LeadManagement = () => {
     const poll = () => {
       if (document.visibilityState !== "visible") return;
       syncLeadsFromServer().then((result) => {
-        if (!result.error && result.added > 0) {
+        if (!result.error && (result.added > 0 || result.updated > 0)) {
           loadDataRef.current();
         }
       });
@@ -280,9 +280,17 @@ const LeadManagement = () => {
       loadData();
       if (result.error) {
         showSnackbar(`Refresh failed: ${result.error}`, "error");
+      } else if (result.added > 0 && result.updated > 0) {
+        showSnackbar(
+          `Refreshed — ${result.added} new, ${result.updated} updated`,
+        );
       } else if (result.added > 0) {
         showSnackbar(
           `Refreshed — ${result.added} new lead${result.added === 1 ? "" : "s"} synced`,
+        );
+      } else if (result.updated > 0) {
+        showSnackbar(
+          `Refreshed — ${result.updated} lead${result.updated === 1 ? "" : "s"} updated`,
         );
       } else {
         showSnackbar("Refreshed — already up to date");
