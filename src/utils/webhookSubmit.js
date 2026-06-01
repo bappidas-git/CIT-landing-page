@@ -12,11 +12,10 @@ import { getStoredGclid } from "./gclidManager";
 // CONFIGURATION — REPLACE THIS URL WITH YOUR
 // PABBLY CONNECT WEBHOOK URL
 // =============================================
-const WEBHOOK_URL =
-  "https://connect.pabbly.com/webhook-listener/webhook/IjU3NjIwNTZkMDYzZTA0Mzc1MjZmNTUzZCI_3D_pc/IjU3NjcwNTZmMDYzZjA0Mzc1MjZhNTUzNzUxM2Ei_pc";
+const WEBHOOK_URL = "";
 
 // Set to true when Pabbly webhook is configured
-const USE_PABBLY = true;
+const USE_PABBLY = false;
 
 // Dummy endpoint for testing (simulates success after 1.5s)
 const DUMMY_MODE = false;
@@ -25,8 +24,7 @@ const DUMMY_MODE = false;
 // so submissions made on one browser are visible to admins on another.
 // Override via REACT_APP_LEADS_API_URL if your PHP endpoint lives
 // elsewhere. Leave blank to disable server persistence.
-const LEADS_API_URL =
-  process.env.REACT_APP_LEADS_API_URL || "/api/leads.php";
+const LEADS_API_URL = process.env.REACT_APP_LEADS_API_URL || "/api/leads.php";
 
 // localStorage keys
 const LEADS_KEY = "lp_submitted_leads";
