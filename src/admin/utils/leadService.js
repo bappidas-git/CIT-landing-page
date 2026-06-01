@@ -18,6 +18,26 @@ const LEADS_ADMIN_KEY = process.env.REACT_APP_LEADS_ADMIN_KEY || "";
 const LEADS_KEY = "lp_submitted_leads";
 const TEST_LEADS_KEY = "lp_test_leads";
 
+// Admin-only fields that live alongside a lead and are mutated from the admin
+// panel (status changes, notes, conversion tracking). These are the fields we
+// merge back from the shared server store so changes made on one browser /
+// device appear on all of them. `updated_at` is the last-write-wins marker.
+const ADMIN_SYNC_FIELDS = [
+  "status",
+  "notes",
+  "activity",
+  "conversion_value",
+  "conversion_type",
+  "converted_at",
+  "updated_at",
+];
+
+const toMillis = (ts) => {
+  if (!ts) return 0;
+  const t = new Date(ts).getTime();
+  return Number.isNaN(t) ? 0 : t;
+};
+
 /**
  * Build the URL for the leads API. Returns empty string when disabled.
  */
@@ -44,21 +64,31 @@ const callLeadsApi = (action, body) => {
 };
 
 /**
- * Pull every lead from the server-side store and merge any new ones into
- * localStorage. Existing local records are preserved so admin-only state
- * (status changes, notes, activity) isn't overwritten on every sync.
+ * Pull every lead from the server-side store and reconcile it with
+ * localStorage. New leads are imported, and admin-only state (status, notes,
+ * activity, conversion tracking) on existing leads is merged back when the
+ * server copy is newer than the local one.
  *
- * Returns { synced: number, added: number, error?: string }.
+ * Why the merge matters: admin actions (status change, note) are mirrored to
+ * the shared server store, but each browser/device keeps its own localStorage.
+ * Previously existing leads were skipped on sync, so a status/note change made
+ * on one device never appeared on another. We now use the per-lead `updated_at`
+ * timestamp as a last-write-wins marker: if the server's copy was updated more
+ * recently than ours, we adopt its admin fields. The `updated_at` guard means a
+ * device with newer unsynced edits is never clobbered by a stale server copy.
+ *
+ * Returns { synced: number, added: number, updated: number, error?: string }.
  */
 export const syncLeadsFromServer = async () => {
   const url = getLeadsApiUrl();
   if (!url) {
-    return { synced: 0, added: 0, error: "LEADS_API_URL not configured" };
+    return { synced: 0, added: 0, updated: 0, error: "LEADS_API_URL not configured" };
   }
   if (!LEADS_ADMIN_KEY) {
     return {
       synced: 0,
       added: 0,
+      updated: 0,
       error: "REACT_APP_LEADS_ADMIN_KEY not set — cannot authenticate",
     };
   }
@@ -72,6 +102,7 @@ export const syncLeadsFromServer = async () => {
       return {
         synced: 0,
         added: 0,
+        updated: 0,
         error: `Server returned ${response.status}`,
       };
     }
@@ -79,38 +110,52 @@ export const syncLeadsFromServer = async () => {
     const serverLeads = Array.isArray(data.leads) ? data.leads : [];
 
     const localLeads = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
-    const localIds = new Set(localLeads.map((l) => l.lead_id));
+    const localById = new Map(localLeads.map((l) => [l.lead_id, l]));
 
     let added = 0;
+    let updated = 0;
     serverLeads.forEach((lead) => {
       if (!lead || !lead.lead_id) return;
-      if (localIds.has(lead.lead_id)) return;
-      // New lead from another browser/device — import it with sensible
-      // defaults for admin-only fields.
-      localLeads.push({
-        ...lead,
-        status: lead.status || "new",
-        notes: Array.isArray(lead.notes) ? lead.notes : [],
-        activity: Array.isArray(lead.activity)
-          ? lead.activity
-          : [
-              {
-                action: "Lead created",
-                status: lead.status || "new",
-                timestamp: lead.submitted_at || new Date().toISOString(),
-              },
-            ],
-      });
-      added++;
+      const local = localById.get(lead.lead_id);
+      if (!local) {
+        // New lead from another browser/device — import it with sensible
+        // defaults for admin-only fields.
+        localLeads.push({
+          ...lead,
+          status: lead.status || "new",
+          notes: Array.isArray(lead.notes) ? lead.notes : [],
+          activity: Array.isArray(lead.activity)
+            ? lead.activity
+            : [
+                {
+                  action: "Lead created",
+                  status: lead.status || "new",
+                  timestamp: lead.submitted_at || new Date().toISOString(),
+                },
+              ],
+        });
+        added++;
+        return;
+      }
+
+      // Existing lead — adopt the server's admin fields only when its copy is
+      // newer, so admin updates made on another device become visible here
+      // without overwriting edits we made more recently.
+      if (toMillis(lead.updated_at) > toMillis(local.updated_at)) {
+        ADMIN_SYNC_FIELDS.forEach((field) => {
+          if (lead[field] !== undefined) local[field] = lead[field];
+        });
+        updated++;
+      }
     });
 
-    if (added > 0) {
+    if (added > 0 || updated > 0) {
       localStorage.setItem(LEADS_KEY, JSON.stringify(localLeads));
     }
-    return { synced: serverLeads.length, added };
+    return { synced: serverLeads.length, added, updated };
   } catch (err) {
     console.error("[LeadsAPI] sync failed:", err);
-    return { synced: 0, added: 0, error: err.message || "Network error" };
+    return { synced: 0, added: 0, updated: 0, error: err.message || "Network error" };
   }
 };
 
@@ -232,13 +277,19 @@ export const updateLeadStatus = (id, status) => {
     status,
     timestamp: new Date().toISOString(),
   });
+  // Last-write-wins marker so other devices know this edit is newer.
+  lead.updated_at = new Date().toISOString();
 
   saveLeads(leads);
 
   // Mirror to shared server store so other admins see the change.
   callLeadsApi("update", {
     lead_id: id,
-    patch: { status: lead.status, activity: lead.activity },
+    patch: {
+      status: lead.status,
+      activity: lead.activity,
+      updated_at: lead.updated_at,
+    },
   });
 
   // If Pabbly mode, also send to webhook
@@ -281,13 +332,19 @@ export const addLeadNote = (id, noteText) => {
     status: lead.status,
     timestamp: new Date().toISOString(),
   });
+  // Last-write-wins marker so other devices know this edit is newer.
+  lead.updated_at = new Date().toISOString();
 
   saveLeads(leads);
 
   // Mirror to shared server store so notes persist across admins.
   callLeadsApi("update", {
     lead_id: id,
-    patch: { notes: lead.notes, activity: lead.activity },
+    patch: {
+      notes: lead.notes,
+      activity: lead.activity,
+      updated_at: lead.updated_at,
+    },
   });
 
   // If Pabbly mode, also send to webhook
@@ -303,6 +360,38 @@ export const addLeadNote = (id, noteText) => {
       }),
     }).catch(err => console.error('[LeadService] Pabbly webhook failed:', err));
   }
+
+  return lead;
+};
+
+/**
+ * Persist conversion tracking details on a lead and mirror them to the shared
+ * server store so the conversion value/type also appears on other devices.
+ * Returns the updated lead, or null if not found.
+ */
+export const updateLeadConversion = (id, { conversion_value, conversion_type, converted_at }) => {
+  const leads = getAllLeadsRaw();
+  const lead = leads.find((l) => l.lead_id === id);
+  if (!lead) return null;
+
+  lead.conversion_value = conversion_value;
+  lead.conversion_type = conversion_type;
+  lead.converted_at = converted_at || new Date().toISOString();
+  // Last-write-wins marker so other devices know this edit is newer.
+  lead.updated_at = new Date().toISOString();
+
+  saveLeads(leads);
+
+  // Mirror to shared server store so conversion data syncs across admins.
+  callLeadsApi("update", {
+    lead_id: id,
+    patch: {
+      conversion_value: lead.conversion_value,
+      conversion_type: lead.conversion_type,
+      converted_at: lead.converted_at,
+      updated_at: lead.updated_at,
+    },
+  });
 
   return lead;
 };

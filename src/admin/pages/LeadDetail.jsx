@@ -27,7 +27,9 @@ import {
   getLeadById,
   updateLeadStatus,
   addLeadNote,
+  updateLeadConversion,
   deleteLead,
+  syncLeadsFromServer,
 } from "../utils/leadService";
 import { sendConversionEvent } from "../../utils/metaCAPI";
 import { generateEventId } from "../../utils/eventDedup";
@@ -151,6 +153,66 @@ const LeadDetail = () => {
     loadLead();
   }, [loadLead]);
 
+  // Keep this lead in sync with the shared server store so status/note changes
+  // made on another browser or device show up here without a manual reload.
+  // We sync on mount, poll while the tab is visible, re-sync when the tab
+  // regains focus, and react to cross-tab localStorage writes. The merge in
+  // syncLeadsFromServer is last-write-wins, so an open detail view converges
+  // to whatever the most recent edit was, wherever it was made.
+  useEffect(() => {
+    let cancelled = false;
+    const POLL_MS = 15000;
+    let intervalId = null;
+
+    const syncAndReload = () => {
+      if (document.visibilityState !== "visible") return;
+      syncLeadsFromServer().then((result) => {
+        if (cancelled || result.error) return;
+        if (result.added > 0 || result.updated > 0) loadLead();
+      });
+    };
+
+    const start = () => {
+      if (intervalId) return;
+      intervalId = setInterval(syncAndReload, POLL_MS);
+    };
+    const stop = () => {
+      if (!intervalId) return;
+      clearInterval(intervalId);
+      intervalId = null;
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        syncAndReload();
+        start();
+      } else {
+        stop();
+      }
+    };
+
+    const handleStorage = (e) => {
+      if (e.key === "lp_submitted_leads" || e.key === "lp_test_leads") loadLead();
+    };
+
+    // Initial sync on mount (independent of visibility-change events).
+    syncLeadsFromServer().then((result) => {
+      if (cancelled || result.error) return;
+      if (result.added > 0 || result.updated > 0) loadLead();
+    });
+
+    if (document.visibilityState === "visible") start();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      cancelled = true;
+      stop();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [loadLead]);
+
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
   };
@@ -202,15 +264,13 @@ const LeadDetail = () => {
       // Update lead status to completed
       updateLeadStatus(lead.lead_id, "completed");
 
-      // Store conversion value on the lead for Google Ads export
-      const allLeads = JSON.parse(localStorage.getItem("lp_submitted_leads") || "[]");
-      const targetLead = allLeads.find((l) => l.lead_id === lead.lead_id);
-      if (targetLead) {
-        targetLead.conversion_value = parseFloat(conversionValue);
-        targetLead.conversion_type = conversionType;
-        targetLead.converted_at = new Date().toISOString();
-        localStorage.setItem("lp_submitted_leads", JSON.stringify(allLeads));
-      }
+      // Store conversion details on the lead (for Google Ads export) and
+      // mirror them to the shared server store so other devices see them too.
+      updateLeadConversion(lead.lead_id, {
+        conversion_value: parseFloat(conversionValue),
+        conversion_type: conversionType,
+        converted_at: new Date().toISOString(),
+      });
 
       // Add activity notes about conversion
       addLeadNote(
