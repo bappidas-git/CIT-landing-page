@@ -18,6 +18,21 @@ const LEADS_ADMIN_KEY = process.env.REACT_APP_LEADS_ADMIN_KEY || "";
 const LEADS_KEY = "lp_submitted_leads";
 const TEST_LEADS_KEY = "lp_test_leads";
 
+// Maps internal status values to the human-friendly labels shown in the admin
+// UI. Kept in sync with STATUS_OPTIONS in the admin pages. Used so the activity
+// timeline reads "New" → "Warm" instead of the raw "new" → "consultation_booked".
+const STATUS_LABELS = {
+  new: "New",
+  contacted: "Hot",
+  consultation_booked: "Warm",
+  procedure_scheduled: "Cold",
+  completed: "Seat Booked",
+  not_interested: "Not Interested",
+};
+
+// Resolve a status value to its display label, falling back to the raw value.
+const statusLabel = (value) => STATUS_LABELS[value] || value || "";
+
 // Admin-only fields that live alongside a lead and are mutated from the admin
 // panel (status changes, notes, conversion tracking). These are the fields we
 // merge back from the shared server store so changes made on one browser /
@@ -273,7 +288,7 @@ export const updateLeadStatus = (id, status) => {
   lead.status = status;
   if (!lead.activity) lead.activity = [];
   lead.activity.push({
-    action: `Status changed from "${oldStatus}" to "${status}"`,
+    action: `Status changed from "${statusLabel(oldStatus)}" to "${statusLabel(status)}"`,
     status,
     timestamp: new Date().toISOString(),
   });

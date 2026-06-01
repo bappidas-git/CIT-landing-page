@@ -354,7 +354,7 @@ const LeadManagement = () => {
   const handleStatusChange = (id, newStatus) => {
     updateLeadStatus(id, newStatus);
     loadData();
-    showSnackbar(`Status updated to "${newStatus}"`);
+    showSnackbar(`Status updated to "${getStatusConfig(newStatus).label}"`);
   };
 
   const handleBulkStatusChange = (newStatus) => {
