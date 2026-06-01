@@ -60,25 +60,25 @@ import styles from "./LeadManagement.module.css";
 // labels are CIT-admission friendly.
 const STATUS_OPTIONS = [
   { value: "new", label: "New", color: "#2B7BD5", bg: "#EBF5FF" },
-  { value: "contacted", label: "Contacted", color: "#F59E0B", bg: "#FFF7ED" },
+  { value: "contacted", label: "Hot", color: "#EF4444", bg: "#FEF2F2" },
   {
     value: "consultation_booked",
-    label: "Counselling Booked",
-    color: "#8B5CF6",
-    bg: "#F3E8FF",
+    label: "Warm",
+    color: "#F59E0B",
+    bg: "#FFF7ED",
   },
   {
     value: "procedure_scheduled",
-    label: "Visit Scheduled",
+    label: "Cold",
     color: "#0097A7",
     bg: "#E0F7FA",
   },
-  { value: "completed", label: "Admitted", color: "#10B981", bg: "#ECFDF5" },
+  { value: "completed", label: "Seat Booked", color: "#10B981", bg: "#ECFDF5" },
   {
     value: "not_interested",
     label: "Not Interested",
-    color: "#EF4444",
-    bg: "#FEF2F2",
+    color: "#6B7280",
+    bg: "#F3F4F6",
   },
 ];
 
