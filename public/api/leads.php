@@ -185,9 +185,16 @@ if ($method === 'POST' && $action === 'create') {
         exit;
     }
     $leads = load_leads($dataFile);
-    // Dedup by lead_id
+    // Dedup by lead_id (idempotent re-submits) and by mobile number
+    // (cross-device duplicate prevention — the same applicant submitting
+    // again from any browser/device is treated as a duplicate).
+    $incomingMobile = isset($lead['mobile']) ? trim((string) $lead['mobile']) : '';
     foreach ($leads as $existing) {
         if (($existing['lead_id'] ?? null) === $lead['lead_id']) {
+            echo json_encode(['success' => true, 'duplicate' => true]);
+            exit;
+        }
+        if ($incomingMobile !== '' && trim((string) ($existing['mobile'] ?? '')) === $incomingMobile) {
             echo json_encode(['success' => true, 'duplicate' => true]);
             exit;
         }

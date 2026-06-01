@@ -376,8 +376,8 @@ const LeadManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = importLeadsCSV(ev.target.result);
+    reader.onload = async (ev) => {
+      const result = await importLeadsCSV(ev.target.result);
       loadData();
       showSnackbar(
         `Imported ${result.imported} leads (${result.duplicates} duplicates skipped)`,

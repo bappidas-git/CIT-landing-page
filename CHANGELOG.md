@@ -2,6 +2,37 @@
 
 All notable changes to the Landing Page Boilerplate project.
 
+## [Unreleased]
+
+### Server-side leads as the single source of truth (cross-device sync fix)
+
+**Fixed**
+- Leads now sync correctly across every browser and device. The public form
+  writes each submission directly to the shared server store
+  (`public/api/leads.php`), and the admin panel reads/writes only the server
+  (auto-refreshing every 15s). Previously leads were kept in per-browser
+  `localStorage` and never reliably reached the server, so the admin panel
+  showed different data on different devices.
+- `webhookSubmit.js` now `POST`s straight to `/api/leads.php?action=create`
+  and reports honest success/failure; the lead is no longer stored only in the
+  submitting browser.
+- Duplicate prevention is now server-side (by mobile number), so it works
+  across devices instead of per-browser.
+
+**Removed**
+- **Pabbly Connect** integration entirely — webhook URL, `USE_PABBLY` /
+  `DUMMY_MODE` flags, the admin Pabbly mirror (`REACT_APP_ADMIN_PABBLY_WEBHOOK_URL`),
+  `adminConfig.js`, the Pabbly setup guide tab, and `PABBLY_GUIDE.md`.
+- All `localStorage` use for lead data (`lp_submitted_leads` / `lp_test_leads`).
+  Per-device essentials (admin login session, theme preference, Google Ads
+  gclid attribution) still use `localStorage` by design.
+
+**Notes**
+- Meta Pixel / CAPI and Google Ads tracking are kept (env-driven, IDs blank —
+  ready for CIT's own Pixel/Ads IDs). No third-party/other-client IDs remain.
+- Added a "Lead Storage" tab to the admin Guideline page documenting the new
+  architecture.
+
 ## [1.0.0] - 2026-04-01
 
 ### Converted from Brand-Specific to Generic Boilerplate

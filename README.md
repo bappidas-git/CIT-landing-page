@@ -100,7 +100,6 @@ Admin credentials: `citadmin` / `cit@admissions2026` (configured in `.env`).
 ├── CLAUDE.md               # AI assistant instructions
 ├── CUSTOMIZATION_GUIDE.md  # Step-by-step setup for a new landing page
 ├── GTM_GUIDE.md            # Google Tag Manager setup guide
-├── PABBLY_GUIDE.md         # Pabbly Connect webhook setup guide
 └── SEO_GUIDE.md            # SEO configuration guide
 ```
 
@@ -115,10 +114,9 @@ See **[CUSTOMIZATION_GUIDE.md](CUSTOMIZATION_GUIDE.md)** for a complete step-by-
 3. **Branding** — Update colors in `src/styles/variables.css` and `src/theme/muiTheme.js`
 4. **Images** — Replace `placehold.co` URLs with your actual images
 5. **SEO** — Update meta tags and schemas in `public/index.html` and `src/config/seo.js`
-6. **Webhook** — Configure Pabbly URL in `src/utils/webhookSubmit.js` (see [PABBLY_GUIDE.md](PABBLY_GUIDE.md))
-7. **Lead Management** — Copy `public/api/config.example.php` → `config.php`, set `ADMIN_API_KEY`, and set the matching `REACT_APP_LEADS_ADMIN_KEY` in `.env` (see [PABBLY_GUIDE.md](PABBLY_GUIDE.md) Part B)
-8. **Analytics** — Set up GTM container (see [GTM_GUIDE.md](GTM_GUIDE.md))
-9. **Deploy** — Run `npm run build` and deploy the `build/` folder
+6. **Lead Storage** — Copy `public/api/config.example.php` → `config.php`, set `ADMIN_API_KEY`, and set the matching `REACT_APP_LEADS_ADMIN_KEY` in `.env`. Leads POST to `/api/leads.php` (the shared server store) — the single source of truth that keeps every device in sync
+7. **Analytics** — Set up your GTM container (see [GTM_GUIDE.md](GTM_GUIDE.md)); add your Meta Pixel ID / Google Ads ID in `.env` when ready
+8. **Deploy** — Run `npm run build` and deploy the `build/` folder
 
 ## Routes
 
@@ -134,7 +132,6 @@ See **[CUSTOMIZATION_GUIDE.md](CUSTOMIZATION_GUIDE.md)** for a complete step-by-
 ## Documentation
 
 - **[CUSTOMIZATION_GUIDE.md](CUSTOMIZATION_GUIDE.md)** — Quick-start guide for creating a new landing page
-- **[PABBLY_GUIDE.md](PABBLY_GUIDE.md)** — Pabbly Connect webhook integration
 - **[GTM_GUIDE.md](GTM_GUIDE.md)** — Google Tag Manager setup and dataLayer events
 - **[SEO_GUIDE.md](SEO_GUIDE.md)** — SEO configuration and schema setup
 - **[CHANGELOG.md](CHANGELOG.md)** — Detailed changelog

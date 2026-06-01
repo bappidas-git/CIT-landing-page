@@ -93,7 +93,7 @@ const DeveloperGuide = ({ styles }) => {
 │   │   ├── context/          # AdminAuthContext (login state management)
 │   │   ├── pages/            # Dashboard, LeadManagement, LeadDetail, Guideline
 │   │   │   └── guidelineContent/  # Tab content components for Guideline page
-│   │   └── utils/            # adminAuth, leadService, googleAdsExport, adminConfig
+│   │   └── utils/            # adminAuth, leadService, googleAdsExport, leadStatus
 │   ├── components/
 │   │   ├── common/           # Reusable: Header, Footer, LeadForm, Button, Card, Modal, etc.
 │   │   └── sections/         # Page sections: Hero, About, Services, Features, CTA, etc.
@@ -110,7 +110,6 @@ const DeveloperGuide = ({ styles }) => {
 ├── CLAUDE.md                 # AI assistant instructions
 ├── CUSTOMIZATION_GUIDE.md    # Step-by-step setup guide
 ├── GTM_GUIDE.md              # Google Tag Manager guide
-├── PABBLY_GUIDE.md           # Pabbly Connect webhook guide
 ├── SEO_GUIDE.md              # SEO configuration guide
 └── CHANGELOG.md              # Version history`}
         </pre>
@@ -201,8 +200,8 @@ npm start
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/utils/webhookSubmit.js</code></td>
-              <td className={styles.guideTableCell}>Pabbly webhook URL, mode flags</td>
-              <td className={styles.guideTableCell}>Your Pabbly URL</td>
+              <td className={styles.guideTableCell}>Leads API endpoint (server store)</td>
+              <td className={styles.guideTableCell}>Usually leave default</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/config/seo.js</code></td>
@@ -312,11 +311,9 @@ npm start
 Form validation (validators.js)
   Fields: name, mobile, email, service_interest (course), state, message
   ↓
-Duplicate check (isDuplicateLead — checks localStorage by mobile number)
-  ↓
 submitLeadToWebhook() in webhookSubmit.js
-  ├── If DUMMY_MODE: Store in localStorage (lp_test_leads)
-  └── If USE_PABBLY: POST to Pabbly webhook URL + store in localStorage (lp_submitted_leads)
+  └── POST /api/leads.php?action=create  (shared server store = single source of truth)
+       Server dedupes by mobile → duplicate response shown as "Already Registered"
   ↓
 Tracking fires (in parallel):
   ├── GTM: trackFormSubmission() → dataLayer push (course interest, state)
@@ -361,11 +358,11 @@ Navigate to /thank-you`}
             </tr>
             <tr>
               <td className={styles.guideTableCell}><strong>Data Layer</strong></td>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>leadService.js</code> — all CRUD operations on localStorage</td>
+              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>leadService.js</code> — reads/writes the shared server store (<code className={styles.guideInlineCode}>/api/leads.php</code>); in-memory cache hydrated by a 15s poll</td>
             </tr>
             <tr>
-              <td className={styles.guideTableCell}><strong>Pabbly Sync</strong></td>
-              <td className={styles.guideTableCell}>When <code className={styles.guideInlineCode}>USE_PABBLY=true</code>, admin actions (status change, notes, delete) also fire webhooks</td>
+              <td className={styles.guideTableCell}><strong>Cross-device Sync</strong></td>
+              <td className={styles.guideTableCell}>All CRUD goes to the server, so status changes, notes and deletes made on one device appear on every other device</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><strong>Guideline Page</strong></td>
@@ -502,16 +499,6 @@ Navigate to /thank-you`}
                 Shared secret that must match <code className={styles.guideInlineCode}>ADMIN_API_KEY</code> in <code className={styles.guideInlineCode}>public/api/config.php</code>. Protects list/update/delete endpoints.
               </td>
             </tr>
-            <tr>
-              <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>REACT_APP_ADMIN_PABBLY_WEBHOOK_URL</code></td>
-              <td className={styles.guideTableCell}>No (Optional)</td>
-              <td className={styles.guideTableCell}>—</td>
-              <td className={styles.guideTableCell}>
-                Secondary Pabbly webhook to mirror admin actions (status changes, notes, deletions)
-                to an external workflow. Not required for Lead Management — the shared leads.php
-                already syncs admin actions across devices.
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -527,7 +514,7 @@ Navigate to /thank-you`}
           <li className={styles.guideListItem}>Component structure and layout patterns</li>
           <li className={styles.guideListItem}>Animation system (Framer Motion variants)</li>
           <li className={styles.guideListItem}>Form validation logic (<code className={styles.guideInlineCode}>validators.js</code>)</li>
-          <li className={styles.guideListItem}>Webhook submission flow (<code className={styles.guideInlineCode}>webhookSubmit.js</code> — only change the URL and mode flags)</li>
+          <li className={styles.guideListItem}>Lead submission flow (<code className={styles.guideInlineCode}>webhookSubmit.js</code> — posts to the server store; usually leave as-is)</li>
           <li className={styles.guideListItem}>SweetAlert configuration (<code className={styles.guideInlineCode}>swalHelper.js</code>)</li>
           <li className={styles.guideListItem}>Mobile navigation mechanics (<code className={styles.guideInlineCode}>MobileNavigation</code>, <code className={styles.guideInlineCode}>MobileDrawer</code>)</li>
           <li className={styles.guideListItem}>Drawer/modal behavior (<code className={styles.guideInlineCode}>ModalContext</code>)</li>
