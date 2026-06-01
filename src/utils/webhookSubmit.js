@@ -23,6 +23,12 @@ import { getStoredGclid } from "./gclidManager";
 // =============================================
 const LEADS_API_URL = process.env.REACT_APP_LEADS_API_URL || "/api/leads.php";
 
+// Server-side tele-calling storage endpoint. Telecallers enter records from
+// inside the admin panel and they sync across every device, exactly like
+// leads. Same-origin by default; override with REACT_APP_TELECALLS_API_URL.
+const TELECALLS_API_URL =
+  process.env.REACT_APP_TELECALLS_API_URL || "/api/telecalls.php";
+
 /**
  * Generate a UUID v4
  */
@@ -133,4 +139,5 @@ export const submitLeadToWebhook = async (leadData) => {
  */
 export const getConfig = () => ({
   LEADS_API_URL,
+  TELECALLS_API_URL,
 });

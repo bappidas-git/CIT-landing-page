@@ -2,7 +2,7 @@
 
 ## Overview
 
-A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumakuru** — built to capture quality leads for **Direct B.E. (Engineering) Admissions, 2026 intake**, targeted at students and parents across North East India and run by Assam Digital. Built with React 18, Material UI, and Framer Motion. Includes an admin panel with lead management, GTM integration, Meta CAPI, and Google Ads conversion tracking.
+A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumakuru** — built to capture quality leads for **Direct B.E. (Engineering) Admissions, 2026 intake**, targeted at students and parents across North East India and run by Assam Digital. Built with React 18, Material UI, and Framer Motion. Includes an admin panel with lead management, a tele-calling lead module, GTM integration, Meta CAPI, and Google Ads conversion tracking.
 
 ## Project Structure
 
@@ -21,6 +21,10 @@ A high-converting, mobile-first landing page for **Channabasaveshwara Institute 
 ## Lead Storage & Sync
 
 Leads are stored server-side in `public/api/leads.php` (a shared JSON store) — this is the **single source of truth**. The public form POSTs each submission there, and the admin panel reads/writes only the server (auto-refreshing every 15s), so every browser and device sees the same leads. There is no localStorage copy of leads. Configure with `REACT_APP_LEADS_API_URL` + `REACT_APP_LEADS_ADMIN_KEY` in `.env` (the key must match `ADMIN_API_KEY` in `public/api/config.php`).
+
+## Tele-Calling Module
+
+The **Tele-Calling** admin module (`/admin/tele-calling`) mirrors Lead Management but its records are entered manually by telecallers (not the public form). It has its own server store `public/api/telecalls.php` (`data/telecalls.json`), service `src/admin/utils/telecallService.js`, status config `src/admin/utils/telecallStatus.js`, list page `TeleCalling.jsx`, detail page `TeleCallDetail.jsx`, and shared add/edit form `src/admin/components/TelecallFormDialog.jsx`. It uses the same cross-device sync pattern as leads (in-memory cache hydrated from the server, 15s poll, BroadcastChannel for same-browser tabs) and reuses `REACT_APP_LEADS_ADMIN_KEY` for auth (configure the endpoint with `REACT_APP_TELECALLS_API_URL`). Tele-calling statuses: Hot · Warm · Cold · Need More Follow Ups · Seat Booked · Not Interested.
 
 ## Brand Color System (Defaults)
 
