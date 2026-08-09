@@ -4,6 +4,97 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Test engine — random 15+15 paper, 60-second clock, server-side scoring
+
+The paper is now real. An applicant who accepts the terms gets 30 questions
+drawn for them alone, one per screen, on a clock that belongs to the server —
+and a score that never travels back to their browser.
+
+**Added — `public/api/test.php`**
+- `POST ?action=start` — `{ key, tnc_accepted: true }`. Draws 15 random
+  Mathematics + 15 random Physics qids from the 120-question bank, merges and
+  shuffles the 30, persists the attempt and serves question 1. **One attempt per
+  key, for life:** a second `start` resumes the existing attempt instead of
+  drawing a second paper. Stamps the lead `test_status: 'in_progress'` +
+  `test_started_at` and appends the activity entry `Merit test started`.
+- `POST ?action=state` — the resume path. Finalises anything that ran out of
+  time while the applicant was away, then serves the current question with its
+  **true** remaining seconds. A refresh mid-question lands on the same question,
+  not a fresh minute.
+- `POST ?action=answer` — `{ key, index, selected: 0-3 | null }`. Records the
+  choice, advances, and scores the paper on the 30th finalisation. A stale
+  `index` answers `{"success": false, "error": "out_of_sync"}` **plus the
+  current serving payload**, which is both the client's re-sync path and the
+  whole of the no-going-back rule: an old index can never overwrite an answer.
+- The timing model, exact because prompt 09 and the admin panel read it: a
+  question's 60-second clock starts at its **first** serving (`first_served_at`,
+  never re-stamped on resume); an answer is accepted while
+  `now − first_served_at ≤ 60 + 15` (`CIT_TEST_GRACE_SECONDS`, slack for slow
+  networks and invisible to the client); serving returns
+  `remaining_seconds = clamp(60 − elapsed, 0, 60)`. **Auto-advance is
+  server-authoritative** — `advance_attempt()` finalises every overdue question
+  (`selected: null, timed_out: true`) before anything else happens, so a student
+  who shut the laptop on question 7 does not find question 7 waiting.
+- Server-side scoring: +4 correct, 0 wrong, 0 blank, max 120. No negative
+  marking, so a guess never costs anything. Correctness is derived from the bank
+  against the stored option index — the attempts file never held an answer key.
+  Persists `score`, per-subject splits and correct/wrong/blank counts, then
+  stamps the lead with `test_status: 'completed'`, `test_score`,
+  `test_maths_score`, `test_physics_score`, `test_correct_count`,
+  `test_wrong_count`, `test_blank_count`, `test_completed_at` and the fixed
+  activity entry `Merit test completed — scored` (no marks in the timeline — it
+  gets read out to applicants over the phone).
+- Optional `TEST_QUALIFY_CUTOFF` (documented commented-out in
+  `config.example.php`): when set, a completed attempt also gets
+  `test_qualified: true|false`. Unset — the default — means no automatic
+  verdict and a human decides, which is not the same as a stored `false`.
+  Nothing student-visible branches on it either way.
+- Helpers: `with_attempts_locked()` (one `flock(LOCK_EX)` read-modify-write per
+  request; `patch_lead()` runs *after* the lock releases so only one file is
+  ever held), `question_bank_index()`, `draw_question_ids()`, `new_attempt()`,
+  `advance_attempt()`, `serve_current_question()`, `score_attempt()`,
+  `attempt_index_by_key()`, `attempt_is_complete()`, `question_is_final()`,
+  `iso_to_epoch()`.
+
+**Added — `src/pages/Test/TestEngine.jsx`**
+- One question per screen: sticky question counter + subject tag + countdown
+  (tabular figures, reserved width, no sideways twitch), a `scaleX`-only timer
+  bar, the question in `pre-wrap` (the bank's Unicode notation is plain text),
+  four 48 px radio-semantic option buttons, and Next — disabled until an option
+  is chosen. No back control anywhere, plus a `beforeunload` courtesy confirm.
+- The countdown is **deadline-based**, not tick-counted, so a backgrounded tab
+  or a throttled timer still hits zero at the right moment. At zero it posts a
+  blank and asks for the next question — it never scores anything.
+- Last 10 seconds: colour shift plus a polite `aria-live` announcement (silent
+  before that, so it does not drown out the question).
+- `out_of_sync` re-syncs silently; a dropped connection shows a retry banner
+  that says honestly that *the question timer keeps running*, and Retry re-sends
+  exactly what failed.
+- GTM: `merit_test_start` (on a start the server actually honoured) and
+  `merit_test_complete`, both carrying only `test_state` — never the key, the
+  name or any other PII.
+
+**Changed**
+- `attempt_question_index()` now skips timed-out questions too (a blank keeps
+  `selected: null` forever, and would otherwise be reported as the resume point).
+- `test_parameters()` reads the new `CIT_TEST_*` constants instead of repeating
+  the numbers.
+- `/test` gains a `done` screen — *"Test submitted. Evaluation in progress."* —
+  distinct from the already-used-key screen. Prompt 09 replaces it with slot
+  booking.
+
+**Security**
+- Serving payloads carry the option **text** only: no `answer`, no qid, no
+  `topic` / `difficulty`, and never the full question list. The completion
+  response is identical for every applicant — no score, no pass/fail.
+- `start` / `state` / `answer` resolve the applicant from the key alone and
+  charge the login rate-limit budget **only when the key fails to resolve** — a
+  running test makes ~30 calls, and CGNAT would otherwise lock out a whole
+  district mid-paper.
+- The `test_*` fields are absent from `lead_field_whitelist()` in `leads.php`,
+  so a bot POSTing `test_score: 120` to `?action=create` finds it stripped.
+  Verified: zero bank strings in `build/static/`.
+
 ### Test platform foundation — `/test`, key login, instructions, T&C
 
 The applicant now has somewhere to spend the key they were handed on

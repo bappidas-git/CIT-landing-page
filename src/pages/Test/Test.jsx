@@ -20,10 +20,11 @@
    - 360 px first, 44 px touch targets, 16 px
      inputs (no iOS zoom-on-focus jump).
 
-   Screens 4 and 5 are placeholders here: the test
-   engine arrives with prompt 08 and the slot
-   booking with prompt 09. Both mount where the
-   placeholders sit, with the props already wired.
+   The engine (screen 4) lives in ./TestEngine —
+   same route chunk, kept separate only because it
+   is a machine of its own. Slot booking arrives
+   with prompt 09 and mounts where the submitted
+   screen sits.
    ============================================ */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -47,6 +48,7 @@ import {
   formatKey,
   maskKeyBody,
 } from './fields';
+import TestEngine from './TestEngine';
 
 import { updatePageSEO } from '../../utils/seo';
 import { trackApplicationStep } from '../../utils/gtm';
@@ -351,31 +353,41 @@ const TermsScreen = ({ accepted, onAcceptedChange, onStart, onBack }) => (
 );
 
 /**
- * Screen 4 — where the engine mounts. Prompt 08 replaces this component with
- * the real one; it already receives everything that `action=start` consumes:
- * the handoff ({ key, tnc_accepted }) and, for a resumed attempt, the index of
- * the first unanswered question.
+ * Screen 5a — the applicant has just submitted. Prompt 09 turns this into the
+ * counselling-slot booking; until then it says plainly where the paper went.
+ *
+ * No score, no answers, no pass/fail — the same words for every applicant,
+ * because the cutoff is the admission team's to apply, not this screen's.
  */
-const TestEnginePlaceholder = ({ handoff, questionIndex }) => (
+const SubmittedScreen = ({ studentName }) => (
   <div className={styles.screen}>
-    <h1 className={styles.heading}>You&apos;re all set.</h1>
-    <p className={styles.intro}>The test engine arrives in the next update.</p>
+    <h1 className={styles.heading}>
+      {studentName ? `Well done, ${studentName}.` : 'Well done.'}
+    </h1>
+    <p className={styles.intro}>Test submitted. Evaluation in progress.</p>
     <div className={styles.placeholderBox}>
       <span className={styles.placeholderIcon}>
         <IconCheck size={20} />
       </span>
       <span>
-        Signed in with <strong>{formatKey(maskKeyBody(handoff.key))}</strong>
-        {handoff.tnc_accepted ? ' · terms accepted' : ''}
-        {questionIndex > 0 ? ` · resuming at question ${questionIndex + 1}` : ''}
+        Your answers are with CIT&apos;s admission team. If you qualify, our team
+        will call you to schedule your counselling — keep your phone reachable.
       </span>
     </div>
+    <a
+      className={styles.primaryBtn}
+      href={SUPPORT_PHONE_HREF}
+      onClick={() => trackContactClick('phone', 'test_submitted')}
+    >
+      Call {SUPPORT_PHONE}
+    </a>
   </div>
 );
 
 /**
- * Screen 5 — a key that has already been used. Prompt 09 turns this into the
- * counselling-slot booking; until then it says plainly what happens next.
+ * Screen 5b — a key that has already been used, on a later visit. Prompt 09
+ * turns this into the counselling-slot booking; until then it says plainly what
+ * happens next.
  */
 const CompletedScreen = ({ studentName, completedAt, slotBooked }) => (
   <div className={styles.screen}>
@@ -418,8 +430,10 @@ const Test = () => {
   const [errorKind, setErrorKind] = useState('');
   const [session, setSession] = useState(null);
   const [tncAccepted, setTncAccepted] = useState(false);
-  // What prompt 08's `action=start` consumes, set the moment the applicant
-  // commits: { key, tnc_accepted }.
+  // What the engine mounts on, set the moment the applicant commits:
+  // { key, tnc_accepted, resume }. `resume` picks the engine's opening call —
+  // `action=state` for an attempt already in flight, `action=start` for a new
+  // one — so a resumed applicant never spends terms-screen seconds twice.
   const [handoff, setHandoff] = useState(null);
 
   const keyInputRef = useRef(null);
@@ -543,7 +557,7 @@ const Test = () => {
     // A resumed attempt already accepted the terms on its first run — sending
     // the applicant back through the gate would cost them timer seconds.
     if (session.state === 'in_progress') {
-      setHandoff({ key: session.key, tnc_accepted: true });
+      setHandoff({ key: session.key, tnc_accepted: true, resume: true });
       setScreen('engine');
       return;
     }
@@ -552,9 +566,24 @@ const Test = () => {
 
   const handleStartTest = () => {
     if (!session || !tncAccepted) return;
-    setHandoff({ key: session.key, tnc_accepted: true });
+    setHandoff({ key: session.key, tnc_accepted: true, resume: false });
     setScreen('engine');
   };
+
+  // The engine asked to resume an attempt the server does not have. Drop back
+  // to the instructions as a fresh start rather than looping on a resume that
+  // can never succeed.
+  const handleEngineLost = useCallback(() => {
+    setSession((current) =>
+      current ? { ...current, state: 'not_started', question_index: 0 } : current
+    );
+    setHandoff(null);
+    setScreen('instructions');
+  }, []);
+
+  const handleEngineCompleted = useCallback(() => {
+    setScreen('done');
+  }, []);
 
   const firstName = session ? (session.student_name || '').trim().split(' ')[0] : '';
 
@@ -606,11 +635,20 @@ const Test = () => {
           )}
 
           {screen === 'engine' && handoff && (
-            <TestEnginePlaceholder
-              handoff={handoff}
-              questionIndex={session ? session.question_index : 0}
+            <TestEngine
+              apiUrl={TEST_API_URL}
+              testKey={handoff.key}
+              resume={handoff.resume}
+              secondsPerQuestion={
+                (session && session.test && session.test.seconds_per_question) ||
+                DEFAULT_TEST.seconds_per_question
+              }
+              onCompleted={handleEngineCompleted}
+              onLost={handleEngineLost}
             />
           )}
+
+          {screen === 'done' && <SubmittedScreen studentName={firstName} />}
 
           {screen === 'completed' && session && (
             <CompletedScreen
