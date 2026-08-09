@@ -361,6 +361,11 @@ const buildFullPayload = (draft, now) => {
     email: (draft.email || '').trim(),
     message: (draft.message || '').trim(),
 
+    // Fees & branch choice (Step 5)
+    fee_affordability: draft.fee_affordability || '',
+    branch_pref_1: draft.branch_pref_1 || '',
+    branch_pref_2: draft.branch_pref_2 || '',
+
     // Bookkeeping
     lead_tier: 'application',
     status: 'new',
@@ -400,8 +405,8 @@ const trackFullApplication = (payload) => {
     serviceInterest: payload.service_interest,
   });
   trackApplicationStep('application_step_complete', {
-    step: 4,
-    step_name: 'logistics',
+    step: 5,
+    step_name: 'fees_branches',
     intake_year: payload.intake_year,
   });
 

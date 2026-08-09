@@ -27,13 +27,20 @@ through `src/hooks/useApplyCTA.js`, which warms the route chunk on `pointerdown`
 `cta_click` GTM event, and stashes the CTA key in sessionStorage so the lead records which
 CTA produced it.
 
-`src/pages/Apply/` is a full-page, 4-step form. **Step order is part of the contract** —
+`src/pages/Apply/` is a full-page, 5-step form. **Step order is part of the contract** —
 `applicationSubmit.js`, the admin detail groups and the GTM funnel events all assume it:
 
 1. **Identity** (`StepIdentity`) — name, mobile, WhatsApp confirmation, B.E. branch, intake year
 2. **Academic Details** (`StepAcademics`) — 12th status/board/school, subject marks, 10th details
 3. **Family & Funding** (`StepFamilyFinance`) — filled by, parent name + mobile, funding plan
 4. **Logistics** (`StepLogistics`) — state, district, counselling mode, timeline, optional best time / email / message
+5. **Fees & Branch Choice** (`StepFeesBranches`) — the complete per-branch cost table, the
+   affordability answer (`fee_affordability`), the conditional education-loan panel, and two
+   ranked branch preferences (`branch_pref_1` / `branch_pref_2`)
+
+Step 5 is last on purpose: the affordability answer is the strongest commitment signal on the
+form, and it is only meaningful once the applicant has seen the real numbers. Every figure it
+renders comes from `src/data/meritProgram.js` — never hard-code fees in the step.
 
 Design constraints for `/apply`: only the active step is mounted; CSS-only step transitions
 (`transform`/`opacity`); no framer-motion, sweetalert2 or iconify on the route; the draft lives
@@ -126,6 +133,13 @@ rendered on the page.
 | `SubmitApplication` | Full application completed | Pixel + CAPI (shared `event_id`) |
 | `Contact` / `phone_click` / `whatsapp_click` | Any phone or WhatsApp tap | GTM + Meta Pixel + Google Ads call conversion |
 | `QualifiedLead` / `Purchase` | Admin status change | Server only |
+| `application_step_view` / `application_step_complete` | Each `/apply` step, `step: 1…5` | GTM only |
+
+**GTM container owner:** the funnel now runs to **step 5** (`step_name: 'fees_branches'`), so
+`application_step_view` and `application_step_complete` each fire one new step value. Add
+triggers for them, and note that `application_step_complete` for the final step reports
+`step: 5, step_name: 'fees_branches'` (it was `4` / `'logistics'`) — any trigger pinned to
+step 4 as "application finished" must be re-pointed or it will silently stop firing.
 
 Phone and WhatsApp taps go through **`src/utils/contactTracking.js` → `trackContactClick(channel, source)`**,
 which fires all three legs from one call. Call it *instead of* `trackPhoneClick` /
@@ -140,9 +154,11 @@ The **Tele-Calling** admin module (`/admin/tele-calling`) mirrors Lead Managemen
 
 ## Content Rules (product decisions — do not re-litigate)
 
-- **No fee amounts anywhere on the public page.** Fees & Funding promises transparency
-  ("no capitation, no consultancy or agent fees, full fee structure shared on your first call")
-  and never states numbers.
+- **No fee amounts on the landing page.** Fee numbers appear in exactly one place: `/apply`
+  **Step 5** (`StepFeesBranches`) and its education-loan panel, where an applicant who has
+  already invested four steps sees the complete cost before committing. Every landing-page
+  section — Fees & Funding included — still promises transparency ("no capitation, no
+  consultancy or agent fees") and never states a number. Do not move fee figures upward.
 - **2026-only copy.** The form still asks intake year — that is a filter, not page copy.
 - **No "free counselling" angles, no fabricated scarcity, no invented stats or testimonials.**
   `testimonialsData.js` ships sample content behind `isLive: false`; recruiter chips only become
@@ -202,7 +218,9 @@ Also treat as contracts (changing them breaks the funnel, the admin panel or rep
 - **`src/utils/applicationSubmit.js` payload contract** — the exact keys, the shared `lead_id`
   across the partial and full submits, the `source` suffixes (`/step1-partial`, `/full`), and the
   attribution fields (`utm_*`, `gclid`, `fbclid`, `fbp`, `fbc`, `form_started_at`).
-- **`/apply` step order** — Identity → Academics → Family & Funding → Logistics (see above).
+- **`/apply` step order** — Identity → Academics → Family & Funding → Logistics → Fees &
+  Branch Choice (see above). The last step owns the submit via `isLastStep`, so appending or
+  reordering steps moves it.
 - **`capi-feedback.php` event names** — `QualifiedLead` and `Purchase`. Renaming them silently
   detaches every Meta custom audience, lookalike and optimisation rule built on them.
 - **Status keys** in `src/admin/utils/leadStatus.js` and `src/admin/utils/telecallStatus.js` —

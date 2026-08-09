@@ -1,6 +1,6 @@
 /* ============================================
    /apply — Direct B.E. Admission Application
-   Full-page, mobile-first, 4-step application
+   Full-page, mobile-first, 5-step application
    form. Replaces the short enquiry drawer as the
    only lead-capture surface.
 
@@ -30,6 +30,9 @@ import StepAcademics, {
 } from './steps/StepAcademics';
 import StepFamilyFinance from './steps/StepFamilyFinance';
 import StepLogistics from './steps/StepLogistics';
+import StepFeesBranches, {
+  MERIT_BRANCH_COURSES,
+} from './steps/StepFeesBranches';
 import {
   IconAlert,
   IconChevronLeft,
@@ -70,7 +73,8 @@ const STEPS = [
   { id: 1, key: 'identity', label: "Let's get started" },
   { id: 2, key: 'academics', label: 'Academic Details' },
   { id: 3, key: 'family_finance', label: 'Family & Funding' },
-  { id: 4, key: 'logistics', label: 'Almost done' },
+  { id: 4, key: 'logistics', label: 'Where & when' },
+  { id: 5, key: 'fees_branches', label: 'Fees & branch choice' },
 ];
 const TOTAL_STEPS = STEPS.length;
 
@@ -116,6 +120,11 @@ const createInitialDraft = () => ({
   best_time: '',
   email: '',
   message: '',
+
+  // Step 5
+  fee_affordability: '',
+  branch_pref_1: '',
+  branch_pref_2: '',
 
   // Honeypot — stays empty for humans.
   website: '',
@@ -338,6 +347,23 @@ const validateStep = (step, draft) => {
     }
   }
 
+  if (step === 5) {
+    if (!draft.fee_affordability) {
+      errors.fee_affordability =
+        'Please answer honestly — this helps us guide you right';
+    }
+
+    // Both preferences share one error key: the picker is a single control, and
+    // splitting the message across two slots would read as two separate faults.
+    const isBranch = (value) => MERIT_BRANCH_COURSES.includes(value);
+    if (!isBranch(draft.branch_pref_1) || !isBranch(draft.branch_pref_2)) {
+      errors.branch_pref_1 =
+        'Please pick exactly two branches, in order of preference';
+    } else if (draft.branch_pref_1 === draft.branch_pref_2) {
+      errors.branch_pref_1 = 'Please pick two different branches';
+    }
+  }
+
   return errors;
 };
 
@@ -383,7 +409,7 @@ const Apply = () => {
   // ---- Page chrome -------------------------------------------------------
   useEffect(() => {
     updatePageSEO({
-      title: 'Apply — Direct B.E. Admission 2026 | CIT Tumakuru',
+      title: 'Apply — CIT Merit-Based Selection Program 2026 | CIT Tumakuru',
       robots: 'noindex, nofollow',
     });
 
@@ -576,8 +602,8 @@ const Apply = () => {
       return;
     }
 
-    // Step 4 completion is tracked from applicationSubmit.js once the server
-    // has actually accepted the application.
+    // The last step's completion is tracked from applicationSubmit.js once the
+    // server has actually accepted the application.
     sendFullApplication();
   };
 
@@ -646,6 +672,7 @@ const Apply = () => {
               )}
               {step === 3 && <StepFamilyFinance {...stepProps} />}
               {step === 4 && <StepLogistics {...stepProps} />}
+              {step === 5 && <StepFeesBranches {...stepProps} />}
 
               {submitError && (
                 <div className={styles.errorBanner} role="alert">

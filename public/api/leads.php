@@ -204,6 +204,8 @@ function lead_field_whitelist() {
         'funding_plan', 'district', 'counselling_mode', 'admission_timeline',
         'best_time', 'fbclid', 'fbp', 'fbc', 'form_started_at',
         'application_completed_at',
+        // Merit-program fields (prompt series new-refinement-prompts)
+        'fee_affordability', 'branch_pref_1', 'branch_pref_2',
     ];
 }
 

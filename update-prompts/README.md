@@ -22,9 +22,12 @@ The campaign was producing junk leads because:
 
 ## Confirmed product decisions (do not re-litigate inside any prompt)
 
-- **No fee amounts anywhere.** The Fees & Funding section and the funding question
-  promise transparency ("no capitation, no consultancy or agent fees, full fee
-  structure shared on your first call") but never state numbers.
+- **No fee amounts on the landing page.** The Fees & Funding section and the funding
+  question promise transparency ("no capitation, no consultancy or agent fees") but
+  never state numbers. *Superseded in one place:* `/apply` **Step 5**
+  (`StepFeesBranches`) shows the complete per-branch, per-year cost table and the
+  education-loan example. Fee figures live there and nowhere else, and always come
+  from `src/data/meritProgram.js`.
 - **The short drawer enquiry form is fully replaced.** Every CTA on the page leads
   to the new full-page multi-step application form at `/apply`. The drawer code
   stays in the repo but is no longer opened from anywhere.
@@ -91,9 +94,10 @@ criteria in the prompt must be verified.
    `not_interested`) must NEVER be renamed (`src/admin/utils/leadStatus.js`).
 5. **Shared field vocabulary.** All prompts use the exact field names defined in
    the "Canonical new-field schema" section below. Do not invent variants.
-6. **2026-only copy. No fee numbers. No fabricated stats or testimonials** — the
-   testimonials section ships with clearly-marked sample content and a launch
-   blocker note.
+6. **2026-only copy. No fee numbers on the landing page** (the sole exception is
+   `/apply` Step 5 — see "Confirmed product decisions" above). **No fabricated stats
+   or testimonials** — the testimonials section ships with clearly-marked sample
+   content and a launch blocker note.
 7. Keep the existing brand token system (`src/styles/variables.css`), fluid type
    scale, 44 px minimum touch targets, `prefers-reduced-motion` support, and 16 px
    input font on mobile (iOS zoom prevention).
@@ -130,6 +134,9 @@ Every field below is stored flat on the lead object alongside the existing keys
 | `best_time` | `'morning'` \| `'afternoon'` \| `'evening'` \| `''` | **optional** |
 | `email` | valid email or `''` | **optional** |
 | `message` | string ≤ 500 chars | **optional** |
+| `fee_affordability` | `'own_income'` \| `'education_loan'` — answered on `/apply` Step 5, after the applicant has seen the complete fee table. Distinct from `funding_plan`: that is the family's plan *before* seeing the numbers, this is their capability *after* | yes (full submit) |
+| `branch_pref_1` | exact branch string from the 7 real branches in `src/data/meritProgram.js` (`MERIT_BRANCHES[].course`) — same em-dash format as `service_interest`, but never `"Not Sure — Need Guidance"` | yes (full submit) |
+| `branch_pref_2` | same vocabulary as `branch_pref_1`, and must differ from it — the applicant picks exactly two, in order of preference | yes (full submit) |
 | `fbclid`, `fbp`, `fbc` | strings from attribution util | auto |
 | `form_started_at` | ISO timestamp when Step 1 rendered (time-trap) | auto |
 | `application_completed_at` | ISO timestamp on final submit; absent on partials | auto |
