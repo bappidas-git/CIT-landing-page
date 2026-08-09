@@ -32,6 +32,7 @@ import { initConsentMode } from './utils/consentMode';
 import { initPixel, trackPageView as trackMetaPageView } from './utils/metaPixel';
 import { captureGclid } from './utils/gclidManager';
 import { captureAttribution } from './utils/attribution';
+import { flushApplicationRetryQueue } from './utils/applicationSubmit';
 import { initGoogleAds } from './utils/googleAds';
 import { setupEnhancedConversions } from './utils/enhancedConversions';
 
@@ -41,6 +42,7 @@ import AdminLogin from './admin/components/AdminLogin';
 import ProtectedRoute from './admin/components/ProtectedRoute';
 
 // Pages (Lazy loaded)
+const ApplyPage = lazy(() => import('./pages/Apply'));
 const ThankYouPage = lazy(() => import('./pages/ThankYou/ThankYou'));
 const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
 
@@ -319,6 +321,8 @@ const useIdlePreload = () => {
     // Preload sections during idle time
     if ('requestIdleCallback' in window) {
       const sections = [
+        // The application form is the destination of every CTA — warm it first.
+        () => import('./pages/Apply'),
         () => import('./components/sections/AboutSection/AboutSection'),
         () => import('./components/sections/WhyChooseCIT/WhyChooseCIT'),
         () => import('./components/sections/ServicesSection/ServicesSection'),
@@ -553,6 +557,8 @@ const App = () => {
     captureGclid();
     // Capture fbclid + first-touch UTM attribution (persists in localStorage)
     captureAttribution();
+    // Re-send any application submit that a dropped connection left queued
+    flushApplicationRetryQueue();
   }, []);
 
   // Hide initial loader after mount
@@ -608,6 +614,16 @@ const App = () => {
             <Routes>
               {/* Home Page */}
               <Route path="/" element={<HomePageContent />} />
+
+              {/* Application Form — full-page multi-step lead capture */}
+              <Route
+                path="/apply"
+                element={
+                  <Suspense fallback={<SectionLoader height={400} variant="default" />}>
+                    <ApplyPage />
+                  </Suspense>
+                }
+              />
 
               {/* Thank You Page */}
               <Route

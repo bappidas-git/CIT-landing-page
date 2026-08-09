@@ -152,6 +152,85 @@ export const sendLeadEvent = async (leadData) => {
 };
 
 /**
+ * Send a SubmitApplication event to Meta CAPI (server-side twin of the
+ * browser pixel's SubmitApplication). Fired ONLY on full completion of the
+ * multi-step application at /apply — the Step-1 partial keeps using the plain
+ * Lead event so Meta can later be optimized on completed applications alone.
+ * @param {Object} applicationData - Completed application data
+ * @param {string} applicationData.name - Applicant's full name
+ * @param {string} [applicationData.email] - Applicant's email
+ * @param {string} applicationData.mobile - Applicant's phone number
+ * @param {string} [applicationData.event_id] - Event ID shared with the pixel (auto-generated if absent)
+ * @param {string} [applicationData.source] - Form source identifier
+ * @param {string} [applicationData.service_interest] - Selected B.E. branch
+ * @param {string} [applicationData.intake_year] - Intake year filter
+ * @returns {Promise<{success: boolean, message: string, event_id: string}>}
+ */
+export const sendSubmitApplicationEvent = async (applicationData) => {
+  const eventId = applicationData.event_id || generateEventId();
+
+  try {
+    const { firstName, lastName } = splitName(applicationData.name);
+    const [hashedEmail, hashedPhone, hashedFirstName, hashedLastName] = await Promise.all([
+      hashData(applicationData.email),
+      hashData(normalizePhoneE164(applicationData.mobile)),
+      hashData(firstName),
+      hashData(lastName),
+    ]);
+
+    const userData = {
+      ...getUserData(),
+      em: hashedEmail,
+      ph: hashedPhone,
+      fn: hashedFirstName,
+    };
+    if (hashedLastName) {
+      userData.ln = hashedLastName;
+    }
+
+    const payload = {
+      event_name: 'SubmitApplication',
+      event_id: eventId,
+      event_time: Math.floor(Date.now() / 1000),
+      event_source_url: window.location.href,
+      user_data: userData,
+      custom_data: {
+        content_name: applicationData.source || 'apply-full',
+        content_category: 'application',
+        lead_source: applicationData.source || '',
+        ...(applicationData.service_interest
+          ? { course: applicationData.service_interest }
+          : {}),
+        ...(applicationData.intake_year
+          ? { intake_year: applicationData.intake_year }
+          : {}),
+      },
+    };
+
+    const response = await fetch(getCapiUrl(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      storeSentEventId(eventId, 'SubmitApplication');
+      return {
+        success: true,
+        message: 'SubmitApplication event sent to CAPI',
+        event_id: eventId,
+      };
+    }
+
+    console.error('[MetaCAPI] SubmitApplication event failed:', response.status);
+    return { success: false, message: 'CAPI request failed', event_id: eventId };
+  } catch (error) {
+    console.error('[MetaCAPI] SubmitApplication event error:', error);
+    return { success: false, message: error.message, event_id: eventId };
+  }
+};
+
+/**
  * Send a conversion event to Meta CAPI (e.g., when admin marks lead as converted)
  * @param {Object} leadData - Original lead data (will be hashed)
  * @param {Object} conversionData - Conversion details

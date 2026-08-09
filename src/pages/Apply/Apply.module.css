@@ -1,0 +1,920 @@
+/* ============================================
+   /apply — Multi-Step Application Form
+   Mobile-first at 360 px. Compositor-only
+   transitions (opacity/transform), no
+   framer-motion, no backdrop-filter.
+   Visual language matches the enquiry form
+   without importing its stylesheet.
+   ============================================ */
+
+/* The site's mobile bottom nav does not exist on this route, so the global
+   body padding it reserves would leave dead space under the sticky footer. */
+:global(body.apply-page) {
+  padding-bottom: 0 !important;
+  background: var(--color-tint);
+}
+
+/* global.css sets `overflow-x: hidden` on body and App.css sets it on #app-root.
+   Both turn those elements into scroll containers, and a scroll container
+   between the sticky footer and the viewport silently pins the footer to the
+   bottom of the document instead of the bottom of the screen. Nothing on this
+   route overflows horizontally, so restoring `visible` for the route is safe
+   and is what makes `position: sticky` actually stick. */
+:global(body.apply-page),
+:global(body.apply-page #app-root) {
+  overflow: visible;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-tint);
+  font-family: var(--font-primary);
+  color: var(--text-dark-gray);
+}
+
+/* ============================================
+   Top bar — logo, progress, close
+   ============================================ */
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 6px 12px;
+}
+
+.logo {
+  display: block;
+  height: 36px;
+  width: auto;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-gray);
+  cursor: pointer;
+}
+
+.closeBtn:active {
+  background: var(--light-gray);
+}
+
+.progressWrap {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 16px 8px;
+}
+
+.progressLabel {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 12px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  color: var(--text-gray);
+}
+
+.progressTrack {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--medium-gray);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--color-primary) 0%, #1a5276 100%);
+  transform-origin: left center;
+  transition: transform 220ms ease;
+  will-change: transform;
+}
+
+/* ============================================
+   Layout — form / scrollable step / sticky footer
+   ============================================ */
+.form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 12px 14px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 16px 14px 4px;
+  box-shadow: 0 2px 12px rgba(12, 45, 72, 0.08);
+}
+
+.stepHost {
+  animation: stepIn 180ms ease-out both;
+}
+
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.stepHeading {
+  margin: 0 0 3px;
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+.stepIntro {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+  background: var(--white);
+  border-top: 1px solid var(--border-gray);
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+}
+
+.footerInner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  min-height: 50px;
+  padding: 0 16px;
+  border: 1.5px solid var(--border-gray);
+  border-radius: 12px;
+  background: var(--white);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+  cursor: pointer;
+}
+
+.backBtn:active {
+  background: var(--light-gray);
+}
+
+.backBtnCompact {
+  padding: 0 10px;
+}
+
+.nextBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-height: 50px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent-orange);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  color: var(--white);
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+}
+
+.nextBtn:active {
+  background: var(--accent-orange-dark);
+}
+
+/* The final label is long — one size down keeps it on a single line at 360 px. */
+.submitBtn {
+  padding: 0 10px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.nextBtn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.footerNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--text-gray);
+}
+
+/* ============================================
+   Fields
+   ============================================ */
+.field {
+  margin-bottom: 12px;
+}
+
+/* The last control in a step never needs trailing space above the footer. */
+.field:last-child {
+  margin-bottom: 4px;
+}
+
+.label {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+}
+
+.optional {
+  font-weight: var(--fw-regular);
+  color: var(--text-gray);
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  transition: border-color 150ms ease, box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.inputWrap:focus-within {
+  background: var(--white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.12);
+}
+
+.inputWrap[data-error='true'] {
+  border-color: var(--error);
+  background: #fdf5f4;
+}
+
+.inputIcon {
+  flex: 0 0 auto;
+  color: #9ca3af;
+}
+
+.inputWrap:focus-within .inputIcon {
+  color: var(--color-primary);
+}
+
+.prefix {
+  flex: 0 0 auto;
+  font-size: 16px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+}
+
+.prefixDivider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 22px;
+  background: var(--border-gray);
+}
+
+/* 16px font prevents the iOS zoom-on-focus jump. */
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--text-dark-gray);
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 84px;
+  padding: 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: var(--lh-normal);
+  color: var(--text-dark-gray);
+  resize: vertical;
+  outline: none;
+}
+
+.textarea:focus {
+  background: var(--white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.12);
+}
+
+/* Native select — no popover menu, no MUI Select. */
+.select {
+  width: 100%;
+  padding: 12px 36px 12px 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background-color: #f8f9fb;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239CA3AF'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px 20px;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--text-dark-gray);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.select:focus {
+  background-color: var(--white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.12);
+}
+
+.select[data-error='true'] {
+  border-color: var(--error);
+  background-color: #fdf5f4;
+}
+
+.selectPlaceholder {
+  color: #9ca3af;
+}
+
+.errorText {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--error);
+}
+
+.hintText {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+}
+
+/* ============================================
+   Radio chips + full-width option rows
+   ============================================ */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  color: var(--text-dark-gray);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease,
+    color 150ms ease;
+}
+
+.chipActive {
+  border-color: var(--color-primary);
+  background: rgba(12, 45, 72, 0.08);
+  color: var(--color-primary);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  color: var(--text-dark-gray);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.optionRowActive {
+  border-color: var(--color-primary);
+  background: rgba(12, 45, 72, 0.08);
+}
+
+.radioDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-gray);
+  border-radius: var(--radius-full);
+  background: var(--white);
+}
+
+.optionRowActive .radioDot {
+  border-color: var(--color-primary);
+}
+
+.radioDotInner {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+}
+
+/* ============================================
+   Checkbox (WhatsApp confirmation)
+   ============================================ */
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkboxBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-gray);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--white);
+}
+
+.checkboxInput:checked + .checkboxBox {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.checkboxInput:focus-visible + .checkboxBox {
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.2);
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-dark-gray);
+}
+
+/* ============================================
+   Subjects & marks (Step 2)
+   ============================================ */
+.subjectRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.subjectName {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+}
+
+.subjectLocked {
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  color: var(--text-gray);
+}
+
+.marksWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  width: 118px;
+  padding: 0 10px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+}
+
+.marksWrap:focus-within {
+  background: var(--white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.12);
+}
+
+.marksWrap[data-error='true'] {
+  border-color: var(--error);
+  background: #fdf5f4;
+}
+
+.marksInput {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  text-align: center;
+  color: var(--text-dark-gray);
+}
+
+.marksSuffix {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.removeSubject {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-gray);
+  cursor: pointer;
+}
+
+.addSubjectLabel {
+  display: block;
+  margin: 12px 0 8px;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+}
+
+.addChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1.5px dashed var(--border-gray);
+  border-radius: 12px;
+  background: var(--white);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.addChip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ============================================
+   Eligibility badge
+   ============================================ */
+.badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0 16px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  line-height: var(--lh-normal);
+}
+
+.badgeMet {
+  border-color: rgba(30, 142, 90, 0.35);
+  background: var(--card-green);
+  color: #14603c;
+}
+
+.badgeReview {
+  border-color: rgba(224, 48, 30, 0.3);
+  background: var(--card-orange);
+  color: #8c2a1a;
+}
+
+.badgeIcon {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.badgeValue {
+  font-weight: var(--fw-bold);
+}
+
+/* ============================================
+   Info panels, consent, error banner
+   ============================================ */
+.infoPanel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--color-tint);
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-dark-gray);
+}
+
+.reassurance {
+  margin: -6px 0 16px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--success);
+  border-radius: 0 8px 8px 0;
+  background: var(--card-green);
+  font-size: 12px;
+  line-height: var(--lh-normal);
+  color: #14603c;
+}
+
+.consent {
+  margin: 4px 0 12px;
+  font-size: 12px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+}
+
+.linkBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(216, 38, 24, 0.35);
+  border-radius: 12px;
+  background: var(--card-yellow);
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: #8c2a1a;
+}
+
+.errorBannerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.retryBtn {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-primary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.callLink {
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+/* Honeypot — hidden from humans, irresistible to bots. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ============================================
+   Privacy overlay (plain CSS — no backdrop-filter)
+   ============================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-max);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.overlayPanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  max-height: 82vh;
+  border-radius: 12px;
+  background: var(--white);
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.overlayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--medium-gray);
+  background: var(--light-gray);
+}
+
+.overlayTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+.overlayBody {
+  padding: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.policyHeading {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+.policySection {
+  margin-bottom: 20px;
+}
+
+.policyText {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: var(--lh-relaxed);
+  color: #374151;
+}
+
+.policyList {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: var(--lh-relaxed);
+  color: #374151;
+}
+
+.policyList li {
+  margin-bottom: 6px;
+}
+
+.policyUpdated {
+  margin: 0;
+  font-size: 11px;
+  font-style: italic;
+  color: #6b7280;
+}
+
+/* ============================================
+   Larger screens
+   ============================================ */
+@media screen and (min-width: 600px) {
+  .main {
+    padding: 24px 16px 20px;
+  }
+
+  .card {
+    padding: 24px 22px 10px;
+  }
+
+  .stepHeading {
+    font-size: 23px;
+  }
+}
+
+/* ============================================
+   Reduced motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .stepHost {
+    animation: none;
+  }
+
+  .progressBar {
+    transition: none;
+  }
+
+  .chip,
+  .optionRow,
+  .inputWrap {
+    transition: none;
+  }
+}

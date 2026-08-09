@@ -5,7 +5,8 @@
    forwards them to Meta's Conversions API
    with server-side enrichment.
 
-   Supports: Lead, Purchase, PageView events
+   Supports: Lead, SubmitApplication, Purchase,
+             PageView events
    Implements: Event deduplication via event_id
    Hashes PII with SHA256 before sending
    ============================================ */
@@ -62,7 +63,7 @@ if (!$data || !isset($data['event_name'])) {
 }
 
 // Supported events
-$supportedEvents = ['Lead', 'Purchase', 'PageView', 'ViewContent', 'Contact', 'LeadConverted'];
+$supportedEvents = ['Lead', 'SubmitApplication', 'Purchase', 'PageView', 'ViewContent', 'Contact', 'LeadConverted'];
 if (!in_array($data['event_name'], $supportedEvents)) {
     http_response_code(400);
     echo json_encode(['error' => 'Unsupported event: ' . $data['event_name']]);
