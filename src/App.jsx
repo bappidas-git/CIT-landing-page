@@ -49,6 +49,8 @@ const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
 // Lazy loaded sections for performance (Below the fold)
 const AboutSection = lazy(() => import('./components/sections/AboutSection/AboutSection'));
 const WhyChooseCIT = lazy(() => import('./components/sections/WhyChooseCIT/WhyChooseCIT'));
+const FeesFundingSection = lazy(() => import('./components/sections/FeesFundingSection/FeesFundingSection'));
+const AdmissionProcessSection = lazy(() => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'));
 const ServicesSection = lazy(() => import('./components/sections/ServicesSection/ServicesSection'));
 const StatsSection = lazy(() => import('./components/sections/StatsSection/StatsSection'));
 const HighlightsSection = lazy(() => import('./components/sections/HighlightsSection/HighlightsSection'));
@@ -325,6 +327,8 @@ const useIdlePreload = () => {
         () => import('./pages/Apply'),
         () => import('./components/sections/AboutSection/AboutSection'),
         () => import('./components/sections/WhyChooseCIT/WhyChooseCIT'),
+        () => import('./components/sections/FeesFundingSection/FeesFundingSection'),
+        () => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'),
         () => import('./components/sections/ServicesSection/ServicesSection'),
         () => import('./components/sections/StatsSection/StatsSection'),
         () => import('./components/sections/LocationSection/LocationSection'),
@@ -452,6 +456,18 @@ const HomePageContent = () => {
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={500} variant="default" />}>
             <WhyChooseCIT />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
+            <FeesFundingSection />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
+            <AdmissionProcessSection />
           </Suspense>
         </ErrorBoundary>
 

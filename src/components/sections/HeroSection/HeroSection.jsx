@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -15,8 +16,7 @@ import {
   Button,
 } from "@mui/material";
 import { Icon } from "@iconify/react";
-import UnifiedLeadForm from "../../common/UnifiedLeadForm/UnifiedLeadForm";
-import { useModal } from "../../../context/ModalContext";
+import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
 import styles from "./HeroSection.module.css";
 
@@ -87,11 +87,20 @@ const trustIndicators = [
   { icon: "mdi:certificate-outline", text: "NAAC • AICTE • VTU" },
 ];
 
+// What an applicant needs before starting — sets expectations up front,
+// so the people who begin the form are the people who can finish it.
+const applicationChecklist = [
+  "Takes about 3 minutes",
+  "Keep your 10th & 12th marks handy",
+  "Parent/guardian's mobile number",
+  "Instant VTU eligibility check inside the form",
+];
+
 const HeroSection = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
-  const { openLeadDrawer } = useModal();
+  const navigate = useNavigate();
 
   // Fallback image state
   const [heroImageUrl, setHeroImageUrl] = useState("");
@@ -130,6 +139,12 @@ const HeroSection = () => {
       cancelled = true;
     };
   }, [isMobile]);
+
+  // Every hero CTA goes to the full application — no drawer, no short form.
+  const handleStartApplication = (ctaName) => {
+    trackCTAClick(ctaName, "hero", "Start My Application");
+    navigate("/apply");
+  };
 
   return (
     <section className={styles.heroSection} id="home">
@@ -200,10 +215,10 @@ const HeroSection = () => {
                     marginTop: "1.5rem",
                   }}
                 >
-                  Your Engineering Future Starts at CIT —
+                  Direct B.E. Admission 2026 at CIT Tumakuru —
                   <span className={styles.orangeText}>
                     {" "}
-                    Direct B.E. Admission for 2026
+                    Apply Online in 3 Minutes
                   </span>
                 </Typography>
               </motion.div>
@@ -222,9 +237,10 @@ const HeroSection = () => {
                     lineHeight: 1.6,
                   }}
                 >
-                  NAAC-accredited, AICTE-approved VTU degree in Tumakuru,
-                  Karnataka with 85%+ placements — guided direct admission for
-                  students from North East India.
+                  NAAC-accredited, AICTE-approved VTU degree with 85%+
+                  placements. Complete the online application and CIT&apos;s
+                  North-East admission desk will confirm your eligibility on the
+                  first call.
                 </Typography>
               </motion.div>
 
@@ -237,14 +253,8 @@ const HeroSection = () => {
                   variant="contained"
                   size="large"
                   className={styles.primaryCta}
-                  onClick={() => {
-                    trackCTAClick(
-                      "hero_primary_cta",
-                      "hero",
-                      "Apply Now",
-                    );
-                    openLeadDrawer("apply-now");
-                  }}
+                  onClick={() => handleStartApplication("hero-apply")}
+                  onPointerDown={preloadApply}
                   sx={{
                     backgroundColor: "#E0301E",
                     color: "#FFFFFF",
@@ -264,7 +274,7 @@ const HeroSection = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Apply Now →
+                  Start My Application →
                 </Button>
                 <Button
                   variant="outlined"
@@ -312,7 +322,7 @@ const HeroSection = () => {
             </motion.div>
           </Grid>
 
-          {/* Right Content - Lead Form (Desktop only) */}
+          {/* Right Content - Application Checklist (Desktop only) */}
           {isDesktop && (
             <Grid item lg={5}>
               <motion.div
@@ -333,33 +343,34 @@ const HeroSection = () => {
                         fontSize: "1.25rem",
                       }}
                     >
-                      Apply for Direct B.E. Admission 2026
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.8)",
-                        textAlign: "center",
-                        marginTop: "0.25rem",
-                        fontSize: "0.875rem",
-                      }}
-                    >
-                      Free guidance from CIT's admission team
+                      Your 2026 Application
                     </Typography>
                   </div>
                   <div className={styles.formBody}>
-                    <UnifiedLeadForm
-                      variant="hero"
-                      source="hero"
-                      showTitle={false}
-                      showSubtitle={false}
-                      showCourseFields={true}
-                      showTrustBadges={true}
-                      showConsent={true}
-                      showPhoneButton={false}
-                      submitButtonText="Apply for 2026 Admission"
-                      formId="hero-form"
-                    />
+                    <ul className={styles.checklist}>
+                      {applicationChecklist.map((item) => (
+                        <li key={item} className={styles.checklistItem}>
+                          <Icon
+                            icon="mdi:check-circle"
+                            className={styles.checklistIcon}
+                          />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button
+                      type="button"
+                      className={styles.checklistCta}
+                      onClick={() => handleStartApplication("hero-card-apply")}
+                      onPointerDown={preloadApply}
+                    >
+                      Start My Application
+                    </button>
+
+                    <p className={styles.checklistNote}>
+                      No consultancy or agent fees · Direct college admission
+                    </p>
                   </div>
                 </div>
               </motion.div>

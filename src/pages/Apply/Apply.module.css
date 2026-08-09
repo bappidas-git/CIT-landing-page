@@ -170,6 +170,11 @@
   color: var(--text-gray);
 }
 
+/* Shared eligibility note at the top of Step 2 */
+.eligibilityStrip {
+  margin-bottom: 16px;
+}
+
 .footer {
   position: sticky;
   bottom: 0;
