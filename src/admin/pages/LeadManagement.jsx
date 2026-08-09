@@ -54,6 +54,18 @@ import {
   onLeadsChanged,
 } from "../utils/leadService";
 import { STATUS_OPTIONS, getStatusConfig } from "../utils/leadStatus";
+import {
+  FUNDING_PLAN_SHORT_LABELS,
+  INTAKE_YEAR_LABELS,
+  PARTIAL_HINT,
+  QUALITY_BANDS,
+  computeQualityScore,
+  getLeadTier,
+  getQualityConfig,
+  getTierConfig,
+  hasQualitySignal,
+  labelFor,
+} from "../utils/leadQuality";
 import { exportGoogleAdsCSV } from "../utils/googleAdsExport";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import styles from "./LeadManagement.module.css";
@@ -66,6 +78,50 @@ const DATE_RANGE_OPTIONS = [
   { value: "custom", label: "Custom Range" },
 ];
 
+// Tier filter. The default deliberately hides server-flagged spam — a
+// telecaller should never have to scroll past junk — while "All + spam" keeps
+// it one click away for anyone auditing what the anti-bot checks caught.
+const TIER_FILTER_OPTIONS = [
+  { value: "active", label: "All (no spam)" },
+  { value: "application", label: "Application" },
+  { value: "partial", label: "Partial" },
+  { value: "enquiry", label: "Enquiry" },
+  { value: "spam", label: "Spam only" },
+  { value: "all", label: "All + spam" },
+];
+
+const QUALITY_FILTER_OPTIONS = [
+  { value: "all", label: "All Quality" },
+  ...QUALITY_BANDS.map((b) => ({ value: b.value, label: b.label })),
+];
+
+const INTAKE_FILTER_OPTIONS = [
+  { value: "all", label: "All Intakes" },
+  ...Object.keys(INTAKE_YEAR_LABELS).map((value) => ({
+    value,
+    label: INTAKE_YEAR_LABELS[value],
+  })),
+];
+
+const FUNDING_FILTER_OPTIONS = [
+  { value: "all", label: "All Funding" },
+  ...Object.keys(FUNDING_PLAN_SHORT_LABELS).map((value) => ({
+    value,
+    label: FUNDING_PLAN_SHORT_LABELS[value],
+  })),
+];
+
+// Left-border accent + hint colour for an abandoned Step-1 application.
+const PARTIAL_TIER = getTierConfig("partial");
+
+// Columns whose first click should sort high-to-low — a score or a date is
+// only useful with the best/newest at the top.
+const DESC_FIRST_COLUMNS = new Set([
+  "quality",
+  "eligibility_percent",
+  "submitted_at",
+]);
+
 const formatShortDate = (dateStr) => {
   if (!dateStr) return "—";
   const d = new Date(dateStr);
@@ -77,10 +133,33 @@ const formatShortDate = (dateStr) => {
 };
 
 // Columns config — `service_interest` is the canonical key (kept from the
-// public form), displayed as "Course Interested" in the UI.
+// public form), displayed as "Course Interested" in the UI. `lead_tier` and
+// `quality` are derived on read (leadQuality.js), not stored on the lead.
+//
+// This list drives the header row only. The body cells and the mobile card
+// layout below are hand-written — all three must be kept in step.
 const COLUMNS = [
-  { id: "name", label: "Name", sortable: true },
+  // Wide enough that the partial-lead hint under the name wraps to one extra
+  // line instead of squeezing the column to a sliver.
+  { id: "name", label: "Name", sortable: true, width: 190 },
   { id: "mobile", label: "Mobile", sortable: true, width: 130 },
+  { id: "lead_tier", label: "Tier", sortable: true, width: 120 },
+  { id: "quality", label: "Quality", sortable: true, width: 110 },
+  { id: "intake_year", label: "Intake", sortable: true, width: 110 },
+  {
+    id: "eligibility_percent",
+    label: "Eligibility %",
+    sortable: true,
+    width: 120,
+    hideTablet: true,
+  },
+  {
+    id: "funding_plan",
+    label: "Funding",
+    sortable: true,
+    width: 140,
+    hideTablet: true,
+  },
   { id: "email", label: "Email", sortable: true, hideTablet: true },
   {
     id: "service_interest",
@@ -93,6 +172,19 @@ const COLUMNS = [
   { id: "status", label: "Status", sortable: true, width: 150 },
   { id: "submitted_at", label: "Date", sortable: true, width: 100 },
 ];
+
+/**
+ * Render the stored eligibility aggregate as `72.4% ✔` / `41.0% –`, or a dash
+ * when the lead never entered 12th marks (legacy and partial leads).
+ * @param {Object} lead - Lead record
+ * @returns {{text: string, met: boolean}|null} Display parts, or null
+ */
+const formatEligibility = (lead) => {
+  const percent = Number(lead.eligibility_percent);
+  if (!Number.isFinite(percent) || lead.eligibility_percent === "") return null;
+  const met = lead.eligibility_met === true;
+  return { text: `${percent.toFixed(1)}% ${met ? "✔" : "–"}`, met };
+};
 
 const LeadManagement = () => {
   const navigate = useNavigate();
@@ -108,6 +200,11 @@ const LeadManagement = () => {
   const [dateRange, setDateRange] = useState("all");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
+  // Qualification filters — composed on top of the filters above.
+  const [tierFilter, setTierFilter] = useState("active");
+  const [qualityFilter, setQualityFilter] = useState("all");
+  const [intakeFilter, setIntakeFilter] = useState("all");
+  const [fundingFilter, setFundingFilter] = useState("all");
 
   // Table state
   const [orderBy, setOrderBy] = useState("submitted_at");
@@ -146,13 +243,51 @@ const LeadManagement = () => {
       startDate: customStart,
       endDate: customEnd,
     };
-    const data = getLeads(filters);
+    // The qualification filters are applied here rather than in leadService
+    // because quality is derived in the admin and never stored on the lead.
+    const data = getLeads(filters).filter((lead) => {
+      const tier = getLeadTier(lead);
+      if (tierFilter === "active") {
+        if (tier === "spam") return false;
+      } else if (tierFilter !== "all" && tier !== tierFilter) {
+        return false;
+      }
+      if (qualityFilter !== "all") {
+        // Legacy leads were never asked the scored questions, so a band
+        // filter must not sweep them up as "Low".
+        if (!hasQualitySignal(lead)) return false;
+        if (computeQualityScore(lead).band !== qualityFilter) return false;
+      }
+      if (intakeFilter !== "all" && (lead.intake_year || "") !== intakeFilter) {
+        return false;
+      }
+      if (
+        fundingFilter !== "all" &&
+        (lead.funding_plan || "") !== fundingFilter
+      ) {
+        return false;
+      }
+      return true;
+    });
     setLeads(data);
 
-    const s = getLeadStats();
+    // Summary counts exclude spam so they agree with the Dashboard and with
+    // the default table view, which hides spam too.
+    const s = getLeadStats({ excludeSpam: true });
     setStats(s);
     setAvailableSources(s.sources);
-  }, [search, statusFilter, sourceFilter, dateRange, customStart, customEnd]);
+  }, [
+    search,
+    statusFilter,
+    sourceFilter,
+    dateRange,
+    customStart,
+    customEnd,
+    tierFilter,
+    qualityFilter,
+    intakeFilter,
+    fundingFilter,
+  ]);
 
   // Keep the latest loadData in a ref so event listeners below don't need
   // to re-bind every time filters change.
@@ -261,19 +396,36 @@ const LeadManagement = () => {
     }
   };
 
-  // Sorting
+  // Sorting. `quality` and `lead_tier` are derived rather than stored, and
+  // eligibility must compare as a number, so those columns resolve their own
+  // sort value instead of reading the raw field.
   const sortedLeads = useMemo(() => {
+    const sortValue = (lead) => {
+      switch (orderBy) {
+        case "quality":
+          return computeQualityScore(lead).score;
+        case "lead_tier":
+          return getTierConfig(getLeadTier(lead)).label.toLowerCase();
+        case "eligibility_percent": {
+          const percent = Number(lead.eligibility_percent);
+          return Number.isFinite(percent) ? percent : -1;
+        }
+        case "funding_plan":
+          return labelFor(
+            FUNDING_PLAN_SHORT_LABELS,
+            lead.funding_plan
+          ).toLowerCase();
+        case "submitted_at":
+          return new Date(lead.submitted_at || 0).getTime() || 0;
+        default:
+          return String(lead[orderBy] || "").toLowerCase();
+      }
+    };
+
     const sorted = [...leads];
     sorted.sort((a, b) => {
-      let aVal = a[orderBy] || "";
-      let bVal = b[orderBy] || "";
-      if (orderBy === "submitted_at") {
-        aVal = new Date(aVal).getTime();
-        bVal = new Date(bVal).getTime();
-      } else {
-        aVal = String(aVal).toLowerCase();
-        bVal = String(bVal).toLowerCase();
-      }
+      const aVal = sortValue(a);
+      const bVal = sortValue(b);
       if (aVal < bVal) return order === "asc" ? -1 : 1;
       if (aVal > bVal) return order === "asc" ? 1 : -1;
       return 0;
@@ -294,7 +446,7 @@ const LeadManagement = () => {
       setOrder(order === "asc" ? "desc" : "asc");
     } else {
       setOrderBy(column);
-      setOrder("asc");
+      setOrder(DESC_FIRST_COLUMNS.has(column) ? "desc" : "asc");
     }
   };
 
@@ -394,6 +546,11 @@ const LeadManagement = () => {
     setDateRange("all");
     setCustomStart("");
     setCustomEnd("");
+    // Back to the default view, which still hides spam.
+    setTierFilter("active");
+    setQualityFilter("all");
+    setIntakeFilter("all");
+    setFundingFilter("all");
     setPage(0);
   };
 
@@ -405,7 +562,11 @@ const LeadManagement = () => {
     search ||
     statusFilter !== "all" ||
     sourceFilter !== "all" ||
-    dateRange !== "all";
+    dateRange !== "all" ||
+    tierFilter !== "active" ||
+    qualityFilter !== "all" ||
+    intakeFilter !== "all" ||
+    fundingFilter !== "all";
 
   return (
     <div className={styles.page}>
@@ -609,7 +770,7 @@ const LeadManagement = () => {
         <div className={styles.filtersBar}>
           <TextField
             size="small"
-            placeholder="Search by name, email, mobile, course, or state..."
+            placeholder="Search by name, mobile, parent, district, school, course..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -681,6 +842,98 @@ const LeadManagement = () => {
               {availableSources.map((s) => (
                 <MenuItem key={s} value={s}>
                   {s}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <InputLabel>Tier</InputLabel>
+            <Select
+              value={tierFilter}
+              label="Tier"
+              onChange={(e) => {
+                setTierFilter(e.target.value);
+                setPage(0);
+              }}
+              sx={{
+                borderRadius: "8px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--admin-accent)",
+                },
+              }}
+            >
+              {TIER_FILTER_OPTIONS.map((t) => (
+                <MenuItem key={t.value} value={t.value}>
+                  {t.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel>Quality</InputLabel>
+            <Select
+              value={qualityFilter}
+              label="Quality"
+              onChange={(e) => {
+                setQualityFilter(e.target.value);
+                setPage(0);
+              }}
+              sx={{
+                borderRadius: "8px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--admin-accent)",
+                },
+              }}
+            >
+              {QUALITY_FILTER_OPTIONS.map((q) => (
+                <MenuItem key={q.value} value={q.value}>
+                  {q.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel>Intake</InputLabel>
+            <Select
+              value={intakeFilter}
+              label="Intake"
+              onChange={(e) => {
+                setIntakeFilter(e.target.value);
+                setPage(0);
+              }}
+              sx={{
+                borderRadius: "8px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--admin-accent)",
+                },
+              }}
+            >
+              {INTAKE_FILTER_OPTIONS.map((i) => (
+                <MenuItem key={i.value} value={i.value}>
+                  {i.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Funding</InputLabel>
+            <Select
+              value={fundingFilter}
+              label="Funding"
+              onChange={(e) => {
+                setFundingFilter(e.target.value);
+                setPage(0);
+              }}
+              sx={{
+                borderRadius: "8px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--admin-accent)",
+                },
+              }}
+            >
+              {FUNDING_FILTER_OPTIONS.map((f) => (
+                <MenuItem key={f.value} value={f.value}>
+                  {f.label}
                 </MenuItem>
               ))}
             </Select>
@@ -766,6 +1019,61 @@ const LeadManagement = () => {
                 label={`Source: ${sourceFilter}`}
                 size="small"
                 onDelete={() => setSourceFilter("all")}
+                sx={{
+                  bgcolor: "#EBF5FF",
+                  color: "var(--admin-accent)",
+                  "& .MuiChip-deleteIcon": { color: "var(--admin-accent)" },
+                }}
+              />
+            )}
+            {tierFilter !== "active" && (
+              <Chip
+                label={`Tier: ${
+                  TIER_FILTER_OPTIONS.find((t) => t.value === tierFilter)?.label
+                }`}
+                size="small"
+                onDelete={() => setTierFilter("active")}
+                sx={{
+                  bgcolor: "#EBF5FF",
+                  color: "var(--admin-accent)",
+                  "& .MuiChip-deleteIcon": { color: "var(--admin-accent)" },
+                }}
+              />
+            )}
+            {qualityFilter !== "all" && (
+              <Chip
+                label={`Quality: ${getQualityConfig(qualityFilter).label}`}
+                size="small"
+                onDelete={() => setQualityFilter("all")}
+                sx={{
+                  bgcolor: getQualityConfig(qualityFilter).bg,
+                  color: getQualityConfig(qualityFilter).color,
+                  "& .MuiChip-deleteIcon": {
+                    color: getQualityConfig(qualityFilter).color,
+                  },
+                }}
+              />
+            )}
+            {intakeFilter !== "all" && (
+              <Chip
+                label={`Intake: ${labelFor(INTAKE_YEAR_LABELS, intakeFilter)}`}
+                size="small"
+                onDelete={() => setIntakeFilter("all")}
+                sx={{
+                  bgcolor: "#EBF5FF",
+                  color: "var(--admin-accent)",
+                  "& .MuiChip-deleteIcon": { color: "var(--admin-accent)" },
+                }}
+              />
+            )}
+            {fundingFilter !== "all" && (
+              <Chip
+                label={`Funding: ${labelFor(
+                  FUNDING_PLAN_SHORT_LABELS,
+                  fundingFilter
+                )}`}
+                size="small"
+                onDelete={() => setFundingFilter("all")}
                 sx={{
                   bgcolor: "#EBF5FF",
                   color: "var(--admin-accent)",
@@ -976,6 +1284,13 @@ const LeadManagement = () => {
                     {paginatedLeads.map((lead) => {
                       const sc = getStatusConfig(lead.status);
                       const isSelected = selected.includes(lead.lead_id);
+                      const tier = getLeadTier(lead);
+                      const tc = getTierConfig(tier);
+                      const isPartial = tier === "partial";
+                      const quality = computeQualityScore(lead);
+                      const qc = getQualityConfig(quality.band);
+                      const scored = hasQualitySignal(lead);
+                      const eligibility = formatEligibility(lead);
                       return (
                         <TableRow
                           key={lead.lead_id}
@@ -985,9 +1300,14 @@ const LeadManagement = () => {
                             bgcolor: isSelected
                               ? "rgba(43, 123, 213, 0.06)"
                               : "#fff",
+                            // A partial lead keeps a subtle amber rail so an
+                            // unfinished application is spottable while
+                            // scanning the list.
                             borderLeft: isSelected
                               ? "3px solid var(--admin-accent)"
-                              : "3px solid transparent",
+                              : isPartial
+                                ? `3px solid ${PARTIAL_TIER.color}`
+                                : "3px solid transparent",
                             "&:hover": { bgcolor: "#F8FAFF" },
                             transition: "background 0.15s ease",
                             "& td": {
@@ -1015,6 +1335,11 @@ const LeadManagement = () => {
                             >
                               {lead.name || "—"}
                             </Typography>
+                            {isPartial && (
+                              <span className={styles.partialHint}>
+                                {PARTIAL_HINT}
+                              </span>
+                            )}
                           </TableCell>
                           <TableCell>
                             <Typography
@@ -1028,6 +1353,100 @@ const LeadManagement = () => {
                               {lead.mobile || "—"}
                             </Typography>
                           </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={tc.label}
+                              size="small"
+                              sx={{
+                                bgcolor: tc.bg,
+                                color: tc.color,
+                                fontWeight: 600,
+                                fontSize: "0.7rem",
+                                height: 22,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {scored ? (
+                              <Tooltip
+                                title={`Quality score ${quality.score}/100${
+                                  quality.capped
+                                    ? " — capped at Warm until the application is completed"
+                                    : ""
+                                }`}
+                              >
+                                <Chip
+                                  label={qc.label}
+                                  size="small"
+                                  sx={{
+                                    bgcolor: qc.bg,
+                                    color: qc.color,
+                                    fontWeight: 600,
+                                    fontSize: "0.7rem",
+                                    height: 22,
+                                  }}
+                                />
+                              </Tooltip>
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  color: "var(--admin-text-muted)",
+                                }}
+                              >
+                                —
+                              </Typography>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontSize: "0.8125rem",
+                                color: "var(--admin-text-secondary)",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {labelFor(INTAKE_YEAR_LABELS, lead.intake_year) ||
+                                "—"}
+                            </Typography>
+                          </TableCell>
+                          {!isTablet && (
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  fontWeight: eligibility?.met ? 600 : 400,
+                                  whiteSpace: "nowrap",
+                                  color: eligibility
+                                    ? eligibility.met
+                                      ? "var(--admin-success)"
+                                      : "var(--admin-text-secondary)"
+                                    : "var(--admin-text-muted)",
+                                }}
+                              >
+                                {eligibility ? eligibility.text : "—"}
+                              </Typography>
+                            </TableCell>
+                          )}
+                          {!isTablet && (
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  color: "var(--admin-text-secondary)",
+                                }}
+                              >
+                                {labelFor(
+                                  FUNDING_PLAN_SHORT_LABELS,
+                                  lead.funding_plan
+                                ) || "—"}
+                              </Typography>
+                            </TableCell>
+                          )}
                           {!isTablet && (
                             <TableCell>
                               <Typography
@@ -1173,10 +1592,26 @@ const LeadManagement = () => {
               {paginatedLeads.map((lead) => {
                 const sc = getStatusConfig(lead.status);
                 const isSelected = selected.includes(lead.lead_id);
+                const tier = getLeadTier(lead);
+                const tc = getTierConfig(tier);
+                const isPartial = tier === "partial";
+                const quality = computeQualityScore(lead);
+                const qc = getQualityConfig(quality.band);
+                const scored = hasQualitySignal(lead);
+                const eligibility = formatEligibility(lead);
+                // One compact qualification line — only the answers this lead
+                // actually has, so a legacy enquiry card is unchanged.
+                const qualificationLine = [
+                  labelFor(INTAKE_YEAR_LABELS, lead.intake_year),
+                  eligibility ? `Eligibility ${eligibility.text}` : "",
+                  labelFor(FUNDING_PLAN_SHORT_LABELS, lead.funding_plan),
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
                 return (
                   <div
                     key={lead.lead_id}
-                    className={`${styles.leadCard} ${isSelected ? styles.leadCardSelected : ""}`}
+                    className={`${styles.leadCard} ${isPartial ? styles.leadCardPartial : ""} ${isSelected ? styles.leadCardSelected : ""}`}
                   >
                     <div className={styles.leadCardRow}>
                       <div
@@ -1219,10 +1654,56 @@ const LeadManagement = () => {
                       {lead.service_interest || "—"}
                       {lead.state ? ` · ${lead.state}` : ""}
                     </div>
+                    {qualificationLine && (
+                      <div
+                        className={styles.leadCardMobile}
+                        style={{
+                          paddingLeft: 32,
+                          fontFamily: "inherit",
+                          marginTop: 2,
+                        }}
+                      >
+                        {qualificationLine}
+                      </div>
+                    )}
+                    {isPartial && (
+                      <div
+                        className={styles.partialHint}
+                        style={{ paddingLeft: 32, marginTop: 4 }}
+                      >
+                        {PARTIAL_HINT}
+                      </div>
+                    )}
                     <div
                       className={styles.leadCardChips}
                       style={{ paddingLeft: 32 }}
                     >
+                      <Chip
+                        label={tc.label}
+                        size="small"
+                        sx={{
+                          bgcolor: tc.bg,
+                          color: tc.color,
+                          fontWeight: 600,
+                          fontSize: "0.65rem",
+                          height: 24,
+                        }}
+                      />
+                      {scored && (
+                        <Tooltip title={`Quality score ${quality.score}/100`}>
+                          <Chip
+                            label={qc.label}
+                            size="small"
+                            sx={{
+                              bgcolor: qc.bg,
+                              color: qc.color,
+                              fontWeight: 600,
+                              fontSize: "0.65rem",
+                              height: 24,
+                            }}
+                          />
+                        </Tooltip>
+                      )}
                       <Chip
                         label={lead.source || "—"}
                         size="small"

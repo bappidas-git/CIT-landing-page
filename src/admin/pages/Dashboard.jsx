@@ -11,6 +11,12 @@ import { getLeadStats, exportLeadsCSV, getLeads, syncLeadsFromServer, onLeadsCha
 import { getStatusConfig } from '../utils/leadStatus';
 import styles from './Dashboard.module.css';
 
+// Spam is server-flagged junk (honeypot / time-trap / fake-number checks in
+// leads.php). It is excluded from every number on this page and from the
+// recent-leads table, so the overview reflects real admission demand. The
+// Lead Management page keeps it one filter click away.
+const DASHBOARD_STATS_OPTIONS = { excludeSpam: true };
+
 const formatDate = () => {
   const d = new Date();
   return d.toLocaleDateString('en-US', {
@@ -29,7 +35,7 @@ const Dashboard = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
-    const refresh = () => setStats(getLeadStats());
+    const refresh = () => setStats(getLeadStats(DASHBOARD_STATS_OPTIONS));
     refresh();
 
     // Initial server sync so leads from ad visitors on other devices appear.
@@ -88,6 +94,27 @@ const Dashboard = () => {
     { label: 'New Today', value: stats?.newLeads24h ?? 0, icon: 'mdi:account-plus', colorClass: 'statIconGreen' },
     { label: 'This Week', value: stats?.weekLeads ?? 0, icon: 'mdi:calendar-week', colorClass: 'statIconPink' },
     { label: 'Conversion Rate', value: `${stats?.conversionRate ?? 0}%`, icon: 'mdi:percent', colorClass: 'statIconTeal' },
+    {
+      label: 'Applications',
+      sublabel: 'Full application completed',
+      value: stats?.applicationLeads ?? 0,
+      icon: 'mdi:file-document-check-outline',
+      colorClass: 'statIconGreen',
+    },
+    {
+      label: 'Partials',
+      sublabel: 'Recover by phone',
+      value: stats?.partialLeads ?? 0,
+      icon: 'mdi:progress-alert',
+      colorClass: 'statIconAmber',
+    },
+    {
+      label: 'Hot Quality',
+      sublabel: '2026-ready, funding clear',
+      value: stats?.hotQualityLeads ?? 0,
+      icon: 'mdi:fire',
+      colorClass: 'statIconBlue',
+    },
   ];
 
   const recentLeads = stats?.recentLeads || [];
@@ -106,7 +133,7 @@ const Dashboard = () => {
     setRefreshing(true);
     try {
       const result = await syncLeadsFromServer();
-      setStats(getLeadStats());
+      setStats(getLeadStats(DASHBOARD_STATS_OPTIONS));
       if (result.error) {
         setSnackbar({ open: true, message: `Refresh failed: ${result.error}`, severity: "error" });
       } else if (result.added > 0) {
@@ -176,6 +203,9 @@ const Dashboard = () => {
             <div className={styles.statContent}>
               <p className={styles.statValue}>{stat.value}</p>
               <p className={styles.statLabel}>{stat.label}</p>
+              {stat.sublabel && (
+                <p className={styles.statSublabel}>{stat.sublabel}</p>
+              )}
             </div>
           </div>
         ))}

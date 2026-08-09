@@ -185,9 +185,26 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* An abandoned Step-1 application — amber rail, so it reads as "unfinished"
+   rather than "new". Declared before .leadCardSelected so a selected partial
+   still shows the selection accent. */
+.leadCardPartial {
+  border-left: 3px solid #B45309;
+}
+
 .leadCardSelected {
   background: rgba(216, 38, 24, 0.06);
   border-left: 3px solid var(--admin-accent);
+}
+
+/* "Application incomplete — call to finish" hint on a partial row/card. */
+.partialHint {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #B45309;
+  margin-top: 2px;
 }
 
 .leadCardRow {
@@ -287,10 +304,21 @@
     font-size: 1.05rem;
   }
 
+  /* Two filters per row instead of one long stack — with the qualification
+     filters added there are seven controls, and a single column pushed the
+     first lead most of a screen down at 360 px. Grid also drops the search
+     field's flex-basis, which in a column flex was read as a 240 px height. */
   .filtersBar {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
     padding: 12px;
     gap: 8px;
+  }
+
+  /* Search always takes the full width of the first row. */
+  .filtersBar > :first-child {
+    grid-column: 1 / -1;
   }
 
   /* Hide desktop header actions, show more menu */

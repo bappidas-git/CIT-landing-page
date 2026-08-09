@@ -14,6 +14,23 @@
 
 import { getConfig } from "../../utils/webhookSubmit";
 import { describeStatusChange } from "./leadStatus";
+import {
+  ADMISSION_TIMELINE_LABELS,
+  BOARD_LABELS,
+  BEST_TIME_LABELS,
+  COUNSELLING_MODE_LABELS,
+  EXPECTED_BAND_LABELS,
+  FILLED_BY_LABELS,
+  FUNDING_PLAN_LABELS,
+  FUNDING_PLAN_SHORT_LABELS,
+  INTAKE_YEAR_LABELS,
+  TIER_LABELS,
+  TWELFTH_STATUS_LABELS,
+  computeQualityScore,
+  getLeadTier,
+  getQualityConfig,
+  labelFor,
+} from "./leadQuality";
 
 // Shared secret used to authenticate against /api/leads.php admin actions.
 // Must match ADMIN_API_KEY configured in public/api/config.php (or the
@@ -217,7 +234,9 @@ export const syncLeadsFromServer = async () => {
 export const getLeads = (filters = {}) => {
   let leads = [..._cache];
 
-  // Search filter — name, email, mobile, course (service_interest), state
+  // Search filter — the applicant's own details plus the qualification fields
+  // a telecaller searches by (the parent who answers the phone, the district,
+  // and the schools that identify a lead when two students share a name).
   if (filters.search) {
     const q = filters.search.toLowerCase();
     leads = leads.filter(
@@ -226,7 +245,12 @@ export const getLeads = (filters = {}) => {
         (l.email || "").toLowerCase().includes(q) ||
         (l.mobile || "").includes(q) ||
         (l.service_interest || "").toLowerCase().includes(q) ||
-        (l.state || "").toLowerCase().includes(q)
+        (l.state || "").toLowerCase().includes(q) ||
+        (l.parent_name || "").toLowerCase().includes(q) ||
+        (l.parent_mobile || "").includes(q) ||
+        (l.district || "").toLowerCase().includes(q) ||
+        (l.twelfth_school || "").toLowerCase().includes(q) ||
+        (l.tenth_school || "").toLowerCase().includes(q)
     );
   }
 
@@ -427,7 +451,37 @@ export const deleteLeads = (ids) => {
 };
 
 /**
- * Export leads to CSV string and trigger download
+ * Flatten the 12th subject rows into a single CSV cell:
+ * `Physics:78; Mathematics:66; Chemistry:71`.
+ * @param {Array<{subject: string, marks: number}>} subjects - Subject rows
+ * @returns {string} Flattened cell value
+ */
+const flattenSubjects = (subjects) => {
+  if (!Array.isArray(subjects)) return "";
+  return subjects
+    .filter((row) => row && row.subject)
+    .map((row) => `${row.subject}:${row.marks}`)
+    .join("; ");
+};
+
+/**
+ * Render a stored boolean as a spreadsheet-friendly Yes/No. An absent field
+ * stays empty so a legacy lead does not read as an explicit "No".
+ * @param {*} value - Stored value
+ * @returns {string} "Yes", "No" or ""
+ */
+const booleanCell = (value) => {
+  if (typeof value !== "boolean") return "";
+  return value ? "Yes" : "No";
+};
+
+/**
+ * Export leads to CSV string and trigger download.
+ *
+ * The qualification columns from the /apply application form are appended
+ * after the original columns, so files produced before this change still
+ * import cleanly. Tier and quality are DERIVED at export time — the score is
+ * never stored on the lead itself (see leadQuality.js).
  */
 export const exportLeadsCSV = (leads) => {
   const headers = [
@@ -448,35 +502,90 @@ export const exportLeadsCSV = (leads) => {
     "UTM Content",
     "GCLID",
     "Notes",
+    "Message",
+    // ---- Qualification data (application form) ----
+    "Tier",
+    "Quality Score",
+    "Quality Band",
+    "Intake Year",
+    "Eligibility %",
+    "Eligibility Met",
+    "12th Status",
+    "12th Board",
+    "12th School",
+    "12th Subjects",
+    "Expected Band",
+    "10th School",
+    "10th Year",
+    "10th %",
+    "Funding Plan",
+    "Parent Name",
+    "Parent Mobile",
+    "Filled By",
+    "District",
+    "Counselling Mode",
+    "Admission Timeline",
+    "Best Time",
+    "WhatsApp Confirmed",
+    "FBCLID",
   ];
 
   const escapeCSV = (val) => {
-    const str = String(val || "");
+    const str = String(val === 0 || val === false ? val : val || "");
     if (str.includes(",") || str.includes('"') || str.includes("\n")) {
       return `"${str.replace(/"/g, '""')}"`;
     }
     return str;
   };
 
-  const rows = leads.map((l) => [
-    l.lead_id,
-    l.name,
-    l.mobile,
-    l.email,
-    l.service_interest,
-    l.state,
-    l.source,
-    l.status,
-    l.submitted_at,
-    l.page_url,
-    l.utm_source,
-    l.utm_medium,
-    l.utm_campaign,
-    l.utm_term,
-    l.utm_content,
-    l.gclid,
-    (l.notes || []).map((n) => n.text).join(" | "),
-  ]);
+  const rows = leads.map((l) => {
+    const quality = computeQualityScore(l);
+    return [
+      l.lead_id,
+      l.name,
+      l.mobile,
+      l.email,
+      l.service_interest,
+      l.state,
+      l.source,
+      l.status,
+      l.submitted_at,
+      l.page_url,
+      l.utm_source,
+      l.utm_medium,
+      l.utm_campaign,
+      l.utm_term,
+      l.utm_content,
+      l.gclid,
+      (l.notes || []).map((n) => n.text).join(" | "),
+      l.message,
+      // ---- Qualification data ----
+      labelFor(TIER_LABELS, getLeadTier(l)),
+      quality.score,
+      getQualityConfig(quality.band).label,
+      labelFor(INTAKE_YEAR_LABELS, l.intake_year),
+      l.eligibility_percent,
+      booleanCell(l.eligibility_met),
+      labelFor(TWELFTH_STATUS_LABELS, l.twelfth_status),
+      labelFor(BOARD_LABELS, l.twelfth_board),
+      l.twelfth_school,
+      flattenSubjects(l.twelfth_subjects),
+      labelFor(EXPECTED_BAND_LABELS, l.expected_band),
+      l.tenth_school,
+      l.tenth_year,
+      l.tenth_percent,
+      labelFor(FUNDING_PLAN_SHORT_LABELS, l.funding_plan),
+      l.parent_name,
+      l.parent_mobile,
+      labelFor(FILLED_BY_LABELS, l.filled_by),
+      l.district,
+      labelFor(COUNSELLING_MODE_LABELS, l.counselling_mode),
+      labelFor(ADMISSION_TIMELINE_LABELS, l.admission_timeline),
+      labelFor(BEST_TIME_LABELS, l.best_time),
+      booleanCell(l.whatsapp_confirmed),
+      l.fbclid,
+    ];
+  });
 
   const csvContent =
     [headers.map(escapeCSV).join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join("\n");
@@ -491,6 +600,238 @@ export const exportLeadsCSV = (leads) => {
   URL.revokeObjectURL(url);
 };
 
+/* ============================================
+   CSV IMPORT
+   ============================================
+   Export quoting is RFC-4180 (escapeCSV above wraps and escapes every value),
+   so the import side has to read RFC-4180 too. It used to split on "," which
+   shifted every column after a quoted value that contained a comma — a lead
+   whose message or course name held one imported its whole row off-by-one.
+   ============================================ */
+
+/**
+ * Parse an RFC-4180 CSV document into rows of raw field values. Handles
+ * quoted fields containing commas, escaped `""` quotes, embedded newlines and
+ * both LF and CRLF line endings. Fully blank rows are dropped.
+ * @param {string} text - Raw CSV content
+ * @returns {Array<Array<string>>} Rows of field values
+ */
+const parseCSVRows = (text) => {
+  // Strip a UTF-8 BOM so the first header does not read as "﻿lead id".
+  const src = String(text || "").replace(/^\uFEFF/, "");
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+
+  const endField = () => {
+    row.push(field);
+    field = "";
+  };
+  const endRow = () => {
+    endField();
+    rows.push(row);
+    row = [];
+  };
+
+  for (let i = 0; i < src.length; i++) {
+    const char = src[i];
+
+    if (inQuotes) {
+      if (char !== '"') {
+        field += char;
+      } else if (src[i + 1] === '"') {
+        // Escaped quote inside a quoted field.
+        field += '"';
+        i++;
+      } else {
+        inQuotes = false;
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = true;
+    } else if (char === ",") {
+      endField();
+    } else if (char === "\n") {
+      endRow();
+    } else if (char === "\r") {
+      if (src[i + 1] === "\n") i++;
+      endRow();
+    } else {
+      field += char;
+    }
+  }
+  endRow();
+
+  return rows.filter((r) => r.some((v) => v.trim() !== ""));
+};
+
+// Header -> canonical lead key. Headers not listed here fall back to a
+// snake_cased version of the header text, which is how the original importer
+// handled unknown columns.
+const CSV_FIELD_MAP = {
+  "lead id": "lead_id",
+  name: "name",
+  mobile: "mobile",
+  email: "email",
+  // Canonical key is `service_interest` (kept from the public form); the
+  // exported header label is "Course Interested" but legacy "Service
+  // Interest" CSVs still import into the same key.
+  "course interested": "service_interest",
+  "service interest": "service_interest",
+  state: "state",
+  source: "source",
+  status: "status",
+  "submitted at": "submitted_at",
+  notes: "notes",
+  message: "message",
+  // ---- Qualification columns ----
+  tier: "lead_tier",
+  "intake year": "intake_year",
+  "eligibility %": "eligibility_percent",
+  "eligibility met": "eligibility_met",
+  "12th status": "twelfth_status",
+  "12th board": "twelfth_board",
+  "12th school": "twelfth_school",
+  "12th subjects": "twelfth_subjects",
+  "expected band": "expected_band",
+  "10th school": "tenth_school",
+  "10th year": "tenth_year",
+  "10th %": "tenth_percent",
+  "funding plan": "funding_plan",
+  "parent name": "parent_name",
+  "parent mobile": "parent_mobile",
+  "filled by": "filled_by",
+  district: "district",
+  "counselling mode": "counselling_mode",
+  "admission timeline": "admission_timeline",
+  "best time": "best_time",
+  "whatsapp confirmed": "whatsapp_confirmed",
+  fbclid: "fbclid",
+};
+
+// Derived-at-export columns — never written back onto a lead. The quality
+// score is recomputed from the qualification fields on every admin read.
+const CSV_DERIVED_HEADERS = new Set(["quality score", "quality band"]);
+
+// Enum columns are exported as human labels; on the way back in, a label is
+// mapped to its stored key so a round-trip does not corrupt the value.
+const CSV_ENUM_MAPS = {
+  lead_tier: [TIER_LABELS],
+  intake_year: [INTAKE_YEAR_LABELS],
+  funding_plan: [FUNDING_PLAN_SHORT_LABELS, FUNDING_PLAN_LABELS],
+  twelfth_status: [TWELFTH_STATUS_LABELS],
+  twelfth_board: [BOARD_LABELS],
+  expected_band: [EXPECTED_BAND_LABELS],
+  filled_by: [FILLED_BY_LABELS],
+  counselling_mode: [COUNSELLING_MODE_LABELS],
+  admission_timeline: [ADMISSION_TIMELINE_LABELS],
+  best_time: [BEST_TIME_LABELS],
+};
+
+const CSV_NUMERIC_KEYS = new Set([
+  "eligibility_percent",
+  "tenth_year",
+  "tenth_percent",
+]);
+
+const CSV_BOOLEAN_KEYS = new Set(["eligibility_met", "whatsapp_confirmed"]);
+
+/**
+ * Resolve an exported cell back to its stored enum key, accepting either the
+ * key itself or any of the labels it is exported under.
+ * @param {Array<Object>} maps - Label maps to search, most specific first
+ * @param {string} raw - Cell value
+ * @returns {string} Stored key (or the raw value when unrecognised)
+ */
+const resolveEnumValue = (maps, raw) => {
+  const value = raw.trim();
+  if (!value) return "";
+  if (maps.some((map) => Object.prototype.hasOwnProperty.call(map, value))) {
+    return value;
+  }
+  const lower = value.toLowerCase();
+  for (let i = 0; i < maps.length; i++) {
+    const hit = Object.keys(maps[i]).find(
+      (key) => String(maps[i][key]).toLowerCase() === lower
+    );
+    if (hit) return hit;
+  }
+  return value;
+};
+
+/**
+ * Parse the flattened `Physics:78; Mathematics:66` cell back into subject rows.
+ * @param {string} raw - Cell value
+ * @returns {Array<{subject: string, marks: number}>} Subject rows
+ */
+const parseSubjectsCell = (raw) =>
+  raw
+    .split(";")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const idx = part.lastIndexOf(":");
+      if (idx === -1) return null;
+      const subject = part.slice(0, idx).trim();
+      const marks = Number(part.slice(idx + 1).trim());
+      if (!subject || !Number.isFinite(marks)) return null;
+      return { subject, marks };
+    })
+    .filter(Boolean);
+
+/**
+ * Coerce a raw cell into the type the lead schema stores for that key.
+ * @param {string} key - Canonical lead key
+ * @param {string} raw - Cell value
+ * @param {string} timestamp - ISO timestamp used for reconstructed notes
+ * @returns {*} Typed value, or undefined when the cell carries nothing
+ */
+const coerceCSVValue = (key, raw, timestamp) => {
+  const value = raw.trim();
+  if (!value) return undefined;
+
+  if (key === "notes") {
+    // Notes are exported as "first | second". Rebuild them as note objects so
+    // an imported lead never ends up with a bare string where the UI (and the
+    // server merge) expects an array.
+    const texts = value
+      .split("|")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    return texts.length
+      ? texts.map((text, i) => ({
+          id: `${Date.parse(timestamp) || 0}-${i}`,
+          text,
+          timestamp,
+        }))
+      : undefined;
+  }
+
+  if (key === "twelfth_subjects") {
+    const subjects = parseSubjectsCell(value);
+    return subjects.length ? subjects : undefined;
+  }
+
+  if (CSV_BOOLEAN_KEYS.has(key)) {
+    const lower = value.toLowerCase();
+    if (["yes", "true", "1"].includes(lower)) return true;
+    if (["no", "false", "0"].includes(lower)) return false;
+    return undefined;
+  }
+
+  if (CSV_NUMERIC_KEYS.has(key)) {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : undefined;
+  }
+
+  if (CSV_ENUM_MAPS[key]) return resolveEnumValue(CSV_ENUM_MAPS[key], value);
+
+  return value;
+};
+
 /**
  * Import leads from a CSV string. New leads are created on the server (the
  * source of truth) and added to the cache. Dedupes by mobile against the
@@ -499,36 +840,20 @@ export const exportLeadsCSV = (leads) => {
  * @returns {Promise<{ imported: number, duplicates: number }>}
  */
 export const importLeadsCSV = async (csvText) => {
-  const lines = csvText.split("\n").filter((l) => l.trim());
-  if (lines.length < 2) return { imported: 0, duplicates: 0 };
+  const rows = parseCSVRows(csvText);
+  if (rows.length < 2) return { imported: 0, duplicates: 0 };
 
-  const headers = lines[0].split(",").map((h) => h.replace(/"/g, "").trim().toLowerCase());
+  const headers = rows[0].map((h) => h.trim().toLowerCase());
   const mobileIdx = headers.findIndex((h) => h === "mobile");
   const existingMobiles = new Set(_cache.map((l) => l.mobile));
 
   let imported = 0;
   let duplicates = 0;
 
-  const fieldMap = {
-    "lead id": "lead_id",
-    name: "name",
-    mobile: "mobile",
-    email: "email",
-    // Canonical key is `service_interest` (kept from the public form); the
-    // exported header label is "Course Interested" but legacy "Service
-    // Interest" CSVs still import into the same key.
-    "course interested": "service_interest",
-    "service interest": "service_interest",
-    state: "state",
-    source: "source",
-    status: "status",
-    "submitted at": "submitted_at",
-  };
-
   const newLeads = [];
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(",").map((v) => v.replace(/^"|"$/g, "").trim());
-    const mobile = mobileIdx >= 0 ? values[mobileIdx] : null;
+  for (let i = 1; i < rows.length; i++) {
+    const values = rows[i];
+    const mobile = mobileIdx >= 0 ? (values[mobileIdx] || "").trim() : null;
 
     if (mobile && existingMobiles.has(mobile)) {
       duplicates++;
@@ -548,8 +873,10 @@ export const importLeadsCSV = async (csvText) => {
     };
 
     headers.forEach((h, idx) => {
-      const key = fieldMap[h] || h.replace(/\s+/g, "_");
-      if (values[idx]) lead[key] = values[idx];
+      if (CSV_DERIVED_HEADERS.has(h)) return;
+      const key = CSV_FIELD_MAP[h] || h.replace(/\s+/g, "_");
+      const parsed = coerceCSVValue(key, values[idx] || "", now);
+      if (parsed !== undefined) lead[key] = parsed;
     });
 
     newLeads.push(lead);
@@ -584,10 +911,20 @@ export const importLeadsCSV = async (csvText) => {
 };
 
 /**
- * Get summary stats for the dashboard
+ * Get summary stats for the dashboard.
+ *
+ * @param {Object} [options] - Options
+ * @param {boolean} [options.excludeSpam=false] - Drop server-flagged spam
+ *   leads from every metric and from the recent-leads list. The Dashboard
+ *   passes true so junk traffic never inflates the numbers the team reports
+ *   on; the Lead Management summary keeps counting the whole store, which its
+ *   Tier filter can still surface.
+ * @returns {Object} Stats bundle
  */
-export const getLeadStats = () => {
-  const leads = _cache;
+export const getLeadStats = ({ excludeSpam = false } = {}) => {
+  const leads = excludeSpam
+    ? _cache.filter((l) => getLeadTier(l) !== "spam")
+    : _cache;
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekStart = new Date(now);
@@ -621,6 +958,23 @@ export const getLeadStats = () => {
   // Unique sources
   const sources = [...new Set(leads.map((l) => l.source).filter(Boolean))];
 
+  // Qualification mix — completed applications vs Step-1 abandoners the team
+  // can still recover by phone, plus how many score as Hot. Tier and quality
+  // are derived on read (see leadQuality.js), never stored.
+  let applicationLeads = 0;
+  let partialLeads = 0;
+  let hotQualityLeads = 0;
+  leads.forEach((l) => {
+    const tier = getLeadTier(l);
+    if (tier === "application") applicationLeads++;
+    else if (tier === "partial") partialLeads++;
+    if (computeQualityScore(l).band === "hot") hotQualityLeads++;
+  });
+
+  // Always counted against the full store, so the number stays truthful even
+  // when spam has been excluded from every other metric above.
+  const spamLeads = _cache.filter((l) => getLeadTier(l) === "spam").length;
+
   return {
     totalLeads,
     newLeads24h,
@@ -630,5 +984,9 @@ export const getLeadStats = () => {
     topSource,
     recentLeads,
     sources,
+    applicationLeads,
+    partialLeads,
+    hotQualityLeads,
+    spamLeads,
   };
 };
