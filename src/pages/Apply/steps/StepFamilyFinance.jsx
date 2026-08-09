@@ -100,8 +100,8 @@ const StepFamilyFinance = ({ draft, errors, setField, onBlurField }) => {
       />
 
       <p className={styles.reassurance}>
-        CIT charges no capitation and no consultancy/agent fee. The full fee
-        structure is shared transparently on your first counselling call.
+        CIT charges no capitation and no consultancy/agent fee. The complete
+        fee structure is shown on the final step of this form.
       </p>
     </>
   );

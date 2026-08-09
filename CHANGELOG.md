@@ -4,6 +4,59 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### `/apply` Step 5 — fee transparency, affordability and two ranked branches
+
+The funnel asked how a family planned to pay before it had ever shown them a
+number. A new final step closes that gap: the complete cost of the degree, then
+the two questions that only mean something once it has been seen.
+
+**Added**
+- New `src/pages/Apply/steps/StepFeesBranches.jsx` — `/apply` becomes a **5-step**
+  form, with "Fees & branch choice" appended after Logistics. It carries four
+  blocks: an accordion of all 7 branches (year-wise tuition, 4-year tuition, total
+  excluding hostel, total including hostel), a "Same for every branch" card for the
+  three universal costs, the affordability question, and a two-branch ranked
+  picker. Every figure is derived from `src/data/meritProgram.js` — nothing is
+  hard-coded in the step, so a fee revision can never leave the form contradicting
+  the rest of the site.
+- `fee_affordability` (`'own_income'` | `'education_loan'`) — asked *after* the
+  applicant has seen the real cost, which makes it a capability signal rather than
+  the intention signal `funding_plan` (Step 3) already captures. Both are kept.
+- `branch_pref_1` / `branch_pref_2` — exactly two distinct branches in order of
+  preference, stored as the same em-dash course strings as `service_interest`.
+  Preference 1 is pre-seeded from the Step-1 branch, first tap sets Preference 1,
+  second sets Preference 2, a third is refused with a hint, and removing
+  Preference 1 promotes Preference 2 into its place.
+- Conditional education-loan panel, shown inline when the applicant answers
+  `education_loan`: ~80% of the total study cost, the loan in the student's own
+  name, repayment after the course from their own post-placement salary, and a
+  worked B.E. ECE example (₹12,17,500 → ≈ ₹9,74,000 loan, ≈ ₹2,43,500 from the
+  family, ≈ ₹12,600/month for 10 years at ~9.5% p.a.). The loan amount and EMI are
+  computed, not typed, and the "indicative — the bank sets the final numbers"
+  disclaimer sits in the panel rather than in a footnote.
+- `fee_affordability`, `branch_pref_1` and `branch_pref_2` added to the
+  `lead_field_whitelist()` in `public/api/leads.php` and to the canonical schema in
+  `update-prompts/README.md`.
+
+**Changed**
+- Fee amounts are now allowed in exactly one place — `/apply` Step 5 and its loan
+  panel. Every landing-page section still states no numbers; `CLAUDE.md` and
+  `update-prompts/README.md` record the narrowed rule.
+- `application_step_complete` for a finished application now reports
+  `step: 5, step_name: 'fees_branches'` (was `4` / `'logistics'`). **A GTM trigger
+  pinned to step 4 as "application finished" must be re-pointed.**
+- Step 4's progress label "Almost done" → "Where & when" — with a step after it,
+  the old label was untrue.
+- Step 2 intro no longer claims eligibility is confirmed "instantly"; Step 3's
+  reassurance now says the complete fee structure is shown on the final step of the
+  form instead of promising it on a later call.
+- `/apply` page title → "Apply — CIT Merit-Based Selection Program 2026".
+
+Unchanged by design: the Step-1 partial payload and its `/step1-partial` source
+suffix, the shared `lead_id` upsert, attribution fields, the honeypot, the retry
+queue, and Steps 1–4. Drafts saved by the 4-step build rehydrate cleanly — the
+three new keys layer in from the defaults.
+
 ### From an enquiry funnel to a high-intent application funnel
 
 Meta was producing junk leads for a structural reason: it optimised on a

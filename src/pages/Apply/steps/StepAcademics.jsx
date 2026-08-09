@@ -87,8 +87,8 @@ const StepAcademics = ({
     <>
       <h1 className={styles.stepHeading}>Academic details</h1>
       <p className={styles.stepIntro}>
-        CIT&apos;s admission team uses this to confirm your VTU B.E. eligibility
-        instantly.
+        CIT&apos;s admission team uses this to confirm your VTU B.E.
+        eligibility.
       </p>
 
       <EligibilityStrip className={styles.eligibilityStrip} />
