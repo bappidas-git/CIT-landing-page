@@ -18,8 +18,7 @@ funnel built in prompts 02–06.
 - `src/utils/enhancedConversions.js` — E.164 phone hashing (hashing scope only)
 - `src/utils/gtm.js` — one-key fix: course value reaching the dataLayer
 - `src/admin/utils/googleAdsExport.js` — status-key bug fix
-- `src/admin/utils/leadService.js` — status-key bug fix (conversion metric only)
-- `src/admin/pages/Dashboard.jsx` — status-key bug fix (conversion rate only)
+- `src/admin/utils/leadService.js` — status-key bug fix + admin CSV-import auth header
 - `public/api/leads.php` — server-side validation, honeypot, time-trap, rate
   limiting, silent duplicate merge, upsert-by-`lead_id`
 - `public/api/config.example.php` — document new constants
@@ -78,10 +77,11 @@ Do NOT edit `src/utils/validators.js` (protected as form logic). New file export
 
 `trackFormSubmission` currently reads `formData.investmentInterest`, but callers
 pass `serviceInterest` — so the course is always empty in `lead_form_submission`
-and `generate_lead`. Read `formData.serviceInterest` (keep a fallback to
-`investmentInterest` for safety). Do not rename the dataLayer parameter itself.
+(the `generate_lead` push never carried a course parameter — leave it as-is).
+Read `formData.serviceInterest` (keep a fallback to `investmentInterest` for
+safety). Do not rename the dataLayer parameter itself.
 
-### 5. `'converted'` status bug (three sites, one canonical value)
+### 5. `'converted'` status bug (two files, one canonical value)
 
 The canonical status set in `src/admin/utils/leadStatus.js` has NO `'converted'`
 key — the conversion flow sets `'completed'`. Fix all filters that use
@@ -89,22 +89,36 @@ key — the conversion flow sets `'completed'`. Fix all filters that use
 
 1. `src/admin/utils/googleAdsExport.js` (all occurrences — the export currently
    always produces 0 rows).
-2. `src/admin/utils/leadService.js` (conversion counting).
-3. `src/admin/pages/Dashboard.jsx` (conversion-rate metric).
+2. `src/admin/utils/leadService.js` (conversion counting in `getLeadStats`).
+
+`Dashboard.jsx` needs NO edit — its conversion-rate card renders
+`stats.conversionRate` from `getLeadStats()`, so it picks up the fix
+automatically. Verify only.
 
 ### 6. Server hardening — `public/api/leads.php`
 
-Keep every existing endpoint contract working (the admin panel and
-`webhookSubmit.js` must not need changes). Add to the `create` action, in order:
+Keep every existing endpoint contract working. `webhookSubmit.js` (protected)
+must not need changes. NOTE: the admin CSV import in
+`src/admin/utils/leadService.js` ALSO posts to `action=create` — currently
+without the `X-Admin-Key` header, with legacy/loose data. Update the import to
+send the `X-Admin-Key` header, and in `leads.php` treat any create request
+bearing a valid admin key as trusted: skip the validation, honeypot, time-trap
+and rate-limit checks below (whitelist still applies, extended with any keys
+present in previously exported CSVs).
 
-1. **Field whitelist:** accept only known lead keys — the existing keys plus every
+Add to the `create` action, in order:
+
+1. **Honeypot (checked FIRST, before the whitelist strips it):** if the payload
+   contains a non-empty `website` field (a hidden input the real form never
+   fills), respond `{"success":true}` but store the lead with `lead_tier`
+   forced to `'spam'`. `website` and `form_started_at` are read for these
+   checks, then handled as follows: `form_started_at` is stored (schema field),
+   `website` is never stored.
+2. **Field whitelist:** accept only known lead keys — the existing keys plus every
    key in the canonical new-field schema (README table). Drop unknown keys.
    Enforce max lengths (strings ≤ 500 chars; `twelfth_subjects` ≤ 8 entries).
-2. **Validation:** `name` non-empty; `mobile` must match `^[6-9][0-9]{9}$`.
+3. **Validation:** `name` non-empty; `mobile` must match `^[6-9][0-9]{9}$`.
    Reject (HTTP 400) when missing/invalid.
-3. **Honeypot:** if the payload contains a non-empty `website` field (a hidden
-   input the real form never fills), respond `{"success":true}` but store the lead
-   with `lead_tier` forced to `'spam'`.
 4. **Time-trap:** if `form_started_at` is present and `submitted_at` minus
    `form_started_at` is under 15 seconds, force `lead_tier` to `'spam'` (store,
    respond success).
@@ -148,7 +162,8 @@ which is the intended behavior.
 
 ## Acceptance criteria
 
-- [ ] `grep -rn "converted" src/admin/utils/googleAdsExport.js src/admin/utils/leadService.js src/admin/pages/Dashboard.jsx` → no `status === 'converted'` comparisons remain.
+- [ ] `grep -rn "converted" src/admin/utils/googleAdsExport.js src/admin/utils/leadService.js` → no `status === 'converted'` comparisons remain.
+- [ ] `grep -n "X-Admin-Key" src/admin/utils/leadService.js` → the CSV import's create posts now send the admin key.
 - [ ] `grep -n "investmentInterest" src/utils/gtm.js` → only as fallback; `serviceInterest` is read first.
 - [ ] `grep -n "91" src/utils/metaCAPI.js src/utils/enhancedConversions.js` shows E.164 normalization before hashing.
 - [ ] `grep -n "skdfjsdfweiormcnzxmzdlkfjds" public/api/leads.php` → no matches.

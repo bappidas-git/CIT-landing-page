@@ -71,24 +71,27 @@ without changing the lead pipeline, statuses, or sync mechanics.
    - **Logistics** — state, district, counselling mode, admission timeline,
      best time to call, intake year.
 2. Header area: Tier chip + Quality band chip (from `leadQuality.js`) beside the
-   existing status chip.
+   existing status `<Select>` dropdown (there is no status chip in the header —
+   chips appear only inside the select's menu items).
 3. Partial lead: amber banner `Application incomplete — the student stopped at
    Step 1. Call and complete the profile together.` The existing editable
    status/notes/activity flow applies to partials unchanged.
-4. Attribution card: extend the existing UTM display array with `fbclid`, `fbp`,
-   `fbc` (render only when present).
+4. The existing "Source & UTM Data" card: extend its UTM display array with
+   `fbclid`, `fbp`, `fbc` (render only when present).
 
 ### 4. CSV + search — `leadService.js`
 
 1. `exportLeadsCSV`: append the new columns (tier, quality score+band computed
    at export time, intake_year, eligibility_percent, eligibility_met, funding
    plan, parent_name, parent_mobile, filled_by, twelfth_board, twelfth_school,
-   twelfth_subjects flattened as `Physics:78; Maths:66; ...`, tenth fields,
+   twelfth_subjects flattened as `Physics:78; Mathematics:66; ...`, tenth fields,
    district, counselling_mode, admission_timeline, whatsapp_confirmed,
-   fbclid). **Fix quoting first:** wrap every CSV value in RFC-4180 quotes
-   (double-quote escaping) — the current naive join corrupts on commas, and
-   free-text answers will contain them. Update the import parser to handle
-   quoted fields, keeping backward compatibility with previously exported files.
+   fbclid). Export quoting is ALREADY RFC-4180-compliant (`escapeCSV` in
+   `leadService.js` wraps and escapes every value) — do not rework it. The bug
+   is in **`importLeadsCSV`**: both header and row parsing use a naive
+   `split(",")` that corrupts on quoted/comma-containing values. Replace the
+   import parsing with a proper quoted-CSV parser, keeping backward
+   compatibility with previously exported files.
 2. Search: extend the searched-fields list to include `parent_name`,
    `parent_mobile`, `district`, `twelfth_school`, `tenth_school`.
 
@@ -96,7 +99,8 @@ without changing the lead pipeline, statuses, or sync mechanics.
 
 1. New stat cards: **Applications** (tier application), **Partials** (tier
    partial, with "recover by phone" sublabel), **Hot quality** (band hot count).
-   Spam excluded from ALL dashboard metrics and from the leads-over-time chart.
+   Spam excluded from ALL dashboard metrics and from the recent-leads list
+   (the dashboard has stat cards + a recent-leads table — there is no chart).
 2. Keep every existing metric working (the conversion-rate fix landed in
    prompt 01).
 
@@ -115,6 +119,6 @@ without changing the lead pipeline, statuses, or sync mechanics.
 
 - [ ] `npm run build` passes.
 - [ ] `grep -n "lead_tier\|intake_year\|funding_plan\|eligibility_percent" src/admin/pages/LeadManagement.jsx src/admin/pages/LeadDetail.jsx src/admin/utils/leadService.js` → wired in list, detail, and CSV.
-- [ ] `grep -n "computeQualityScore" src/admin` → score computed in admin only; `grep -rn "quality_score" src/utils src/pages` → no client-side storage of the score.
+- [ ] `grep -rn "computeQualityScore" src/admin` → score computed in admin only; `grep -rn "quality_score" src/utils src/pages` → no client-side storage of the score.
 - [ ] CSV export of a lead whose message contains a comma re-imports without column shift.
 - [ ] Manual: a legacy enquiry lead renders unchanged; a partial lead shows the amber banner and appears under the Partial filter; spam tier is hidden by default and excluded from Dashboard counts.

@@ -14,7 +14,7 @@ funnel. Ends with a full QA checklist.
 
 - `public/api/leads.php` — status-transition → CAPI hook
 - `public/api/telecalls.php` — same hook for telecalling statuses
-- `public/api/meta-capi.php` — whitelist `QualifiedLead`; shared sender reuse
+- `public/api/meta-capi.php` — no whitelist change (see §1.4); credentials-loading pattern is the reference for `capi-feedback.php`
 - **NEW** `public/api/capi-feedback.php` — shared server-side CAPI sender (included by both stores)
 - `src/utils/gtm.js` + phone/WhatsApp CTA call sites — `Contact` event wiring
 - `src/utils/metaPixel.js` — use the existing (currently dead) contact helper
@@ -30,7 +30,9 @@ funnel. Ends with a full QA checklist.
    `meta-capi.php` (`config.php`: `META_PIXEL_ID`, `META_ACCESS_TOKEN`,
    `META_API_VERSION`); silently no-ops when unconfigured. Event payload:
    - `event_name`, `event_time` (now), `action_source: 'system_generated'`.
-   - `event_id`: `"{$eventName}_{$lead['lead_id']}"` — deterministic, so
+   - `event_id`: `"{$eventName}_{$recordId}"` where
+     `$recordId = $lead['lead_id'] ?? $lead['telecall_id']` (telecall records
+     have NO `lead_id` — their id key is `telecall_id`) — deterministic, so
      retries dedupe.
    - `event_source_url`: the lead's stored `page_url`.
    - `user_data`: SHA-256 hashes computed **server-side** from the lead's stored
@@ -56,25 +58,39 @@ funnel. Ends with a full QA checklist.
    `src/admin/utils/telecallStatus.js` keys; telecall records store mobile/name
    directly). Skip silently when a record lacks a valid 10-digit Indian mobile
    (telecall entries allow loose formats).
-4. `meta-capi.php`: add `QualifiedLead` to the supported-events whitelist
-   (`SubmitApplication` was added in prompt 02).
+4. Event path note: `capi-feedback.php` posts DIRECTLY to the Meta Graph API
+   using the `config.php` credentials — it does not route through
+   `meta-capi.php`, so its events (`QualifiedLead`, `Purchase`) need no
+   whitelist entry there. Do NOT add `QualifiedLead` to `meta-capi.php`'s
+   `$supportedEvents` (that whitelist is for browser-originated events only;
+   `SubmitApplication` was added there in prompt 02).
 
-### 2. Phone & WhatsApp click tracking (the untracked side-door)
+### 2. Phone & WhatsApp click tracking (Meta/Google legs are dead)
 
-1. `src/utils/metaPixel.js` has a contact-event helper with zero call sites.
-   Create a tiny shared util `src/utils/contactTracking.js` exporting
-   `trackContactClick(channel, source)` that fires: GTM `phone_click` /
-   `whatsapp_click` (already defined in `gtm.js`), the Meta Pixel `Contact`
-   event, and the Google Ads phone-conversion helper (`trackPhoneConversion` in
-   `src/utils/googleAds.js` — currently dead code; document in MetaAdsGuide
-   that it needs a separate call-conversion action configured in Google Ads).
-2. Wire `trackContactClick` on every `tel:` and WhatsApp link:
-   `grep -rn "tel:+918069645014\|wa.me\|whatsapp" src/components src/pages --include="*.jsx"`
-   — Header, Footer, MobileNavigation, MobileDrawer, HeroSection, WhyChooseCIT,
-   CTASection, SecondaryCTASection, ContactSection, LocationSection, ThankYou,
-   and the `/apply` error banner. Attach without altering any protected
-   component's mechanics (onClick handlers on links are content, not
-   mechanics).
+Current state, verified: GTM `phone_click`/`whatsapp_click` tracking ALREADY
+fires at six call sites (`Header.jsx`, `MobileDrawer.jsx`, `MobileNavigation.jsx`
+via `trackPhoneClick`/`trackWhatsAppClick`; `WhyChooseCIT.jsx` fires
+`trackCTAClick` on its call button). What is dead: the Meta Pixel `Contact`
+helper (`trackContact` in `src/utils/metaPixel.js`, zero call sites) and the
+Google Ads `trackPhoneConversion` (`src/utils/googleAds.js`, zero call sites).
+
+1. Create a tiny shared util `src/utils/contactTracking.js` exporting
+   `trackContactClick(channel, source)` that fires all three legs: GTM
+   `phone_click`/`whatsapp_click`, Meta Pixel `Contact`, and
+   `trackPhoneConversion` (document in MetaAdsGuide that the Google leg needs a
+   separate call-conversion action configured in Google Ads).
+2. At sites that already call `trackPhoneClick`/`trackWhatsAppClick`, REPLACE
+   those calls with `trackContactClick` — never add it alongside them (GTM
+   events would double-fire). At untracked sites, add it.
+3. Find every `tel:`/WhatsApp link with
+   `grep -rn "tel:\|wa.me\|whatsapp" src/components src/pages --include="*.jsx"`
+   (broad pattern — several files build hrefs from constants via template
+   literals, so grepping the literal number misses them): Header, Footer,
+   MobileNavigation, MobileDrawer, HeroSection, WhyChooseCIT, CTASection,
+   SecondaryCTASection, ContactSection, LocationSection, ThankYou, and the
+   `/apply` error banner. `UnifiedLeadForm.jsx` also matches but is protected —
+   skip it (unreachable UI). Attach handlers without altering any protected
+   component's mechanics (onClick on links is content, not mechanics).
 
 ### 3. `MetaAdsGuide.jsx` rewrite (campaign playbook for the new funnel)
 
@@ -110,7 +126,9 @@ Update the guide content (keep the component's structure/style):
    unreachable); document the canonical new-field schema location
    (`update-prompts/README.md`), the lead-tier concept, the quality feedback
    loop, and the hardened `leads.php` behavior. Update the DO-NOT-MODIFY list:
-   keep `webhookSubmit.js`, `swalHelper.js`, drawer/modal mechanics; ADD
+   keep `webhookSubmit.js`, `validators.js`, `swalHelper.js`,
+   `UnifiedLeadForm.jsx`, `LeadFormDrawer.jsx`, `ModalContext.jsx`, and the
+   drawer/modal/mobile-nav mechanics (name each file explicitly); ADD
    `src/utils/applicationSubmit.js` payload contract, `/apply` step order, and
    `capi-feedback.php` event names.
 2. **`CHANGELOG.md`:** add an `## [Unreleased]` entry in the house style (bold

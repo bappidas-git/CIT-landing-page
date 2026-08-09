@@ -48,7 +48,7 @@ criteria in the prompt must be verified.
 | 02 | `02-apply-multistep-application-form.md` | Builds the `/apply` full-page 4-step application form with subject-marks entry, live eligibility computation, Step-1 partial capture, sessionStorage drafts, and `SubmitApplication` tracking. |
 | 03 | `03-landing-content-part1-hero-fees-process-eligibility.md` | Hero rework (embedded form → application CTA card), new Fees & Funding section (no numbers), new Admission Process section, eligibility strip. |
 | 04 | `04-landing-content-part2-cta-trust-proof-faq.md` | Re-points every CTA to `/apply`, tones down "free"/scarcity copy, fixes the recruiter wall, adds testimonials scaffold + FAQ section with schema. |
-| 05 | `05-admin-panel-qualification-data.md` | Admin panel: grouped lead detail (Academics / Family & Finance / Logistics), new list columns + filters, lead quality score, partial-lead handling, CSV/search updates. |
+| 05 | `05-admin-panel-qualification-data.md` | Admin panel: grouped lead detail (Academic Details / Family & Funding / Logistics), new list columns + filters, lead quality score, partial-lead handling, CSV/search updates. |
 | 06 | `06-meta-quality-feedback-loop-and-guides.md` | Server-side status→Meta CAPI feedback (`QualifiedLead`/`Purchase`), `Contact` events on phone/WhatsApp clicks, MetaAdsGuide rewrite, CLAUDE.md + CHANGELOG updates, final QA checklist. |
 
 ## Non-negotiable rules (apply to every prompt)
@@ -59,7 +59,8 @@ criteria in the prompt must be verified.
 2. **Zero jank.** No `framer-motion` in the `/apply` page (CSS-only transitions,
    `transform`/`opacity` only). No `backdrop-filter` on new surfaces. No MUI popover
    `Select` in the new form — native selects or radio-chip groups only.
-3. **DO NOT MODIFY:** `src/utils/webhookSubmit.js`, `src/utils/swalHelper.js`,
+3. **DO NOT MODIFY:** `src/utils/webhookSubmit.js`, `src/utils/validators.js`,
+   `src/utils/swalHelper.js`,
    `src/components/common/UnifiedLeadForm/UnifiedLeadForm.jsx`,
    `src/components/common/LeadFormDrawer/LeadFormDrawer.jsx`,
    `src/context/ModalContext.jsx` (drawer/modal behavior), and the mobile
@@ -92,9 +93,9 @@ Every field below is stored flat on the lead object alongside the existing keys
 | `intake_year` | `'2026'` \| `'2027'` \| `'researching'` | yes |
 | `whatsapp_confirmed` | boolean — "this number is on WhatsApp" | yes (checkbox may be false) |
 | `twelfth_status` | `'passed'` \| `'appearing_2026'` \| `'diploma'` | yes |
-| `twelfth_board` | `'AHSEC'` \| `'NBSE'` \| `'MBOSE'` \| `'TBSE'` \| `'COHSEM'` \| `'CBSE'` \| `'ICSE'` \| `'Other'` | yes |
-| `twelfth_school` | string ≤ 120 chars | yes |
-| `twelfth_subjects` | array of `{ subject: string, marks: number 0–100 }` — Physics & Mathematics always present; ≥1 more from Chemistry / Biology / Computer Science / Statistics / Electronics / Other | yes (unless `twelfth_status='appearing_2026'` → `expected_band` instead) |
+| `twelfth_board` | `'AHSEC'` \| `'NBSE'` \| `'MBOSE'` \| `'TBSE'` \| `'COHSEM'` \| `'CBSE'` \| `'ICSE'` \| `'Other'` | yes, except `twelfth_status='diploma'` |
+| `twelfth_school` | string ≤ 120 chars | yes, except `twelfth_status='diploma'` |
+| `twelfth_subjects` | array of `{ subject: string, marks: number 0–100 }` — Physics & Mathematics always present; ≥1 more from Chemistry / Biology / Computer Science / Statistics / Electronics / Other | yes; `twelfth_status='appearing_2026'` → `expected_band` instead; `'diploma'` → stored `[]` (diploma marks collected on the call) |
 | `expected_band` | `'above_75'` \| `'60_75'` \| `'45_60'` \| `'below_45'` (only when appearing) | conditional |
 | `eligibility_percent` | number, 1 decimal — (Physics + Maths + best other) / 3 | auto |
 | `eligibility_met` | boolean — `eligibility_percent >= 45` | auto |
@@ -120,3 +121,9 @@ Existing-key reuse: the chosen B.E. branch is stored in `service_interest`
 `src/components/common/UnifiedLeadForm/UnifiedLeadForm.jsx` `COURSE_OPTIONS`
 (em-dash format, e.g. `"B.E. — Computer Science & Engineering"`). Home state uses
 the existing `state` key with the same 8 NE states + `"Other"`.
+
+**`source` value contract (shared by prompts 02 and 04):** the base source is the
+CTA key stored in sessionStorage `cit_apply_source` by the CTA hook (prompt 04);
+fallback when absent: `apply-direct`. The Step-1 partial submit appends
+`/step1-partial`, the final submit appends `/full` — e.g.
+`apply-now/step1-partial`, `request-callback/full`, `apply-direct/full`.

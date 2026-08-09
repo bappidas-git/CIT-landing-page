@@ -56,8 +56,10 @@ completion. Zero perceptible lag on a budget Android phone.
    using `position: sticky; bottom: 0` inside normal document flow +
    `env(safe-area-inset-bottom)` padding — NOT `position: fixed` (keyboard
    safety on Android).
-7. SEO: `noindex, nofollow` via `SEOHead`, title "Apply — Direct B.E. Admission
-   2026 | CIT Tumakuru".
+7. SEO: `noindex, nofollow` the way `ThankYou.jsx` does it — call
+   `updatePageSEO({ title: 'Apply — Direct B.E. Admission 2026 | CIT Tumakuru',
+   robots: 'noindex, nofollow' })` from `src/utils/seo.js` on mount (the
+   `SEOHead` singleton has a hardcoded route switch and is NOT edited).
 
 ### 2. State, persistence, transitions
 
@@ -145,8 +147,9 @@ Subjects & marks control:
    `expected_band` radio-chips ("Above 75%" / "60–75%" / "45–60%" / "Below 45%")
    and skip the badge. If `'diploma'`: replace with a single info line "Diploma
    holders join B.E. 2nd year via lateral entry — we'll collect your diploma marks
-   on the call" and require only the 10th fields (store
-   `twelfth_subjects: []`).
+   on the call" and require only the 10th fields (store `twelfth_subjects: []`;
+   `twelfth_board` and `twelfth_school` are NOT required for diploma — the
+   README schema notes this exception).
 
 **STEP 3 — "Family & funding" (the qualifiers)**
 
@@ -186,27 +189,37 @@ Do NOT modify `webhookSubmit.js`. New util that follows its payload conventions:
 
 1. `submitPartialApplication(draft)` — builds the lead: Step-1 fields +
    `lead_id` (UUID, generated once and kept in the draft), `lead_tier:
-   'partial'`, `status: 'new'`, `source: 'apply-step1-partial'`,
+   'partial'`, `status: 'new'`, `source` per the README contract (base from
+   sessionStorage `cit_apply_source`, fallback `'apply-direct'`, suffixed
+   `/step1-partial`),
    `form_started_at`, `submitted_at`/`updated_at`, `page_url`, `user_agent`,
    UTMs + `gclid` (same lookup as webhookSubmit) **plus** `fbclid`/`fbp`/`fbc`
    from `getAttribution()`, an activity entry `"Application started (Step 1)"`,
    and the hidden honeypot `website` field value (empty for humans). POST to the
    same `action=create` endpoint (the upsert from prompt 01 makes re-posts safe).
 2. `submitFullApplication(draft)` — same `lead_id`, all fields from the canonical
-   schema, `lead_tier: 'application'`, `source: 'apply-full'`,
+   schema, `lead_tier: 'application'`, `source` = same base suffixed `/full`
+   (e.g. `apply-direct/full`),
    `application_completed_at`, activity entry `"Application submitted (all steps
    completed)"`. POST `action=create` (server merges by `lead_id`).
 3. On full-submit success:
-   - GTM: existing `trackFormSubmission('apply-full', { serviceInterest, intakeYear })`.
+   - GTM: existing `trackFormSubmission('apply-full', { serviceInterest })` from
+     `src/utils/gtm.js` (it forwards only the course key; push `intake_year`
+     via the new `trackApplicationStep` helper instead — do not widen
+     `trackFormSubmission`).
    - Meta: shared `event_id` via `generateEventId()`; browser pixel
      `SubmitApplication` (new `trackSubmitApplication` helper) + CAPI
      `sendSubmitApplicationEvent` with hashed PII — mirror the existing
      Lead-event dual pattern exactly. ALSO fire the plain `Lead` pair (some ad
      sets still optimize on Lead during migration).
-   - Google Ads: existing `trackGoogleAdsFormSubmission('apply-full')` +
+   - Google Ads: `import { trackFormSubmission as trackGoogleAdsFormSubmission }
+     from '../utils/googleAds'` (there is NO export literally named
+     `trackGoogleAdsFormSubmission` — it's an alias; the gtm.js function has the
+     same name) → `trackGoogleAdsFormSubmission('apply-full')` +
      `sendEnhancedConversionData(email, mobile, name)`.
-   - `sessionStorage.setItem('lead_submitted', 'true')` and `'lead_name'` (the
-     ThankYou page gate requires both — see `ThankYou.jsx`).
+   - `sessionStorage.setItem('lead_submitted', 'true')` (the ThankYou page gate
+     checks only this key) and `'lead_name'` (optional personalization of the
+     greeting — set it too).
    - `navigate('/thank-you')`. No SweetAlert on this page (keeps sweetalert2 out
      of the chunk).
 4. On network failure: inline error banner with Retry (draft is intact) + "or

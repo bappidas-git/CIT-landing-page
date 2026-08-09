@@ -18,6 +18,7 @@ section before applying self-qualify; junk doesn't read it.
 - **NEW** `src/components/sections/FeesFundingSection/FeesFundingSection.jsx` (+ `.module.css`, `index.js`)
 - **NEW** `src/components/sections/AdmissionProcessSection/AdmissionProcessSection.jsx` (+ `.module.css`, `index.js`)
 - **NEW** `src/components/common/EligibilityStrip/EligibilityStrip.jsx` (+ `.module.css`, `index.js`)
+- `src/pages/Apply/steps/StepAcademics.jsx` — import EligibilityStrip at the top of Step 2 (§4 below; additive only)
 - `src/App.jsx` — section order only (lazy-import the two new sections)
 
 ## Requirements

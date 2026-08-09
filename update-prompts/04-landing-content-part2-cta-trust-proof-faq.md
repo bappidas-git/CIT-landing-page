@@ -15,12 +15,18 @@ fixed, and the page gains social proof scaffolding and an FAQ section.
 - **NEW** `src/hooks/useApplyCTA.js` — shared CTA handler (track + preload + navigate)
 - All `openLeadDrawer` call sites — find with
   `grep -rln "openLeadDrawer" src/ --include="*.jsx"` and re-point every one
-  EXCEPT the protected files (`ModalContext.jsx`, `App.jsx`'s
-  `LeadFormDrawerWrapper`, `LeadFormDrawer.jsx` internals). Expected call sites
-  include: `AboutSection`, `WhyChooseCIT`, `ServicesSection`, `StatsSection`,
-  `FeaturesSection`, `LocationSection`, `CTASection`, `ContactSection`,
-  `SecondaryCTASection`, `Header`, `MobileDrawer`, `MobileNavigation` — verify
-  with the grep, miss none.
+  EXCEPT `ModalContext.jsx` (definition — protected) and `App.jsx`'s
+  `LeadFormDrawerWrapper` (drawer mount — protected). Actual call-site files:
+  `AboutSection`, `WhyChooseCIT`, `ServicesSection`, `StatsSection`,
+  `FeaturesSection`, `LocationSection`, `CTASection`, `SecondaryCTASection`,
+  `HeroSection` (if any remain after prompt 03), `Header`, and — critically —
+  `App.jsx`'s `handleEnquiryClick` (a LIVE path: it feeds BOTH
+  `MobileNavigation`'s Apply item and `MobileDrawer`'s "Apply for 2026
+  Admission" button via props; `MobileNavigation.jsx`/`MobileDrawer.jsx`
+  themselves contain no `openLeadDrawer` calls and need no edits). Verify with
+  the grep, miss none.
+- `src/utils/applicationSubmit.js` — already reads `cit_apply_source` (prompt 02); verify only
+- `src/pages/Apply/Apply.jsx` — draft initializer reads `cit_apply_course` (§2.2; additive only)
 - `src/components/sections/StatsSection/StatsSection.jsx` — recruiter wall fix
 - **NEW** `src/components/sections/TestimonialsSection/TestimonialsSection.jsx` (+ `.module.css`, `index.js`)
 - **NEW** `src/components/sections/FAQSection/FAQSection.jsx` (+ `.module.css`, `index.js`)
@@ -42,23 +48,30 @@ Returns `{ onClick, onPointerDown }`:
   string (reuse the tracking call currently made by `openLeadDrawer` — call
   `trackCTAClick` from `src/utils/gtm.js` directly), store the source in
   sessionStorage key `cit_apply_source`, then `navigate('/apply')`.
-- `src/utils/applicationSubmit.js`: read `cit_apply_source` and set it as the
-  lead's `source` (fallback `'apply-direct'`), suffixing the step tag for
-  partials, e.g. `courses-cse → courses-cse/step1-partial`. Small additive edit.
+- `src/utils/applicationSubmit.js` already consumes `cit_apply_source` per the
+  README source contract (base + `/step1-partial` or `/full` suffix, e.g.
+  `apply-now/step1-partial`) — no change needed here, just keep the keys
+  consistent.
 
 ### 2. Re-point every CTA (the drawer becomes unreachable)
 
 1. Replace each `openLeadDrawer('<key>')` call with `useApplyCTA('<same key>')`
-   so source attribution is preserved (`apply-now`, `get-details`,
-   `request-callback`, course-card keys, etc.).
+   so source attribution is preserved. The only keys in use today are
+   `apply-now`, `get-details`, `request-callback`, and `default` (there are NO
+   per-course source keys — course cards share `apply-now` and pass the course
+   in `extraData`, which is currently a broken no-op; the course now rides in
+   `cit_apply_course` per §2.2).
 2. Course cards in `ServicesSection`: additionally store the card's course label
    in sessionStorage `cit_apply_course` — exact `COURSE_OPTIONS` em-dash strings
    (map the data-file names to the option strings; they currently differ) — and
    pre-select it in `/apply` Step 1 when present (small additive edit in the
    Apply page's draft initializer).
-3. `MobileNavigation`'s "Apply" item must navigate to `/apply`. Change ONLY the
-   item's action/target — do not touch the nav's structure, animations, or
-   open/close mechanics.
+3. The mobile Apply surfaces (`MobileNavigation` Apply item + `MobileDrawer`
+   apply button) are both driven by `handleEnquiryClick` in `App.jsx`'s
+   `HomePageContent` — change THAT function to track (`cta_click`, source
+   `apply-now`) and `navigate('/apply')`. Do not touch `MobileNavigation.jsx` /
+   `MobileDrawer.jsx` structure, animations, or open/close mechanics, and do
+   not touch `LeadFormDrawerWrapper`.
 4. Update CTA labels page-wide: primary CTAs read `Start My Application` (or
    `Apply for 2026 Admission` where space is tight); no CTA says "Enquire".
 5. `App.jsx`'s `LeadFormDrawerWrapper` and the drawer/modal components stay
@@ -67,9 +80,9 @@ Returns `{ onClick, onPointerDown }`:
 
 ### 3. Copy tone-down (find with grep, exact replacements)
 
-1. `grep -rn "100% Free\|Free Guidance\|Free counselling\|Free Admission Guidance\|free consultation" src/` — replace every instance with `No consultancy or agent fees` (adjust casing/grammar in place). ONE instance may remain page-wide (keep the one in the hero checklist card from prompt 03).
-2. Scarcity sweep: `grep -rn "Limited Seats\|Filling Fast\|apply early\|close quickly\|Limited 2026" src/` — keep exactly ONE instance: the hero badge `Direct B.E. Admission 2026 • Limited Seats`. Rewrite all others into process/value statements (e.g. `2026 seats are allotted in order of completed applications` in CTASection — factual, no countdown).
-3. `grep -rn "No trips to Karnataka\|simple paperwork" src/` — reframe to support language: `We guide you through every step — eligibility, documents, travel and hostel.`
+1. `grep -rni "100% Free\|Free Guidance\|Free counselling\|Free Admission Guidance\|free consultation" src/` — replace every instance with `No consultancy or agent fees` (adjust casing/grammar in place) EXCEPT inside `UnifiedLeadForm.jsx` (protected file, unreachable UI — its "100% Free Guidance" trust badge stays untouched). Expected end state: zero instances outside `UnifiedLeadForm.jsx`.
+2. Scarcity sweep: `grep -rni "Limited Seats\|Filling Fast\|apply early\|close quickly\|Limited 2026" src/` — keep exactly ONE instance: the hero badge `Direct B.E. Admission 2026 • Limited Seats`. Rewrite all others into process/value statements (e.g. `2026 seats are allotted in order of completed applications` in CTASection — factual, no countdown). `UnifiedLeadForm.jsx`'s "Limited 2026 Seats" badge is protected and stays (unreachable UI) — expected end state: one instance outside `UnifiedLeadForm.jsx`.
+3. `grep -rni "trips to Karnataka\|counselling trips\|CET trips\|simple paperwork" src/` (case-insensitive — the real copy is lowercase and includes sibling phrasings in `CTASection.jsx`, `WhyChooseCIT.jsx`, `featuresData.js`, and `src/config/seo.js`) — reframe to support language: `We guide you through every step — eligibility, documents, travel and hostel.`
 4. ContactSection: remove the `PG & Research (M.Tech / MBA / MCA)` block (off-scope, generates off-target leads). Align the response-time promise to one statement: `Our admission team responds within 24 hours, Monday–Saturday.`
 5. Keep all accreditation copy (NAAC, AICTE, VTU, ISO, CET E101, COMED-K E035) untouched.
 
@@ -118,10 +131,10 @@ Returns `{ onClick, onPointerDown }`:
 
 ## Acceptance criteria
 
-- [ ] `grep -rn "openLeadDrawer" src/components src/hooks` → matches ONLY inside `ModalContext.jsx` / `LeadFormDrawer.jsx` / `App.jsx` (protected, dead wiring).
+- [ ] `grep -rn "openLeadDrawer" src/` → matches ONLY in `src/context/ModalContext.jsx` (definition) and `src/App.jsx`'s `LeadFormDrawerWrapper`; `handleEnquiryClick` in `App.jsx` no longer calls it.
 - [ ] `grep -rn "placehold.co" src/components/sections/StatsSection` → no matches.
-- [ ] `grep -rn "100% Free\|Free counselling\|Free Guidance" src/` → at most the single hero-card instance.
-- [ ] `grep -rn "Limited Seats\|Filling Fast" src/` → exactly one match (hero badge).
+- [ ] `grep -rni "100% Free\|Free counselling\|Free Guidance" src/` → matches only inside `UnifiedLeadForm.jsx` (protected, unreachable).
+- [ ] `grep -rni "Limited Seats\|Filling Fast" src/` → exactly one match outside `UnifiedLeadForm.jsx` (the hero badge).
 - [ ] `grep -n "M.Tech\|MBA\|MCA" src/components/sections/ContactSection/ContactSection.jsx` → no matches.
 - [ ] `grep -n "isLive" src/data/testimonialsData.js` → `false`; TestimonialsSection absent from the rendered page until flipped.
 - [ ] FAQ answers in `faqData.js` match the JSON-LD in `seo.js` (single source).
