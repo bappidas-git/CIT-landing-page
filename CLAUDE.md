@@ -132,6 +132,31 @@ telecaller can read one out over a bad line). Rules that must hold:
   and falls back to an unpersisted generated key if the ledger cannot be read or written — the
   lead record is what the test platform authenticates against, not the ledger.
 
+## Question Bank (Merit Assessment Test)
+
+`public/api/question-bank.php` holds the **120 original MCQs** for the 30-Minute Online Merit
+Assessment Test — **60 Mathematics (`M001`–`M060`) + 60 Physics (`P001`–`P060`)**, Class-12 /
+engineering-entrance standard, every one answerable in ≤ 60 seconds. An attempt draws 15 Maths +
+15 Physics at random.
+
+- **Answers never leave the server.** The file is a plain `return [...]` PHP data file, so a
+  browser can never receive its source; on top of that it opens with a guard —
+  `if (!defined('CIT_TEST_INTERNAL')) { http_response_code(404); exit; }`. The test endpoint
+  defines `CIT_TEST_INTERNAL` before requiring it; a direct HTTP hit gets a bare 404. The API
+  layer strips `answer` (and may strip `topic` / `difficulty`) before serialising anything to the
+  client. **Never import or require this file from `src/`** — it must stay out of every bundle.
+- **Row schema:** `id` (unique, `M###` / `P###`) · `subject` (`maths` | `physics`) · `topic`
+  (lowercase slug) · `difficulty` (`easy` | `medium` | `hard`) · `q` (question text) · `options`
+  (exactly 4 distinct non-empty strings) · `answer` (int 0–3, index into `options`).
+- **Balance, deliberately maintained:** 24 easy / 24 medium / 12 hard per subject, and each answer
+  index 0–3 is correct exactly 15 times per subject. Topic counts follow the Class-12 syllabus
+  weighting. If you add or edit questions, keep the mix inside 13–17 per answer index so the
+  position of the correct option carries no signal.
+- **Notation is plain text + Unicode only** — `x²`, `√`, `π`, `θ`, `Ω`, `μ`, `°`, `×`, `·`, `−`,
+  `≤`, `→`. No LaTeX, no KaTeX, no HTML in the strings; fractions inline with explicit parentheses
+  (`(x + 1)/(x − 1)`), matrices row-listed as `[[a, b], [c, d]]`, vectors as `î, ĵ, k̂`. Any
+  physical constant a student needs is supplied inside the question itself.
+
 ## Meta Quality Feedback Loop
 
 Meta optimises for whatever conversion event it receives, so a zero-friction `Lead` event teaches
