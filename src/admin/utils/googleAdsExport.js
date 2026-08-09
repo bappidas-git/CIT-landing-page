@@ -6,7 +6,8 @@
 
 /**
  * Export converted leads with gclid as a Google Ads offline conversion CSV.
- * Only includes leads with status "converted" that have a gclid.
+ * Only includes leads with status "completed" (Seat Booked — the canonical
+ * conversion status key from leadStatus.js) that have a gclid.
  *
  * Google Ads offline conversion CSV format:
  * - Google Click ID
@@ -29,13 +30,13 @@ export const exportGoogleAdsCSV = (leads, options = {}) => {
     currency = 'INR',
   } = options;
 
-  // Filter: only converted leads with a gclid
+  // Filter: only converted (status "completed") leads with a gclid
   const eligibleLeads = leads.filter(
-    (lead) => lead.status === 'converted' && lead.gclid
+    (lead) => lead.status === 'completed' && lead.gclid
   );
 
   const skipped = leads.filter(
-    (lead) => lead.status === 'converted' && !lead.gclid
+    (lead) => lead.status === 'completed' && !lead.gclid
   ).length;
 
   if (eligibleLeads.length === 0) {
@@ -66,7 +67,7 @@ export const exportGoogleAdsCSV = (leads, options = {}) => {
   const formatConversionTime = (lead) => {
     // Use the conversion timestamp from activity if available, otherwise submitted_at
     const conversionActivity = (lead.activity || [])
-      .filter((a) => a.status === 'converted')
+      .filter((a) => a.status === 'completed')
       .pop();
 
     const timestamp = conversionActivity?.timestamp || lead.submitted_at;

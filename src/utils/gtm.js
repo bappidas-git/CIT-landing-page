@@ -70,7 +70,9 @@ export const trackPageView = (pagePath, pageTitle) => {
 export const trackFormSubmission = (formId, formData = {}) => {
   pushDataLayer('lead_form_submission', {
     formSource: formId,
-    investmentInterest: formData.investmentInterest || '',
+    // Callers pass the course as `serviceInterest`; the dataLayer key keeps
+    // its legacy name so existing GTM variables/triggers stay valid.
+    investmentInterest: formData.serviceInterest || formData.investmentInterest || '',
   });
 
   // Also push the GA4 generate_lead event for conversion tracking

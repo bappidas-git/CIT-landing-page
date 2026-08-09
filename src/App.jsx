@@ -31,6 +31,7 @@ import { initGTM } from './utils/gtm';
 import { initConsentMode } from './utils/consentMode';
 import { initPixel, trackPageView as trackMetaPageView } from './utils/metaPixel';
 import { captureGclid } from './utils/gclidManager';
+import { captureAttribution } from './utils/attribution';
 import { initGoogleAds } from './utils/googleAds';
 import { setupEnhancedConversions } from './utils/enhancedConversions';
 
@@ -550,6 +551,8 @@ const App = () => {
     setupEnhancedConversions();
     // Capture gclid from URL on page load (persists in localStorage)
     captureGclid();
+    // Capture fbclid + first-touch UTM attribution (persists in localStorage)
+    captureAttribution();
   }, []);
 
   // Hide initial loader after mount

@@ -26,6 +26,37 @@ export const hashData = async (value) => {
 };
 
 /**
+ * Normalize an Indian phone number to E.164 digits before hashing, as Meta
+ * expects country-coded numbers: strip "+", spaces, dashes and leading zeros;
+ * a 10-digit number becomes 91XXXXXXXXXX; a 12-digit number already starting
+ * with 91 is kept as-is.
+ * @param {string} phone - Raw phone number
+ * @returns {string} E.164 digits (no "+") or '' when empty
+ */
+const normalizePhoneE164 = (phone) => {
+  if (!phone) return '';
+  let digits = String(phone).replace(/\D/g, '');
+  digits = digits.replace(/^0+/, '');
+  if (digits.length === 10) return `91${digits}`;
+  if (digits.length === 12 && digits.startsWith('91')) return digits;
+  return digits;
+};
+
+/**
+ * Split a full name into first/last parts for the fn/ln user_data fields:
+ * first whitespace-separated token → firstName, remaining tokens → lastName.
+ * @param {string} name - Full name
+ * @returns {{firstName: string, lastName: string}}
+ */
+const splitName = (name) => {
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts[0] || '',
+    lastName: parts.slice(1).join(' '),
+  };
+};
+
+/**
  * Get the CAPI proxy URL
  * @returns {string}
  */
@@ -70,23 +101,30 @@ export const sendLeadEvent = async (leadData) => {
   const eventId = leadData.event_id || generateEventId();
 
   try {
-    const [hashedEmail, hashedPhone, hashedName] = await Promise.all([
+    const { firstName, lastName } = splitName(leadData.name);
+    const [hashedEmail, hashedPhone, hashedFirstName, hashedLastName] = await Promise.all([
       hashData(leadData.email),
-      hashData(leadData.mobile),
-      hashData(leadData.name),
+      hashData(normalizePhoneE164(leadData.mobile)),
+      hashData(firstName),
+      hashData(lastName),
     ]);
+
+    const userData = {
+      ...getUserData(),
+      em: hashedEmail,
+      ph: hashedPhone,
+      fn: hashedFirstName,
+    };
+    if (hashedLastName) {
+      userData.ln = hashedLastName;
+    }
 
     const payload = {
       event_name: 'Lead',
       event_id: eventId,
       event_time: Math.floor(Date.now() / 1000),
       event_source_url: window.location.href,
-      user_data: {
-        ...getUserData(),
-        em: hashedEmail,
-        ph: hashedPhone,
-        fn: hashedName,
-      },
+      user_data: userData,
       custom_data: {
         content_name: leadData.source || 'lead_form',
         content_category: 'lead_generation',
@@ -127,23 +165,30 @@ export const sendConversionEvent = async (leadData, conversionData = {}) => {
   const eventId = conversionData.event_id || generateEventId();
 
   try {
-    const [hashedEmail, hashedPhone, hashedName] = await Promise.all([
+    const { firstName, lastName } = splitName(leadData.name);
+    const [hashedEmail, hashedPhone, hashedFirstName, hashedLastName] = await Promise.all([
       hashData(leadData.email),
-      hashData(leadData.mobile),
-      hashData(leadData.name),
+      hashData(normalizePhoneE164(leadData.mobile)),
+      hashData(firstName),
+      hashData(lastName),
     ]);
+
+    const userData = {
+      ...getUserData(),
+      em: hashedEmail,
+      ph: hashedPhone,
+      fn: hashedFirstName,
+    };
+    if (hashedLastName) {
+      userData.ln = hashedLastName;
+    }
 
     const payload = {
       event_name: 'Purchase',
       event_id: eventId,
       event_time: Math.floor(Date.now() / 1000),
       event_source_url: window.location.href,
-      user_data: {
-        ...getUserData(),
-        em: hashedEmail,
-        ph: hashedPhone,
-        fn: hashedName,
-      },
+      user_data: userData,
       custom_data: {
         value: conversionData.value || 0,
         currency: conversionData.currency || 'INR',
