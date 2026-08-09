@@ -12,7 +12,7 @@ import {
   trackNavigation,
   trackCTAClick,
 } from "../../../utils/gtm";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import styles from "./Header.module.css";
 
 const logoUrl =
@@ -35,7 +35,7 @@ const Header = ({ forceCloseMenu = false }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA("apply-now", { location: "header" });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -127,10 +127,10 @@ const Header = ({ forceCloseMenu = false }) => {
     }, 50);
   };
 
-  const handleApplyClick = (source) => {
+  const handleApplyClick = (source) => (event) => {
     trackCTAClick(`header_apply_now_${source}`, "header", "Apply Now");
-    openLeadDrawer("apply-now");
     setIsMobileMenuOpen(false);
+    applyCTA.onClick(event);
   };
 
   // Animation variants
@@ -258,7 +258,8 @@ const Header = ({ forceCloseMenu = false }) => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.55, duration: 0.3 }}
-                onClick={() => handleApplyClick("desktop")}
+                onClick={handleApplyClick("desktop")}
+                onPointerDown={applyCTA.onPointerDown}
                 className={styles.applyButton}
                 aria-label="Apply for 2026 B.E. admission"
               >
@@ -325,7 +326,8 @@ const Header = ({ forceCloseMenu = false }) => {
               <div className={styles.mobileNavCTA}>
                 <button
                   type="button"
-                  onClick={() => handleApplyClick("mobile_menu")}
+                  onClick={handleApplyClick("mobile_menu")}
+                  onPointerDown={applyCTA.onPointerDown}
                   className={styles.mobileApplyButton}
                   aria-label="Apply for 2026 B.E. admission"
                 >

@@ -8,7 +8,7 @@ import { motion, useInView } from 'framer-motion';
 import { Container, Typography, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { Icon } from '@iconify/react';
 import AnimatedCounter from '../../common/AnimatedCounter/AnimatedCounter';
-import { useModal } from '../../../context/ModalContext';
+import useApplyCTA from '../../../hooks/useApplyCTA';
 import { trackCTAClick } from '../../../utils/gtm';
 import { statsData } from '../../../data/statsData';
 import styles from './StatsSection.module.css';
@@ -34,8 +34,18 @@ const RECRUITERS = [
   'Boomi',
 ];
 
-const recruiterLogoUrl = (name) =>
-  `https://placehold.co/160x80/FFFFFF/0C2D48?text=${encodeURIComponent(name)}`;
+/**
+ * Real recruiter logos, once CIT supplies licensed artwork: add
+ * `'Infosys': 'https://…/infosys.svg'` here and that chip renders as an <img>
+ * instead of a text pill. Everything without an entry stays a name chip.
+ *
+ * Deliberately the ONLY way an image reaches this wall. It used to render
+ * machine-generated placeholder images from a third-party service, which read
+ * as a broken page to a parent deciding where to send their child — that is
+ * now impossible to ship by accident.
+ * @type {Object<string, string>}
+ */
+const RECRUITER_LOGOS = {};
 
 // Animation variants
 const containerVariants = {
@@ -110,13 +120,13 @@ const StatsSection = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA('apply-now', { location: 'placements' });
 
   const headlineStats = statsData.filter((s) => HEADLINE_STAT_IDS.includes(s.id));
 
-  const handleApplyNow = () => {
-    trackCTAClick('placements_apply_now', 'placements', 'Apply for 2026 Admission');
-    openLeadDrawer('apply-now');
+  const handleApplyNow = (event) => {
+    trackCTAClick('placements_apply_now', 'placements', 'Start My Application');
+    applyCTA.onClick(event);
   };
 
   return (
@@ -237,40 +247,45 @@ const StatsSection = () => {
               </Typography>
             </div>
 
-            <div className={styles.logoGrid}>
+            <ul className={styles.logoGrid}>
               {RECRUITERS.map((name, index) => (
-                <motion.div
+                <motion.li
                   key={name}
                   className={styles.logoCard}
                   custom={index}
                   variants={logoVariants}
                 >
-                  <img
-                    src={recruiterLogoUrl(name)}
-                    alt={`${name} recruiter logo`}
-                    loading="lazy"
-                    width="160"
-                    height="80"
-                    className={styles.logoImage}
-                  />
-                </motion.div>
+                  {RECRUITER_LOGOS[name] ? (
+                    <img
+                      src={RECRUITER_LOGOS[name]}
+                      alt={`${name} recruiter logo`}
+                      loading="lazy"
+                      width="160"
+                      height="80"
+                      className={styles.logoImage}
+                    />
+                  ) : (
+                    <span className={styles.logoName}>{name}</span>
+                  )}
+                </motion.li>
               ))}
-            </div>
+            </ul>
 
             <div className={styles.ctaRow}>
               <button
                 type="button"
                 className={styles.ctaButton}
                 onClick={handleApplyNow}
+                onPointerDown={applyCTA.onPointerDown}
               >
                 <Icon
                   icon="mdi:rocket-launch-outline"
                   className={styles.ctaButtonIcon}
                 />
-                <span>Apply for 2026 Admission</span>
+                <span>Start My Application</span>
               </button>
               <span className={styles.ctaHint}>
-                Limited 2026 seats · Free admission guidance
+                Direct college admission · No consultancy or agent fees
               </span>
             </div>
           </motion.div>

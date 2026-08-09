@@ -4,6 +4,8 @@
    settings, schemas, and page metadata.
    ============================================ */
 
+import { faqData } from "../data/faqData";
+
 export const seoConfig = {
   // =========================================
   // Site-level Settings
@@ -106,50 +108,12 @@ export const seoConfig = {
 
   // =========================================
   // FAQ Schema Data (Admissions)
+  // The FAQPage JSON-LD and the on-page FAQ accordion read the SAME array —
+  // edit the questions in src/data/faqData.js and both stay in sync. Google
+  // penalises schema that does not match visible page content, so never
+  // hand-write FAQ entries here.
   // =========================================
-  faqs: [
-    {
-      question:
-        "Who is eligible for direct B.E. admission at CIT Tumakuru for 2026?",
-      answer:
-        "Students who have passed 10+2 (Class 12) with Physics and Mathematics as compulsory subjects, plus one of Chemistry, Biology, Computer Science, Biotechnology or Electronics, are eligible to apply for Direct B.E. admission for the 2026 intake. North East students can apply through the guided admission pathway — contact our admission team for branch-specific eligibility.",
-    },
-    {
-      question: "How do I apply for direct B.E. admission at CIT?",
-      answer:
-        "Submit the enquiry form on this page with your name, mobile, preferred B.E. branch and state. Our admission team will call you, explain the documents needed, share the application form and guide you end-to-end — no confusing counselling trips required.",
-    },
-    {
-      question: "Which B.E. courses are offered at CIT Tumakuru?",
-      answer:
-        "CIT offers seven B.E. branches: Artificial Intelligence & Data Science, Computer Science & Engineering, Information Science & Engineering, Electronics & Communication Engineering, Electrical & Electronics Engineering, Mechanical Engineering and Civil Engineering — all affiliated to VTU, Belagavi.",
-    },
-    {
-      question: "What about fees and scholarships?",
-      answer:
-        "Fee structure varies by B.E. branch and is set as per VTU/AICTE norms. Merit-based fee assistance may be available for eligible students. Please contact our admission team for the latest 2026 fee details and scholarship guidance.",
-    },
-    {
-      question: "Is hostel accommodation available for North East students?",
-      answer:
-        "Yes. CIT offers safe, supervised hostel and mess facilities for outstation students, including those from North East India. The hostel is on campus with full boarding, study spaces and round-the-clock security.",
-    },
-    {
-      question: "How strong are CIT's placements?",
-      answer:
-        "Over 90+ reputed companies visit CIT every year with 85%+ overall placement for eligible students, sustained over the last 8 years. Recruiters include Accenture, Infosys, Deloitte, HCLTech, TCS, Tech Mahindra, Wipro and more. Highest CTC is 15 LPA with a median of 5 LPA.",
-    },
-    {
-      question: "Is CIT recognised and accredited?",
-      answer:
-        "Yes. CIT is NAAC accredited, ISO 9001:2015 certified, approved by AICTE, New Delhi, and affiliated to Visvesvaraya Technological University (VTU), Belagavi. CET Code: E101 · COMED-K Code: E035.",
-    },
-    {
-      question: "What is the last date to apply for 2026 B.E. admission?",
-      answer:
-        "Seats for the 2026 B.E. intake are limited and filled on a first-come, first-served basis. We recommend applying early. For the exact closing date, please contact our admission team.",
-    },
-  ],
+  faqs: faqData,
 
   // =========================================
   // CollegeOrUniversity Schema Settings

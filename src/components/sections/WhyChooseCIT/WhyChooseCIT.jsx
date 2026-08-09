@@ -10,7 +10,7 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Container, Typography } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
 import styles from "./WhyChooseCIT.module.css";
 
@@ -23,7 +23,7 @@ const objections = [
     icon: "mdi:help-network-outline",
     objection: "Confused by Karnataka CET / COMED-K counselling?",
     answer:
-      "CIT offers a guided direct B.E. admission pathway for the 2026 intake — no confusing counselling trips, simple paperwork, and support at every step from our NE admissions desk.",
+      "CIT offers a guided direct B.E. admission pathway for the 2026 intake. We guide you through every step — eligibility, documents, travel and hostel — from our NE admissions desk.",
   },
   {
     icon: "mdi:home-heart",
@@ -42,7 +42,7 @@ const objections = [
 // Reassurance bullets shown on the CTA band
 const reassurancePoints = [
   "End-to-end direct B.E. admission guidance for the 2026 intake",
-  "Limited 2026 seats across 7 B.E. branches — apply early",
+  "7 B.E. branches — your application is matched to the branch you qualify for",
   "NAAC accredited, AICTE approved, affiliated to VTU Belagavi",
   "85%+ placements with 90+ recruiters visiting the campus",
   "Safe hostel & mess facilities for North East students",
@@ -83,11 +83,11 @@ const cardVariants = {
 const WhyChooseCIT = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA("apply-now", { location: "why_choose_cit" });
 
-  const handleApplyNow = () => {
-    trackCTAClick("why_cit_apply_now", "why_choose_cit", "Apply for 2026 Admission");
-    openLeadDrawer("apply-now");
+  const handleApplyNow = (event) => {
+    trackCTAClick("why_cit_apply_now", "why_choose_cit", "Start My Application");
+    applyCTA.onClick(event);
   };
 
   const handleCallClick = () => {
@@ -195,7 +195,7 @@ const WhyChooseCIT = () => {
               <div className={styles.bannerRight}>
                 <div className={styles.ctaCard}>
                   <span className={styles.ctaLabel}>
-                    Limited Seats · 2026 Intake
+                    Direct Admission · 2026 Intake
                   </span>
                   <Typography variant="h4" className={styles.ctaHeadline}>
                     Talk to the CIT NE Admissions Desk
@@ -205,12 +205,13 @@ const WhyChooseCIT = () => {
                     type="button"
                     className={styles.ctaButton}
                     onClick={handleApplyNow}
+                    onPointerDown={applyCTA.onPointerDown}
                   >
                     <Icon
                       icon="mdi:rocket-launch-outline"
                       className={styles.ctaButtonIcon}
                     />
-                    <span>Apply for 2026 Admission</span>
+                    <span>Start My Application</span>
                   </button>
 
                   <a
@@ -231,7 +232,7 @@ const WhyChooseCIT = () => {
                     </div>
                     <div className={styles.trustItem}>
                       <Icon icon="mdi:account-tie" />
-                      <span>Free Admission Guidance</span>
+                      <span>No consultancy or agent fees</span>
                     </div>
                   </div>
 

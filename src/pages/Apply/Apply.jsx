@@ -23,7 +23,7 @@ import React, {
 } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
-import StepIdentity from './steps/StepIdentity';
+import StepIdentity, { COURSE_OPTIONS } from './steps/StepIdentity';
 import StepAcademics, {
   LOCKED_SUBJECTS,
   MAX_OPTIONAL_SUBJECTS,
@@ -58,6 +58,7 @@ import {
   getUnicodeNameError,
   getYearError,
 } from '../../utils/applicationValidators';
+import { APPLY_COURSE_KEY } from '../../hooks/useApplyCTA';
 
 import styles from './Apply.module.css';
 
@@ -120,12 +121,31 @@ const createInitialDraft = () => ({
 });
 
 /**
+ * The branch a landing-page course card was tapped on, if any — someone who
+ * chose CSE on the card should not have to choose it again here. Validated
+ * against COURSE_OPTIONS so a stale or hand-edited value can never land in
+ * `service_interest`. A pure read: the applicant can still change the branch,
+ * and their own saved answer always wins over this hint.
+ * @returns {string} Exact COURSE_OPTIONS string, or '' when absent/unknown
+ */
+const readPreselectedCourse = () => {
+  try {
+    const stored = sessionStorage.getItem(APPLY_COURSE_KEY);
+    return stored && COURSE_OPTIONS.includes(stored) ? stored : '';
+  } catch (error) {
+    return '';
+  }
+};
+
+/**
  * Rehydrate the draft saved by an earlier visit in this tab, falling back to a
  * fresh draft. Saved values are layered over the current defaults so a draft
  * written by an older build never arrives missing keys.
  */
 const loadDraft = () => {
   const base = createInitialDraft();
+  const preselectedCourse = readPreselectedCourse();
+  if (preselectedCourse) base.service_interest = preselectedCourse;
   try {
     const raw = sessionStorage.getItem(APPLY_DRAFT_KEY);
     if (!raw) return base;
@@ -144,6 +164,11 @@ const loadDraft = () => {
       merged.twelfth_subjects.length < LOCKED_SUBJECTS.length
     ) {
       merged.twelfth_subjects = base.twelfth_subjects;
+    }
+    // A saved draft that never got as far as picking a branch still takes the
+    // course card's hint; one that did keeps the applicant's own answer.
+    if (!merged.service_interest && preselectedCourse) {
+      merged.service_interest = preselectedCourse;
     }
     return merged;
   } catch (error) {

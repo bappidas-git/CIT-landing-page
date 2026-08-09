@@ -1,0 +1,221 @@
+/* ============================================
+   FAQSection Styles
+   Mobile-first (360px). The accordion is native
+   <details>/<summary>, so all state styling hangs
+   off the [open] attribute — no JS, no layout
+   thrash.
+   ============================================ */
+
+.section {
+  position: relative;
+  padding: var(--space-12) 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(12, 45, 72, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.55),
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---------- Header ---------- */
+.header {
+  max-width: 640px;
+  margin: 0 auto var(--space-8);
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  background: rgba(12, 45, 72, 0.08);
+  color: var(--color-primary);
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  border: 1px solid rgba(12, 45, 72, 0.2);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-3);
+}
+
+.titleAccent {
+  color: var(--color-accent);
+}
+
+.subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--fs-base);
+  color: #475569;
+  line-height: var(--lh-relaxed);
+  margin: 0;
+}
+
+/* ---------- Accordion ---------- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.item {
+  background: var(--color-white);
+  border: 1px solid rgba(12, 45, 72, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 10px rgba(12, 45, 72, 0.05);
+  overflow: hidden;
+  transition: border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.item[open] {
+  border-color: rgba(12, 45, 72, 0.28);
+  box-shadow: 0 8px 22px rgba(12, 45, 72, 0.1);
+}
+
+/* Question row — also the 44px+ touch target. */
+.question {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+/* Hide the platform disclosure triangle (Safari needs the ::-webkit- rule). */
+.question::-webkit-details-marker {
+  display: none;
+}
+
+.question::marker {
+  content: "";
+}
+
+.question:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: -3px;
+  border-radius: var(--radius-lg);
+}
+
+.questionNumber {
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-accent);
+  line-height: 1.5;
+}
+
+.questionText {
+  flex: 1;
+  font-family: var(--font-primary);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  line-height: var(--lh-snug);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  opacity: 0.55;
+  transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.item[open] .chevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* ---------- Answer ---------- */
+.answer {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.answerText {
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(12, 45, 72, 0.1);
+  font-family: var(--font-primary);
+  font-size: var(--fs-base);
+  color: #475569;
+  line-height: var(--lh-relaxed);
+}
+
+/* ---------- Foot note ---------- */
+.footNote {
+  margin: var(--space-8) 0 0;
+  text-align: center;
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  color: #475569;
+  line-height: var(--lh-relaxed);
+}
+
+.footLink {
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.footLink:hover,
+.footLink:focus-visible {
+  text-decoration: underline;
+}
+
+/* ---------- Tablet and up ---------- */
+@media (min-width: 768px) {
+  .section {
+    padding: var(--space-16) 0;
+  }
+
+  .title {
+    font-size: 2.1rem;
+  }
+
+  .question {
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .answer {
+    padding: 0 var(--space-6) var(--space-5);
+    /* Line the answer up under the question text, past the number gutter. */
+    margin-left: calc(var(--space-6) + var(--space-3));
+    padding-left: 0;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .chevron {
+    transition: none;
+  }
+}

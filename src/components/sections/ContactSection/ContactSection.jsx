@@ -93,12 +93,8 @@ const ContactSection = () => {
     {
       icon: "mdi:clock-fast",
       title: "Response Time",
-      content: "Our admission team responds within 24 hours — every enquiry, every weekday.",
-    },
-    {
-      icon: "mdi:school-outline",
-      title: "PG & Research",
-      content: "PG (M.Tech / MBA / MCA) and research programs are also available — ask us.",
+      content:
+        "Our admission team responds within 24 hours, Monday–Saturday.",
     },
   ];
 
@@ -274,8 +270,8 @@ const ContactSection = () => {
                     Get Admission Details
                   </Typography>
                   <Typography variant="body2" className={styles.formSubtitle}>
-                    Share your details — our CIT admission counsellor will call
-                    you within 24 hours.
+                    Share your details — our CIT admission counsellor responds
+                    within 24 hours, Monday–Saturday.
                   </Typography>
                 </div>
 

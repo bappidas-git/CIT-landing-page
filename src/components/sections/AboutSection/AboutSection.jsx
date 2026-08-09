@@ -7,7 +7,7 @@ import React from "react";
 import { motion, useInView } from "framer-motion";
 import { Container, Typography, Button } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import styles from "./AboutSection.module.css";
 
 const containerVariants = {
@@ -68,7 +68,7 @@ const credibilityPoints = [
 const AboutSection = () => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA("apply-now", { location: "about" });
 
   return (
     <section className={styles.overviewSection} id="about" ref={ref}>
@@ -131,7 +131,7 @@ const AboutSection = () => {
               </Typography>
               <Button
                 variant="contained"
-                onClick={() => openLeadDrawer("apply-now")}
+                {...applyCTA}
                 className={styles.ctaButton}
                 endIcon={<Icon icon="mdi:arrow-right" />}
                 sx={{
@@ -155,7 +155,7 @@ const AboutSection = () => {
                   },
                 }}
               >
-                Apply for 2026 Admission
+                Start My Application
               </Button>
             </motion.div>
 

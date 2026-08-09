@@ -18,13 +18,27 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { servicesData } from "../../../data/servicesData";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA, { setApplyCourse } from "../../../hooks/useApplyCTA";
 import {
   injectSchema,
   removeSchema,
   generateServiceSchema,
 } from "../../../utils/seo";
 import styles from "./ServicesSection.module.css";
+
+// servicesData names and the application form's COURSE_OPTIONS are worded
+// differently (no em-dash here). Tapping a card must pre-select the branch in
+// Step 1, and Apply.jsx only accepts an exact COURSE_OPTIONS string — so the
+// two vocabularies are bridged here, by course id.
+const COURSE_OPTION_BY_ID = {
+  "ai-data-science": "B.E. — Artificial Intelligence & Data Science",
+  "computer-science": "B.E. — Computer Science & Engineering",
+  "information-science": "B.E. — Information Science & Engineering",
+  "electronics-communication": "B.E. — Electronics & Communication Engineering",
+  "electrical-electronics": "B.E. — Electrical & Electronics Engineering",
+  mechanical: "B.E. — Mechanical Engineering",
+  civil: "B.E. — Civil Engineering",
+};
 
 // Animation variants
 const containerVariants = {
@@ -75,7 +89,8 @@ const ServicesSection = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA("apply-now", { location: "courses" });
+  const detailsCTA = useApplyCTA("get-details", { location: "courses" });
 
   // Inject Service schema for structured data
   useEffect(() => {
@@ -83,12 +98,11 @@ const ServicesSection = () => {
     return () => removeSchema("schema-services");
   }, []);
 
-  const handleApply = (course) => {
-    openLeadDrawer("apply-now", {
-      subtitle: `Apply for ${course.shortName} — ${course.name}`,
-      course: course.name,
-      course_interest: course.name,
-    });
+  // The branch rides to /apply in sessionStorage — an unknown id clears the
+  // key rather than leaving an earlier card's branch behind.
+  const handleApply = (course) => (event) => {
+    setApplyCourse(COURSE_OPTION_BY_ID[course.id] || "");
+    applyCTA.onClick(event);
   };
 
   const renderCourseCard = (course, index) => (
@@ -146,12 +160,13 @@ const ServicesSection = () => {
       {/* CTA Button */}
       <motion.button
         className={styles.courseCtaBtn}
-        onClick={() => handleApply(course)}
+        onClick={handleApply(course)}
+        onPointerDown={applyCTA.onPointerDown}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        aria-label={`Apply or enquire for ${course.name}`}
+        aria-label={`Start my application for ${course.name}`}
       >
-        <span>Apply / Enquire</span>
+        <span>Start My Application</span>
         <Icon icon="mdi:arrow-right" />
       </motion.button>
     </motion.div>
@@ -253,18 +268,18 @@ const ServicesSection = () => {
                   Not sure which branch is right for you?
                 </span>
                 <span className={styles.ctaSubtitle}>
-                  Talk to our admission team — we'll help you pick the right
-                  B.E. programme.
+                  Pick &ldquo;Not Sure — Need Guidance&rdquo; in the application
+                  and our admission team will help you choose on the first call.
                 </span>
               </div>
             </div>
             <motion.button
               className={styles.ctaBtn}
-              onClick={() => openLeadDrawer("get-details")}
+              {...detailsCTA}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span>Talk to Us</span>
+              <span>Get Admission Details</span>
               <Icon icon="mdi:arrow-right" />
             </motion.button>
           </motion.div>

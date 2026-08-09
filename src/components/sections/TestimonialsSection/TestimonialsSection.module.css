@@ -1,0 +1,215 @@
+/* ============================================
+   TestimonialsSection Styles
+   Mobile-first (360px): one card per row, stacking
+   into 3 columns from 1024px.
+   ============================================ */
+
+.section {
+  position: relative;
+  padding: var(--space-12) 0;
+  background: linear-gradient(180deg, #f8fafc 0%, var(--color-tint) 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(12, 45, 72, 0.07) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.55),
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---------- Header ---------- */
+.header {
+  max-width: 680px;
+  margin: 0 auto var(--space-8);
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  background: rgba(216, 38, 24, 0.1);
+  color: var(--color-secondary);
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  border: 1px solid rgba(216, 38, 24, 0.25);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-3);
+}
+
+.titleAccent {
+  color: var(--color-accent);
+}
+
+.subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--fs-base);
+  color: #475569;
+  line-height: var(--lh-relaxed);
+  margin: 0;
+}
+
+/* ---------- Cards ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-white);
+  border: 1px solid rgba(12, 45, 72, 0.1);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 2px 12px rgba(12, 45, 72, 0.06);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.quoteMark {
+  color: var(--color-accent);
+  opacity: 0.4;
+}
+
+.quote {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--fs-base);
+  color: var(--color-text);
+  line-height: var(--lh-relaxed);
+}
+
+/* ---------- Student identity ---------- */
+.student {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(12, 45, 72, 0.1);
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #0c2d48 0%, #1a5276 100%);
+  overflow: hidden;
+}
+
+.avatarPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitials {
+  font-family: var(--font-heading);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-white);
+  letter-spacing: var(--ls-wide);
+}
+
+.studentMeta {
+  min-width: 0;
+}
+
+.studentName {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-snug);
+}
+
+.studentHome {
+  margin: 2px 0 0;
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+}
+
+.studentBranch {
+  margin: 2px 0 0;
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  color: #475569;
+  line-height: var(--lh-snug);
+}
+
+/* ---------- Tablet and up ---------- */
+@media (min-width: 768px) {
+  .section {
+    padding: var(--space-16) 0;
+  }
+
+  .title {
+    font-size: 2.1rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Hover (pointer devices only) ---------- */
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(12, 45, 72, 0.12);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
