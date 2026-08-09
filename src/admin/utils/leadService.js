@@ -16,8 +16,9 @@ import { getConfig } from "../../utils/webhookSubmit";
 import { describeStatusChange } from "./leadStatus";
 
 // Shared secret used to authenticate against /api/leads.php admin actions.
-// Must match ADMIN_API_KEY in public/api/config.php (or the committed default
-// in leads.php) on the server.
+// Must match ADMIN_API_KEY configured in public/api/config.php (or the
+// server's environment) — there is no committed fallback key, so both sides
+// must be set together.
 const LEADS_ADMIN_KEY = process.env.REACT_APP_LEADS_ADMIN_KEY || "";
 
 // In-memory cache of all leads, hydrated from the server by
@@ -558,14 +559,19 @@ export const importLeadsCSV = async (csvText) => {
 
   if (newLeads.length > 0) {
     _cache = [..._cache, ...newLeads];
-    // Persist each imported lead to the server (the source of truth).
+    // Persist each imported lead to the server (the source of truth). The
+    // X-Admin-Key header marks these creates as trusted admin traffic so the
+    // server skips its public anti-bot checks (honeypot / time-trap / rate
+    // limit) for legacy CSV data.
     const url = getLeadsApiUrl();
     if (url) {
+      const headers = { "Content-Type": "application/json" };
+      if (LEADS_ADMIN_KEY) headers["X-Admin-Key"] = LEADS_ADMIN_KEY;
       await Promise.all(
         newLeads.map((lead) =>
           fetch(`${url}?action=create`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify({ lead }),
           }).catch((err) => console.error("[LeadsAPI] import create failed:", err))
         )
@@ -595,7 +601,7 @@ export const getLeadStats = () => {
   const weekLeads = leads.filter(
     (l) => new Date(l.submitted_at) >= weekStart
   ).length;
-  const convertedLeads = leads.filter((l) => l.status === "converted").length;
+  const convertedLeads = leads.filter((l) => l.status === "completed").length;
   const conversionRate = totalLeads > 0 ? ((convertedLeads / totalLeads) * 100).toFixed(1) : "0";
 
   // Top source

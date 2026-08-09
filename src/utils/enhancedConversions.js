@@ -23,6 +23,23 @@ const sha256Hash = async (value) => {
 };
 
 /**
+ * Normalize an Indian phone number to E.164 before hashing — Google expects
+ * the "+<country><number>" format: strip spaces, dashes and leading zeros; a
+ * 10-digit number becomes +91XXXXXXXXXX; a 12-digit number already starting
+ * with 91 just gets the "+" prefix.
+ * @param {string} phone - Raw phone number
+ * @returns {string} E.164 phone (with "+") or '' when empty
+ */
+const normalizePhoneE164 = (phone) => {
+  if (!phone) return '';
+  let digits = String(phone).replace(/\D/g, '');
+  digits = digits.replace(/^0+/, '');
+  if (digits.length === 10) return `+91${digits}`;
+  if (digits.length === 12 && digits.startsWith('91')) return `+${digits}`;
+  return digits ? `+${digits}` : '';
+};
+
+/**
  * Hash user data (email, phone, name) with SHA-256
  * @param {string} email - User email
  * @param {string} phone - User phone number
@@ -32,7 +49,7 @@ const sha256Hash = async (value) => {
 export const hashUserData = async (email, phone, name) => {
   const [hashedEmail, hashedPhone, hashedFirstName] = await Promise.all([
     sha256Hash(email),
-    sha256Hash(phone),
+    sha256Hash(normalizePhoneE164(phone)),
     sha256Hash(name?.split(' ')[0] || ''),
   ]);
 
