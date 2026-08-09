@@ -1,0 +1,472 @@
+/* ============================================
+   /test — Merit Assessment Test
+   Mobile-first at 360 px. Compositor-only
+   transitions (opacity/transform), no
+   framer-motion, no backdrop-filter.
+   Visual language matches /apply without
+   importing its stylesheet.
+   ============================================ */
+
+/* The site's mobile bottom nav does not exist on this route, so the global
+   body padding it reserves would leave dead space under the card. */
+:global(body.test-page) {
+  padding-bottom: 0 !important;
+  background: var(--color-tint);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-tint);
+  font-family: var(--font-primary);
+  color: var(--text-dark-gray);
+}
+
+/* ============================================
+   Top bar — logo + program name
+   ============================================ */
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 8px 12px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.logo {
+  display: block;
+  flex: 0 0 auto;
+  height: 36px;
+  width: auto;
+}
+
+.programName {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: var(--fw-semibold);
+  line-height: 1.3;
+  color: var(--color-primary);
+}
+
+/* ============================================
+   Layout
+   ============================================ */
+.main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 12px calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 18px 14px 16px;
+  box-shadow: 0 2px 12px rgba(12, 45, 72, 0.08);
+}
+
+.screen {
+  animation: screenIn 180ms ease-out both;
+}
+
+@keyframes screenIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.heading {
+  margin: 0 0 4px;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  color: var(--color-primary);
+}
+
+.intro {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+}
+
+/* ============================================
+   Login key field
+   ============================================ */
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+}
+
+.keyWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  transition: border-color 150ms ease, box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.keyWrap:focus-within {
+  background: var(--white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.12);
+}
+
+.keyWrap[data-error='true'] {
+  border-color: var(--error);
+  background: #fdf5f4;
+}
+
+.keyIcon {
+  flex: 0 0 auto;
+  color: #9ca3af;
+}
+
+.keyWrap:focus-within .keyIcon {
+  color: var(--color-primary);
+}
+
+/* 16px prevents the iOS zoom-on-focus jump — and global.css pins every input to
+   exactly that with an !important under 768px, so anything larger here would be
+   a lie on the devices this route is built for. The monospace face and the wide
+   tracking do the legibility work instead: they are what make a hand-typed key
+   checkable character by character against the one on the applicant's screen. */
+.keyInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 14px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-mono, ui-monospace, 'SF Mono', 'Roboto Mono',
+      'Courier New', monospace);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dark-gray);
+}
+
+.keyInput::placeholder {
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+}
+
+.hintText {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+}
+
+/* ============================================
+   Rules list (instructions)
+   ============================================ */
+.rulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.ruleItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-dark-gray);
+}
+
+.ruleIcon {
+  display: flex;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--color-primary);
+}
+
+.resumeNote {
+  margin: -4px 0 16px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--success);
+  border-radius: 0 8px 8px 0;
+  background: var(--card-green);
+  font-size: 12px;
+  line-height: var(--lh-normal);
+  color: #14603c;
+}
+
+/* ============================================
+   Terms & Conditions
+   ============================================ */
+.termsBox {
+  max-height: 46vh;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.termsBox:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.12);
+}
+
+.termItem + .termItem {
+  margin-top: 12px;
+}
+
+.termTitle {
+  margin: 0 0 3px;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  color: var(--color-primary);
+}
+
+.termBody {
+  margin: 0;
+  font-size: 12px;
+  line-height: var(--lh-relaxed);
+  color: #374151;
+}
+
+/* ============================================
+   Checkbox (T&C gate)
+   ============================================ */
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkboxBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-gray);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--white);
+}
+
+.checkboxInput:checked + .checkboxBox {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.checkboxInput:focus-visible + .checkboxBox {
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.2);
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  color: var(--text-dark-gray);
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+.primaryBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent-orange);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  color: var(--white);
+  text-align: center;
+  text-decoration: none;
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+}
+
+.primaryBtn:active {
+  background: var(--accent-orange-dark);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.55;
+  box-shadow: none;
+  cursor: default;
+}
+
+.secondaryBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
+  padding: 0 16px;
+  border: 1.5px solid var(--border-gray);
+  border-radius: 12px;
+  background: var(--white);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dark-gray);
+  cursor: pointer;
+}
+
+.secondaryBtn:active {
+  background: var(--light-gray);
+}
+
+/* ============================================
+   Banners & notes
+   ============================================ */
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(216, 38, 24, 0.35);
+  border-radius: 12px;
+  background: var(--card-yellow);
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: #8c2a1a;
+}
+
+.bannerIcon {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.callLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+.footNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--text-gray);
+}
+
+.inlineLink {
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.placeholderBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--color-tint);
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-dark-gray);
+}
+
+.placeholderIcon {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--success);
+}
+
+/* ============================================
+   Larger screens
+   ============================================ */
+@media screen and (min-width: 600px) {
+  .main {
+    padding: 24px 16px 28px;
+  }
+
+  .card {
+    padding: 26px 22px 22px;
+  }
+
+  .heading {
+    font-size: 24px;
+  }
+}
+
+/* ============================================
+   Reduced motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .screen {
+    animation: none;
+  }
+
+  .keyWrap {
+    transition: none;
+  }
+}
