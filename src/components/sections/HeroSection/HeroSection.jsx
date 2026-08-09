@@ -1,6 +1,7 @@
 /* ============================================
    HeroSection Component
-   Hero section with animations
+   Identity + merit-selection hero for the
+   CIT Merit-Based Selection Program 2026
    ============================================ */
 
 import React, { useState, useEffect } from "react";
@@ -20,6 +21,12 @@ import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
 import { trackContactClick } from "../../../utils/contactTracking";
 import { setApplySource } from "../../../hooks/useApplyCTA";
+import {
+  PROGRAM_NAME,
+  TEST_NAME,
+  SESSION_LABEL,
+  TOTAL_SEATS_LEFT,
+} from "../../../data/meritProgram";
 import styles from "./HeroSection.module.css";
 
 // Set REACT_APP_HERO_VIDEO_URL in .env to enable hero background video
@@ -81,21 +88,33 @@ const buttonVariants = {
   },
 };
 
-// Trust indicators data
-const trustIndicators = [
-  { icon: "mdi:school-outline", text: "25 Years of Excellence" },
+// Headline placement & outcome stats — all verified, already on the site.
+const proofChips = [
   { icon: "mdi:briefcase-check-outline", text: "85%+ Placements" },
   { icon: "mdi:office-building-outline", text: "90+ Recruiters" },
-  { icon: "mdi:certificate-outline", text: "NAAC • AICTE • VTU" },
+  { icon: "mdi:trending-up", text: "Highest CTC 15 LPA" },
 ];
 
-// What an applicant needs before starting — sets expectations up front,
-// so the people who begin the form are the people who can finish it.
-const applicationChecklist = [
-  "Takes about 3 minutes",
-  "Keep your 10th & 12th marks handy",
-  "Parent/guardian's mobile number",
-  "Instant VTU eligibility check inside the form",
+// Institutional recognitions — verified against existing site content and
+// the resources/Info-*.jpeg posters. Do not add unverified credentials.
+const recognitions = [
+  { icon: "mdi:certificate-outline", text: "NAAC Accredited" },
+  { icon: "mdi:check-decagram-outline", text: "Approved by AICTE, New Delhi" },
+  { icon: "mdi:school-outline", text: "Affiliated to VTU, Belagavi" },
+  { icon: "mdi:shield-check-outline", text: "ISO 9001:2015" },
+  { icon: "mdi:calendar-star", text: "25 Years of Excellence" },
+  { icon: "mdi:star-circle-outline", text: "4★ IIC Rating (MHRD)" },
+  { icon: "mdi:trophy-outline", text: 'IIRF "Best Brand" 2025' },
+];
+
+// How the merit selection works — condensed; the full section explains each
+// stage in detail further down the page.
+const selectionSteps = [
+  "Apply online",
+  "Get your Test Login Key",
+  "Take the 30-minute test",
+  "Qualify — tele-counselling within 24 hours",
+  `Final admission against one of the ${TOTAL_SEATS_LEFT} seats`,
 ];
 
 const HeroSection = () => {
@@ -144,7 +163,7 @@ const HeroSection = () => {
 
   // Every hero CTA goes to the full application — no drawer, no short form.
   const handleStartApplication = (ctaName) => {
-    trackCTAClick(ctaName, "hero", "Start My Application");
+    trackCTAClick(ctaName, "hero", "Apply for the Merit Assessment Test");
     // Keep the hero's own cta_name (live GTM reporting depends on it) but use
     // the shared source stash, or every lead from the highest-volume CTA on
     // the page records itself as 'apply-direct'.
@@ -186,7 +205,7 @@ const HeroSection = () => {
               <motion.div variants={badgeVariants}>
                 <Chip
                   icon={<span className={styles.pulseDot} />}
-                  label="Direct B.E. Admission 2026 • Limited Seats"
+                  label={`${SESSION_LABEL} — Final Admission Closure`}
                   className={styles.launchBadge}
                   sx={{
                     backgroundColor: "#0C2D48",
@@ -202,7 +221,7 @@ const HeroSection = () => {
                 />
               </motion.div>
 
-              {/* Main Headline */}
+              {/* Identity Headline */}
               <motion.div variants={itemVariants}>
                 <Typography
                   variant="h1"
@@ -212,42 +231,85 @@ const HeroSection = () => {
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 700,
                     fontSize: {
-                      xs: "2.25rem",
-                      sm: "2.75rem",
-                      md: "3.25rem",
-                      lg: "3.5rem",
+                      xs: "1.9rem",
+                      sm: "2.4rem",
+                      md: "2.85rem",
+                      lg: "3.1rem",
                     },
-                    lineHeight: 1.1,
+                    lineHeight: 1.15,
                     marginTop: "1.5rem",
                   }}
                 >
-                  Direct B.E. Admission 2026 at CIT Tumakuru —
+                  CIT Engineering College, Near Bengaluru —
                   <span className={styles.orangeText}>
                     {" "}
-                    Apply Online in 3 Minutes
+                    One of the Finest &amp; Top Engineering Colleges in
+                    Karnataka
                   </span>
+                </Typography>
+                <Typography
+                  component="p"
+                  className={styles.collegeFullName}
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.92)",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: 500,
+                    fontSize: { xs: "0.9375rem", md: "1.0625rem" },
+                    marginTop: "0.875rem",
+                  }}
+                >
+                  Channabasaveshwara Institute of Technology (CIT), Tumakuru
                 </Typography>
               </motion.div>
 
-              {/* Sub-headline */}
+              {/* Location Strip + Disambiguation */}
               <motion.div variants={itemVariants}>
-                <Typography
-                  variant="h6"
-                  className={styles.heroSubtitle}
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.85)",
-                    fontWeight: 400,
-                    fontSize: { xs: "0.95rem", md: "1.125rem" },
-                    marginTop: "1rem",
-                    maxWidth: "600px",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  NAAC-accredited, AICTE-approved VTU degree with 85%+
-                  placements. Complete the online application and CIT&apos;s
-                  North-East admission desk will confirm your eligibility on the
-                  first call.
-                </Typography>
+                <div className={styles.locationStrip}>
+                  <span className={styles.locationBadge}>
+                    <Icon
+                      icon="mdi:map-marker"
+                      className={styles.locationIcon}
+                    />
+                    Tumakuru, Karnataka
+                  </span>
+                  <span className={styles.locationBadge}>
+                    <Icon icon="mdi:highway" className={styles.locationIcon} />
+                    ~70 km from Bengaluru
+                  </span>
+                  <span className={styles.locationBadge}>
+                    <Icon
+                      icon="mdi:road-variant"
+                      className={styles.locationIcon}
+                    />
+                    NH-206
+                  </span>
+                </div>
+                <p className={styles.locationClarifier}>
+                  This is CIT Tumakuru, Karnataka — not CIT Kokrajhar, Assam.
+                </p>
+              </motion.div>
+
+              {/* Scarcity + Merit Message */}
+              <motion.div variants={itemVariants}>
+                <div className={styles.meritBlock}>
+                  <p className={styles.meritHeadline}>
+                    <Icon
+                      icon="mdi:seat-outline"
+                      className={styles.meritIcon}
+                    />
+                    Only {TOTAL_SEATS_LEFT} seats remain across 7 B.E. branches.
+                  </p>
+                  <p className={styles.meritBody}>
+                    To fill them with talented students on merit, CIT is
+                    conducting a <strong>{TEST_NAME}</strong> — the{" "}
+                    <strong>{PROGRAM_NAME}</strong>.
+                  </p>
+                </div>
+                <p className={styles.secondChance}>
+                  Couldn&apos;t clear JEE / KCET / COMEDK this year? Prove your
+                  merit and start your engineering journey now — without losing
+                  another academic year.
+                </p>
               </motion.div>
 
               {/* CTA Buttons */}
@@ -280,7 +342,7 @@ const HeroSection = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Start My Application →
+                  Apply for the Merit Assessment Test →
                 </Button>
                 <Button
                   variant="outlined"
@@ -289,7 +351,11 @@ const HeroSection = () => {
                   component="a"
                   href="tel:+918069645014"
                   onClick={() => {
-                    trackCTAClick("hero_secondary_cta", "hero", "Call Now");
+                    trackCTAClick(
+                      "hero_secondary_cta",
+                      "hero",
+                      "Call +91 8069645014"
+                    );
                     trackContactClick("phone", "hero");
                   }}
                   sx={{
@@ -314,13 +380,23 @@ const HeroSection = () => {
                 </Button>
               </motion.div>
 
-              {/* Trust Indicators */}
+              {/* Placement Proof Chips */}
+              <motion.div variants={itemVariants} className={styles.proofChips}>
+                {proofChips.map((chip) => (
+                  <span key={chip.text} className={styles.proofChip}>
+                    <Icon icon={chip.icon} className={styles.proofIcon} />
+                    {chip.text}
+                  </span>
+                ))}
+              </motion.div>
+
+              {/* Recognitions Strip */}
               <motion.div
                 variants={itemVariants}
                 className={styles.trustIndicators}
               >
-                {trustIndicators.map((indicator, index) => (
-                  <div key={index} className={styles.trustIndicator}>
+                {recognitions.map((indicator) => (
+                  <div key={indicator.text} className={styles.trustIndicator}>
                     <Icon icon={indicator.icon} className={styles.trustIcon} />
                     <span>{indicator.text}</span>
                   </div>
@@ -329,7 +405,7 @@ const HeroSection = () => {
             </motion.div>
           </Grid>
 
-          {/* Right Content - Application Checklist (Desktop only) */}
+          {/* Right Content - Selection Summary Card (Desktop only) */}
           {isDesktop && (
             <Grid item lg={5}>
               <motion.div
@@ -350,17 +426,14 @@ const HeroSection = () => {
                         fontSize: "1.25rem",
                       }}
                     >
-                      Your 2026 Application
+                      How Selection Works
                     </Typography>
                   </div>
                   <div className={styles.formBody}>
                     <ul className={styles.checklist}>
-                      {applicationChecklist.map((item) => (
+                      {selectionSteps.map((item, index) => (
                         <li key={item} className={styles.checklistItem}>
-                          <Icon
-                            icon="mdi:check-circle"
-                            className={styles.checklistIcon}
-                          />
+                          <span className={styles.stepNumber}>{index + 1}</span>
                           <span>{item}</span>
                         </li>
                       ))}
@@ -372,11 +445,12 @@ const HeroSection = () => {
                       onClick={() => handleStartApplication("hero-card-apply")}
                       onPointerDown={preloadApply}
                     >
-                      Start My Application
+                      Apply for the Merit Assessment Test
                     </button>
 
                     <p className={styles.checklistNote}>
-                      No consultancy or agent fees · Direct college admission
+                      Seats are offered on merit only — qualify the test to earn
+                      your admission.
                     </p>
                   </div>
                 </div>
