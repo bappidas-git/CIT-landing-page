@@ -4,6 +4,57 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### MCQ question bank for the 30-Minute Online Merit Assessment Test
+
+The merit test needs questions that actually discriminate, and answers that a
+motivated applicant cannot read out of the page source. Both are settled here:
+the bank is authored in full, and it lives in a PHP file that is executed rather
+than served.
+
+**Added**
+- `public/api/question-bank.php` — **120 original MCQs**, 60 Mathematics
+  (`M001`–`M060`) and 60 Physics (`P001`–`P060`), written fresh at Class-12 /
+  engineering-entrance (JEE-Main / KCET) difficulty. Every question is solvable
+  mentally or in two or three lines of rough work inside 60 seconds, which is
+  what a 30-question / 30-minute paper demands.
+- Row schema: `id`, `subject` (`maths` | `physics`), `topic` (lowercase slug),
+  `difficulty` (`easy` | `medium` | `hard`), `q`, `options` (exactly 4 distinct
+  non-empty strings), `answer` (int 0–3, index into `options`).
+- Syllabus coverage follows the Class-12 weighting. **Maths:** relations &
+  functions 4, inverse trigonometry 3, matrices 5, determinants 5, continuity &
+  differentiability 6, applications of derivatives 6, integrals 7, applications
+  of integrals 2, differential equations 4, vectors 5, 3-D geometry 4, linear
+  programming 2, probability 7. **Physics:** electrostatics 7, current
+  electricity 7, moving charges & magnetism 6, magnetism & matter 3,
+  electromagnetic induction 5, alternating current 5, electromagnetic waves 2,
+  ray optics 6, wave optics 4, dual nature of matter 4, atoms & nuclei 6,
+  semiconductors 5.
+- Difficulty mix of exactly **24 easy / 24 medium / 12 hard per subject**, and
+  each answer index 0–3 is correct exactly **15 times per subject**, so the
+  position of the correct option leaks nothing. Distractors are built from the
+  common sign and formula errors for each question — no "all of the above", no
+  "both A and B".
+
+**Security**
+- The bank is a **guarded PHP data file, not a JSON asset.** It opens with
+  `if (!defined('CIT_TEST_INTERNAL')) { http_response_code(404); exit; }`, so a
+  direct HTTP request returns a bare 404 with no body. A `.json` under `data/`
+  would have depended on `.htaccess`, which Apache honours but a Cloudways nginx
+  static-file layer can bypass; a `.php` file is executed, never served as
+  source, on every PHP host.
+- Correct answers are server-side only. The consuming endpoint defines
+  `CIT_TEST_INTERNAL` before requiring the bank and strips `answer` (and
+  optionally `topic` / `difficulty`) before anything is serialised to a browser.
+  Nothing in `src/` references the file, so it can never reach a client bundle.
+
+**Notes**
+- Notation is plain text and Unicode only (`x²`, `√`, `π`, `θ`, `Ω`, `μ`, `°`,
+  `×`, `·`, `−`, `≤`, `→`) — no LaTeX, no KaTeX, no HTML in any string — so the
+  questions render with the existing stack and need no new dependency.
+  Fractions are inline with explicit parentheses, matrices are row-listed as
+  `[[a, b], [c, d]]`, vectors use `î, ĵ, k̂`, and every constant a student needs
+  (`g`, `c`, `hc`, `μ₀`, `1/(4πε₀)`) is supplied inside the question.
+
 ### Unique test login keys + a Thank-You page that hands off to the test
 
 An application is no longer the end of the funnel — it is the moment the
