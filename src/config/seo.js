@@ -12,11 +12,10 @@ export const seoConfig = {
   // =========================================
   siteName: "CIT Admissions",
   siteUrl: "https://www.cittumkur.org",
-  defaultTitle:
-    "CIT Tumakuru | Direct B.E. Engineering Admission 2026 — North East India",
+  defaultTitle: "CIT Tumakuru, Karnataka | Merit-Based B.E. Admissions 2026",
   titleTemplate: "%s | CIT Tumakuru",
   defaultDescription:
-    "Direct B.E. Engineering Admission 2026 at Channabasaveshwara Institute of Technology (CIT), Tumakuru — NAAC, AICTE, VTU-affiliated. Guided pathway, hostel & strong placements for North East students.",
+    "CIT Tumakuru, Karnataka — 70 km from Bengaluru. NAAC, AICTE, VTU. Only 15 B.E. seats left for Session 2026, filled by a 30-minute online merit test.",
   defaultImage:
     "https://placehold.co/1200x630/0C2D48/FFFFFF?text=CIT+Admissions+2026",
   locale: "en_IN",
@@ -32,7 +31,7 @@ export const seoConfig = {
     logo: "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png",
     phone: "+91 8069645014",
     description:
-      "Channabasaveshwara Institute of Technology (CIT), Tumakuru is a NAAC-accredited, AICTE-approved engineering college affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements and guided direct B.E. admissions for the 2026 intake.",
+      "Channabasaveshwara Institute of Technology (CIT), Tumakuru is a NAAC-accredited, AICTE-approved engineering college in Karnataka — about 70 km from Bengaluru on NH-206 — affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements. The final 15 B.E. seats for Session 2026 are filled on merit through the CIT Merit-Based Selection Program 2026.",
     address: {
       streetAddress: "NH 206, B.H. Road, Gubbi",
       addressLocality: "Tumakuru",
@@ -87,17 +86,16 @@ export const seoConfig = {
   // =========================================
   pages: {
     home: {
-      title:
-        "CIT Tumakuru | Direct B.E. Engineering Admission 2026 — North East India",
+      title: "CIT Tumakuru, Karnataka | Merit-Based B.E. Admissions 2026",
       description:
-        "Apply for Direct B.E. Engineering Admission 2026 at CIT Tumakuru. NAAC-accredited, AICTE-approved, VTU-affiliated. Hostel, scholarships & 85%+ placements. Guidance for NE students.",
+        "CIT Tumakuru, Karnataka — 70 km from Bengaluru. NAAC, AICTE, VTU. Only 15 B.E. seats left for Session 2026, filled by a 30-minute online merit test.",
       keywords:
-        "cit tumakuru, direct be admission 2026, engineering admission karnataka, b.e. admission northeast india, vtu engineering college, naac engineering college, cit channabasaveshwara, engineering college tumakuru, hostel engineering karnataka, direct admission b.e.",
+        "cit tumakuru karnataka, cit engineering college near bengaluru, merit based engineering admission 2026, b.e. admission karnataka merit test, top engineering colleges karnataka, cit tumakuru, engineering admission karnataka, b.e. admission northeast india, vtu engineering college, naac engineering college, cit channabasaveshwara, engineering college tumakuru, hostel engineering karnataka",
     },
     thankYou: {
       title: "Thank You | CIT Tumakuru B.E. Admissions 2026",
       description:
-        "Thanks for your interest in CIT Tumakuru's Direct B.E. Admissions 2026. Our admission team will call you shortly to guide you through the process.",
+        "Your application for the CIT Merit-Based Selection Program 2026 is in. Next step: take the 30-Minute Online Merit Assessment Test using your Test Login Key.",
       robots: "noindex, nofollow",
     },
     admin: {
