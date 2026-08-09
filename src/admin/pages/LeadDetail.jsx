@@ -37,6 +37,28 @@ import {
   getStatusConfig,
   formatActivityAction,
 } from "../utils/leadStatus";
+import {
+  ADMISSION_TIMELINE_LABELS,
+  BEST_TIME_LABELS,
+  BOARD_LABELS,
+  COUNSELLING_MODE_LABELS,
+  EXPECTED_BAND_LABELS,
+  FILLED_BY_LABELS,
+  FUNDING_PLAN_LABELS,
+  INTAKE_YEAR_LABELS,
+  PARTIAL_BANNER,
+  TWELFTH_STATUS_LABELS,
+  computeQualityScore,
+  getEligibilitySummary,
+  getLeadTier,
+  getQualityConfig,
+  getTierConfig,
+  hasAcademicDetails,
+  hasFamilyFunding,
+  hasLogistics,
+  hasQualitySignal,
+  labelFor,
+} from "../utils/leadQuality";
 import { sendConversionEvent } from "../../utils/metaCAPI";
 import { generateEventId } from "../../utils/eventDedup";
 import styles from "./LeadDetail.module.css";
@@ -60,6 +82,25 @@ const formatDate = (dateStr) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
+
+/* ============================================
+   Info Field — label + value pair
+   Renders nothing when the lead never answered
+   the question, so a legacy enquiry lead never
+   shows a card full of dashes for fields the
+   application form introduced.
+   ============================================ */
+const InfoField = ({ label, value, full = false, children }) => {
+  const isEmpty =
+    !children && (value === undefined || value === null || value === "");
+  if (isEmpty) return null;
+  return (
+    <div className={full ? styles.infoFieldFull : styles.infoField}>
+      <span className={styles.infoLabel}>{label}</span>
+      {children || <span className={styles.infoValue}>{value}</span>}
+    </div>
+  );
 };
 
 /* ============================================
@@ -318,6 +359,42 @@ const LeadDetail = () => {
 
   const sc = getStatusConfig(lead.status);
 
+  // Tier + quality are derived on read (leadQuality.js) — never stored.
+  const tier = getLeadTier(lead);
+  const tc = getTierConfig(tier);
+  const isPartial = tier === "partial";
+  const quality = computeQualityScore(lead);
+  const qc = getQualityConfig(quality.band);
+  const scored = hasQualitySignal(lead);
+
+  const subjects = Array.isArray(lead.twelfth_subjects)
+    ? lead.twelfth_subjects
+    : [];
+  const eligibility = getEligibilitySummary(lead);
+  const eligibilityToneClass = {
+    met: styles.eligibilityMet,
+    relaxation: styles.eligibilityRelaxation,
+    review: styles.eligibilityReview,
+  }[eligibility?.tone];
+  const hasTenth = !!(lead.tenth_school || lead.tenth_year || lead.tenth_percent);
+
+  // fbclid/fbp/fbc only exist on leads captured after Meta attribution
+  // landed, so they join the UTM grid only when the lead actually carries them.
+  const utmItems = [
+    { label: "UTM Source", value: lead.utm_source },
+    { label: "UTM Medium", value: lead.utm_medium },
+    { label: "UTM Campaign", value: lead.utm_campaign },
+    { label: "UTM Term", value: lead.utm_term },
+    { label: "UTM Content", value: lead.utm_content },
+    // Meta identifiers are long opaque strings — truncated with the full
+    // value on hover so they cannot blow the grid out.
+    ...(lead.fbclid
+      ? [{ label: "FBCLID", value: lead.fbclid, truncate: true }]
+      : []),
+    ...(lead.fbp ? [{ label: "FBP", value: lead.fbp, truncate: true }] : []),
+    ...(lead.fbc ? [{ label: "FBC", value: lead.fbc, truncate: true }] : []),
+  ];
+
   const googleAdsStatus = lead.gclid
     ? lead.status === "completed"
       ? { label: "Ready for export", style: "trackingChipGreen" }
@@ -342,26 +419,65 @@ const LeadDetail = () => {
             <p className={styles.leadId}>ID: {lead.lead_id}</p>
           </div>
         </div>
-        <Select
-          value={lead.status || "new"}
-          size="small"
-          onChange={(e) => handleStatusChange(e.target.value)}
-          sx={{
-            fontWeight: 600,
-            bgcolor: sc.bg,
-            color: sc.color,
-            minWidth: 140,
-            "& .MuiOutlinedInput-notchedOutline": { borderColor: sc.color + "44" },
-            "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: sc.color + "88" },
-          }}
-        >
-          {STATUS_OPTIONS.map((s) => (
-            <MenuItem key={s.value} value={s.value}>
-              <Chip label={s.label} size="small" sx={{ bgcolor: s.bg, color: s.color, fontWeight: 600 }} />
-            </MenuItem>
-          ))}
-        </Select>
+        <div className={styles.headerRight}>
+          {/* Chips sit on the page background rather than a white card, so
+              they carry a tinted border to stay legible. */}
+          <Chip
+            label={tc.label}
+            size="small"
+            sx={{
+              bgcolor: tc.bg,
+              color: tc.color,
+              fontWeight: 600,
+              border: `1px solid ${tc.color}55`,
+            }}
+          />
+          {scored && (
+            <Chip
+              label={`${qc.label} · ${quality.score}`}
+              size="small"
+              title={`Quality score ${quality.score}/100${
+                quality.capped
+                  ? " — capped at Warm until the application is completed"
+                  : ""
+              }`}
+              sx={{
+                bgcolor: qc.bg,
+                color: qc.color,
+                fontWeight: 600,
+                border: `1px solid ${qc.color}55`,
+              }}
+            />
+          )}
+          <Select
+            value={lead.status || "new"}
+            size="small"
+            onChange={(e) => handleStatusChange(e.target.value)}
+            sx={{
+              fontWeight: 600,
+              bgcolor: sc.bg,
+              color: sc.color,
+              minWidth: 140,
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: sc.color + "44" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: sc.color + "88" },
+            }}
+          >
+            {STATUS_OPTIONS.map((s) => (
+              <MenuItem key={s.value} value={s.value}>
+                <Chip label={s.label} size="small" sx={{ bgcolor: s.bg, color: s.color, fontWeight: 600 }} />
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
       </div>
+
+      {/* Partial application — recoverable by phone */}
+      {isPartial && (
+        <div className={styles.partialBanner} role="status">
+          <Icon icon="mdi:progress-alert" width={20} />
+          <span>{PARTIAL_BANNER}</span>
+        </div>
+      )}
 
       {/* Two-Column Layout */}
       <div className={styles.columns}>
@@ -422,8 +538,185 @@ const LeadDetail = () => {
                   {lead.state || "\u2014"}
                 </span>
               </div>
+              {/* The applicant's own words \u2014 worth reading before the call. */}
+              <InfoField label="Message" value={lead.message} full />
             </div>
           </div>
+
+          {/* Academic Details — application form only */}
+          {hasAcademicDetails(lead) && (
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
+                <Icon icon="mdi:book-education-outline" width={16} />
+                Academic Details
+              </h3>
+              <div className={styles.infoGrid}>
+                <InfoField
+                  label="12th Status"
+                  value={labelFor(TWELFTH_STATUS_LABELS, lead.twelfth_status)}
+                />
+                <InfoField
+                  label="12th Board"
+                  value={labelFor(BOARD_LABELS, lead.twelfth_board)}
+                />
+                <InfoField
+                  label="12th School"
+                  value={lead.twelfth_school}
+                  full
+                />
+                <InfoField
+                  label="Expected Result"
+                  value={labelFor(EXPECTED_BAND_LABELS, lead.expected_band)}
+                />
+              </div>
+
+              {subjects.length > 0 && (
+                <div className={styles.subjectsBlock}>
+                  <span className={styles.infoLabel}>12th Subject Marks</span>
+                  <table className={styles.subjectsTable}>
+                    <thead>
+                      <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {subjects.map((row, i) => (
+                        <tr key={`${row.subject}-${i}`}>
+                          <td>{row.subject}</td>
+                          <td>{row.marks} / 100</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {eligibility && (
+                <div className={`${styles.eligibilityNote} ${eligibilityToneClass}`}>
+                  <Icon
+                    icon={
+                      eligibility.met
+                        ? "mdi:check-circle-outline"
+                        : "mdi:alert-outline"
+                    }
+                    width={16}
+                  />
+                  <span>
+                    Eligibility aggregate{" "}
+                    <strong>{eligibility.percent.toFixed(1)}%</strong> —{" "}
+                    {eligibility.message}
+                  </span>
+                </div>
+              )}
+
+              {hasTenth && (
+                <>
+                  <p className={styles.subGroupTitle}>Class 10</p>
+                  <div className={styles.infoGrid}>
+                    <InfoField label="10th School" value={lead.tenth_school} full />
+                    <InfoField label="Year of Passing" value={lead.tenth_year} />
+                    <InfoField
+                      label="Percentage"
+                      value={
+                        lead.tenth_percent || lead.tenth_percent === 0
+                          ? `${lead.tenth_percent}%`
+                          : ""
+                      }
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Family & Funding — application form only */}
+          {hasFamilyFunding(lead) && (
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
+                <Icon icon="mdi:account-group-outline" width={16} />
+                Family & Funding
+              </h3>
+              <div className={styles.infoGrid}>
+                <InfoField
+                  label="Form Filled By"
+                  value={labelFor(FILLED_BY_LABELS, lead.filled_by)}
+                />
+                <InfoField label="Parent / Guardian" value={lead.parent_name} />
+                {lead.parent_mobile && (
+                  <InfoField label="Parent's Mobile">
+                    <a
+                      href={`tel:${lead.parent_mobile}`}
+                      className={styles.infoLink}
+                    >
+                      {lead.parent_mobile}
+                    </a>
+                  </InfoField>
+                )}
+                <InfoField
+                  label="Funding Plan"
+                  value={labelFor(FUNDING_PLAN_LABELS, lead.funding_plan)}
+                  full
+                />
+                {typeof lead.whatsapp_confirmed === "boolean" && (
+                  <InfoField label="WhatsApp" full>
+                    <span
+                      className={`${styles.flagChip} ${
+                        lead.whatsapp_confirmed
+                          ? styles.flagChipOn
+                          : styles.flagChipOff
+                      }`}
+                    >
+                      <Icon
+                        icon={
+                          lead.whatsapp_confirmed
+                            ? "mdi:whatsapp"
+                            : "mdi:close-circle-outline"
+                        }
+                        width={14}
+                      />
+                      {lead.whatsapp_confirmed
+                        ? "Student's number is on WhatsApp"
+                        : "Not confirmed on WhatsApp"}
+                    </span>
+                  </InfoField>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Logistics — application form only */}
+          {hasLogistics(lead) && (
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
+                <Icon icon="mdi:map-marker-radius-outline" width={16} />
+                Logistics
+              </h3>
+              <div className={styles.infoGrid}>
+                <InfoField label="State" value={lead.state} />
+                <InfoField label="District" value={lead.district} />
+                <InfoField
+                  label="Counselling Mode"
+                  value={labelFor(COUNSELLING_MODE_LABELS, lead.counselling_mode)}
+                />
+                <InfoField
+                  label="Admission Timeline"
+                  value={labelFor(
+                    ADMISSION_TIMELINE_LABELS,
+                    lead.admission_timeline
+                  )}
+                />
+                <InfoField
+                  label="Best Time to Call"
+                  value={labelFor(BEST_TIME_LABELS, lead.best_time)}
+                />
+                <InfoField
+                  label="Intake Year"
+                  value={labelFor(INTAKE_YEAR_LABELS, lead.intake_year)}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Source & UTM Data */}
           <div className={styles.card}>
@@ -442,17 +735,18 @@ const LeadDetail = () => {
               </div>
             </div>
             <div className={styles.utmGrid}>
-              {[
-                { label: "UTM Source", value: lead.utm_source },
-                { label: "UTM Medium", value: lead.utm_medium },
-                { label: "UTM Campaign", value: lead.utm_campaign },
-                { label: "UTM Term", value: lead.utm_term },
-                { label: "UTM Content", value: lead.utm_content },
-              ].map((item) => (
+              {utmItems.map((item) => (
                 <div key={item.label} className={styles.utmItem}>
                   <span className={styles.infoLabel}>{item.label}</span>
-                  <span className={item.value ? styles.infoValue : styles.infoDash}>
-                    {item.value || "\u2014"}
+                  <span
+                    className={item.value ? styles.infoValue : styles.infoDash}
+                    title={item.value || undefined}
+                  >
+                    {item.value
+                      ? item.truncate && item.value.length > 24
+                        ? item.value.slice(0, 24) + "..."
+                        : item.value
+                      : "\u2014"}
                   </span>
                 </div>
               ))}

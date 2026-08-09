@@ -52,6 +52,30 @@
   flex-direction: column;
 }
 
+/* Tier + quality chips sit beside the status dropdown. */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---- Partial Application Banner ---- */
+.partialBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  border-left: 4px solid #B45309;
+  color: #7C4A05;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
 .leadName {
   font-family: var(--font-heading);
   font-size: var(--fs-xl);
@@ -158,6 +182,109 @@
 
 .infoDash {
   font-size: 0.9rem;
+  color: var(--admin-text-muted);
+}
+
+/* ---- Qualification Cards (application form) ---- */
+
+/* Sub-heading inside a grouped card, e.g. "Class 10". */
+.subGroupTitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--admin-text-muted);
+  margin: 14px 0 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--admin-border);
+}
+
+.subjectsBlock {
+  margin-top: 12px;
+}
+
+.subjectsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.8125rem;
+}
+
+.subjectsTable th {
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--admin-text-muted);
+  padding: 6px 8px;
+  background: var(--admin-bg);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.subjectsTable th:last-child,
+.subjectsTable td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.subjectsTable td {
+  padding: 6px 8px;
+  color: var(--admin-text-primary);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.subjectsTable tr:last-child td {
+  border-bottom: none;
+}
+
+/* Eligibility verdict — same eligible / reserved-relaxation / review reading
+   the applicant saw on the /apply badge. */
+.eligibilityNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.eligibilityMet {
+  background: #ECFDF5;
+  color: #05704B;
+}
+
+.eligibilityRelaxation {
+  background: #FFF7ED;
+  color: #92400E;
+}
+
+.eligibilityReview {
+  background: #F1F5F9;
+  color: var(--admin-text-secondary);
+}
+
+/* Yes/no flag chip (WhatsApp confirmation). */
+.flagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.flagChipOn {
+  background: #ECFDF5;
+  color: #05704B;
+}
+
+.flagChipOff {
+  background: #F1F5F9;
   color: var(--admin-text-muted);
 }
 
