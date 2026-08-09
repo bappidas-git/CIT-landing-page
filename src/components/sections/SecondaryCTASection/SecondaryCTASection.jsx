@@ -1,9 +1,10 @@
 /* ============================================
    SecondaryCTASection Component
    Closing band before the footer — the last
-   chance to start an application, argued on
-   substance (accreditation, placements, hostel,
-   guidance) rather than a countdown.
+   chance to enter the CIT Merit-Based Selection
+   Program 2026, argued on substance
+   (accreditation, placements, hostel) and on the
+   real cost of dropping a year.
    ============================================ */
 
 import React from "react";
@@ -14,6 +15,11 @@ import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
 import { trackContactClick } from "../../../utils/contactTracking";
 import Button from "../../common/Button/Button";
+import {
+  PROGRAM_NAME,
+  SESSION_LABEL,
+  TOTAL_SEATS_LEFT,
+} from "../../../data/meritProgram";
 import styles from "./SecondaryCTASection.module.css";
 
 const reassurances = [
@@ -30,19 +36,20 @@ const reassurances = [
     icon: "mdi:home-heart",
   },
   {
-    text: "We guide you through every step — eligibility, documents, travel and hostel",
-    icon: "mdi:compass-outline",
+    text: "One 30-minute online test decides — no agents, no recommendations",
+    icon: "mdi:medal-outline",
   },
 ];
 
 const trustIndicators = [
-  { text: "No consultancy or agent fees", icon: "mdi:hand-heart" },
-  { text: "Direct college admission", icon: "mdi:school-outline" },
+  { text: "Merit-based selection", icon: "mdi:medal-outline" },
+  { text: "Straight to the college", icon: "mdi:school-outline" },
   { text: "Trusted by NE Families", icon: "mdi:account-group" },
 ];
 
-const WHATSAPP_URL =
-  "https://api.whatsapp.com/send?phone=918069645014&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
+const WHATSAPP_URL = `https://api.whatsapp.com/send?phone=918069645014&text=${encodeURIComponent(
+  `Hi CIT Admissions, I want to apply for the ${PROGRAM_NAME} (${TOTAL_SEATS_LEFT} seats). Please share the details.`,
+)}`;
 
 const SecondaryCTASection = () => {
   const applyCTA = useApplyCTA("apply-now", { location: "secondary_cta" });
@@ -85,7 +92,7 @@ const SecondaryCTASection = () => {
               >
                 <span className={styles.badge}>
                   <Icon icon="mdi:alarm-light" className={styles.badgeIcon} />
-                  Direct B.E. Admission — 2026 Intake
+                  {PROGRAM_NAME}
                 </span>
               </motion.div>
 
@@ -95,8 +102,10 @@ const SecondaryCTASection = () => {
                   className={styles.title}
                   sx={{ color: "#fff" }}
                 >
-                  Your 2026 B.E. Seat Starts With{" "}
-                  <span className={styles.titleAccent}>One Application</span>
+                  Don&rsquo;t Lose{" "}
+                  <span className={styles.titleAccent}>
+                    an Academic Year
+                  </span>
                 </Typography>
               </motion.div>
 
@@ -106,10 +115,10 @@ const SecondaryCTASection = () => {
                   className={styles.subtitle}
                   sx={{ color: "rgba(255,255,255,0.92)" }}
                 >
-                  2026 seats at Channabasaveshwara Institute of Technology,
-                  Tumakuru are allotted in order of completed applications.
-                  Submit yours and our North-East admission desk guides you
-                  through the rest.
+                  A drop year for coaching costs ₹ lakhs and a full year — with
+                  no guaranteed seat. Qualify in CIT&rsquo;s merit test and start
+                  your B.E. now. Only {TOTAL_SEATS_LEFT} seats remain for{" "}
+                  {SESSION_LABEL}, and every one of them is earned.
                 </Typography>
               </motion.div>
 
@@ -199,7 +208,7 @@ const SecondaryCTASection = () => {
                 <Box
                   component="img"
                   src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1779670911/CTA-Image_ntt9ql.png"
-                  alt="Direct B.E. admission at CIT Tumakuru for the 2026 intake"
+                  alt={`${PROGRAM_NAME} at CIT Tumakuru`}
                   className={styles.ctaImage}
                   loading="lazy"
                 />
@@ -208,7 +217,7 @@ const SecondaryCTASection = () => {
                   <div>
                     <span className={styles.seatBadgeLabel}>VTU Affiliated</span>
                     <span className={styles.seatBadgeValue}>
-                      2026 B.E. Intake
+                      {TOTAL_SEATS_LEFT} Seats Left
                     </span>
                   </div>
                 </div>

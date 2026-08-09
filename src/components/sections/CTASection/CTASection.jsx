@@ -1,7 +1,8 @@
 /* ============================================
    CTASection Component
-   Mid-page CTA band for CIT B.E. 2026
-   admission lead capture
+   Mid-page CTA band for the CIT Merit-Based
+   Selection Program 2026 — seats are earned in
+   the merit test, not allotted on arrival.
    ============================================ */
 
 import React from "react";
@@ -12,15 +13,16 @@ import Button from "../../common/Button/Button";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
 import { trackContactClick } from "../../../utils/contactTracking";
+import { PROGRAM_NAME, TOTAL_SEATS_LEFT } from "../../../data/meritProgram";
 import styles from "./CTASection.module.css";
 
 const reassurances = [
   {
-    text: "We guide you through every step — eligibility, documents, travel and hostel",
-    icon: "mdi:compass-outline",
+    text: "Seats are earned on merit — one 30-minute online test decides",
+    icon: "mdi:medal-outline",
   },
   {
-    text: "No consultancy or agent fees — you deal with the college directly",
+    text: "You deal directly with the college — no agents, no consultancy fees, full fee structure shown inside the application",
     icon: "mdi:headset",
   },
   { text: "Hostel support for North-East students", icon: "mdi:home-heart" },
@@ -90,17 +92,17 @@ const CTASection = () => {
         >
           <motion.div variants={itemVariants} className={styles.sectionHeader}>
             <Typography variant="overline" className={styles.overline}>
-              Direct B.E. Admission · 2026 Intake
+              {PROGRAM_NAME}
             </Typography>
             <Typography variant="h3" className={styles.title}>
-              Ready to Secure Your{" "}
-              <span className={styles.highlight}>B.E. Seat for 2026?</span>
+              {TOTAL_SEATS_LEFT} Seats. One Test.{" "}
+              <span className={styles.highlight}>Your Second Chance.</span>
             </Typography>
             <Typography variant="body1" className={styles.subtitle}>
-              Complete the online application and the CIT North-East admission
-              desk takes it from there. We guide you through every step —
-              eligibility, documents, travel and hostel. 2026 seats are allotted
-              in order of completed applications.
+              Submit your application and your Test Login Key appears on screen
+              right away. Take the 30-minute online merit test, qualify, and
+              CIT&rsquo;s Counselling Officer calls you within 24 hours. These
+              seats are earned, not allotted.
             </Typography>
           </motion.div>
 

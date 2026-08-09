@@ -5,9 +5,11 @@
    and how do we pay for it?" — with a promise of
    written transparency instead of numbers.
 
-   No fee amounts here by design: the complete fee
-   structure is shared on the counselling call, so
-   only families who apply get it.
+   No fee amounts here by design: the complete
+   year-wise structure is shown inside the
+   application form itself (Step 5), before the
+   applicant submits — so only families who apply
+   see the numbers.
    ============================================ */
 
 import React, { useRef } from "react";
@@ -23,21 +25,21 @@ import styles from "./FeesFundingSection.module.css";
 const fundingCards = [
   {
     icon: "mdi:shield-check",
-    title: "No hidden charges",
+    title: "You see the fees before you submit",
     description:
-      "No capitation fee. No consultancy or agent charges. You pay the college directly, and the complete fee structure — tuition, hostel and mess — is shared in writing on your first counselling call.",
+      "The complete year-wise fee structure for all 7 branches — tuition, admission fee, extra fees and hostel — is shown inside the application form itself, before you submit. No capitation fee, no consultancy or agent charges. You pay the college directly.",
   },
   {
     icon: "mdi:bank-outline",
-    title: "Education loan assistance",
+    title: "Education loan guidance",
     description:
-      "CIT's admission desk helps your family with education-loan paperwork from nationalised and private banks, so funding is arranged before you travel.",
+      "For qualified students, an education loan in the student's own name can cover about 80% of the total study cost including hostel, repaid after placement. CIT's team walks your family through it on the tele-counselling call.",
   },
   {
     icon: "mdi:school-outline",
     title: "Scholarships & concessions",
     description:
-      "Students from the North-East can check their eligibility for state scholarship schemes and institute concessions during counselling.",
+      "State scholarship schemes and institute concessions you may be eligible for are discussed on your qualification call, once your branch and category are confirmed.",
   },
 ];
 
@@ -115,8 +117,8 @@ const FeesFundingSection = () => {
               <span className={styles.titleAccent}>Real Funding Support.</span>
             </Typography>
             <Typography className={styles.subtitle}>
-              Direct admission at CIT means you deal with the college — not
-              agents.
+              You deal with the college, not agents — and you see every number
+              before you submit.
             </Typography>
           </motion.div>
 
@@ -142,8 +144,9 @@ const FeesFundingSection = () => {
           {/* Closing Band */}
           <motion.div variants={itemVariants} className={styles.closingBand}>
             <p className={styles.closingText}>
-              Want the full fee structure? Submit your application — our
-              counsellor shares it on the very first call.
+              Want the full fee structure? Start your application — every
+              branch&rsquo;s year-wise fees are laid out inside it, before you
+              submit.
             </p>
             <button
               type="button"

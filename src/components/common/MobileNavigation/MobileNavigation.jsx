@@ -14,7 +14,9 @@ import styles from "./MobileNavigation.module.css";
 // Primary CIT admissions contact (Assam Digital campaign)
 const PRIMARY_PHONE = "+918069645014";
 const PRIMARY_PHONE_DIGITS = "918069645014";
-const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
+const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=${encodeURIComponent(
+  "Hi CIT Admissions, I want to apply for the CIT Merit-Based Selection Program 2026. Please share the details.",
+)}`;
 
 // Navigation items configuration — CIT admissions actions
 const navItems = [

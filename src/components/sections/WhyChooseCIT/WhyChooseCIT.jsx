@@ -1,9 +1,9 @@
 /* ============================================
    WhyChooseCIT Component
-   Handles the most common North-East student/parent
+   Handles the most common student/parent
    objections about a Karnataka B.E. admission and
-   answers them with CIT's direct-admission promise,
-   ending in a strong "Apply for 2026" CTA band.
+   answers them with the CIT Merit Promise, ending
+   in a strong "apply for the merit test" CTA band.
    ============================================ */
 
 import React, { useRef } from "react";
@@ -13,18 +13,23 @@ import { Icon } from "@iconify/react";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
 import { trackContactClick } from "../../../utils/contactTracking";
+import {
+  TEST_NAME,
+  SESSION_LABEL,
+  TOTAL_SEATS_LEFT,
+} from "../../../data/meritProgram";
 import styles from "./WhyChooseCIT.module.css";
 
 const CIT_PHONE_DISPLAY = "+91 8069645014";
 const CIT_PHONE_DIAL = "+918069645014";
 
-// NE student/parent objections, answered by CIT
+// Student/parent objections, answered by CIT
 const objections = [
   {
-    icon: "mdi:help-network-outline",
-    objection: "Confused by Karnataka CET / COMED-K counselling?",
+    icon: "mdi:restart",
+    objection: "Couldn't clear JEE / KCET / COMEDK this year?",
     answer:
-      "CIT offers a guided direct B.E. admission pathway for the 2026 intake. We guide you through every step — eligibility, documents, travel and hostel — from our NE admissions desk.",
+      "Dropping a year for coaching costs you a valuable academic year, and still guarantees nothing. CIT's merit-based selection lets talented students prove themselves in a 30-minute online test and start their B.E. now.",
   },
   {
     icon: "mdi:home-heart",
@@ -42,8 +47,9 @@ const objections = [
 
 // Reassurance bullets shown on the CTA band
 const reassurancePoints = [
-  "End-to-end direct B.E. admission guidance for the 2026 intake",
-  "7 B.E. branches — your application is matched to the branch you qualify for",
+  `Every seat filled on merit — one ${TEST_NAME}`,
+  `7 B.E. branches, ${TOTAL_SEATS_LEFT} seats left for ${SESSION_LABEL}`,
+  "The complete fee structure is shown inside the application, before you submit",
   "NAAC accredited, AICTE approved, affiliated to VTU Belagavi",
   "85%+ placements with 90+ recruiters visiting the campus",
   "Safe hostel & mess facilities for North East students",
@@ -131,13 +137,13 @@ const WhyChooseCIT = () => {
               variant="h2"
               className={styles.title}
             >
-              Your Direct Path to a B.E. at{" "}
+              Earn Your B.E. Seat at{" "}
               <span className={styles.titleAccent}>CIT Tumakuru</span>
             </Typography>
             <Typography className={styles.subtitle} sx={{ marginTop: "20px" }}>
-              We hear the same questions from students and parents across the
-              North East every admission season. Here&rsquo;s how CIT answers them
-              for the 2026 B.E. direct-admission intake.
+              We hear the same questions from students and parents every
+              admission season. Here&rsquo;s how CIT answers them for the{" "}
+              {SESSION_LABEL} merit-based selection.
             </Typography>
           </motion.div>
 
@@ -173,12 +179,12 @@ const WhyChooseCIT = () => {
                     icon="mdi:shield-check"
                     className={styles.bannerBadgeIcon}
                   />
-                  The CIT Direct-Admission Promise
+                  The CIT Merit Promise
                 </span>
                 <Typography variant="h3" className={styles.bannerTitle}>
-                  Guided B.E. Admission for the{" "}
+                  Selective, Transparent,{" "}
                   <span className={styles.bannerTitleAccent}>
-                    2026 Intake
+                    Proof-Driven
                   </span>
                 </Typography>
 
@@ -199,10 +205,10 @@ const WhyChooseCIT = () => {
               <div className={styles.bannerRight}>
                 <div className={styles.ctaCard}>
                   <span className={styles.ctaLabel}>
-                    Direct Admission · 2026 Intake
+                    {SESSION_LABEL} · {TOTAL_SEATS_LEFT} Seats Left
                   </span>
                   <Typography variant="h4" className={styles.ctaHeadline}>
-                    Talk to the CIT NE Admissions Desk
+                    Take the Merit Test. Earn Your Seat.
                   </Typography>
 
                   <button
@@ -236,7 +242,7 @@ const WhyChooseCIT = () => {
                     </div>
                     <div className={styles.trustItem}>
                       <Icon icon="mdi:account-tie" />
-                      <span>No consultancy or agent fees</span>
+                      <span>Merit-based selection</span>
                     </div>
                   </div>
 

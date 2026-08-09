@@ -1,9 +1,10 @@
 /* ============================================
    AdmissionProcessSection Component
-   The admission journey, spelled out end to end
-   so a family knows exactly what happens after
-   they apply — application, eligibility call,
-   seat confirmation, travel and hostel.
+   How the CIT Merit-Based Selection Program 2026
+   works, spelled out end to end so a family knows
+   exactly what happens after they apply —
+   application, Test Login Key, the merit test,
+   tele-counselling and final admission.
 
    Reads as a vertical timeline on mobile and a
    horizontal one from tablet up.
@@ -18,32 +19,42 @@ import EligibilityStrip from "../../common/EligibilityStrip";
 import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
 import { setApplySource } from "../../../hooks/useApplyCTA";
+import {
+  TEST_NAME,
+  SESSION_LABEL,
+  TOTAL_SEATS_LEFT,
+} from "../../../data/meritProgram";
 import styles from "./AdmissionProcessSection.module.css";
 
 const steps = [
   {
     icon: "mdi:file-document-edit-outline",
-    title: "Apply online (3 minutes)",
+    title: "Fill the application form",
     description:
-      "Fill the application with your 10th & 12th details. You get an instant VTU eligibility check.",
+      "Tell us who you are, your 12th marks and your family details — and see the complete fee structure before you submit.",
+  },
+  {
+    icon: "mdi:key-variant",
+    title: "Receive your unique Test Login Key",
+    description:
+      "Your Login Key is shown on screen the moment you submit. Keep it safe — it is what lets you into the test.",
+  },
+  {
+    icon: "mdi:timer-outline",
+    title: `Take the ${TEST_NAME}`,
+    description:
+      "30 MCQs — 15 Maths and 15 Physics at Class-12 level. 60 seconds per question, +4 marks for every correct answer.",
   },
   {
     icon: "mdi:phone-in-talk",
-    title: "Eligibility & counselling call",
+    title: "If you qualify — tele-counselling within 24 hours",
     description:
-      "CIT's NE admission desk calls within 24 hours, confirms eligibility, and shares the complete fee structure and document checklist (10th & 12th marksheets, transfer certificate, ID).",
+      "CIT's Counselling Officer calls at the time you choose. Keep your marksheets ready and your parents with you — it takes about 15 minutes.",
   },
   {
     icon: "mdi:seat-outline",
-    title: "Seat confirmation",
-    description:
-      "Complete the admission formalities and receive your provisional admission letter for the 2026 intake.",
-  },
-  {
-    icon: "mdi:bag-suitcase-outline",
-    title: "Travel & hostel onboarding",
-    description:
-      "The NE desk helps plan your journey via Bengaluru and allots your hostel room before you arrive.",
+    title: "Final admission",
+    description: `Your seat is confirmed against one of the ${TOTAL_SEATS_LEFT} remaining seats for ${SESSION_LABEL}.`,
   },
 ];
 
@@ -84,7 +95,11 @@ const AdmissionProcessSection = () => {
   const navigate = useNavigate();
 
   const handleApplyClick = () => {
-    trackCTAClick("process-apply", "admission_process", "Start Step 1 Now");
+    trackCTAClick(
+      "process-apply",
+      "admission_process",
+      "Apply for the Merit Assessment Test",
+    );
     setApplySource("apply-now");
     navigate("/apply");
   };
@@ -109,19 +124,19 @@ const AdmissionProcessSection = () => {
           <motion.div variants={itemVariants} className={styles.header}>
             <span className={styles.badge}>
               <Icon icon="mdi:map-marker-path" className={styles.badgeIcon} />
-              How It Works
+              Merit-Based Selection
             </span>
             <Typography
               id="admission-process-title"
               variant="h2"
               className={styles.title}
             >
-              Your Admission in{" "}
-              <span className={styles.titleAccent}>4 Clear Steps</span>
+              How the{" "}
+              <span className={styles.titleAccent}>Selection Works</span>
             </Typography>
             <Typography className={styles.subtitle}>
-              From online application to your first day on campus — guided at
-              every step.
+              Five steps between you and one of the last {TOTAL_SEATS_LEFT}{" "}
+              seats.
             </Typography>
           </motion.div>
 
@@ -164,7 +179,7 @@ const AdmissionProcessSection = () => {
                 icon="mdi:rocket-launch-outline"
                 className={styles.ctaButtonIcon}
               />
-              <span>Start Step 1 Now</span>
+              <span>Apply for the Merit Assessment Test</span>
             </button>
           </motion.div>
         </motion.div>
