@@ -15,6 +15,10 @@
    Both POST to the same `?action=create` endpoint;
    leads.php upserts by lead_id, so re-posts merge
    into the existing lead instead of duplicating it.
+   Each create answers with the lead's server-assigned
+   test login key (one key per lead, issued on the
+   partial and echoed back on the full submit); it is
+   stashed in sessionStorage for /thank-you and /test.
 
    Additive — src/utils/webhookSubmit.js is
    untouched and still owns the enquiry drawer.
@@ -48,6 +52,31 @@ export const APPLY_RETRY_KEY = 'cit_apply_retry';
 
 /** Phone number surfaced when a submit cannot reach the server. */
 export const SUPPORT_PHONE = '+91 8069645014';
+
+/* sessionStorage keys handed to /thank-you (and from there to /test). The
+   Thank-You page gates on THANKYOU_SUBMITTED_STORAGE and greets by
+   THANKYOU_NAME_STORAGE; both are cleared there after 5 minutes. The login key
+   and lead id deliberately outlive that cleanup — the test login screen
+   pre-fills the key, and an applicant may take the test later in the session. */
+export const THANKYOU_SUBMITTED_STORAGE = 'lead_submitted';
+export const THANKYOU_NAME_STORAGE = 'lead_name';
+export const THANKYOU_KEY_STORAGE = 'lead_login_key';
+export const THANKYOU_LEAD_ID_STORAGE = 'lead_lead_id';
+
+/**
+ * Persist the server-assigned test login key for /thank-you and /test.
+ * Empty values are ignored so a key already on the device is never blanked.
+ * @param {string} key - Login key returned by leads.php
+ */
+const rememberLoginKey = (key) => {
+  if (!key) return;
+  try {
+    sessionStorage.setItem(THANKYOU_KEY_STORAGE, key);
+  } catch (error) {
+    // sessionStorage unavailable (private mode) — the Thank You page falls
+    // back to "our team will share your key", and the telecaller covers it.
+  }
+};
 
 /**
  * Generate a UUID v4 for the lead_id shared by the partial and full submits.
@@ -126,7 +155,7 @@ const buildSubjects = (subjects) => {
 /**
  * POST a lead payload to the shared server-side store.
  * @param {Object} payload - Whitelisted lead payload
- * @returns {Promise<{success: boolean, message?: string}>}
+ * @returns {Promise<{success: boolean, login_key?: string, message?: string}>}
  */
 const postLead = async (payload) => {
   if (!LEADS_API_URL) {
@@ -146,7 +175,11 @@ const postLead = async (payload) => {
     });
 
     if (response.ok) {
-      return { success: true };
+      // leads.php answers { success, login_key } — the applicant's unique key
+      // for the merit test. A body we cannot parse must not fail the submit:
+      // the key is recoverable by the telecaller from the lead record.
+      const data = await response.json().catch(() => ({}));
+      return { success: true, login_key: data.login_key || '' };
     }
 
     console.error('[ApplyAPI] create returned', response.status);
@@ -282,10 +315,16 @@ export const submitPartialApplication = (draft) => {
     ],
   };
 
-  // Fire-and-forget: the applicant moves to Step 2 immediately.
-  postLead(payload).catch((error) => {
-    console.error('[ApplyAPI] Partial submit failed:', error);
-  });
+  // Fire-and-forget: the applicant moves to Step 2 immediately. The response
+  // already carries this lead's login key, so stashing it here means the key
+  // is on the device even if the full submit's response is lost mid-flight.
+  postLead(payload)
+    .then((result) => {
+      if (result && result.login_key) rememberLoginKey(result.login_key);
+    })
+    .catch((error) => {
+      console.error('[ApplyAPI] Partial submit failed:', error);
+    });
 
   // Meta partial signal — plain Lead only, pixel + CAPI sharing one event_id.
   const leadEventId = generateEventId();
@@ -460,7 +499,7 @@ const trackFullApplication = (payload) => {
  * Submit the completed application. Upserts onto the same lead the Step-1
  * partial created, then fires every conversion signal.
  * @param {Object} draft - Completed application draft
- * @returns {Promise<{success: boolean, message?: string}>}
+ * @returns {Promise<{success: boolean, login_key?: string, message?: string}>}
  */
 export const submitFullApplication = async (draft) => {
   const now = new Date().toISOString();
@@ -479,13 +518,17 @@ export const submitFullApplication = async (draft) => {
 
   // Gate + personalization for the Thank You page.
   try {
-    sessionStorage.setItem('lead_submitted', 'true');
-    sessionStorage.setItem('lead_name', payload.name);
+    sessionStorage.setItem(THANKYOU_SUBMITTED_STORAGE, 'true');
+    sessionStorage.setItem(THANKYOU_NAME_STORAGE, payload.name);
+    sessionStorage.setItem(THANKYOU_LEAD_ID_STORAGE, payload.lead_id || '');
   } catch (error) {
     // sessionStorage unavailable — the Thank You page will simply redirect home
   }
+  // Written separately: an empty key here must not overwrite the one the
+  // Step-1 partial already stored.
+  rememberLoginKey(result.login_key);
 
-  return { success: true };
+  return { success: true, login_key: result.login_key || '' };
 };
 
 const applicationSubmit = {
@@ -493,6 +536,10 @@ const applicationSubmit = {
   APPLY_SOURCE_KEY,
   APPLY_RETRY_KEY,
   SUPPORT_PHONE,
+  THANKYOU_SUBMITTED_STORAGE,
+  THANKYOU_NAME_STORAGE,
+  THANKYOU_KEY_STORAGE,
+  THANKYOU_LEAD_ID_STORAGE,
   generateLeadId,
   submitPartialApplication,
   submitFullApplication,

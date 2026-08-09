@@ -4,6 +4,66 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Unique test login keys + a Thank-You page that hands off to the test
+
+An application is no longer the end of the funnel — it is the moment the
+applicant is handed their credential for the merit test. The key is issued by
+the server, so it cannot be guessed, forged or duplicated by anything the
+browser sends.
+
+**Added**
+- Server-assigned **Test Login Keys** in `public/api/leads.php`. Format
+  `CIT26-XXXXX`, 5 characters from a 32-char alphabet that excludes the
+  ambiguous `0 O 1 I` so a telecaller can read one out over a bad line
+  (~33.5M combinations). New helpers: `generate_login_key()`,
+  `load_key_pool()` / `save_key_pool()`, `seed_key_pool_if_missing()`,
+  `build_key_pool_entries()`, `assign_login_key()`, `ensure_login_key()`,
+  `decoy_login_key()`, `is_key_eligible_lead()`.
+- `public/api/data/login_keys.json` — the key ledger, seeded with 100 unassigned
+  keys on first use and auto-extended by 50 whenever it runs dry, so a campaign
+  that outruns the pool never costs a lead. Entries are
+  `{ key, lead_id, assigned_at }`. It lives in the same deny-all `data/` folder
+  as `leads.json` and is git-ignored.
+- `?action=create` now answers `{"success": true, "login_key": "..."}`. A key is
+  claimed only for apply-funnel leads (incoming `lead_tier` `partial` or
+  `application`, untrusted requests only) — drawer enquiries, admin CSV imports
+  and legacy creates never consume one.
+- The assigned key is written onto the lead record with a
+  `Test login key assigned` activity entry, so a telecaller can re-share it from
+  the admin panel.
+- `submitFullApplication()` returns the key and stashes it in sessionStorage
+  (`lead_login_key`), alongside `lead_lead_id`. The Step-1 partial submit stashes
+  it too, so the key is already on the device if the final response is lost
+  mid-flight. Storage key names are exported as `THANKYOU_*_STORAGE` constants.
+- `Cache-Control: no-store` on every `leads.php` response — lead data must never
+  sit in a proxy or CDN cache.
+
+**Changed**
+- **`/thank-you` rebuilt around the key.** The applicant's key is the centerpiece
+  (large monospace, tap-to-select readonly input, Copy button with a clipboard-API
+  fallback for old Android), followed by the `Start Your 30-Minute Online Merit
+  Assessment Test` CTA to `/test`, an `I'll take it later` link, the key-validity
+  note, and a what-to-expect strip (30 MCQs · 60s per question · +4 per correct
+  answer · no going back · one attempt). Trust badges now read NAAC / AICTE·VTU /
+  Merit-Based Selection, and the WhatsApp prefill asks about the login key.
+- The confetti celebration is gone. This is an exam handoff, not a party.
+- Session flags: `lead_submitted` / `lead_name` still self-clear after 5 minutes,
+  but `lead_login_key` deliberately survives — the `/test` login screen pre-fills
+  from it.
+- Anti-bot responses stay indistinguishable from success: the rate-limit discard
+  and every spam path now answer with an **unpersisted decoy key**, so the create
+  response is byte-shape identical whether a payload was stored, merged or
+  silently dropped.
+
+Unchanged by design: the field whitelist (`login_key` is deliberately *not* in
+it, so a client-supplied value is dropped), honeypot, time-trap,
+suspicious-number flagging, per-IP rate limiting, upsert/dedup semantics, admin
+auth and the CAPI feedback hook. The Thank-You gate, its two dataLayer events and
+its `noindex` handling are untouched.
+
+Note: the `/test` route arrives in the next step of this series — until then the
+Start-Test CTA points at a route that does not exist yet.
+
 ### `/apply` Step 5 — fee transparency, affordability and two ranked branches
 
 The funnel asked how a family planned to pay before it had ever shown them a

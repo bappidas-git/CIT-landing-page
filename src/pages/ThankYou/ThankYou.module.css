@@ -1,6 +1,7 @@
 /* ============================================
    ThankYou Page Styles
-   Post lead submission confirmation page
+   Post-application confirmation — the Test Login
+   Key card is the centerpiece.
    ============================================ */
 
 .thankYouPage {
@@ -111,7 +112,7 @@
   }
 }
 
-/* Thank You Message */
+/* Headline */
 .thankYouMessage {
   margin-bottom: 32px;
 }
@@ -119,117 +120,193 @@
 .title {
   font-family: 'Poppins', sans-serif !important;
   font-weight: 700 !important;
-  font-size: clamp(2rem, 1.5rem + 2.5vw, 3rem) !important;
+  font-size: clamp(1.75rem, 1.35rem + 2vw, 2.75rem) !important;
   color: #FFFFFF !important;
   margin-bottom: 12px !important;
   line-height: 1.2 !important;
 }
 
 .subtitle {
-  font-size: 1.125rem !important;
+  font-size: 1.0625rem !important;
   color: #FFFFFFB3 !important;
   font-weight: 400 !important;
+  max-width: 640px;
+  margin: 0 auto !important;
+  line-height: 1.6 !important;
 }
 
-/* Response Notice */
-.responseNotice {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  background: linear-gradient(135deg, rgba(224, 48, 30, 0.18) 0%, rgba(224, 48, 30, 0.08) 100%);
-  border: 1px solid rgba(224, 48, 30, 0.35);
+/* ---- Login Key Card (centerpiece) ---- */
+.keyCard {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border: 1px solid rgba(224, 48, 30, 0.45);
   border-radius: 20px;
-  padding: 24px 28px;
-  margin: 0 auto 40px;
-  max-width: 600px;
-  text-align: left;
+  padding: 24px 18px;
+  margin: 0 auto 28px;
+  max-width: 560px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
 }
 
-.noticeIcon {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.keyLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FFFFFF99;
+  margin-bottom: 14px;
 }
 
-.noticeIcon svg {
-  font-size: 26px;
-  color: #081F33;
-}
-
-.noticeContent {
-  flex: 1;
-}
-
-.noticeTitle {
-  font-size: 1.0625rem !important;
-  font-weight: 600 !important;
-  color: #E0301E !important;
-  margin-bottom: 6px !important;
-}
-
-.noticeDesc {
-  font-size: 0.9375rem !important;
-  color: #FFFFFFA6 !important;
-  line-height: 1.5 !important;
-}
-
-/* Next Steps Section */
-.nextStepsSection {
-  margin-bottom: 40px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.nextStepsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.keyRow {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  align-items: stretch;
+  gap: 12px;
 }
 
-.nextStepItem {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* A readonly input rather than plain text on purpose: tapping it selects the
+   key, which is the only reliable "copy" on old Android WebViews without the
+   clipboard API. */
+.keyValue {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 14px;
-  padding: 16px 20px;
-  text-align: left;
+  padding: 14px 10px;
+  font-family: 'Courier New', Courier, monospace;
+  /* Beats the global "inputs are 16px under 768px" iOS anti-zoom rule
+     (global.css) on specificity. That rule guards against Safari zooming in on
+     SMALL input text; this key is deliberately far larger, so it is exempt. */
+  font-size: 1.75rem !important;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-align: center;
+  color: #FFFFFF;
+  cursor: text;
 }
 
-.stepNumber {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
-  border-radius: 50%;
-  display: flex;
+.keyValue:focus {
+  outline: 2px solid rgba(224, 48, 30, 0.7);
+  outline-offset: 2px;
+}
+
+.copyBtn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #081F33;
-}
-
-.stepText {
+  gap: 8px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-family: inherit;
   font-size: 0.9375rem;
-  font-weight: 400;
-  color: #FFFFFFCC;
-  line-height: 1.5;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-/* Highlights Section */
-.highlightsSection {
+.copyBtn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.copyBtn[data-state="copied"] {
+  background: rgba(30, 142, 90, 0.25);
+  border-color: rgba(79, 176, 127, 0.7);
+  color: #7FD9AC;
+}
+
+.copyBtn svg {
+  font-size: 18px;
+}
+
+.keyNote {
+  margin: 14px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #FFFFFFA6;
+}
+
+.keyPending {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #FFFFFFCC;
+}
+
+/* ---- CTA Section ---- */
+.ctaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.startTestBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
+  border: 2px solid #E0301E;
+  border-radius: 50px;
+  padding: 16px 26px;
+  color: #081F33 !important;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 22px rgba(224, 48, 30, 0.38);
+}
+
+.startTestBtn:hover {
+  background: linear-gradient(135deg, #B71F12 0%, #E0301E 100%);
+  border-color: #B71F12;
+  color: #081F33 !important;
+  box-shadow: 0 10px 26px rgba(224, 48, 30, 0.48);
+}
+
+.laterBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #FFFFFFCC;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.laterBtn:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #FFFFFF;
+}
+
+.validityNote {
+  margin: 0 auto 40px;
+  max-width: 520px;
+  font-size: 0.875rem;
+  color: #FFFFFF8C;
+}
+
+/* ---- What to expect ---- */
+.expectSection {
   margin-bottom: 40px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .sectionLabel {
@@ -238,7 +315,41 @@
   letter-spacing: 0.15em !important;
   text-transform: uppercase !important;
   color: #FFFFFF80 !important;
-  margin-bottom: 20px !important;
+  margin-bottom: 16px !important;
+}
+
+.expectGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.expectItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: #FFFFFFCC;
+}
+
+.expectItem svg {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: #E0301E;
+}
+
+/* Highlights Section */
+.highlightsSection {
+  margin-bottom: 40px;
 }
 
 .highlightsGrid {
@@ -285,8 +396,7 @@
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  padding: 32px;
-  margin-bottom: 40px;
+  padding: 28px 24px;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
@@ -294,7 +404,7 @@
 
 .contactHeader {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .companyBadge {
@@ -320,7 +430,7 @@
 .companyName {
   font-family: 'Poppins', sans-serif !important;
   font-weight: 700 !important;
-  font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2rem) !important;
+  font-size: clamp(1.25rem, 1.1rem + 0.9vw, 1.75rem) !important;
   color: #FFFFFF !important;
 }
 
@@ -330,18 +440,14 @@
 
 .contactItem {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-start;
-}
-
-.addressItem {
-  margin-top: 8px;
 }
 
 .contactIconWrapper {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: rgba(224, 48, 30, 0.15);
   border-radius: 12px;
   display: flex;
@@ -350,7 +456,7 @@
 }
 
 .contactIconWrapper svg {
-  font-size: 24px;
+  font-size: 22px;
   color: #E0301E;
 }
 
@@ -380,77 +486,33 @@
   color: #E0301E;
 }
 
-.contactValueAlt {
-  font-size: 0.9375rem;
-  color: #FFFFFFB3 !important;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
+/* ---- Wider than 360-first: the key and its Copy button sit side by side ---- */
+@media (min-width: 480px) {
+  .keyCard {
+    padding: 28px 32px;
+  }
 
-.contactValueAlt:hover {
-  color: #E0301E;
-}
+  .keyRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 
-/* CTA Section */
-.ctaSection {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
+  .keyValue {
+    width: auto;
+    flex: 1 1 auto;
+    font-size: 2rem !important; /* same global anti-zoom override as above */
+    letter-spacing: 0.14em;
+    padding: 16px 12px;
+  }
 
-.backHomeBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(135deg, #E0301E 0%, #F0584A 100%);
-  border: 2px solid #E0301E;
-  border-radius: 50px;
-  padding: 14px 28px;
-  color: #081F33 !important;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 6px 18px rgba(224, 48, 30, 0.35);
-}
+  .expectGrid {
+    grid-template-columns: 1fr 1fr;
+  }
 
-.backHomeBtn:hover {
-  background: linear-gradient(135deg, #B71F12 0%, #E0301E 100%);
-  border-color: #B71F12;
-  color: #081F33 !important;
-  box-shadow: 0 8px 22px rgba(224, 48, 30, 0.45);
-}
-
-.backHomeBtn svg {
-  font-size: 20px;
-}
-
-/* WhatsApp Button */
-.whatsappBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: #25D366;
-  border: 2px solid #25D366;
-  border-radius: 50px;
-  padding: 14px 28px;
-  color: #FFFFFF;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.whatsappBtn:hover {
-  background: #1ebe5d;
-  border-color: #1ebe5d;
-  color: #FFFFFF;
-}
-
-.whatsappBtn svg {
-  font-size: 20px;
+  .startTestBtn {
+    width: auto;
+  }
 }
 
 /* Responsive Styles */
@@ -467,17 +529,6 @@
 
   .iconWrapper svg {
     font-size: 52px;
-  }
-
-  .responseNotice {
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    padding: 20px;
-  }
-
-  .noticeContent {
-    text-align: center;
   }
 
   .highlightsGrid {
@@ -511,15 +562,6 @@
   .contactDetails {
     align-items: center;
   }
-
-  .nextStepItem {
-    padding: 14px 16px;
-  }
-
-  .ctaSection {
-    flex-direction: column;
-    align-items: center;
-  }
 }
 
 @media (max-width: 480px) {
@@ -536,31 +578,14 @@
     font-size: 44px;
   }
 
-  .title {
-    font-size: 1.75rem !important;
-  }
-
   .subtitle {
-    font-size: 1rem !important;
+    font-size: 0.9375rem !important;
   }
 
   .highlightCard {
-    width: calc(50% - 6px);
-    flex-direction: column;
-    padding: 14px;
-    gap: 8px;
-    text-align: center;
-  }
-
-  .companyName {
-    font-size: 1.375rem !important;
-  }
-
-  .backHomeBtn,
-  .whatsappBtn {
     width: 100%;
     justify-content: center;
-    padding: 14px 24px;
+    padding: 12px 14px;
   }
 }
 

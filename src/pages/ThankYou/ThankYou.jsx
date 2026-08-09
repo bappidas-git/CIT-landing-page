@@ -1,18 +1,30 @@
 /* ============================================
    ThankYou Page
-   Post lead submission confirmation page
+   Post-application confirmation. The centerpiece
+   is the applicant's unique Test Login Key — the
+   only credential for the 30-Minute Online Merit
+   Assessment Test — followed by the CTA that
+   starts it.
+
+   Deliberately sober: this is an exam handoff,
+   not a celebration, so there is no confetti.
    ============================================ */
 
-import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Container, Typography, Grid } from "@mui/material";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import confetti from "canvas-confetti";
 import styles from "./ThankYou.module.css";
 import { updatePageSEO } from "../../utils/seo";
 import { seoConfig } from "../../config/seo";
 import { trackContactClick } from "../../utils/contactTracking";
+import { PROGRAM_NAME, TEST_NAME, TOTAL_SEATS_LEFT } from "../../data/meritProgram";
+import {
+  THANKYOU_SUBMITTED_STORAGE,
+  THANKYOU_NAME_STORAGE,
+  THANKYOU_KEY_STORAGE,
+} from "../../utils/applicationSubmit";
 
 // Trust badges
 const trustBadges = [
@@ -27,8 +39,8 @@ const trustBadges = [
     color: "#1E8E5A",
   },
   {
-    icon: "mdi:headset",
-    label: "No consultancy or agent fees",
+    icon: "mdi:medal-outline",
+    label: "Merit-Based Selection — Session 2026",
     color: "#D82618",
   },
 ];
@@ -40,22 +52,34 @@ const contactInfo = {
   officeHours: "Mon - Sat: 9:00 AM - 5:00 PM",
 };
 
-// Next steps after form submission
-const nextSteps = [
-  "Keep your phone reachable — our CIT admission team will call you shortly on the number you shared.",
-  "Have your Class 10 & 12 marksheets handy so we can map you to the right B.E. branch quickly.",
-  "Feel free to ask about courses, hostel, fees, scholarships and travel from the North East.",
+// Pre-filled WhatsApp message — merit-program wording, URL-encoded.
+const WHATSAPP_LINK =
+  "https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20have%20submitted%20my%20application%20for%20the%20CIT%20Merit-Based%20Selection%20Program%202026%20and%20need%20help%20with%20my%20Test%20Login%20Key.";
+
+// What the applicant is walking into. Same rules as the FAQ and the test
+// platform — keep the three in sync if the format ever changes.
+const testFacts = [
+  { icon: "mdi:format-list-numbered", text: "30 MCQs — 15 Maths + 15 Physics" },
+  { icon: "mdi:timer-outline", text: "60 seconds per question" },
+  { icon: "mdi:plus-circle-outline", text: "+4 per correct answer, 0 for wrong or unanswered" },
+  { icon: "mdi:arrow-u-left-top-bold", text: "No going back to a previous question" },
+  { icon: "mdi:numeric-1-circle-outline", text: "One attempt with your key" },
+  { icon: "mdi:wifi", text: "Stable internet recommended" },
 ];
 
 const ThankYou = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [loginKey, setLoginKey] = useState("");
+  const [copyState, setCopyState] = useState("idle"); // idle | copied | manual
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const keyInputRef = useRef(null);
 
   // Check if user is authorized to view this page
   useEffect(() => {
-    const leadSubmitted = sessionStorage.getItem("lead_submitted");
-    const name = sessionStorage.getItem("lead_name");
+    const leadSubmitted = sessionStorage.getItem(THANKYOU_SUBMITTED_STORAGE);
+    const name = sessionStorage.getItem(THANKYOU_NAME_STORAGE);
+    const key = sessionStorage.getItem(THANKYOU_KEY_STORAGE);
 
     if (!leadSubmitted) {
       // Redirect to home if accessed directly
@@ -65,6 +89,7 @@ const ThankYou = () => {
 
     setIsAuthorized(true);
     setUserName(name || "");
+    setLoginKey((key || "").trim());
 
     // Set noindex meta and update page title for Thank You page
     updatePageSEO({
@@ -86,73 +111,58 @@ const ThankYou = () => {
       pagePath: '/thank-you',
     });
 
-    // Clear the session flag after some time to prevent re-access
+    // Clear the session flag after some time to prevent re-access.
+    // The login key is deliberately NOT cleared — the /test login screen
+    // pre-fills from it, and an applicant may sit the test later.
     const timeout = setTimeout(() => {
-      sessionStorage.removeItem("lead_submitted");
-      sessionStorage.removeItem("lead_name");
+      sessionStorage.removeItem(THANKYOU_SUBMITTED_STORAGE);
+      sessionStorage.removeItem(THANKYOU_NAME_STORAGE);
     }, 300000); // 5 minutes
 
     return () => clearTimeout(timeout);
   }, [navigate]);
 
-  // Fire confetti effect
-  const fireConfetti = useCallback(() => {
-    const duration = 3000;
-    const animationEnd = Date.now() + duration;
-    const defaults = {
-      startVelocity: 30,
-      spread: 360,
-      ticks: 60,
-      zIndex: 10000,
-    };
+  // Copy the key. navigator.clipboard needs HTTPS and is missing on older
+  // Android WebViews, so the fallback selects the readonly input instead —
+  // from there a long-press → Copy always works.
+  const handleCopy = useCallback(async () => {
+    if (!loginKey) return;
 
-    function randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    const interval = setInterval(() => {
-      const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        return;
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        throw new Error("Clipboard API unavailable");
       }
-
-      const particleCount = 50 * (timeLeft / duration);
-
-      // Left side confetti
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        colors: ["#0C2D48", "#1A5276", "#E0301E", "#D82618"],
-      });
-
-      // Right side confetti
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        colors: ["#0C2D48", "#1A5276", "#E0301E", "#D82618"],
-      });
-    }, 250);
-
-    // Initial burst
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ["#0C2D48", "#1A5276", "#E0301E", "#D82618", "#1E8E5A"],
-    });
-  }, []);
-
-  // Trigger confetti on mount
-  useEffect(() => {
-    if (isAuthorized) {
-      const timer = setTimeout(fireConfetti, 300);
-      return () => clearTimeout(timer);
+      await navigator.clipboard.writeText(loginKey);
+      setCopyState("copied");
+      return;
+    } catch (error) {
+      // fall through to the select-based path below
     }
-  }, [isAuthorized, fireConfetti]);
+
+    const input = keyInputRef.current;
+    if (!input) {
+      setCopyState("manual");
+      return;
+    }
+    input.focus();
+    input.select();
+    input.setSelectionRange(0, loginKey.length);
+    let copied = false;
+    try {
+      // Deprecated, but it is the only copy these browsers have.
+      copied = document.execCommand("copy");
+    } catch (error) {
+      copied = false;
+    }
+    setCopyState(copied ? "copied" : "manual");
+  }, [loginKey]);
+
+  // Reset the button label so it stays usable for a second copy.
+  useEffect(() => {
+    if (copyState === "idle") return undefined;
+    const timer = setTimeout(() => setCopyState("idle"), 2500);
+    return () => clearTimeout(timer);
+  }, [copyState]);
 
   // Animation variants
   const containerVariants = {
@@ -194,9 +204,17 @@ const ThankYou = () => {
     return null; // Or a loading spinner
   }
 
-  const greeting = userName
-    ? `Hi ${userName.split(" ")[0]}, our CIT admission team will call you shortly to guide you through the direct B.E. admission process for 2026.`
-    : "Our CIT admission team will call you shortly to guide you through the direct B.E. admission process for 2026.";
+  const firstName = userName.trim().split(" ")[0];
+  const headline = firstName
+    ? `Application received, ${firstName}. Your next step: the test.`
+    : "Application received. Your next step: the test.";
+
+  const copyLabel =
+    copyState === "copied"
+      ? "Copied ✓"
+      : copyState === "manual"
+      ? "Press & hold to copy"
+      : "Copy";
 
   return (
     <div className={styles.thankYouPage}>
@@ -221,57 +239,100 @@ const ThankYou = () => {
             <div className={styles.iconRing2} />
           </motion.div>
 
-          {/* Thank You Message */}
+          {/* Headline */}
           <motion.div
             variants={itemVariants}
             className={styles.thankYouMessage}
           >
             <Typography variant="h2" className={styles.title}>
-              Thank You! Your 2026 Admission Enquiry is Received.
+              {headline}
             </Typography>
             <Typography
               className={styles.subtitle}
               sx={{ color: "#FFFFFFB3 !important" }}
             >
-              {greeting}
+              Your application for the {PROGRAM_NAME} is in. Selection is on
+              merit — the {TEST_NAME} decides who gets one of the{" "}
+              {TOTAL_SEATS_LEFT} remaining seats.
             </Typography>
           </motion.div>
 
-          {/* Confirmation Message & Next Steps */}
-          <motion.div variants={itemVariants} className={styles.responseNotice}>
-            <div className={styles.noticeIcon}>
-              <Icon icon="mdi:clock-check-outline" />
-            </div>
-            <div className={styles.noticeContent}>
-              <Typography className={styles.noticeTitle}>
-                What happens next?
-              </Typography>
-              <Typography
-                className={styles.noticeDesc}
-                sx={{ color: "#FFFFFFA6 !important" }}
-              >
-                A quick checklist so we can make your 2026 B.E. admission
-                conversation smooth and useful:
-              </Typography>
-            </div>
+          {/* Login Key Card — the centerpiece */}
+          <motion.div variants={itemVariants} className={styles.keyCard}>
+            <span className={styles.keyLabel}>Your unique Test Login Key</span>
+
+            {loginKey ? (
+              <>
+                <div className={styles.keyRow}>
+                  <input
+                    ref={keyInputRef}
+                    className={styles.keyValue}
+                    value={loginKey}
+                    readOnly
+                    spellCheck="false"
+                    aria-label="Your test login key"
+                    onFocus={(e) => e.target.select()}
+                    onClick={(e) => e.target.select()}
+                  />
+                  <button
+                    type="button"
+                    className={styles.copyBtn}
+                    onClick={handleCopy}
+                    data-state={copyState}
+                  >
+                    <Icon
+                      icon={
+                        copyState === "copied"
+                          ? "mdi:check-bold"
+                          : "mdi:content-copy"
+                      }
+                    />
+                    <span>{copyLabel}</span>
+                  </button>
+                </div>
+                <p className={styles.keyNote}>
+                  Keep this key safe — you need it to enter the test. Our team
+                  can also re-share it with you on call.
+                </p>
+              </>
+            ) : (
+              /* No key on this device: an older submission, blocked storage or
+                 a lost response. Never show an empty box — tell them how the
+                 key reaches them instead. */
+              <p className={styles.keyPending}>
+                Your Test Login Key will be shared by our admission team on
+                WhatsApp/call shortly.
+              </p>
+            )}
           </motion.div>
 
-          {/* Next Steps */}
-          <motion.div variants={itemVariants} className={styles.nextStepsSection}>
-            <ol className={styles.nextStepsList}>
-              {nextSteps.map((step, index) => (
-                <motion.li
-                  key={index}
-                  className={styles.nextStepItem}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                >
-                  <span className={styles.stepNumber}>{index + 1}</span>
-                  <span className={styles.stepText}>{step}</span>
-                </motion.li>
+          {/* CTA Buttons */}
+          <motion.div variants={itemVariants} className={styles.ctaSection}>
+            <Link to="/test" className={styles.startTestBtn}>
+              <span>Start Your {TEST_NAME} →</span>
+            </Link>
+            <Link to="/" className={styles.laterBtn}>
+              <span>I'll take it later</span>
+            </Link>
+          </motion.div>
+
+          <motion.p variants={itemVariants} className={styles.validityNote}>
+            Your key stays valid until the test is completed once.
+          </motion.p>
+
+          {/* What to expect */}
+          <motion.div variants={itemVariants} className={styles.expectSection}>
+            <Typography className={styles.sectionLabel}>
+              What to expect in the test
+            </Typography>
+            <ul className={styles.expectGrid}>
+              {testFacts.map((fact) => (
+                <li key={fact.text} className={styles.expectItem}>
+                  <Icon icon={fact.icon} />
+                  <span>{fact.text}</span>
+                </li>
               ))}
-            </ol>
+            </ul>
           </motion.div>
 
           {/* Trust Badges */}
@@ -287,7 +348,6 @@ const ThankYou = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + index * 0.1 }}
-                  whileHover={{ y: -4, scale: 1.02 }}
                 >
                   <div
                     className={styles.highlightIcon}
@@ -304,7 +364,7 @@ const ThankYou = () => {
             </div>
           </motion.div>
 
-          {/* Contact Information Card */}
+          {/* Contact Card — compact */}
           <motion.div variants={itemVariants} className={styles.contactCard}>
             <div className={styles.contactHeader}>
               <div className={styles.companyBadge}>
@@ -312,13 +372,13 @@ const ThankYou = () => {
                 <span>CIT Admission Desk</span>
               </div>
               <Typography variant="h4" className={styles.companyName}>
-                Or call us now if it's urgent
+                Stuck with your key or the test? Call us.
               </Typography>
             </div>
 
-            <Grid container spacing={3} className={styles.contactGrid}>
+            <Grid container spacing={2} className={styles.contactGrid}>
               {/* Phone */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <div className={styles.contactItem}>
                   <div className={styles.contactIconWrapper}>
                     <Icon icon="mdi:phone" />
@@ -342,7 +402,7 @@ const ThankYou = () => {
               </Grid>
 
               {/* WhatsApp */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <div className={styles.contactItem}>
                   <div className={styles.contactIconWrapper}>
                     <Icon icon="mdi:whatsapp" />
@@ -355,7 +415,7 @@ const ThankYou = () => {
                       WhatsApp
                     </span>
                     <a
-                      href="https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
+                      href={WHATSAPP_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.contactValue}
@@ -368,7 +428,7 @@ const ThankYou = () => {
               </Grid>
 
               {/* Office Hours */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <div className={styles.contactItem}>
                   <div className={styles.contactIconWrapper}>
                     <Icon icon="mdi:clock-outline" />
@@ -387,34 +447,6 @@ const ThankYou = () => {
                 </div>
               </Grid>
             </Grid>
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div
-            variants={itemVariants}
-            className={styles.ctaSection}
-          >
-            <motion.a
-              href="/"
-              className={styles.backHomeBtn}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Icon icon="mdi:arrow-left" />
-              <span>Back to Home</span>
-            </motion.a>
-            <motion.a
-              href="https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20just%20submitted%20the%20form%20and%20would%20like%20to%20know%20more%20about%20Direct%20B.E.%20Admission%202026."
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.whatsappBtn}
-              onClick={() => trackContactClick("whatsapp", "thank_you_cta")}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Icon icon="mdi:whatsapp" />
-              <span>WhatsApp Us Now</span>
-            </motion.a>
           </motion.div>
         </motion.div>
       </Container>
