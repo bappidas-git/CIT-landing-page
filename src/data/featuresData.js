@@ -65,9 +65,9 @@ export const featuresData = [
       },
       {
         icon: "mdi:account-tie-voice-outline",
-        title: "Guided Direct-Admission Support",
+        title: "Merit-Based, Transparent Admission",
         description:
-          "We guide you through every step — eligibility, documents, travel and hostel — from the CIT NE admission desk.",
+          "Seats are earned in the merit test, and the CIT admission desk supports you on eligibility, documents, travel and hostel.",
       },
       {
         icon: "mdi:hand-heart-outline",

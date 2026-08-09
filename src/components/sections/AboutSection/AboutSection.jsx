@@ -1,6 +1,7 @@
 /* ============================================
    AboutSection Component
-   CIT credibility band: accreditations, legacy & NE-2026 invite
+   CIT credibility band: accreditations, legacy &
+   the Session 2026 merit-selection invite
    ============================================ */
 
 import React from "react";
@@ -8,6 +9,7 @@ import { motion, useInView } from "framer-motion";
 import { Container, Typography, Button } from "@mui/material";
 import { Icon } from "@iconify/react";
 import useApplyCTA from "../../../hooks/useApplyCTA";
+import { SESSION_LABEL, TOTAL_SEATS_LEFT } from "../../../data/meritProgram";
 import styles from "./AboutSection.module.css";
 
 const containerVariants = {
@@ -109,7 +111,7 @@ const AboutSection = () => {
                 marginTop: "0.5rem",
               }}
             >
-              Now welcoming North East students for the 2026 B.E. intake
+              Merit-based selection for the final {SESSION_LABEL} B.E. seats
             </Typography>
           </motion.div>
 
@@ -125,9 +127,12 @@ const AboutSection = () => {
               </Typography>
               <Typography className={styles.contentParagraph}>
                 Known for strong placements, VTU rank holders and rural-inclusive
-                engineering education, CIT is now welcoming students from North
-                East India for{" "}
-                <strong>direct B.E. admission in the 2026 intake</strong>.
+                engineering education, CIT is closing {SESSION_LABEL} with a{" "}
+                <strong>
+                  merit-based selection for the final {TOTAL_SEATS_LEFT} seats
+                </strong>{" "}
+                — open to talented students across India, including the North
+                East.
               </Typography>
               <Button
                 variant="contained"

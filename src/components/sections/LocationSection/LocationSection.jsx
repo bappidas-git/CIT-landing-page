@@ -171,7 +171,7 @@ const LocationSection = () => {
 
                   <a
                     href={`https://wa.me/${locationData.whatsapp}?text=${encodeURIComponent(
-                      "Hi CIT, I'd like guidance on the 2026 B.E. direct admission from North East.",
+                      "Hi CIT Admissions, I want to apply for the CIT Merit-Based Selection Program 2026. Please share the details.",
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -356,8 +356,8 @@ const LocationSection = () => {
                 textAlign: 'center',
               }}
             >
-              Our admission counsellor will call you and walk you through travel,
-              documents, hostel and the 2026 B.E. direct-admission process.
+              Qualify in the merit test and CIT&rsquo;s Counselling Officer walks
+              you through travel, documents, hostel and everything else.
             </Typography>
           </motion.div>
           <motion.div variants={itemVariants} className={styles.ctaButtons}>

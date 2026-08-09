@@ -29,7 +29,7 @@ const PrivacyPolicyContent = () => (
         Channabasaveshwara Institute of Technology (CIT), Tumakuru, together
         with its marketing partner Assam Digital, respects your privacy and is
         committed to protecting the personal data shared by prospective
-        students and parents during the Direct B.E. Admissions 2026 campaign.
+        students and parents during the B.E. Admissions 2026 campaign.
         This Privacy Policy explains what we collect, how we use it, and your
         rights.
       </p>
@@ -64,7 +64,7 @@ const PrivacyPolicyContent = () => (
     <section className={styles.legalSection}>
       <h3>How We Use Your Information</h3>
       <ul>
-        <li>To contact you about Direct B.E. admission 2026 at CIT.</li>
+        <li>To contact you about B.E. admissions 2026 at CIT.</li>
         <li>
           To answer questions about courses, fees, hostel facilities, scholarships
           and the admission process — by call or WhatsApp.
@@ -232,8 +232,8 @@ const Footer = () => {
                 <p className={styles.tagline}>
                   Channabasaveshwara Institute of Technology — a NAAC-accredited,
                   AICTE-approved engineering institute in Tumakuru, Karnataka.
-                  Guided Direct B.E. admissions for the 2026 intake, with
-                  end-to-end support for students from North East India.
+                  The final Session 2026 B.E. seats are filled on merit, through
+                  the CIT Merit-Based Selection Program 2026.
                 </p>
               </div>
 
@@ -364,7 +364,7 @@ const Footer = () => {
               >
                 Assam Digital
               </a>{" "}
-              · Direct B.E. Admissions 2026
+              · CIT Merit-Based Selection Program 2026
             </p>
           </Container>
         </div>

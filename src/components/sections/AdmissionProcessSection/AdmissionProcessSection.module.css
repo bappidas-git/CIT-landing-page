@@ -324,7 +324,7 @@
 }
 
 /* ============================================
-   Desktop (1024px+) — all four steps in a row
+   Desktop (1024px+) — all five steps in a row
    ============================================ */
 @media (min-width: 1024px) {
   .section {
@@ -336,7 +336,8 @@
   }
 
   .timeline {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-4);
     margin-bottom: var(--space-10);
   }
 
@@ -348,8 +349,41 @@
     display: none;
   }
 
+  /* Five columns are narrower than the old four — tighten the card so the
+     longer selection-step titles don't crowd the edges. */
+  .stepBody {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .stepTitle {
+    font-size: var(--fs-base);
+  }
+
+  .stepDescription {
+    font-size: var(--fs-sm);
+  }
+
   .eligibilityWrap {
     margin-bottom: var(--space-10);
+  }
+}
+
+/* Roomy desktops — restore the original card padding and type scale */
+@media (min-width: 1280px) {
+  .timeline {
+    gap: var(--space-6);
+  }
+
+  .stepBody {
+    padding: var(--space-6);
+  }
+
+  .stepTitle {
+    font-size: var(--fs-lg);
+  }
+
+  .stepDescription {
+    font-size: var(--fs-base);
   }
 }
 

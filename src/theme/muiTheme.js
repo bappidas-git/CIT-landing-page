@@ -1,7 +1,7 @@
 /* ============================================
    MUI Theme Configuration — CIT Brand System
    Channabasaveshwara Institute of Technology
-   Direct B.E. Engineering Admissions 2026
+   CIT Merit-Based Selection Program 2026
    ============================================ */
 
 import { createTheme, alpha } from '@mui/material/styles';

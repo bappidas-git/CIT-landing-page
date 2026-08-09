@@ -20,6 +20,11 @@ import "swiper/css/pagination";
 import { servicesData } from "../../../data/servicesData";
 import useApplyCTA, { setApplyCourse } from "../../../hooks/useApplyCTA";
 import {
+  MERIT_BRANCHES,
+  SESSION_LABEL,
+  TOTAL_SEATS_LEFT,
+} from "../../../data/meritProgram";
+import {
   injectSchema,
   removeSchema,
   generateServiceSchema,
@@ -39,6 +44,16 @@ const COURSE_OPTION_BY_ID = {
   mechanical: "B.E. — Mechanical Engineering",
   civil: "B.E. — Civil Engineering",
 };
+
+// Seats left per card, derived from meritProgram.js (never hard-coded here) by
+// reusing the id -> COURSE_OPTIONS bridge above, which is the same string
+// MERIT_BRANCHES keys on.
+const SEATS_BY_ID = Object.fromEntries(
+  Object.entries(COURSE_OPTION_BY_ID).map(([id, course]) => [
+    id,
+    MERIT_BRANCHES.find((b) => b.course === course)?.seats ?? 0,
+  ]),
+);
 
 // Animation variants
 const containerVariants = {
@@ -139,6 +154,19 @@ const ServicesSection = () => {
       {/* Course Name */}
       <Typography className={styles.courseName}>{course.name}</Typography>
 
+      {/* Seats left — the true remaining count for this branch */}
+      <div className={styles.seatsBadge}>
+        <Icon icon="mdi:seat-outline" className={styles.seatsIcon} />
+        <span className={styles.seatsText}>
+          <strong className={styles.seatsCount}>
+            Only {SEATS_BY_ID[course.id] ?? 0} seats left
+          </strong>
+          <span className={styles.seatsSession}>
+            {SESSION_LABEL} — Final Closure
+          </span>
+        </span>
+      </div>
+
       {/* Ideal for */}
       <div className={styles.idealFor}>
         <Icon icon="mdi:bullseye-arrow" />
@@ -214,7 +242,7 @@ const ServicesSection = () => {
             >
               Choose Your{" "}
               <span className={styles.accentText}>B.E. Engineering Branch</span>{" "}
-              — 2026 Intake
+              — {SESSION_LABEL}
             </Typography>
             <Typography
               className={styles.sectionSubtitle}
@@ -226,9 +254,8 @@ const ServicesSection = () => {
                 maxWidth: "560px",
               }}
             >
-              Seven VTU-affiliated B.E. programmes with hands-on labs, strong
-              placement record, and end-to-end admission guidance for
-              North-East students.
+              Seven VTU-affiliated B.E. branches — {TOTAL_SEATS_LEFT} seats in
+              total remain for {SESSION_LABEL}, filled strictly on merit.
             </Typography>
           </motion.div>
 
@@ -268,8 +295,9 @@ const ServicesSection = () => {
                   Not sure which branch is right for you?
                 </span>
                 <span className={styles.ctaSubtitle}>
-                  Pick &ldquo;Not Sure — Need Guidance&rdquo; in the application
-                  and our admission team will help you choose on the first call.
+                  Pick &ldquo;Not Sure — Need Guidance&rdquo; in the application.
+                  Qualify in the merit test and CIT&rsquo;s Counselling Officer
+                  helps you choose your branch on the tele-counselling call.
                 </span>
               </div>
             </div>

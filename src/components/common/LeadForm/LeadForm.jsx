@@ -3,7 +3,7 @@
    Thin wrapper around UnifiedLeadForm so the
    legacy import surface keeps working while all
    real form logic lives in one place.
-   CIT — Direct B.E. Engineering Admissions 2026
+   CIT — Merit-Based Selection Program 2026
    ============================================ */
 
 import React from 'react';

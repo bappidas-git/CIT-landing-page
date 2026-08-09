@@ -55,7 +55,7 @@ const ContactSection = () => {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
 
   const whatsappUrl = `https://wa.me/${locationData.whatsapp}?text=${encodeURIComponent(
-    "Hi CIT, I'd like guidance on the 2026 B.E. direct admission from North East.",
+    "Hi CIT Admissions, I want to apply for the CIT Merit-Based Selection Program 2026. Please share the details.",
   )}`;
 
   const contactInfo = [
@@ -120,8 +120,8 @@ const ContactSection = () => {
               <span className={styles.highlight}>Admission Team</span>
             </Typography>
             <Typography variant="body1" className={styles.sectionSubtitle}>
-              Reach us directly, or send your details — we'll guide you through
-              the 2026 B.E. direct-admission process.
+              Reach us directly, or send your details — we&rsquo;ll explain how
+              the CIT Merit-Based Selection Program 2026 works.
             </Typography>
           </motion.div>
 
@@ -286,7 +286,7 @@ const ContactSection = () => {
                     Get Admission Details
                   </Typography>
                   <Typography variant="body2" className={styles.formSubtitle}>
-                    Share your details — our CIT admission counsellor responds
+                    Share your details — the CIT admission office responds
                     within 24 hours, Monday–Saturday.
                   </Typography>
                 </div>

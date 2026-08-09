@@ -157,8 +157,8 @@ const FeaturesSection = () => {
                 marginTop: "0.75rem",
               }}
             >
-              Hostel, mess, guided admission and an inclusive campus — backed
-              by a quarter-century of national recognition.
+              Hostel, mess and an inclusive campus — backed by a
+              quarter-century of national recognition.
             </Typography>
           </motion.div>
 

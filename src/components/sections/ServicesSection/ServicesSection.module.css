@@ -178,6 +178,48 @@
   min-height: 2.75rem;
 }
 
+/* ========== Seats Left (Session 2026 final closure) ==========
+   Urgent but factual — the number comes from meritProgram.js, so it is the
+   real remaining count for this branch. No countdowns. */
+.seatsBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  margin-bottom: 0.875rem;
+  border: 1px solid rgba(216, 38, 24, 0.28);
+  border-left: 3px solid #D82618;
+  border-radius: 8px;
+  background: rgba(216, 38, 24, 0.06);
+}
+
+.seatsIcon {
+  font-size: 18px;
+  color: #D82618;
+  flex-shrink: 0;
+}
+
+.seatsText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.seatsCount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #B71F12;
+}
+
+.seatsSession {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #6B7280;
+  letter-spacing: 0.02em;
+}
+
 /* ========== Ideal For ========== */
 .idealFor {
   display: flex;
