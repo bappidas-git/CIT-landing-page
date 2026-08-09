@@ -85,6 +85,19 @@ export const trackFormSubmission = (formId, formData = {}) => {
 };
 
 /**
+ * Track a step event in the /apply multi-step application funnel.
+ * Generic passthrough to the gated dataLayer helper so the application form
+ * can push its own funnel events (step views, step completions, and the
+ * intake-year dimension that `trackFormSubmission` deliberately does not carry).
+ * @param {string} eventName - Event name (e.g., 'application_step_view')
+ * @param {Object} data - Non-PII event data (e.g., { step, step_name })
+ */
+export const trackApplicationStep = (eventName, data = {}) => {
+  if (!eventName) return;
+  pushDataLayer(eventName, data);
+};
+
+/**
  * Track CTA button click
  * @param {string} ctaName - CTA identifier (e.g., 'hero_primary_cta')
  * @param {string} ctaLocation - Section where the CTA is located

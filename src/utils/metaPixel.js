@@ -95,6 +95,36 @@ export const trackLead = (leadData = {}) => {
 };
 
 /**
+ * Track SubmitApplication event (browser-side, no PII)
+ * Meta standard event fired ONLY when the full multi-step application at
+ * /apply is completed — never on the Step-1 partial capture, which stays on
+ * the plain Lead event.
+ * @param {Object} params - Non-PII application metadata
+ * @param {string} params.event_id - Event ID shared with the CAPI event for deduplication
+ * @param {string} [params.content_name] - Form source identifier
+ * @param {string} [params.content_category] - Event category
+ */
+export const trackSubmitApplication = (params = {}) => {
+  if (!isPixelReady()) return;
+
+  const { event_id: eventId, ...rest } = params;
+
+  const data = {
+    content_name: rest.content_name || 'apply-full',
+    content_category: rest.content_category || 'application',
+    ...rest,
+  };
+
+  const options = {};
+  if (eventId) {
+    options.eventID = eventId;
+    storeSentEventId(eventId, 'SubmitApplication');
+  }
+
+  window.fbq('track', 'SubmitApplication', data, options);
+};
+
+/**
  * Track ViewContent event
  * @param {Object} contentData - Content data
  * @param {string} [contentData.content_name] - Content name
