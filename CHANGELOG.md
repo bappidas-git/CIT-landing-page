@@ -4,6 +4,80 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Post-test tele-counselling slot booking
+
+Finishing the paper is no longer the end of the funnel. The applicant now
+leaves `/test` with an appointment: the hour in which CIT's Counselling Officer
+will call them, chosen by them, inside the 24 hours after they submitted — and
+written onto the lead so the officer calls at exactly that time.
+
+Still no score anywhere. Every applicant reads the same conditional sentence
+("**if** you qualify"), because the cutoff is the admission team's to apply.
+
+**Added — `public/api/test.php`**
+- `POST ?action=book_slot` — `{ key, slot }`, where `slot` is an ISO UTC
+  timestamp for the start of an hour. Persists `counselling_slot` on the
+  attempt, then stamps the same value on the lead through `patch_lead()` with
+  the fixed activity entry `Counselling slot booked`. Answers
+  `{"success": true, "slot": "<iso>"}`.
+- **Write-once from the student side.** A second booking answers
+  `{"success": true, "already_booked": true, "slot": "<stored iso>"}` and leaves
+  the original untouched — by then the officer has the appointment in their day,
+  so a change is a conversation with the telecaller, not a form. The admin panel
+  can still edit `counselling_slot` on the lead directly.
+- **The window is re-derived server-side; the browser's chip list is
+  convenience, never the authority.** A slot must parse as a UTC ISO timestamp,
+  sit on an hour boundary, fall inside `completed_at … completed_at + 24h`, and
+  not already be in the past (5 minutes of slack for a phone clock that runs
+  fast). Anything else → `{"success": false, "error": "invalid_slot"}`. Booking
+  before the paper is finished → `not_completed`.
+- The shape check runs **before** parsing, because `strtotime()` happily accepts
+  `tomorrow` and `+2 hours` — a lax parse would let a client name any instant it
+  liked where a timestamp belongs.
+- "On the hour" is checked as a quarter-hour boundary in UTC. An hour boundary
+  in the applicant's local time is not one in UTC — IST is UTC+05:30, so 4:00 PM
+  in Tumakuru is `10:30Z` — and every real UTC offset is a whole number of
+  quarter-hours, so this accepts every genuine hour start while still refusing
+  arbitrary instants.
+- Completed responses from `login`, `start`, `state` and `answer` now also carry
+  `completed_at` (the post-test screen measures its 24-hour window from it) plus
+  `slot_booked`, and `slot` once one is booked, so an applicant who logs back in
+  sees their confirmed appointment instead of a picker that could only overwrite
+  it. Still no score, no answers, no pass/fail.
+- Helpers: `parse_client_iso()`, `validate_counselling_slot()`, `attempt_slot()`.
+
+**Added — `src/pages/Test/PostTestScreen.jsx`**
+- Replaces the completion placeholder. Header, the conditional qualification
+  sentence, and an hourly picker: 24 chips grouped `Today` / `Tomorrow`, each
+  reading as the hour it covers (`4:00 – 5:00 PM`), radio semantics, 44 px
+  targets, two across at 360 px and three from 600 px.
+- Confirmed state — also what a returning applicant lands on — states the
+  appointment in full and adds the prep checklist: **10th & 12th marksheets**,
+  **parents present**, **phone reachable, about 15 minutes**.
+- Honest about the clock: chips whose hour has passed drop off a minute-ticking
+  refresh, a selection that expires clears itself, and an `invalid_slot` from the
+  server redraws the list and asks for another pick rather than dead-ending.
+  When the 24 hours have run out entirely the screen says so and hands off to
+  the phone — never an empty picker.
+- Phone + WhatsApp on every branch, through
+  `trackContactClick('phone'|'whatsapp', 'test_post')`.
+- GTM: `counselling_slot_booked`, fired once and carrying **nothing** — no key,
+  no name, no slot time.
+
+**Changed**
+- `src/pages/Test/TestEngine.jsx` passes the completion payload to
+  `onCompleted(data)`, so the post-test screen gets `completed_at` without
+  spending a second round-trip on it.
+- `src/pages/Test/Test.jsx` drops `SubmittedScreen` / `CompletedScreen` for the
+  one `PostTestScreen`; both ways in (straight off the last question, or a later
+  login with a used key) land on the same screen.
+- `src/pages/Test/fields.jsx` adds the icons the screen needs
+  (`IconCalendarClock`, `IconCalendarCheck`, `IconDocument`, `IconFamily`,
+  `IconPhone`, `IconWhatsApp`) — inline SVG paths, no iconify.
+
+**GTM container owner:** `counselling_slot_booked` is a new event and needs a
+trigger. It carries no parameters at all.
+
 ### Test engine — random 15+15 paper, 60-second clock, server-side scoring
 
 The paper is now real. An applicant who accepts the terms gets 30 questions

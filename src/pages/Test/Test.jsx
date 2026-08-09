@@ -20,11 +20,10 @@
    - 360 px first, 44 px touch targets, 16 px
      inputs (no iOS zoom-on-focus jump).
 
-   The engine (screen 4) lives in ./TestEngine —
-   same route chunk, kept separate only because it
-   is a machine of its own. Slot booking arrives
-   with prompt 09 and mounts where the submitted
-   screen sits.
+   The engine (screen 4) lives in ./TestEngine and
+   the post-test slot booking in ./PostTestScreen —
+   same route chunk, kept separate only because each
+   is a machine of its own.
    ============================================ */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -33,7 +32,6 @@ import { Link } from 'react-router-dom';
 import {
   CheckboxField,
   IconAlert,
-  IconCheck,
   IconChevronRight,
   IconClock,
   IconList,
@@ -48,6 +46,7 @@ import {
   formatKey,
   maskKeyBody,
 } from './fields';
+import PostTestScreen from './PostTestScreen';
 import TestEngine from './TestEngine';
 
 import { updatePageSEO } from '../../utils/seo';
@@ -100,29 +99,6 @@ const readStoredKeyBody = () => {
   } catch (error) {
     // Private mode / blocked storage — the applicant types the key instead.
     return '';
-  }
-};
-
-/**
- * Render an ISO timestamp as something an applicant reads at a glance. Falls
- * back to '' rather than printing a raw ISO string if the value is unusable.
- * @param {string} iso - ISO 8601 timestamp from the login response
- * @returns {string} e.g. "10 Aug 2026, 2:35 pm", or ''
- */
-const formatCompletedAt = (iso) => {
-  if (!iso) return '';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-  try {
-    return date.toLocaleString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  } catch (error) {
-    return date.toDateString();
   }
 };
 
@@ -352,72 +328,9 @@ const TermsScreen = ({ accepted, onAcceptedChange, onStart, onBack }) => (
   </div>
 );
 
-/**
- * Screen 5a — the applicant has just submitted. Prompt 09 turns this into the
- * counselling-slot booking; until then it says plainly where the paper went.
- *
- * No score, no answers, no pass/fail — the same words for every applicant,
- * because the cutoff is the admission team's to apply, not this screen's.
- */
-const SubmittedScreen = ({ studentName }) => (
-  <div className={styles.screen}>
-    <h1 className={styles.heading}>
-      {studentName ? `Well done, ${studentName}.` : 'Well done.'}
-    </h1>
-    <p className={styles.intro}>Test submitted. Evaluation in progress.</p>
-    <div className={styles.placeholderBox}>
-      <span className={styles.placeholderIcon}>
-        <IconCheck size={20} />
-      </span>
-      <span>
-        Your answers are with CIT&apos;s admission team. If you qualify, our team
-        will call you to schedule your counselling — keep your phone reachable.
-      </span>
-    </div>
-    <a
-      className={styles.primaryBtn}
-      href={SUPPORT_PHONE_HREF}
-      onClick={() => trackContactClick('phone', 'test_submitted')}
-    >
-      Call {SUPPORT_PHONE}
-    </a>
-  </div>
-);
-
-/**
- * Screen 5b — a key that has already been used, on a later visit. Prompt 09
- * turns this into the counselling-slot booking; until then it says plainly what
- * happens next.
- */
-const CompletedScreen = ({ studentName, completedAt, slotBooked }) => (
-  <div className={styles.screen}>
-    <h1 className={styles.heading}>
-      {studentName ? `${studentName}, your test is done.` : 'Your test is done.'}
-    </h1>
-    <p className={styles.intro}>
-      This key has already been used for its one attempt
-      {completedAt ? ` (submitted ${completedAt})` : ''}. Your answers are with
-      CIT&apos;s admission team.
-    </p>
-    <div className={styles.placeholderBox}>
-      <span className={styles.placeholderIcon}>
-        <IconCheck size={20} />
-      </span>
-      <span>
-        {slotBooked
-          ? 'Your counselling slot is booked — our team will call you to confirm.'
-          : 'Slot booking arrives in the next update. Until then, our admission team will call you with your result and the next step.'}
-      </span>
-    </div>
-    <a
-      className={styles.primaryBtn}
-      href={SUPPORT_PHONE_HREF}
-      onClick={() => trackContactClick('phone', 'test_completed')}
-    >
-      Call {SUPPORT_PHONE}
-    </a>
-  </div>
-);
+/* Screen 5 — the post-test slot booking — lives in ./PostTestScreen. It is the
+   same screen whether the applicant just finished the paper or logged back in
+   afterwards; only where its `completed_at` came from differs. */
 
 // ============================================
 // Page
@@ -435,6 +348,10 @@ const Test = () => {
   // `action=state` for an attempt already in flight, `action=start` for a new
   // one — so a resumed applicant never spends terms-screen seconds twice.
   const [handoff, setHandoff] = useState(null);
+  // What the engine handed back when the paper finished: { completed_at, slot }.
+  // The post-test screen measures its 24-hour booking window from that
+  // timestamp, so it travels rather than being asked for a second time.
+  const [completion, setCompletion] = useState(null);
 
   const keyInputRef = useRef(null);
   const instructionsTrackedRef = useRef(false);
@@ -532,6 +449,9 @@ const Test = () => {
         question_index: Number(data.question_index) || 0,
         completed_at: data.completed_at || '',
         slot_booked: !!data.slot_booked,
+        // Only present when this applicant has already chosen a call time —
+        // the post-test screen then shows the appointment, not a picker.
+        slot: data.slot || '',
         test: data.test || DEFAULT_TEST,
       };
       setSession(nextSession);
@@ -581,7 +501,13 @@ const Test = () => {
     setScreen('instructions');
   }, []);
 
-  const handleEngineCompleted = useCallback(() => {
+  const handleEngineCompleted = useCallback((payload) => {
+    setCompletion({
+      completed_at: (payload && payload.completed_at) || '',
+      // Present only if this key somehow already had an appointment — a resumed
+      // attempt that was finished and booked on another device.
+      slot: (payload && payload.slot) || '',
+    });
     setScreen('done');
   }, []);
 
@@ -648,13 +574,27 @@ const Test = () => {
             />
           )}
 
-          {screen === 'done' && <SubmittedScreen studentName={firstName} />}
+          {/* One screen, two ways in: straight off the last question, or a
+              later login with a key that has already been used. */}
+          {screen === 'done' && session && (
+            <PostTestScreen
+              apiUrl={TEST_API_URL}
+              testKey={session.key}
+              studentName={firstName}
+              completedAt={completion ? completion.completed_at : ''}
+              initialSlot={completion ? completion.slot : ''}
+              returning={false}
+            />
+          )}
 
           {screen === 'completed' && session && (
-            <CompletedScreen
+            <PostTestScreen
+              apiUrl={TEST_API_URL}
+              testKey={session.key}
               studentName={firstName}
-              completedAt={formatCompletedAt(session.completed_at)}
-              slotBooked={session.slot_booked}
+              completedAt={session.completed_at}
+              initialSlot={session.slot}
+              returning
             />
           )}
         </div>

@@ -174,7 +174,10 @@ Same route-bundle discipline as `/apply` — no framer-motion, sweetalert2, icon
 native controls plus inline SVG (`src/pages/Test/fields.jsx`, duplicated per-route on purpose).
 The key field is pre-filled from `sessionStorage.lead_login_key` and accepts the key with or
 without its `CIT26-` prefix. Endpoint comes from `REACT_APP_TEST_API_URL || '/api/test.php'`.
-The engine screen lives in `src/pages/Test/TestEngine.jsx` — same route chunk.
+The engine screen lives in `src/pages/Test/TestEngine.jsx` and the post-test slot booking in
+`src/pages/Test/PostTestScreen.jsx` — same route chunk. `done` and the returning-applicant
+`completed` branch render the *same* `PostTestScreen`; only where its `completed_at` came from
+differs.
 
 ### `test.php` rules that must hold
 
@@ -185,8 +188,9 @@ The engine screen lives in `src/pages/Test/TestEngine.jsx` — same route chunk.
   budget **only when the key fails to resolve** — a running test makes ~30 calls, and CGNAT puts a
   whole district behind one address, so metering every call would lock real students out mid-paper.
 - **Answers and scores never reach the browser.** No response from any action carries a correct
-  option index, a qid, or a score — including the completion response, which is identical for
-  every applicant.
+  option index, a qid, or a score. The completion response carries only paperwork the next screen
+  needs — `completed_at`, `slot_booked`, and `slot` once booked — so nothing in it says how the
+  applicant did, or could be compared between two applicants to infer it.
 - **`?action=login` writes nothing** — it is idempotent reconnaissance, so a refresh leaves no
   trace on the applicant's timeline. The timeline entry for starting belongs to `action=start`.
 - `Cache-Control: no-store` on every response.
@@ -200,8 +204,9 @@ server-side write that appends activity and bumps `updated_at`, and never touche
 `lead_id`, `submitted_at` or `login_key`.
 
 Login states: `not_started` · `in_progress` (+ `question_index`, the first question still in play) ·
-`completed` (+ `completed_at`, `slot_booked`). `action=book_slot` lands with the slot-booking
-prompt — **extend `test.php`, never add a second endpoint.**
+`completed` (+ `completed_at`, `slot_booked`, and `slot` once booked). Anything further on this
+route — **extend `test.php`, never add a second endpoint**: the key-is-the-credential rule, the
+attempt store and the rate-limit policy all live here and a second file would duplicate all three.
 
 ### The test engine (`start` · `state` · `answer`)
 
@@ -210,7 +215,7 @@ no two applicants get the same 30 questions in the same order. The attempt store
 chosen option index only — correctness is derived from the bank at scoring time, so the attempts
 file is not itself an answer key.
 
-**The timing model is exact — prompt 09 and the admin panel read these numbers:**
+**The timing model is exact — the admin panel reads these numbers:**
 
 - A question's 60-second clock starts at its **first** serving (`first_served_at`) and is **never
   re-stamped on resume**. Closing the tab does not pause it.
@@ -229,18 +234,46 @@ file is not itself an answer key.
 
 **Scoring** happens server-side on the 30th finalisation: +4 correct, 0 wrong, 0 blank, max 120.
 No negative marking, so a guess never costs anything. The completion response is
-`{"success": true, "state": "completed", "slot_booked": false}` — **no score to the student**; the
-cutoff is the admission team's to apply.
+`{"success": true, "state": "completed", "completed_at": "<iso>", "slot_booked": false}` —
+**no score to the student**; the cutoff is the admission team's to apply.
+
+### Slot booking (`action=book_slot`)
+
+The last thing an applicant does on this route: pick the hour in which CIT's Counselling Officer
+will call them. Body `{key, slot}`, `slot` an ISO **UTC** timestamp for the start of an hour.
+Success is `{"success": true, "slot": "<canonical iso>"}`.
+
+- **Write-once from the student side.** A second booking answers
+  `{"success": true, "already_booked": true, "slot": "<stored iso>"}` and does **not** move the
+  appointment — by then the officer has it in their day, so a change is a conversation with the
+  telecaller. The admin panel may edit `counselling_slot` on the lead directly.
+- **The server re-derives the window; the browser's chip list is convenience.** A slot must parse
+  as a UTC ISO timestamp, sit on an hour boundary, fall inside
+  `completed_at … completed_at + 24h`, and not already be in the past (5 minutes of slack for a
+  fast phone clock). Otherwise `invalid_slot`. Before the paper is finished: `not_completed`.
+- The **shape check runs before parsing** (`parse_client_iso`), because `strtotime()` accepts
+  `tomorrow` and `+2 hours` — a lax parse would let a client name any instant it liked.
+- "On the hour" is enforced as a **quarter-hour boundary in UTC**. An hour boundary in the
+  applicant's local time is not one in UTC (IST is UTC+05:30, so 4:00 PM is `10:30Z`), and every
+  real UTC offset is a whole number of quarter-hours.
+- Writes `counselling_slot` to the attempt **and** to the lead via `patch_lead()`, with the fixed
+  activity string **`Counselling slot booked`** — the admin timeline renders on it.
+
+Client side, `PostTestScreen` never shows a chip the server would refuse: expired hours drop off a
+one-minute refresh, an expired selection clears itself, and an `invalid_slot` redraws the list and
+asks for another pick. Once the 24 hours are gone it says so and hands off to the phone rather than
+rendering an empty picker.
 
 **Lead fields the engine writes** (server-authored via `patch_lead` only): `test_status`
 (`in_progress` → `completed`), `test_started_at`, `test_completed_at`, `test_score`,
 `test_maths_score`, `test_physics_score`, `test_correct_count`, `test_wrong_count`,
-`test_blank_count`, and `test_qualified` *only* when `TEST_QUALIFY_CUTOFF` is defined in
-`config.php` (it ships commented out — absent means "not decided", where a stored `false` would
-read as "rejected"). **None of these are in `lead_field_whitelist()` in `leads.php`**, so a bot
-POSTing `test_score: 120` to `?action=create` finds it stripped. Activity strings are fixed:
-`Merit test started` and `Merit test completed — scored` — no marks in the timeline, which gets
-read out to applicants over the phone.
+`test_blank_count`, `counselling_slot` (ISO UTC, the booked call hour), and `test_qualified`
+*only* when `TEST_QUALIFY_CUTOFF` is defined in `config.php` (it ships commented out — absent
+means "not decided", where a stored `false` would read as "rejected"). **None of these are in
+`lead_field_whitelist()` in `leads.php`**, so a bot POSTing `test_score: 120` to `?action=create`
+finds it stripped. Activity strings are fixed: `Merit test started`,
+`Merit test completed — scored` and `Counselling slot booked` — no marks in the timeline, which
+gets read out to applicants over the phone.
 
 ## Meta Quality Feedback Loop
 
@@ -276,15 +309,18 @@ rendered on the page.
 | `QualifiedLead` / `Purchase` | Admin status change | Server only |
 | `application_step_view` / `application_step_complete` | Each `/apply` step, `step: 1…5` | GTM only |
 | `merit_test_login` / `merit_test_instructions_view` | `/test` login accepted; instructions shown | GTM only |
+| `merit_test_start` / `merit_test_complete` | Paper drawn; paper submitted | GTM only |
+| `counselling_slot_booked` | Tele-counselling hour confirmed on `/test` | GTM only |
 
 **GTM container owner:** the funnel now runs to **step 5** (`step_name: 'fees_branches'`), so
 `application_step_view` and `application_step_complete` each fire one new step value. Add
 triggers for them, and note that `application_step_complete` for the final step reports
 `step: 5, step_name: 'fees_branches'` (it was `4` / `'logistics'`) — any trigger pinned to
-step 4 as "application finished" must be re-pointed or it will silently stop firing. The two
-`merit_test_*` events are also new and need triggers; both carry only `test_state`
-(`not_started` | `in_progress` | `completed`) — **never the login key, the student's name or any
-other PII.**
+step 4 as "application finished" must be re-pointed or it will silently stop firing. The
+`merit_test_*` events also need triggers; they carry only `test_state`
+(`not_started` | `in_progress` | `completed`). `counselling_slot_booked` needs one too and carries
+**no parameters at all** — not the chosen hour, and certainly not the login key or the student's
+name. **No `/test` event ever carries PII.**
 
 Phone and WhatsApp taps go through **`src/utils/contactTracking.js` → `trackContactClick(channel, source)`**,
 which fires all three legs from one call. Call it *instead of* `trackPhoneClick` /
