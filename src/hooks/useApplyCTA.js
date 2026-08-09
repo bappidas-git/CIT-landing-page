@@ -64,6 +64,25 @@ export const setApplyCourse = (course) => {
 };
 
 /**
+ * Stash the CTA key that sent a visitor to /apply, so applicationSubmit.js can
+ * write it onto the lead as `<key>/step1-partial` and `<key>/full`.
+ *
+ * Exported for the handful of CTAs that pre-date this hook and keep their own
+ * `trackCTAClick` call (their GTM event names are already in use by live
+ * campaign reporting, so they must not be re-shaped). Without this the lead
+ * falls back to `apply-direct` and CTA-level attribution is lost.
+ *
+ * @param {string} source - CTA source key ('apply-now', 'get-details', …)
+ */
+export const setApplySource = (source) => {
+  try {
+    sessionStorage.setItem(APPLY_SOURCE_KEY, source);
+  } catch (error) {
+    // Private mode — applicationSubmit falls back to 'apply-direct'.
+  }
+};
+
+/**
  * Build the handlers for a CTA that sends the visitor to the application form.
  *
  * @param {string} source - CTA source key: 'apply-now' | 'get-details' |
@@ -84,11 +103,7 @@ const useApplyCTA = (source = 'default', options = {}) => {
       label || CTA_TEXT[source] || CTA_TEXT.default
     );
 
-    try {
-      sessionStorage.setItem(APPLY_SOURCE_KEY, source);
-    } catch (error) {
-      // Private mode — applicationSubmit falls back to 'apply-direct'.
-    }
+    setApplySource(source);
 
     navigate('/apply');
   }, [source, location, label, navigate]);

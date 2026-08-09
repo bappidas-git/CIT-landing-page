@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
+import { trackContactClick } from "../../../utils/contactTracking";
 import Button from "../../common/Button/Button";
 import styles from "./SecondaryCTASection.module.css";
 
@@ -150,13 +151,14 @@ const SecondaryCTASection = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.whatsappBtn}
-                  onClick={() =>
+                  onClick={() => {
                     trackCTAClick(
                       "secondary_cta_whatsapp",
                       "secondary_cta",
                       "WhatsApp Us",
-                    )
-                  }
+                    );
+                    trackContactClick("whatsapp", "secondary_cta");
+                  }}
                 >
                   <Icon icon="mdi:whatsapp" style={{ fontSize: "1.3rem" }} />
                   WhatsApp Us
@@ -167,13 +169,14 @@ const SecondaryCTASection = () => {
                 <a
                   href="tel:+918069645014"
                   className={styles.phoneLink}
-                  onClick={() =>
+                  onClick={() => {
                     trackCTAClick(
                       "secondary_cta_call",
                       "secondary_cta",
                       "Call CIT",
-                    )
-                  }
+                    );
+                    trackContactClick("phone", "secondary_cta");
+                  }}
                 >
                   <Icon icon="mdi:phone" className={styles.phoneIcon} />
                   +91 8069645014

@@ -12,6 +12,7 @@ import confetti from "canvas-confetti";
 import styles from "./ThankYou.module.css";
 import { updatePageSEO } from "../../utils/seo";
 import { seoConfig } from "../../config/seo";
+import { trackContactClick } from "../../utils/contactTracking";
 
 // Trust badges
 const trustBadges = [
@@ -332,6 +333,7 @@ const ThankYou = () => {
                     <a
                       href="tel:+918069645014"
                       className={styles.contactValue}
+                      onClick={() => trackContactClick("phone", "thank_you")}
                     >
                       {contactInfo.phone}
                     </a>
@@ -357,6 +359,7 @@ const ThankYou = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.contactValue}
+                      onClick={() => trackContactClick("whatsapp", "thank_you")}
                     >
                       {contactInfo.whatsapp}
                     </a>
@@ -405,6 +408,7 @@ const ThankYou = () => {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.whatsappBtn}
+              onClick={() => trackContactClick("whatsapp", "thank_you_cta")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

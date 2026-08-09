@@ -19,6 +19,7 @@
 import React from "react";
 import { Container } from "@mui/material";
 import { faqData } from "../../../data/faqData";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./FAQSection.module.css";
 
 const SUPPORT_PHONE_DISPLAY = "+91 8069645014";
@@ -72,7 +73,11 @@ const FAQSection = () => (
 
       <p className={styles.footNote}>
         Something we haven&apos;t answered? Call{" "}
-        <a href={SUPPORT_PHONE_HREF} className={styles.footLink}>
+        <a
+          href={SUPPORT_PHONE_HREF}
+          className={styles.footLink}
+          onClick={() => trackContactClick("phone", "faq")}
+        >
           {SUPPORT_PHONE_DISPLAY}
         </a>{" "}
         — our admission team responds within 24 hours, Monday–Saturday.

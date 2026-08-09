@@ -17,6 +17,7 @@ import { Icon } from "@iconify/react";
 import EligibilityStrip from "../../common/EligibilityStrip";
 import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
+import { setApplySource } from "../../../hooks/useApplyCTA";
 import styles from "./AdmissionProcessSection.module.css";
 
 const steps = [
@@ -84,6 +85,7 @@ const AdmissionProcessSection = () => {
 
   const handleApplyClick = () => {
     trackCTAClick("process-apply", "admission_process", "Start Step 1 Now");
+    setApplySource("apply-now");
     navigate("/apply");
   };
 

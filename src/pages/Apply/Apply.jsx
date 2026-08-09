@@ -40,6 +40,7 @@ import {
 
 import { updatePageSEO } from '../../utils/seo';
 import { trackApplicationStep } from '../../utils/gtm';
+import { trackContactClick } from '../../utils/contactTracking';
 import {
   APPLY_DRAFT_KEY,
   SUPPORT_PHONE,
@@ -661,7 +662,13 @@ const Apply = () => {
                       >
                         Retry submission
                       </button>
-                      <a className={styles.callLink} href={SUPPORT_PHONE_HREF}>
+                      <a
+                        className={styles.callLink}
+                        href={SUPPORT_PHONE_HREF}
+                        onClick={() =>
+                          trackContactClick('phone', 'apply_submit_error')
+                        }
+                      >
                         or call {SUPPORT_PHONE}
                       </a>
                     </span>

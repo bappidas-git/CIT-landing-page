@@ -9,6 +9,7 @@ import { Container, IconButton } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./Footer.module.css";
 
 const CIT_LOGO_URL =
@@ -271,6 +272,9 @@ const Footer = () => {
                       <a
                         href={`tel:${PRIMARY_PHONE}`}
                         className={`${styles.contactChip} ${styles.contactChipCall}`}
+                        onClick={() =>
+                          trackContactClick("phone", "footer", PRIMARY_PHONE)
+                        }
                         aria-label={`Call ${PRIMARY_PHONE_DISPLAY}`}
                       >
                         <Icon icon="mdi:phone" />
@@ -281,6 +285,7 @@ const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`${styles.contactChip} ${styles.contactChipWhatsapp}`}
+                        onClick={() => trackContactClick("whatsapp", "footer")}
                         aria-label={`Chat on WhatsApp with ${PRIMARY_PHONE_DISPLAY}`}
                       >
                         <Icon icon="mdi:whatsapp" />

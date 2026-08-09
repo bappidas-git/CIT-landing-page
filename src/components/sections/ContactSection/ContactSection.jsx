@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import UnifiedLeadForm from "../../common/UnifiedLeadForm/UnifiedLeadForm";
 import { locationData } from "../../../data/locationData";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./ContactSection.module.css";
 
 const ContactSection = () => {
@@ -79,6 +80,7 @@ const ContactSection = () => {
           href: `tel:${locationData.phone}`,
           ariaLabel: `Call CIT admissions at ${locationData.phoneDisplay}`,
           variant: "call",
+          channel: "phone",
         },
         {
           icon: "mdi:whatsapp",
@@ -87,6 +89,7 @@ const ContactSection = () => {
           external: true,
           ariaLabel: `Chat with CIT admissions on WhatsApp at ${locationData.phoneDisplay}`,
           variant: "whatsapp",
+          channel: "whatsapp",
         },
       ],
     },
@@ -127,6 +130,9 @@ const ContactSection = () => {
             <a
               href={`tel:${locationData.phone}`}
               className={styles.quickActionBtn}
+              onClick={() =>
+                trackContactClick("phone", "contact_quick_action", locationData.phone)
+              }
             >
               <Icon icon="mdi:phone" className={styles.quickActionIcon} />
               <span>Call {locationData.phoneDisplay}</span>
@@ -136,6 +142,9 @@ const ContactSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               className={`${styles.quickActionBtn} ${styles.quickActionWhatsapp}`}
+              onClick={() =>
+                trackContactClick("whatsapp", "contact_quick_action")
+              }
             >
               <Icon icon="mdi:whatsapp" className={styles.quickActionIcon} />
               <span>WhatsApp Admissions</span>
@@ -180,6 +189,13 @@ const ContactSection = () => {
                                   key={subIndex}
                                   href={action.href}
                                   aria-label={action.ariaLabel}
+                                  onClick={() =>
+                                    trackContactClick(
+                                      action.channel,
+                                      "contact_card",
+                                      locationData.phone,
+                                    )
+                                  }
                                   className={`${styles.contactActionPill} ${styles[`contactAction_${action.variant}`]}`}
                                   {...(action.external
                                     ? {

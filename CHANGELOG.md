@@ -4,6 +4,131 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### From an enquiry funnel to a high-intent application funnel
+
+Meta was producing junk leads for a structural reason: it optimised on a
+zero-friction `Lead` event and never received any quality feedback, the 5-field
+enquiry form carried no qualification signal, the copy repeated "free" and fake
+scarcity, and `?action=create` was public with no server-side validation. This
+release addresses all four.
+
+**High-Intent Application Funnel (New)**
+- New full-page multi-step application at `/apply` — `src/pages/Apply/`
+  (`Apply.jsx`, `fields.jsx`, `EligibilityBadge.jsx`, `preload.js`, and the four
+  steps `StepIdentity`, `StepAcademics`, `StepFamilyFinance`, `StepLogistics`).
+  Mobile-first at 360 px: only the active step is mounted, CSS-only transitions,
+  no framer-motion / sweetalert2 / iconify on the route.
+- Subject-marks entry with live eligibility computation
+  ((Physics + Maths + best other) / 3) via `src/utils/applicationValidators.js`,
+  surfaced by `EligibilityBadge`.
+- Step-1 partial capture — completing Step 1 immediately writes a
+  `lead_tier: 'partial'` lead, so a mid-form abandoner is still workable. The
+  final submit re-posts the same `lead_id` and upgrades it to
+  `lead_tier: 'application'` (`src/utils/applicationSubmit.js`).
+- sessionStorage drafts plus a localStorage retry queue, so a dropped Jio
+  connection never costs an applicant their answers or loses a completed
+  application.
+- `src/hooks/useApplyCTA.js` — the one CTA handler on the site: warms the
+  `/apply` chunk on `pointerdown`, fires `cta_click`, and stashes the CTA key so
+  each lead records which CTA produced it.
+- Every CTA re-pointed to `/apply` (Header, Hero, CTASection,
+  SecondaryCTASection, ContactSection, LocationSection, ServicesSection,
+  FeaturesSection, WhyChooseCIT, MobileNavigation, MobileDrawer).
+- New content sections: `FeesFundingSection` (transparency promise, no
+  numbers), `AdmissionProcessSection`, `EligibilityStrip`, `FAQSection` with
+  FAQ schema, and `TestimonialsSection` behind an `isLive` flag.
+- Hero reworked from an embedded enquiry form into an application pitch card.
+
+**Tracking Fixes**
+- `SubmitApplication` added as a distinct Meta event for completed applications
+  (`metaPixel.js`, `metaCAPI.js`, `meta-capi.php` whitelist) — pixel and CAPI
+  share one `event_id` so the pair deduplicates.
+- Fixed phone hashing for Meta/Google: numbers are now normalised to E.164
+  (`91` + subscriber digits) before SHA-256 (`metaCAPI.js`,
+  `enhancedConversions.js`). Previously hashed in a format Meta could not match.
+- Fixed the Google Ads offline-conversion export, which filtered on a
+  `'converted'` status that does not exist in `leadStatus.js` and therefore
+  exported 0 rows forever — it now filters on the canonical `completed` key
+  (`src/admin/utils/googleAdsExport.js`).
+- Fixed the course → dataLayer key mismatch in `trackFormSubmission`, which was
+  silently sending an empty `investmentInterest` (`src/utils/gtm.js`).
+- New `src/utils/attribution.js` — first-touch persistence of `utm_*`, `gclid`,
+  `fbclid`, `fbp` and `fbc`, so a visitor who lands on `/` with ad parameters and
+  only then navigates to `/apply` keeps full attribution on the lead.
+- Unicode-safe name validation, so applicants with non-ASCII names are no longer
+  rejected.
+
+**Lead API Hardening** (`public/api/leads.php`)
+- Server-side field whitelist and length caps — unknown keys are dropped.
+- Honeypot (`website`), read before the whitelist strips it and never stored.
+- Time-trap on `submitted_at − form_started_at` (`LEADS_MIN_FORM_SECONDS`).
+- Suspicious-number flagging (repeated-digit and straight-sequence mobiles).
+- Sliding-window per-IP rate limiting (`LEADS_RATE_LIMIT_MAX` / `_WINDOW`),
+  failing open on I/O trouble so infrastructure hiccups never drop real leads.
+- Anti-bot rejections respond exactly like a success, so a bot learns nothing;
+  flagged payloads are stored as `lead_tier: 'spam'` instead of being lost.
+- Upsert by `lead_id` and silent duplicate merge by `mobile` — a re-submitter is
+  a hot lead, not an error. The old `duplicate` response flag is gone; it was a
+  public enumeration vector for stored phone numbers.
+- Removed the committed fallback admin key from `leads.php` **and**
+  `telecalls.php`. Both now answer `503` until `ADMIN_API_KEY` is configured —
+  a default key that ships in the repository cannot gate anything.
+
+**Admin Qualification Data**
+- Lead detail regrouped into Academic Details / Family & Funding / Logistics
+  with the full application payload rendered (`src/admin/pages/LeadDetail.jsx`).
+- Lead quality score and lead-tier badges (`src/admin/utils/leadQuality.js`);
+  partial leads are visually distinct and filterable.
+- New list columns and filters (tier, eligibility, intake year, funding plan)
+  plus updated search and CSV export (`LeadManagement.jsx`, `leadService.js`),
+  covered by `src/admin/utils/__tests__/csvRoundTrip.test.js`.
+- Dashboard counts split by lead tier.
+
+**Meta Quality Feedback Loop**
+- New `public/api/capi-feedback.php` — a shared server-side CAPI sender included
+  by both stores. Telecaller verdicts now flow back to Meta: `contacted` / `hot`
+  → `QualifiedLead`, `completed` / `seat_booked` → `Purchase` with
+  `currency: INR` and a value from `CONVERSION_VALUE_ADMISSION`.
+- Events fire only on a genuine status transition; `event_id` is
+  `"{event}_{recordId}"` so retries deduplicate; `action_source` is
+  `system_generated`.
+- `user_data` is hashed server-side from the stored record only — never the
+  admin's cookies, IP or user agent. The event is about the applicant, not the
+  telecaller looking at it.
+- Fire-and-forget with a 3s timeout after the HTTP response is flushed, so a
+  slow or unreachable Meta can never block or fail an admin save. Failures land
+  in `public/api/data/capi-feedback.log`; missing credentials are a silent no-op.
+- New `src/utils/contactTracking.js` — `trackContactClick(channel, source)`
+  fires GTM `phone_click`/`whatsapp_click`, the Meta Pixel `Contact` event and
+  the Google Ads call conversion from one call site. The Meta and Google legs
+  previously existed as dead code with zero callers; phone and WhatsApp taps
+  were an invisible side door out of the funnel. Now wired at every `tel:` and
+  WhatsApp surface (Header, Footer, MobileNavigation, MobileDrawer, Hero,
+  WhyChooseCIT, CTASection, SecondaryCTASection, ContactSection, LocationSection,
+  FAQSection, ThankYou and the `/apply` submit-error banner).
+- `MetaAdsGuide` rewritten as a campaign playbook for this funnel: the
+  three-tier optimisation-event model, the students 17-24 / parents 35-55 ad-set
+  split across the 8 NE states, manual placements excluding Audience Network,
+  eligibility-led creative guidance, quality-seeded lookalikes and Step-1-partial
+  retargeting, an Events Manager verification walkthrough, and an operator
+  launch checklist.
+- New `LAUNCH_NOTES.md` — pre-launch operator runbook (rotate the admin key,
+  configure Meta credentials and `CONVERSION_VALUE_ADMISSION`, supply real
+  testimonials and recruiter logos, weekly Google offline-conversion upload).
+
+**Removed**
+- Placeholder recruiter logos. The wall rendered machine-generated
+  `placehold.co` images, which read as a broken page to a parent choosing a
+  college. It now renders name chips, and an image can only appear by adding
+  licensed artwork to `RECRUITER_LOGOS` in `StatsSection.jsx`.
+- The "PG & Research" block from `ContactSection.jsx` — the campaign sells B.E.
+  2026 admission, and PG copy pulled traffic off that offer.
+- Drawer reachability. `openLeadDrawer()` now has zero call sites, so the short
+  enquiry form is no longer reachable from anywhere. `LeadFormDrawer`,
+  `UnifiedLeadForm`, `ModalContext` and `webhookSubmit.js` stay in the repo
+  untouched.
+- "Free counselling" angles and fabricated scarcity from public copy.
+
 ### Server-side leads as the single source of truth (cross-device sync fix)
 
 **Fixed**

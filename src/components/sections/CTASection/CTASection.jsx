@@ -11,6 +11,7 @@ import { Icon } from "@iconify/react";
 import Button from "../../common/Button/Button";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./CTASection.module.css";
 
 const reassurances = [
@@ -70,6 +71,7 @@ const CTASection = () => {
 
   const handleCallClick = () => {
     trackCTAClick("primary_cta_call", "mid_page_cta", "Call CIT");
+    trackContactClick("phone", "mid_page_cta");
   };
 
   return (

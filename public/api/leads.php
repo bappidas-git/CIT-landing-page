@@ -99,6 +99,12 @@ if ($adminKey === '') {
     }
 }
 
+// ----- Meta lead-quality feedback -----
+// send_capi_feedback() pushes telecaller verdicts (status changes) back to
+// Meta as server-side conversions. It no-ops silently when Meta credentials
+// are absent and can never fail a save — see capi-feedback.php.
+require_once __DIR__ . '/capi-feedback.php';
+
 // ----- Anti-bot tuning (optional config.php overrides, sane defaults) -----
 $rateLimitMax    = defined('LEADS_RATE_LIMIT_MAX') ? max(1, (int) LEADS_RATE_LIMIT_MAX) : 5;        // creates per IP per window
 $rateLimitWindow = defined('LEADS_RATE_LIMIT_WINDOW') ? max(60, (int) LEADS_RATE_LIMIT_WINDOW) : 3600; // window in seconds
@@ -492,8 +498,13 @@ if ($method === 'POST' && $action === 'update') {
     }
     $leads = load_leads($dataFile);
     $found = false;
+    // Captured for the Meta quality-feedback hook below: the status BEFORE the
+    // patch, and the merged lead the applicant's identifiers are read from.
+    $oldStatus   = '';
+    $mergedLead  = null;
     foreach ($leads as &$lead) {
         if (($lead['lead_id'] ?? null) === $id) {
+            $oldStatus = isset($lead['status']) && is_string($lead['status']) ? $lead['status'] : '';
             foreach ($patch as $k => $v) {
                 if (($k === 'notes' || $k === 'activity') && is_array($v)) {
                     // Append-only arrays: union with what we already have so a
@@ -506,7 +517,8 @@ if ($method === 'POST' && $action === 'update') {
                     $lead[$k] = $v;
                 }
             }
-            $found = true;
+            $found      = true;
+            $mergedLead = $lead;
             break;
         }
     }
@@ -518,6 +530,27 @@ if ($method === 'POST' && $action === 'update') {
     }
     save_leads($dataFile, $leads);
     echo json_encode(['success' => true]);
+
+    // ----- Meta lead-quality feedback (after the response, never before) -----
+    // Answer the admin panel first, then spend up to 3s talking to Meta, so a
+    // slow or unreachable Graph API is invisible to the telecaller saving a
+    // status. Under FPM the response is already on the wire by this point.
+    if (function_exists('fastcgi_finish_request')) {
+        @fastcgi_finish_request();
+    }
+    // Fire only on a GENUINE transition — re-saving a lead that is already
+    // "Hot" must not re-send the verdict. (The deterministic event_id in
+    // capi-feedback.php is the second guard, so a retry still dedupes.)
+    $newStatus = (isset($patch['status']) && is_string($patch['status'])) ? $patch['status'] : null;
+    if ($newStatus !== null && $newStatus !== $oldStatus && is_array($mergedLead)) {
+        if ($newStatus === 'contacted') {
+            // "Hot" — the telecaller reached a real, interested applicant.
+            send_capi_feedback($mergedLead, 'QualifiedLead');
+        } elseif ($newStatus === 'completed') {
+            // "Seat Booked" — the outcome the whole campaign is paying for.
+            send_capi_feedback($mergedLead, 'Purchase', capi_feedback_admission_value());
+        }
+    }
     exit;
 }
 

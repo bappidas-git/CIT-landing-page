@@ -36,20 +36,38 @@ The campaign was producing junk leads because:
   time-trap + server-side validation + rate limiting + WhatsApp-confirmation
   checkbox.
 
+## Status: COMPLETE ✅
+
+All six prompts (01–06) have been executed and their acceptance criteria
+verified. This folder is now a **historical record of the intent**, not a
+to-do list — do not re-run it against the current codebase.
+
+Two sections below stay live and are still referenced by the code and by
+`CLAUDE.md`:
+
+- **"Canonical new-field schema"** — the authoritative field vocabulary for the
+  lead object. Any new lead field must be added there first.
+- **"Confirmed product decisions"** — no fee amounts, `/apply` as the sole
+  capture surface, 2026-only copy, mandatory-field list, no OTP/CAPTCHA.
+
+For what shipped, see `CHANGELOG.md` → `[Unreleased]`. For the architecture as
+it now stands, see `CLAUDE.md`. For what an operator must configure before the
+campaign goes live, see `LAUNCH_NOTES.md`.
+
 ## Execution order
 
 Run strictly in order. Each prompt is self-contained; later prompts depend on
 earlier ones. After each prompt: `npm run build` must pass and the acceptance
 criteria in the prompt must be verified.
 
-| # | File | What it does |
-|---|------|--------------|
-| 01 | `01-tracking-attribution-and-lead-api-hardening.md` | Fixes all tracking bugs (E.164 hashing, `'converted'` status bug, course→dataLayer mismatch), adds fbclid/UTM persistence, unicode-safe validators, and hardens `leads.php` (validation, honeypot, time-trap, rate limit, silent duplicate merge, upsert). No visible UI change. |
-| 02 | `02-apply-multistep-application-form.md` | Builds the `/apply` full-page 4-step application form with subject-marks entry, live eligibility computation, Step-1 partial capture, sessionStorage drafts, and `SubmitApplication` tracking. |
-| 03 | `03-landing-content-part1-hero-fees-process-eligibility.md` | Hero rework (embedded form → application CTA card), new Fees & Funding section (no numbers), new Admission Process section, eligibility strip. |
-| 04 | `04-landing-content-part2-cta-trust-proof-faq.md` | Re-points every CTA to `/apply`, tones down "free"/scarcity copy, fixes the recruiter wall, adds testimonials scaffold + FAQ section with schema. |
-| 05 | `05-admin-panel-qualification-data.md` | Admin panel: grouped lead detail (Academic Details / Family & Funding / Logistics), new list columns + filters, lead quality score, partial-lead handling, CSV/search updates. |
-| 06 | `06-meta-quality-feedback-loop-and-guides.md` | Server-side status→Meta CAPI feedback (`QualifiedLead`/`Purchase`), `Contact` events on phone/WhatsApp clicks, MetaAdsGuide rewrite, CLAUDE.md + CHANGELOG updates, final QA checklist. |
+| # | File | What it does | Status |
+|---|------|--------------|--------|
+| 01 | `01-tracking-attribution-and-lead-api-hardening.md` | Fixes all tracking bugs (E.164 hashing, `'converted'` status bug, course→dataLayer mismatch), adds fbclid/UTM persistence, unicode-safe validators, and hardens `leads.php` (validation, honeypot, time-trap, rate limit, silent duplicate merge, upsert). No visible UI change. | ✅ Done |
+| 02 | `02-apply-multistep-application-form.md` | Builds the `/apply` full-page 4-step application form with subject-marks entry, live eligibility computation, Step-1 partial capture, sessionStorage drafts, and `SubmitApplication` tracking. | ✅ Done |
+| 03 | `03-landing-content-part1-hero-fees-process-eligibility.md` | Hero rework (embedded form → application CTA card), new Fees & Funding section (no numbers), new Admission Process section, eligibility strip. | ✅ Done |
+| 04 | `04-landing-content-part2-cta-trust-proof-faq.md` | Re-points every CTA to `/apply`, tones down "free"/scarcity copy, fixes the recruiter wall, adds testimonials scaffold + FAQ section with schema. | ✅ Done |
+| 05 | `05-admin-panel-qualification-data.md` | Admin panel: grouped lead detail (Academic Details / Family & Funding / Logistics), new list columns + filters, lead quality score, partial-lead handling, CSV/search updates. | ✅ Done |
+| 06 | `06-meta-quality-feedback-loop-and-guides.md` | Server-side status→Meta CAPI feedback (`QualifiedLead`/`Purchase`), `Contact` events on phone/WhatsApp clicks, MetaAdsGuide rewrite, CLAUDE.md + CHANGELOG updates, final QA checklist. | ✅ Done |
 
 ## Non-negotiable rules (apply to every prompt)
 
