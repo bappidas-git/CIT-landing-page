@@ -16,9 +16,9 @@ The page is a **high-intent application funnel**, not an enquiry funnel. Campaig
 - `src/hooks/` — Custom hooks (`useApplyCTA`, useGTMTracking, useInView, useMediaQuery, etc.)
 - `src/utils/` — Utility functions (webhook, application submit, attribution, GTM, Meta Pixel, contact tracking, Google Ads, validators)
 - `src/admin/` — Admin panel (components, pages, context, utils)
-- `src/pages/` — Full pages (`Apply`, ThankYou)
+- `src/pages/` — Full pages (`Apply`, ThankYou, `Test`)
 - `public/` — Static assets, index.html, manifest, robots.txt, sitemap.xml
-- `public/api/` — Server-side endpoints (`leads.php` shared lead store, `telecalls.php`, Meta CAPI, `capi-feedback.php`, offline conversions)
+- `public/api/` — Server-side endpoints (`leads.php` shared lead store, `telecalls.php`, `test.php` merit-test API, Meta CAPI, `capi-feedback.php`, offline conversions)
 
 ## Lead Capture Architecture
 
@@ -157,6 +157,46 @@ engineering-entrance standard, every one answerable in ≤ 60 seconds. An attemp
   (`(x + 1)/(x − 1)`), matrices row-listed as `[[a, b], [c, d]]`, vectors as `î, ĵ, k̂`. Any
   physical constant a student needs is supplied inside the question itself.
 
+## Merit Test Platform (`/test` + `public/api/test.php`)
+
+**Route map:** `/` · `/apply` · `/thank-you` · **`/test`** · `/admin/*`. `/test` is lazy-loaded
+in `App.jsx`, `noindex, nofollow` (restoring `index, follow` on unmount, the same trick
+`Apply.jsx` uses), and deliberately **absent from `public/sitemap.xml`** — it is reachable only
+by an applicant holding a key.
+
+**The login key IS the credential.** There is no admin key on any student-facing action, and
+`test.php` **never accepts a `lead_id` from the browser** — every request resolves the applicant
+by scanning `leads.json` for the `CIT26-XXXXX` key `leads.php` issued them. A client that could
+name its own `lead_id` could sit someone else's test.
+
+`src/pages/Test/` is a screen-state machine: `login → instructions → tnc → engine → done`.
+Same route-bundle discipline as `/apply` — no framer-motion, sweetalert2, iconify or MUI popovers;
+native controls plus inline SVG (`src/pages/Test/fields.jsx`, duplicated per-route on purpose).
+The key field is pre-filled from `sessionStorage.lead_login_key` and accepts the key with or
+without its `CIT26-` prefix. Endpoint comes from `REACT_APP_TEST_API_URL || '/api/test.php'`.
+
+### `test.php` rules that must hold
+
+- **One generic error.** A malformed key, an unknown key and a rate-limited request all answer
+  `{"success": false, "error": "invalid_key"}` with HTTP 200. Anything more specific turns the
+  endpoint into an oracle for which keys exist. Login is rate-limited to **30 attempts per IP per
+  hour** (`data/test_ratelimit.json`, fails open).
+- **Answers and scores never reach the browser.** No login response carries them, in any state.
+- **`?action=login` writes nothing** — it is idempotent reconnaissance, so a refresh leaves no
+  trace on the applicant's timeline. The timeline entry for starting belongs to `action=start`.
+- `Cache-Control: no-store` on every response.
+
+**Attempt store:** `public/api/data/test_attempts.json`, keyed on the login key (not the lead), so
+a re-issued lead record can never hand out a second attempt. It lives in the same deny-all `data/`
+folder as `leads.json`. `leads.json` is read here and written *only* through `patch_lead()` — an
+internal server-side write that appends activity and bumps `updated_at`, and never touches
+`notes`, `lead_id`, `submitted_at` or `login_key`.
+
+Login states: `not_started` · `in_progress` (+ `question_index`, the first unanswered question) ·
+`completed` (+ `completed_at`, `slot_booked`). `action=start` / `answer` / `state` land with the
+test-engine prompt and `action=book_slot` with the slot-booking prompt — **extend `test.php`,
+never add a second endpoint.**
+
 ## Meta Quality Feedback Loop
 
 Meta optimises for whatever conversion event it receives, so a zero-friction `Lead` event teaches
@@ -190,12 +230,16 @@ rendered on the page.
 | `Contact` / `phone_click` / `whatsapp_click` | Any phone or WhatsApp tap | GTM + Meta Pixel + Google Ads call conversion |
 | `QualifiedLead` / `Purchase` | Admin status change | Server only |
 | `application_step_view` / `application_step_complete` | Each `/apply` step, `step: 1…5` | GTM only |
+| `merit_test_login` / `merit_test_instructions_view` | `/test` login accepted; instructions shown | GTM only |
 
 **GTM container owner:** the funnel now runs to **step 5** (`step_name: 'fees_branches'`), so
 `application_step_view` and `application_step_complete` each fire one new step value. Add
 triggers for them, and note that `application_step_complete` for the final step reports
 `step: 5, step_name: 'fees_branches'` (it was `4` / `'logistics'`) — any trigger pinned to
-step 4 as "application finished" must be re-pointed or it will silently stop firing.
+step 4 as "application finished" must be re-pointed or it will silently stop firing. The two
+`merit_test_*` events are also new and need triggers; both carry only `test_state`
+(`not_started` | `in_progress` | `completed`) — **never the login key, the student's name or any
+other PII.**
 
 Phone and WhatsApp taps go through **`src/utils/contactTracking.js` → `trackContactClick(channel, source)`**,
 which fires all three legs from one call. Call it *instead of* `trackPhoneClick` /

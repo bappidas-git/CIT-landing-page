@@ -45,6 +45,7 @@ import ProtectedRoute from './admin/components/ProtectedRoute';
 // Pages (Lazy loaded)
 const ApplyPage = lazy(() => import('./pages/Apply'));
 const ThankYouPage = lazy(() => import('./pages/ThankYou/ThankYou'));
+const TestPage = lazy(() => import('./pages/Test'));
 const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
 
 // Lazy loaded sections for performance (Below the fold)
@@ -677,6 +678,16 @@ const App = () => {
                 element={
                   <Suspense fallback={<SectionLoader height={400} variant="default" />}>
                     <ThankYouPage />
+                  </Suspense>
+                }
+              />
+
+              {/* Merit Assessment Test — login key is the only credential */}
+              <Route
+                path="/test"
+                element={
+                  <Suspense fallback={<SectionLoader height={400} variant="default" />}>
+                    <TestPage />
                   </Suspense>
                 }
               />

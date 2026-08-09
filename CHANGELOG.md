@@ -4,6 +4,78 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Test platform foundation — `/test`, key login, instructions, T&C
+
+The applicant now has somewhere to spend the key they were handed on
+`/thank-you`. This is the scaffold the test engine mounts into: the route, the
+login handshake and the two screens an applicant reads before committing to a
+one-shot, no-going-back paper.
+
+**Added**
+- `public/api/test.php` — the merit-test API, a standalone sibling of
+  `leads.php` / `telecalls.php` (same single-file `?action=` router,
+  `flock(LOCK_EX)` writes, `now_iso()`, `merge_lead_array()`, sliding-window
+  per-IP rate limiter, deny-all `data/` bootstrap, `Cache-Control: no-store`).
+- `POST ?action=login` — takes `{ "key": "CIT26-XXXXX" }` and answers the
+  attempt state that decides which screen `/test` shows: `not_started`,
+  `in_progress` (plus `question_index`, the first unanswered question) or
+  `completed` (plus `completed_at` and `slot_booked`). Every success carries
+  `student_name` and the test-parameter block
+  (`total` 30, `maths` 15, `physics` 15, `seconds_per_question` 60,
+  `marks_correct` 4), which is what the instructions screen renders its numbers
+  from — so the rules can never drift from the paper the engine serves.
+- Helpers `find_lead_by_key()` (normalise → shape-check → scan `leads.json`),
+  `patch_lead()` (internal server-side write-back: scalars last-write-wins,
+  activity appended, `updated_at` bumped), `find_attempt_by_key()`,
+  `attempt_question_index()`, `test_parameters()`, `respond_invalid_key()`.
+- React route `/test` (`src/pages/Test/`) wired lazily in `App.jsx`:
+  `Test.jsx` (login → instructions → tnc → engine → done state machine),
+  `Test.module.css`, `fields.jsx` (route-local icons, the key mask and the two
+  controls), `index.js` and `preload.js`.
+- Login screen: one monospace, wide-tracked key field pre-filled from
+  `sessionStorage.lead_login_key`, accepting the key typed or pasted with or
+  without its `CIT26-` prefix, in any case, with or without separators. Failure
+  offers the support number as a tracked `tel:` link.
+- Instructions screen: the eight rules of the paper, and a **`Resume test`**
+  primary button when the server reports an attempt already in progress.
+- Terms & Conditions screen: seven plain-English clauses in a scrollable box,
+  gated behind a 44 px checkbox — `Start Test` stays disabled until it is
+  ticked, then hands `{ key, tnc_accepted: true }` to the engine.
+- `REACT_APP_TEST_API_URL` (default `/api/test.php`) in `.env.example`.
+- GTM: `merit_test_login` and `merit_test_instructions_view`, both carrying only
+  `test_state` — never the key, the name or any other PII.
+
+**Security**
+- **The login key is the credential.** No admin key gates any student-facing
+  action, and `test.php` never accepts a `lead_id` from the browser — a client
+  that could name its own lead id could sit someone else's test. Every request
+  resolves the applicant from the key alone.
+- **One generic error.** A malformed key, an unknown key and a rate-limited
+  request all answer `{"success": false, "error": "invalid_key"}` with HTTP 200,
+  so the endpoint is not an oracle for which keys exist. Login is capped at
+  **30 attempts per IP per hour** (`data/test_ratelimit.json`, fails open so a
+  disk hiccup can never lock an applicant out).
+- No login response carries questions, answers or scores, in any state.
+- `?action=login` writes nothing: it is idempotent reconnaissance, so refreshing
+  the login screen leaves no trace on the applicant's timeline.
+- `patch_lead()` refuses to touch `notes` (the humans' column), `lead_id`,
+  `submitted_at` and `login_key` — one lead keeps one key for life.
+- `data/test_attempts.json` lives in the same deny-all `data/` folder as
+  `leads.json`, and is keyed on the login key rather than the lead, so a
+  re-issued lead record can never hand out a second attempt.
+- `/test` is `noindex, nofollow` and deliberately absent from `sitemap.xml`;
+  leaving the route restores `index, follow`.
+
+**Notes**
+- Route-bundle discipline matches `/apply`: no framer-motion, sweetalert2,
+  iconify or MUI popovers on `/test`. Only the active screen is mounted, icons
+  are inlined SVG paths, and the key field is 16 px+ so iOS does not zoom on
+  focus. 360 px first, 44 px touch targets throughout.
+- `action=start` / `answer` / `state` (test engine) and `action=book_slot` (slot
+  booking) land in later updates. A commented stub in `test.php` marks the seam
+  — extend that file rather than adding a second endpoint, because the login
+  action, the attempt store and the key-is-the-credential rule are all there.
+
 ### MCQ question bank for the 30-Minute Online Merit Assessment Test
 
 The merit test needs questions that actually discriminate, and answers that a
