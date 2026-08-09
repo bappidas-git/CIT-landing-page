@@ -422,11 +422,23 @@
   text-decoration: underline;
 }
 
-.placeholderBox {
+/* ============================================
+   Post-test — counselling slot booking
+   ============================================ */
+.subHeading {
+  margin: 18px 0 8px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  color: var(--color-primary);
+}
+
+.slotNotice {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   padding: 12px;
   border-radius: 12px;
   background: var(--color-tint);
@@ -435,10 +447,166 @@
   color: var(--text-dark-gray);
 }
 
-.placeholderIcon {
+.slotNoticeIcon {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--color-primary);
+}
+
+.slotGroups {
+  margin-bottom: 14px;
+}
+
+.slotGroup + .slotGroup {
+  margin-top: 14px;
+}
+
+.slotGroupTitle {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-gray);
+}
+
+/* Two across at 360 px: 24 chips in one column would be a scroll marathon, and
+   three would squeeze "11:00 AM – 12:00 PM" past the point of being readable. */
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* The label wraps rather than being clipped: the two crossover hours of the day
+   ("11:00 AM – 12:00 PM") are the longest, and a truncated time is worse than a
+   two-line one. min-height keeps every chip a 44 px target either way. */
+.slotChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--text-dark-gray);
+  cursor: pointer;
+}
+
+.slotChip[data-selected='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-tint);
+  color: var(--color-primary);
+}
+
+.slotChip:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.slotChip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.18);
+}
+
+/* The confirmed appointment — the one thing on the screen worth screenshotting,
+   so it gets the green weight the rest of the page does not use. */
+.bookedBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 4px;
+  padding: 14px 12px;
+  border: 1.5px solid var(--success);
+  border-radius: 12px;
+  background: var(--card-green);
+  font-size: 14px;
+  line-height: var(--lh-normal);
+  color: #14603c;
+}
+
+.bookedIcon {
   flex: 0 0 auto;
   margin-top: 1px;
   color: var(--success);
+}
+
+.bookedTime {
+  font-weight: var(--fw-bold);
+  color: #0f4d30;
+}
+
+.prepList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.prepItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-dark-gray);
+}
+
+.prepIcon {
+  display: flex;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--color-primary);
+}
+
+.supportNote {
+  margin: 14px 0 8px;
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+}
+
+/* Stacked at 360 px, side by side once there is room. Both are 44 px tall and
+   deliberately quieter than the orange primary button — this screen's action is
+   picking a time, not calling us. */
+.supportRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.supportBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 160px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid var(--border-gray);
+  border-radius: 12px;
+  background: var(--white);
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  text-align: center;
+  text-decoration: none;
+}
+
+.supportBtn:active {
+  background: var(--light-gray);
 }
 
 /* ============================================
@@ -673,6 +841,12 @@
 
   .questionText {
     font-size: 16px;
+  }
+
+  /* Room for three across, which fits all 24 hours of the window in eight rows
+     instead of twelve. */
+  .slotGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

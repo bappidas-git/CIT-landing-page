@@ -137,7 +137,11 @@ const TestEngine = ({
 
       if (data.state === 'completed') {
         trackApplicationStep('merit_test_complete', { test_state: 'completed' });
-        onCompleted();
+        // Handed on rather than dropped: the payload carries `completed_at`
+        // (and a `slot` if one was somehow already booked), which is what the
+        // post-test screen measures its 24-hour booking window from. It carries
+        // no score — the server does not send one.
+        onCompleted(data);
         return;
       }
 

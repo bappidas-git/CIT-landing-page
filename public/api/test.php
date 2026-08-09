@@ -51,6 +51,19 @@
        going back impossible: an old index can never
        overwrite an answer.
 
+     POST /api/test.php?action=book_slot
+       Body: { "key": "...", "slot": "<ISO UTC>" }
+       Books the hour in which CIT's Counselling
+       Officer will call, inside the 24 hours after
+       the applicant finished. WRITE-ONCE from the
+       student side: a second call answers the slot
+       that is already stored rather than moving it —
+       a changed appointment goes through the
+       telecaller, who can see the whole picture.
+       The window is re-derived and re-checked here;
+       the list of chips the browser drew is
+       convenience, never the authority.
+
    THE TIMING MODEL IS THE SERVER'S. A question's
    60-second clock starts when it is FIRST served and
    never restarts — closing the tab does not pause it.
@@ -98,8 +111,8 @@
        "correct_count":  null,
        "wrong_count":    null,
        "blank_count":    null,
-       "counselling_slot": null,        // prompt 09
-       "slot_booked":    false          // prompt 09
+       "counselling_slot": null,        // ISO hour, once booked
+       "slot_booked":    false          // mirrors the line above
      }
 
    Only `selected` is stored — correctness is derived
@@ -164,6 +177,19 @@ define('CIT_TEST_MARKS_CORRECT', 4);
 // client: the countdown still shows 60, and remaining_seconds still clamps at 0.
 define('CIT_TEST_GRACE_SECONDS', 15);
 define('CIT_TEST_ANSWER_WINDOW', CIT_TEST_SECONDS_PER_QUESTION + CIT_TEST_GRACE_SECONDS);
+
+// ----- Tele-counselling slot booking (also fixed) -----
+// The promise made on the post-test screen is "within the next 24 hours", so
+// the bookable window is exactly that: from the moment the paper was submitted
+// to 24 hours later. Changing it here would let the page promise one thing and
+// the server accept another.
+define('CIT_TEST_SLOT_WINDOW_SECONDS', 24 * 3600);
+
+// A slot that has already passed cannot be called, but a student tapping
+// Confirm at 3:59:58 for the 4:00 slot has done nothing wrong — and a cheap
+// phone's clock can sit a couple of minutes ahead of ours. Five minutes of
+// slack covers both without letting a genuinely stale chip through.
+define('CIT_TEST_SLOT_PAST_GRACE_SECONDS', 300);
 
 // Marks at or above which an attempt is stamped `test_qualified` on the lead.
 // null — the default, and what ships — means no automatic verdict: the
@@ -429,6 +455,75 @@ function iso_to_epoch($iso) {
     if (!is_string($iso) || $iso === '') return null;
     $ts = strtotime(preg_replace('/\.\d+/', '', $iso));
     return $ts === false ? null : $ts;
+}
+
+/**
+ * Epoch seconds for a client-supplied UTC timestamp, or null.
+ *
+ * The shape check is NOT decoration and must run before strtotime(): that
+ * function cheerfully parses "tomorrow", "+3 hours" and "midnight", so a lax
+ * parse would let a client name any instant it liked by sending a relative
+ * expression where a timestamp belongs. Only the exact shape JavaScript's
+ * Date.toISOString() produces is accepted — UTC, with the trailing Z.
+ *
+ * @param string $iso Candidate timestamp from the browser
+ * @return int|null Epoch seconds, or null if it is not a UTC ISO timestamp
+ */
+function parse_client_iso($iso) {
+    if (!is_string($iso)) return null;
+    $iso = trim($iso);
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$/', $iso)) {
+        return null;
+    }
+    return iso_to_epoch($iso);
+}
+
+/**
+ * Check a requested counselling slot against the attempt, and return it in our
+ * own canonical ISO shape — so what lands on the lead is always the same
+ * format the rest of the store uses, whatever the browser sent.
+ *
+ * THE WINDOW IS RE-DERIVED HERE. The client draws its chips from completed_at
+ * too, but that list is convenience: a stale tab, a hand-rolled request or a
+ * device with a wrong clock all get measured against the stored completion
+ * time and the server's own now.
+ *
+ * @param string $iso         The requested slot, as sent by the client
+ * @param string $completedAt The attempt's stored completed_at
+ * @return string|null Canonical ISO slot, or null if it is not bookable
+ */
+function validate_counselling_slot($iso, $completedAt) {
+    $slot = parse_client_iso($iso);
+    if ($slot === null) return null;
+
+    // "The start of an hour" means the applicant's local hour, not UTC's: IST
+    // is UTC+05:30, so 4:00 PM in Tumakuru is 10:30Z and a naive "minutes must
+    // be 00" test would reject every slot this page can produce. Every real
+    // UTC offset is a whole number of quarter-hours, so an hour boundary
+    // anywhere on earth is a quarter-hour boundary here — which still refuses
+    // the arbitrary instants this check exists to keep out.
+    if ($slot % 900 !== 0) return null;
+
+    $completedEpoch = iso_to_epoch($completedAt);
+    if ($completedEpoch === null) return null;
+
+    // Inside the 24 hours we promised, and not before the paper was submitted.
+    if ($slot < $completedEpoch) return null;
+    if ($slot > $completedEpoch + CIT_TEST_SLOT_WINDOW_SECONDS) return null;
+
+    // An hour that has already gone is not a call anyone can take — this is
+    // what catches a tab left open past the slot it was showing.
+    if ($slot < time() - CIT_TEST_SLOT_PAST_GRACE_SECONDS) return null;
+
+    return gmdate('Y-m-d\TH:i:s', $slot) . '.000Z';
+}
+
+// The slot an attempt has already booked, or '' — the one place the stored
+// value is read, so "booked" means exactly one thing everywhere.
+function attempt_slot($attempt) {
+    if (!is_array($attempt)) return '';
+    $slot = isset($attempt['counselling_slot']) ? $attempt['counselling_slot'] : null;
+    return (is_string($slot) && $slot !== '') ? $slot : '';
 }
 
 /* ----- Question bank -----
@@ -736,10 +831,6 @@ $action = $_GET['action'] ?? ($input['action'] ?? '');
 
 // ----- Routes -----
 
-/* action=book_slot lands with prompt 09. Extend THIS file: the login action,
-   the attempt store and the key-is-the-credential rule are what it builds on,
-   and a second endpoint would have to duplicate all three. */
-
 if ($method === 'POST' && $action === 'login') {
     // (1) Rate limit. Over budget the request answers exactly like a bad key,
     // so a script grinding the key space learns nothing from being throttled.
@@ -774,9 +865,18 @@ if ($method === 'POST' && $action === 'login') {
             ? $attempt['completed_at']
             : '';
         if ($completedAt !== '') {
+            // completed_at is what the post-test screen derives its 24-hour
+            // booking window from, so it travels on every completed response.
+            // It is a timestamp, not a result: nothing here says how they did.
             $response['state']        = 'completed';
             $response['completed_at'] = $completedAt;
-            $response['slot_booked']  = !empty($attempt['slot_booked']);
+            $slot                     = attempt_slot($attempt);
+            $response['slot_booked']  = ($slot !== '');
+            if ($slot !== '') {
+                // Already booked ⇒ the screen shows the confirmed appointment
+                // instead of a picker that could only overwrite it.
+                $response['slot'] = $slot;
+            }
         } else {
             $response['state']          = 'in_progress';
             $response['question_index'] = attempt_question_index($attempt);
@@ -863,8 +963,9 @@ if ($method === 'POST' && ($action === 'start' || $action === 'state' || $action
             // resumes — it never draws a second paper.
             if (attempt_is_complete($attempts[$i])) {
                 return [
-                    'state'       => 'completed',
-                    'slot_booked' => !empty($attempts[$i]['slot_booked']),
+                    'state'        => 'completed',
+                    'completed_at' => $attempts[$i]['completed_at'],
+                    'slot'         => attempt_slot($attempts[$i]),
                 ];
             }
 
@@ -905,7 +1006,8 @@ if ($method === 'POST' && ($action === 'start' || $action === 'state' || $action
                 score_attempt($attempts[$i]);
                 return [
                     'state'          => 'completed',
-                    'slot_booked'    => !empty($attempts[$i]['slot_booked']),
+                    'completed_at'   => $attempts[$i]['completed_at'],
+                    'slot'           => attempt_slot($attempts[$i]),
                     'just_completed' => true,
                     'lead_patch'     => [
                         'test_status'         => 'completed',
@@ -975,10 +1077,102 @@ if ($method === 'POST' && ($action === 'start' || $action === 'state' || $action
     if ($outcome['state'] === 'in_progress') {
         $response['question'] = $outcome['question'];
     } elseif ($outcome['state'] === 'completed') {
-        // No score, no answers, not even a pass/fail — every applicant sees the
-        // same thing here, and the result reaches them through the admission
-        // team. Deliberate: the cutoff is not a student-facing number.
-        $response['slot_booked'] = !empty($outcome['slot_booked']);
+        // No score, no answers, not even a pass/fail — the cutoff is not a
+        // student-facing number, and the result reaches them through the
+        // admission team. What does travel is the paperwork the next screen
+        // needs: when they finished (the 24-hour booking window is measured
+        // from it) and, if they have already chosen one, their call slot.
+        $slot                    = isset($outcome['slot']) ? (string) $outcome['slot'] : '';
+        $response['slot_booked'] = ($slot !== '');
+        if (!empty($outcome['completed_at'])) {
+            $response['completed_at'] = $outcome['completed_at'];
+        }
+        if ($slot !== '') {
+            $response['slot'] = $slot;
+        }
+    }
+    echo json_encode($response);
+    exit;
+}
+
+/* ============================================
+   action=book_slot — the tele-counselling appointment
+
+   The last thing an applicant does on this route: pick the hour in which CIT's
+   Counselling Officer will call them, inside the 24 hours after they submitted.
+
+   WRITE-ONCE FROM THE STUDENT SIDE. A second booking answers the slot that is
+   already stored rather than moving it — the officer has the appointment in
+   their day by then, so a change is a conversation, not a form. The admin panel
+   can still edit `counselling_slot` on the lead directly.
+   ============================================ */
+
+if ($method === 'POST' && $action === 'book_slot') {
+    // Same credential rule as every other student-facing action: the key, and
+    // only the key. Same generic failure, and the same "charge the rate limit
+    // only when the key does not resolve" policy the engine uses.
+    $key  = isset($input['key']) ? $input['key'] : '';
+    $lead = find_lead_by_key($key);
+    if ($lead === null) {
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : '';
+        check_rate_limit($rateFile, $ip, $loginRateMax, $loginRateWindow);
+        respond_invalid_key();
+    }
+    $key       = strtoupper(trim((string) $key));
+    $leadId    = isset($lead['lead_id']) ? (string) $lead['lead_id'] : '';
+    $slotInput = isset($input['slot']) ? $input['slot'] : '';
+
+    $outcome = with_attempts_locked(
+        $attemptsFile,
+        function (&$attempts) use ($key, $slotInput) {
+            $i = attempt_index_by_key($attempts, $key);
+
+            // Nothing to book against. A key that never sat the test, or one
+            // still mid-paper, has no completion time to measure 24 hours from.
+            if ($i === null || !attempt_is_complete($attempts[$i])) {
+                return ['error' => 'not_completed'];
+            }
+
+            $existing = attempt_slot($attempts[$i]);
+            if ($existing !== '') {
+                return ['already_booked' => true, 'slot' => $existing];
+            }
+
+            $slot = validate_counselling_slot($slotInput, $attempts[$i]['completed_at']);
+            if ($slot === null) {
+                return ['error' => 'invalid_slot'];
+            }
+
+            $attempts[$i]['counselling_slot'] = $slot;
+            $attempts[$i]['slot_booked']      = true;
+            return ['slot' => $slot, 'booked' => true];
+        }
+    );
+
+    if (!is_array($outcome)) {
+        echo json_encode(['success' => false, 'error' => 'unavailable']);
+        exit;
+    }
+
+    if (isset($outcome['error'])) {
+        echo json_encode(['success' => false, 'error' => $outcome['error']]);
+        exit;
+    }
+
+    // Outside the attempts lock, as everywhere here: two files, one lock at a
+    // time. The activity string is fixed — the admin timeline renders on it.
+    if (!empty($outcome['booked'])) {
+        patch_lead($leadId, [
+            'counselling_slot' => $outcome['slot'],
+        ], 'Counselling slot booked');
+    }
+
+    $response = ['success' => true, 'slot' => $outcome['slot']];
+    if (!empty($outcome['already_booked'])) {
+        // Said plainly so the client can tell "your booking went through" from
+        // "you already had one" — it fires its analytics event only on the
+        // former, and shows the stored time either way.
+        $response['already_booked'] = true;
     }
     echo json_encode($response);
     exit;
