@@ -61,13 +61,19 @@ if (!is_dir($dataDir)) {
 
 // ----- Resolve the admin key used to gate every action -----
 //
+// SECURITY — OPERATOR ACTION REQUIRED:
 // The same handshake key used by leads.php (REACT_APP_LEADS_ADMIN_KEY in the
 // client bundle) authenticates the tele-calling endpoints too, so no extra
-// server-side configuration is needed. Resolution order (first non-empty wins):
+// server-side configuration is needed. As in leads.php there is intentionally
+// NO committed fallback key — a default that ships in the repository is public
+// knowledge and cannot gate anything. Until a key is configured, every action
+// here answers 503 (see require_admin_auth). If this deployment ever ran with
+// the previously committed default key, treat that value as compromised and
+// rotate both sides now.
+//
+// Resolution order (first non-empty wins):
 //   1. ADMIN_API_KEY defined in config.php.
 //   2. LEADS_ADMIN_KEY / ADMIN_API_KEY environment variable.
-//   3. The committed default below, which MUST match REACT_APP_LEADS_ADMIN_KEY
-//      in .env.
 $adminKey   = '';
 $configFile = __DIR__ . '/config.php';
 if (file_exists($configFile)) {
@@ -85,10 +91,12 @@ if ($adminKey === '') {
         $adminKey = $envKey;
     }
 }
-if ($adminKey === '') {
-    // Default — keep in sync with REACT_APP_LEADS_ADMIN_KEY in .env.
-    $adminKey = 'skdfjsdfweiormcnzxmzdlkfjds';
-}
+
+// ----- Meta lead-quality feedback -----
+// Telecaller verdicts entered here are the same quality signal the lead store
+// sends: `hot` and `seat_booked` are pushed back to Meta as server-side
+// conversions. No-ops silently without Meta credentials — see capi-feedback.php.
+require_once __DIR__ . '/capi-feedback.php';
 
 // ----- Helpers -----
 function load_records($file) {
@@ -209,8 +217,12 @@ if ($method === 'POST' && $action === 'update') {
     }
     $records = load_records($dataFile);
     $found = false;
+    // Captured for the Meta quality-feedback hook below.
+    $oldStatus     = '';
+    $mergedRecord  = null;
     foreach ($records as &$record) {
         if (($record['telecall_id'] ?? null) === $id) {
+            $oldStatus = isset($record['status']) && is_string($record['status']) ? $record['status'] : '';
             foreach ($patch as $k => $v) {
                 if (($k === 'notes' || $k === 'activity') && is_array($v)) {
                     $record[$k] = merge_record_array($record[$k] ?? [], $v, $k);
@@ -218,7 +230,8 @@ if ($method === 'POST' && $action === 'update') {
                     $record[$k] = $v;
                 }
             }
-            $found = true;
+            $found        = true;
+            $mergedRecord = $record;
             break;
         }
     }
@@ -230,6 +243,28 @@ if ($method === 'POST' && $action === 'update') {
     }
     save_records($dataFile, $records);
     echo json_encode(['success' => true]);
+
+    // ----- Meta lead-quality feedback (after the response, never before) -----
+    // Same contract as leads.php: answer the telecaller first, then spend up to
+    // 3s talking to Meta. Mapped from src/admin/utils/telecallStatus.js keys —
+    // `hot` is the Hot verdict, `seat_booked` is the booked seat.
+    if (function_exists('fastcgi_finish_request')) {
+        @fastcgi_finish_request();
+    }
+    $newStatus = (isset($patch['status']) && is_string($patch['status'])) ? $patch['status'] : null;
+    if ($newStatus !== null && $newStatus !== $oldStatus && is_array($mergedRecord)) {
+        // Tele-calling numbers are typed by hand and allow loose formats, so a
+        // record without a usable 10-digit Indian mobile is skipped silently —
+        // there would be nothing for Meta to match the person on.
+        $hasMobile = capi_feedback_normalize_mobile($mergedRecord['mobile'] ?? '') !== '';
+        if ($hasMobile) {
+            if ($newStatus === 'hot') {
+                send_capi_feedback($mergedRecord, 'QualifiedLead');
+            } elseif ($newStatus === 'seat_booked') {
+                send_capi_feedback($mergedRecord, 'Purchase', capi_feedback_admission_value());
+            }
+        }
+    }
     exit;
 }
 

@@ -4,27 +4,150 @@
 
 A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumakuru** — built to capture quality leads for **Direct B.E. (Engineering) Admissions, 2026 intake**, targeted at students and parents across North East India and run by Assam Digital. Built with React 18, Material UI, and Framer Motion. Includes an admin panel with lead management, a tele-calling lead module, GTM integration, Meta CAPI, and Google Ads conversion tracking.
 
+The page is a **high-intent application funnel**, not an enquiry funnel. Campaign traffic is budget Android on Jio/Airtel, so every new surface is designed at 360 px first.
+
 ## Project Structure
 
-- `src/components/sections/` — Page sections (Hero, About, Services, Features, etc.)
+- `src/components/sections/` — Page sections (Hero, About, Services, Features, Fees & Funding, Admission Process, FAQ, etc.)
 - `src/components/common/` — Reusable components (Header, Footer, LeadForm, SEOHead, etc.)
-- `src/data/` — Content data files (services, features, stats, locations)
+- `src/data/` — Content data files (services, features, stats, locations, FAQ, testimonials)
 - `src/config/` — SEO configuration
 - `src/context/` — React context providers (Modal, Theme)
-- `src/hooks/` — Custom hooks (useGTMTracking, useInView, useMediaQuery, etc.)
-- `src/utils/` — Utility functions (webhook, GTM, Meta Pixel, Google Ads, validators)
+- `src/hooks/` — Custom hooks (`useApplyCTA`, useGTMTracking, useInView, useMediaQuery, etc.)
+- `src/utils/` — Utility functions (webhook, application submit, attribution, GTM, Meta Pixel, contact tracking, Google Ads, validators)
 - `src/admin/` — Admin panel (components, pages, context, utils)
-- `src/pages/` — Full pages (ThankYou)
+- `src/pages/` — Full pages (`Apply`, ThankYou)
 - `public/` — Static assets, index.html, manifest, robots.txt, sitemap.xml
-- `public/api/` — Server-side endpoints (`leads.php` shared lead store, Meta CAPI, offline conversions)
+- `public/api/` — Server-side endpoints (`leads.php` shared lead store, `telecalls.php`, Meta CAPI, `capi-feedback.php`, offline conversions)
+
+## Lead Capture Architecture
+
+**`/apply` is the sole public lead-capture surface.** Every CTA on the page routes there
+through `src/hooks/useApplyCTA.js`, which warms the route chunk on `pointerdown`, fires the
+`cta_click` GTM event, and stashes the CTA key in sessionStorage so the lead records which
+CTA produced it.
+
+`src/pages/Apply/` is a full-page, 4-step form. **Step order is part of the contract** —
+`applicationSubmit.js`, the admin detail groups and the GTM funnel events all assume it:
+
+1. **Identity** (`StepIdentity`) — name, mobile, WhatsApp confirmation, B.E. branch, intake year
+2. **Academic Details** (`StepAcademics`) — 12th status/board/school, subject marks, 10th details
+3. **Family & Funding** (`StepFamilyFinance`) — filled by, parent name + mobile, funding plan
+4. **Logistics** (`StepLogistics`) — state, district, counselling mode, timeline, optional best time / email / message
+
+Design constraints for `/apply`: only the active step is mounted; CSS-only step transitions
+(`transform`/`opacity`); no framer-motion, sweetalert2 or iconify on the route; the draft lives
+in sessionStorage so a dropped connection never costs the applicant their answers.
+
+**Two submits ride on one `lead_id`.** Completing Step 1 fires a *partial* submit
+(`lead_tier: 'partial'`) so an abandoner is still a workable lead; the final submit re-posts the
+same `lead_id` and upgrades the record to `lead_tier: 'application'`. `leads.php` upserts by
+`lead_id`, so the second post merges rather than duplicating.
+
+**The short enquiry drawer is retained but unreachable.** `LeadFormDrawer` / `UnifiedLeadForm`
+are still mounted in `App.jsx`, but `openLeadDrawer()` (in `ModalContext.jsx`) has zero call
+sites. Do not re-point any CTA at it.
+
+### Canonical field schema
+
+The authoritative list of every lead field — names, allowed values, which are required, and the
+`source` value contract — lives in **`update-prompts/README.md` → "Canonical new-field schema"**.
+Use those exact names; do not invent variants. Fields ride flat on the lead object alongside the
+legacy keys (`name`, `mobile`, `email`, `service_interest`, `state`, …). The chosen B.E. branch
+reuses the legacy `service_interest` key.
+
+### Lead tiers
+
+`lead_tier` classifies how much a record is worth working:
+
+| Tier | Meaning |
+|---|---|
+| `application` | Full application completed — the target lead |
+| `partial` | Step 1 only; abandoned mid-form but has name + mobile |
+| `spam` | Failed a server-side anti-bot check (see below) |
+| *(absent)* | Legacy enquiry-drawer lead — treat as `enquiry` |
 
 ## Lead Storage & Sync
 
-Leads are stored server-side in `public/api/leads.php` (a shared JSON store) — this is the **single source of truth**. The public form POSTs each submission there, and the admin panel reads/writes only the server (auto-refreshing every 15s), so every browser and device sees the same leads. There is no localStorage copy of leads. Configure with `REACT_APP_LEADS_API_URL` + `REACT_APP_LEADS_ADMIN_KEY` in `.env` (the key must match `ADMIN_API_KEY` in `public/api/config.php`).
+Leads are stored server-side in `public/api/leads.php` (a shared JSON store) — this is the
+**single source of truth**. The public form POSTs each submission there, and the admin panel
+reads/writes only the server (auto-refreshing every 15s), so every browser and device sees the
+same leads. There is no localStorage copy of leads. Configure with `REACT_APP_LEADS_API_URL` +
+`REACT_APP_LEADS_ADMIN_KEY` in `.env` (the key must match `ADMIN_API_KEY` in
+`public/api/config.php`).
+
+`?action=create` is public, so it is hardened server-side — client-side checks alone are
+bypassable:
+
+- **Field whitelist + length caps** — unknown keys are dropped, strings capped at 500 chars.
+- **Honeypot** — a hidden `website` input; filled ⇒ `lead_tier: 'spam'`. Never stored.
+- **Time-trap** — `submitted_at − form_started_at` under `LEADS_MIN_FORM_SECONDS` (default 15) ⇒ spam.
+- **Suspicious-number flagging** — repeated-digit and straight-sequence mobiles ⇒ spam.
+- **Per-IP rate limiting** — over budget, the request is silently discarded with a success response.
+- **Silent duplicate merge / upsert** — a repeat submitter is a hot lead, not an error: re-posts
+  merge into the stored lead by `lead_id`, else by `mobile`. No `duplicate` flag is returned
+  (that was a phone-number enumeration vector).
+
+Anti-bot responses are deliberately indistinguishable from success, so a bot learns nothing.
+Requests carrying a valid `X-Admin-Key` (admin CSV import) skip the anti-bot checks.
+
+Both `leads.php` and `telecalls.php` ship with **no fallback admin key** — until one is
+configured they answer `503` on admin actions. See `LAUNCH_NOTES.md`.
+
+## Meta Quality Feedback Loop
+
+Meta optimises for whatever conversion event it receives, so a zero-friction `Lead` event teaches
+it to find people who fill forms. `public/api/capi-feedback.php` closes the loop: telecaller
+verdicts are pushed back to Meta as server-side conversions.
+
+| Store | Status change | Event sent |
+|---|---|---|
+| `leads.php` | → `contacted` (Hot) | `QualifiedLead` |
+| `leads.php` | → `completed` (Seat Booked) | `Purchase` + `value` / `currency: INR` |
+| `telecalls.php` | → `hot` | `QualifiedLead` |
+| `telecalls.php` | → `seat_booked` | `Purchase` + `value` / `currency: INR` |
+
+Rules that must hold: events fire only on a **genuine** status transition; `event_id` is
+`"{event}_{recordId}"` so retries dedupe; `action_source` is `system_generated`; `user_data` is
+hashed server-side **from the stored record only** — never the admin's cookies, IP or user agent;
+the sender no-ops silently without Meta credentials and can never block or fail an admin save
+(the HTTP response is flushed first). Failures land in `public/api/data/capi-feedback.log`.
+`Purchase` value comes from `CONVERSION_VALUE_ADMISSION` in `config.php` — internal only, never
+rendered on the page.
+
+`capi-feedback.php` posts directly to the Graph API; it does **not** route through
+`meta-capi.php`, whose `$supportedEvents` whitelist is for browser-originated events only.
+
+## Tracking Signals
+
+| Event | Fires on | Legs |
+|---|---|---|
+| `Lead` | Step-1 partial, and again on full completion | Pixel + CAPI (shared `event_id`) |
+| `SubmitApplication` | Full application completed | Pixel + CAPI (shared `event_id`) |
+| `Contact` / `phone_click` / `whatsapp_click` | Any phone or WhatsApp tap | GTM + Meta Pixel + Google Ads call conversion |
+| `QualifiedLead` / `Purchase` | Admin status change | Server only |
+
+Phone and WhatsApp taps go through **`src/utils/contactTracking.js` → `trackContactClick(channel, source)`**,
+which fires all three legs from one call. Call it *instead of* `trackPhoneClick` /
+`trackWhatsAppClick`, never alongside them, or the GTM event double-fires.
+
+The browser pixel needs `REACT_APP_META_PIXEL_ID`; a GTM-only pixel does not fire this code's
+events, and without it CAPI deduplication is inactive.
 
 ## Tele-Calling Module
 
 The **Tele-Calling** admin module (`/admin/tele-calling`) mirrors Lead Management but its records are entered manually by telecallers (not the public form). It has its own server store `public/api/telecalls.php` (`data/telecalls.json`), service `src/admin/utils/telecallService.js`, status config `src/admin/utils/telecallStatus.js`, list page `TeleCalling.jsx`, detail page `TeleCallDetail.jsx`, and shared add/edit form `src/admin/components/TelecallFormDialog.jsx`. It uses the same cross-device sync pattern as leads (in-memory cache hydrated from the server, 15s poll, BroadcastChannel for same-browser tabs) and reuses `REACT_APP_LEADS_ADMIN_KEY` for auth (configure the endpoint with `REACT_APP_TELECALLS_API_URL`). Tele-calling statuses: Hot · Warm · Cold · Need More Follow Ups · Seat Booked · Not Interested.
+
+## Content Rules (product decisions — do not re-litigate)
+
+- **No fee amounts anywhere on the public page.** Fees & Funding promises transparency
+  ("no capitation, no consultancy or agent fees, full fee structure shared on your first call")
+  and never states numbers.
+- **2026-only copy.** The form still asks intake year — that is a filter, not page copy.
+- **No "free counselling" angles, no fabricated scarcity, no invented stats or testimonials.**
+  `testimonialsData.js` ships sample content behind `isLive: false`; recruiter chips only become
+  logos when licensed artwork is added to `RECRUITER_LOGOS`.
+- **No OTP, no visible CAPTCHA.** Anti-junk is qualification friction + the server-side checks above.
 
 ## Brand Color System (Defaults)
 
@@ -40,22 +163,47 @@ To customize colors, update `src/styles/variables.css`, `src/theme/muiTheme.js`,
 ## Customization Guide
 
 1. **Content**: Update data files in `src/data/` and hardcoded text in section components
-2. **Branding**: Replace logo URL in `Header.jsx`, `Footer.jsx`, `MobileDrawer.jsx`, and `public/index.html`
+2. **Branding**: Replace logo URL in `Header.jsx`, `Footer.jsx`, `MobileDrawer.jsx`, `Apply.jsx`, and `public/index.html`
 3. **Contact Info**: Update `.env` file and `src/data/locationData.js`
 4. **SEO**: Update meta tags, JSON-LD schemas, `src/config/seo.js`, and `public/sitemap.xml`
-5. **Forms**: Leads POST to the server store (`/api/leads.php`) via `src/utils/webhookSubmit.js` — usually leave the default endpoint
+5. **Forms**: Applications POST to the server store (`/api/leads.php`) via `src/utils/applicationSubmit.js` — usually leave the default endpoint
 6. **Analytics**: Set `REACT_APP_GTM_ID` in `.env` and update GTM ID in `public/index.html`
 7. **Admin**: Update `REACT_APP_ADMIN_USERNAME` and `REACT_APP_ADMIN_PASSWORD` in `.env`
 
-See `CUSTOMIZATION_GUIDE.md` for a complete step-by-step walkthrough.
+See `CUSTOMIZATION_GUIDE.md` for a complete step-by-step walkthrough, and `LAUNCH_NOTES.md` for
+what must be configured before the campaign goes live.
 
 ## Documentation
 
+- `LAUNCH_NOTES.md` — Pre-launch operator checklist (key rotation, Meta credentials, real content)
 - `CUSTOMIZATION_GUIDE.md` — Quick-start guide for new landing pages
 - `GTM_GUIDE.md` — Google Tag Manager setup
 - `SEO_GUIDE.md` — SEO and schema configuration
+- `update-prompts/README.md` — Canonical field schema + the lead-quality prompt series
 - `CHANGELOG.md` — Detailed changelog
 
 ## DO NOT MODIFY
 
-- Component structure, layout, animations, form logic, webhookSubmit.js, swalHelper.js, mobile navigation mechanics, drawer/modal behavior, video background system
+These files own behavior other code depends on. Extend around them; never edit them in place.
+
+- `src/utils/webhookSubmit.js` — legacy drawer submit path
+- `src/utils/validators.js` — shared validation contract (mirrored server-side in `leads.php`)
+- `src/utils/swalHelper.js` — alert/confirm behavior
+- `src/components/common/UnifiedLeadForm/UnifiedLeadForm.jsx` — retained drawer form
+- `src/components/common/LeadFormDrawer/LeadFormDrawer.jsx` — drawer shell
+- `src/context/ModalContext.jsx` — drawer/modal open-close behavior
+- `src/components/common/MobileDrawer/MobileDrawer.jsx` and
+  `src/components/common/MobileNavigation/MobileNavigation.jsx` — **open/close mechanics only**.
+  Attaching an `onClick` to a link inside them is content, not mechanics, and is allowed.
+- Component structure, layout, animations, video background system
+
+Also treat as contracts (changing them breaks the funnel, the admin panel or reporting):
+
+- **`src/utils/applicationSubmit.js` payload contract** — the exact keys, the shared `lead_id`
+  across the partial and full submits, the `source` suffixes (`/step1-partial`, `/full`), and the
+  attribution fields (`utm_*`, `gclid`, `fbclid`, `fbp`, `fbc`, `form_started_at`).
+- **`/apply` step order** — Identity → Academics → Family & Funding → Logistics (see above).
+- **`capi-feedback.php` event names** — `QualifiedLead` and `Purchase`. Renaming them silently
+  detaches every Meta custom audience, lookalike and optimisation rule built on them.
+- **Status keys** in `src/admin/utils/leadStatus.js` and `src/admin/utils/telecallStatus.js` —
+  only the human `label` may change, never the `value`.

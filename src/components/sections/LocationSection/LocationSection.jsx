@@ -11,6 +11,7 @@ import SectionTitle from "../../common/SectionTitle/SectionTitle";
 import Button from "../../common/Button/Button";
 import { locationData } from "../../../data/locationData";
 import useApplyCTA from "../../../hooks/useApplyCTA";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./LocationSection.module.css";
 
 const LocationSection = () => {
@@ -141,6 +142,13 @@ const LocationSection = () => {
                   <a
                     href={`tel:${locationData.phone}`}
                     className={styles.contactItem}
+                    onClick={() =>
+                      trackContactClick(
+                        "phone",
+                        "location_helpline",
+                        locationData.phone,
+                      )
+                    }
                   >
                     <div className={styles.contactIcon}>
                       <Icon icon="mdi:phone" />
@@ -168,6 +176,9 @@ const LocationSection = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.contactItem}
+                    onClick={() =>
+                      trackContactClick("whatsapp", "location_whatsapp")
+                    }
                   >
                     <div
                       className={`${styles.contactIcon} ${styles.contactIconWhatsapp}`}
@@ -364,6 +375,9 @@ const LocationSection = () => {
               startIcon="mdi:phone"
               href={`tel:${locationData.phone}`}
               className={styles.callUsBtn}
+              onClick={() =>
+                trackContactClick("phone", "location_cta", locationData.phone)
+              }
             >
               Call {locationData.phoneDisplay}
             </Button>

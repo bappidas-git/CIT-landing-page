@@ -7,7 +7,8 @@ import React, { useState, useEffect } from "react";
 import { IconButton, Typography, Badge } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@iconify/react";
-import { trackPhoneClick, trackWhatsAppClick, trackNavigation } from "../../../utils/gtm";
+import { trackNavigation } from "../../../utils/gtm";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./MobileNavigation.module.css";
 
 // Primary CIT admissions contact (Assam Digital campaign)
@@ -88,11 +89,11 @@ const MobileNavigation = ({
 
     switch (item.action) {
       case "whatsapp":
-        trackWhatsAppClick('mobile_nav');
+        trackContactClick('whatsapp', 'mobile_nav');
         window.open(item.href, "_blank");
         break;
       case "call":
-        trackPhoneClick(PRIMARY_PHONE, 'mobile_nav');
+        trackContactClick('phone', 'mobile_nav', PRIMARY_PHONE);
         window.open(item.href, "_blank");
         break;
       case "enquiry":

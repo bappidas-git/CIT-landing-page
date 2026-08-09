@@ -17,6 +17,7 @@ import { Container, Typography } from "@mui/material";
 import { Icon } from "@iconify/react";
 import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
+import { setApplySource } from "../../../hooks/useApplyCTA";
 import styles from "./FeesFundingSection.module.css";
 
 const fundingCards = [
@@ -79,6 +80,7 @@ const FeesFundingSection = () => {
 
   const handleApplyClick = () => {
     trackCTAClick("fees-apply", "fees_funding", "Start My Application");
+    setApplySource("apply-now");
     navigate("/apply");
   };
 

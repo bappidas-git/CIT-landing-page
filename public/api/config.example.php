@@ -47,6 +47,21 @@ define('META_TEST_EVENT_CODE', '');
 define('ADMIN_API_KEY', 'CHANGE_ME_TO_A_LONG_RANDOM_STRING');
 
 // ============================================
+// Lead-quality feedback value (capi-feedback.php)
+// When a lead is marked "Seat Booked" in the admin
+// panel (or Tele-Calling), the server sends Meta a
+// `Purchase` conversion carrying this value in INR,
+// so Meta can optimise campaigns by revenue instead
+// of by lead count.
+//
+// OPERATOR ACTION: replace the placeholder below
+// with the REAL first-year revenue of one admission.
+// This number is internal — it is only ever sent to
+// Meta and is never rendered on the public page.
+// ============================================
+define('CONVERSION_VALUE_ADMISSION', 50000);
+
+// ============================================
 // Lead API anti-bot tuning (optional)
 // Defaults shown below apply when a constant is
 // not defined. Public create requests over the

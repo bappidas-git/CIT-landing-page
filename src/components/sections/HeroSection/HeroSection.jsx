@@ -18,6 +18,8 @@ import {
 import { Icon } from "@iconify/react";
 import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
+import { trackContactClick } from "../../../utils/contactTracking";
+import { setApplySource } from "../../../hooks/useApplyCTA";
 import styles from "./HeroSection.module.css";
 
 // Set REACT_APP_HERO_VIDEO_URL in .env to enable hero background video
@@ -143,6 +145,10 @@ const HeroSection = () => {
   // Every hero CTA goes to the full application — no drawer, no short form.
   const handleStartApplication = (ctaName) => {
     trackCTAClick(ctaName, "hero", "Start My Application");
+    // Keep the hero's own cta_name (live GTM reporting depends on it) but use
+    // the shared source stash, or every lead from the highest-volume CTA on
+    // the page records itself as 'apply-direct'.
+    setApplySource("apply-now");
     navigate("/apply");
   };
 
@@ -284,6 +290,7 @@ const HeroSection = () => {
                   href="tel:+918069645014"
                   onClick={() => {
                     trackCTAClick("hero_secondary_cta", "hero", "Call Now");
+                    trackContactClick("phone", "hero");
                   }}
                   sx={{
                     borderColor: "rgba(255, 255, 255, 0.6)",

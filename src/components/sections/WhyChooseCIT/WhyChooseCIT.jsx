@@ -12,6 +12,7 @@ import { Container, Typography } from "@mui/material";
 import { Icon } from "@iconify/react";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
+import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./WhyChooseCIT.module.css";
 
 const CIT_PHONE_DISPLAY = "+91 8069645014";
@@ -92,6 +93,9 @@ const WhyChooseCIT = () => {
 
   const handleCallClick = () => {
     trackCTAClick("why_cit_call", "why_choose_cit", CIT_PHONE_DISPLAY);
+    // Distinct dataLayer event (`phone_click`) plus the Meta/Google contact
+    // legs — no overlap with the cta_click above, so nothing double-fires.
+    trackContactClick("phone", "why_choose_cit", CIT_PHONE_DIAL);
   };
 
   return (

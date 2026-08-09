@@ -7,11 +7,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { Icon } from "@iconify/react";
-import {
-  trackPhoneClick,
-  trackNavigation,
-  trackCTAClick,
-} from "../../../utils/gtm";
+import { trackNavigation, trackCTAClick } from "../../../utils/gtm";
+import { trackContactClick } from "../../../utils/contactTracking";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import styles from "./Header.module.css";
 
@@ -245,7 +242,7 @@ const Header = ({ forceCloseMenu = false }) => {
                   href={`tel:${PRIMARY_PHONE}`}
                   className={styles.callButton}
                   onClick={() =>
-                    trackPhoneClick(PRIMARY_PHONE, "header_desktop")
+                    trackContactClick("phone", "header_desktop", PRIMARY_PHONE)
                   }
                   aria-label={`Call CIT admissions on ${PRIMARY_PHONE_DISPLAY}`}
                 >
@@ -341,7 +338,7 @@ const Header = ({ forceCloseMenu = false }) => {
                   href={`tel:${PRIMARY_PHONE}`}
                   className={styles.mobileCallButton}
                   onClick={() => {
-                    trackPhoneClick(PRIMARY_PHONE, "header_mobile_menu");
+                    trackContactClick("phone", "header_mobile_menu", PRIMARY_PHONE);
                     setIsMobileMenuOpen(false);
                   }}
                 >
