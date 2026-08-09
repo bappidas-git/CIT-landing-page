@@ -442,6 +442,214 @@
 }
 
 /* ============================================
+   Engine — one question per screen
+   ============================================ */
+.engine {
+  animation: screenIn 180ms ease-out both;
+}
+
+/* The countdown must be readable at every scroll position on a 360 px screen:
+   a long question with four long options is taller than the viewport, and a
+   timer you have to scroll up to check is not a timer. Negative margins pull
+   the bar out to the card's edges so it covers the content sliding under it. */
+.engineBar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: -18px -14px 14px;
+  padding: 10px 14px 9px;
+  border-bottom: 1px solid var(--border-gray);
+  border-radius: 16px 16px 0 0;
+  background: var(--white);
+}
+
+.engineBarTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.progressCount {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+.subjectTag {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--icon-teal-bg);
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-secondary);
+  white-space: nowrap;
+}
+
+/* Tabular figures and a reserved width, so the row does not twitch sideways
+   once a second as the digits change. */
+.countdown {
+  flex: 0 0 auto;
+  min-width: 42px;
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--color-primary);
+}
+
+.countdownUnit {
+  margin-left: 1px;
+  font-size: 12px;
+  font-weight: var(--fw-semibold);
+}
+
+.timerTrack {
+  height: 6px;
+  border-radius: 3px;
+  background: #e8ecf0;
+  overflow: hidden;
+}
+
+/* scaleX only — a changing width would relayout the card four times a second
+   on exactly the phones this route is built for. */
+.timerFill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--success);
+  transform-origin: left center;
+  transition: transform 250ms linear, background-color 200ms ease;
+  will-change: transform;
+}
+
+.engineBar[data-urgent='true'] .countdown {
+  color: var(--error);
+}
+
+.engineBar[data-urgent='true'] .timerFill {
+  background: var(--error);
+}
+
+.questionText {
+  /* The bank writes plain text with Unicode notation (x², √, π, θ) — any line
+     break it contains is deliberate, so keep it. */
+  white-space: pre-wrap;
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-relaxed);
+  color: var(--text-dark-gray);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 12px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: var(--lh-normal);
+  color: var(--text-dark-gray);
+  text-align: left;
+  cursor: pointer;
+}
+
+.option[data-selected='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-tint);
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.option:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(12, 45, 72, 0.18);
+}
+
+.optionMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--border-gray);
+  border-radius: var(--radius-full);
+  background: var(--white);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  color: var(--text-gray);
+}
+
+.option[data-selected='true'] .optionMark {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--white);
+}
+
+.optionText {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 2px;
+  white-space: pre-wrap;
+}
+
+/* Sits inside the error banner's sentence, so it is a button that reads as a
+   link rather than a second call to action competing with Next. */
+.retryLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.engineNote {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: var(--lh-normal);
+  color: var(--text-gray);
+  text-align: center;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(0, 0, 0, 0);
+}
+
+/* ============================================
    Larger screens
    ============================================ */
 @media screen and (min-width: 600px) {
@@ -456,17 +664,34 @@
   .heading {
     font-size: 24px;
   }
+
+  /* Match the card's larger padding so the bar still reaches its edges. */
+  .engineBar {
+    margin: -26px -22px 16px;
+    padding: 14px 22px 11px;
+  }
+
+  .questionText {
+    font-size: 16px;
+  }
 }
 
 /* ============================================
    Reduced motion
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .screen {
+  .screen,
+  .engine {
     animation: none;
   }
 
   .keyWrap {
+    transition: none;
+  }
+
+  /* The bar still moves — it is information, not decoration — but it snaps to
+     each tick instead of gliding between them. */
+  .timerFill {
     transition: none;
   }
 }

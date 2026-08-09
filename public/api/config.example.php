@@ -80,3 +80,29 @@ define('CONVERSION_VALUE_ADMISSION', 50000);
 // submitted_at before a submission counts as
 // human (the time-trap).
 // define('LEADS_MIN_FORM_SECONDS', 15);
+
+// ============================================
+// Merit Assessment Test (test.php)
+// ============================================
+// Login attempts allowed per IP per window before
+// the endpoint answers "invalid key" regardless.
+// Raise this if a district on CGNAT (many Jio /
+// Airtel subscribers share one address) reports
+// valid keys being rejected.
+// define('TEST_LOGIN_RATE_MAX', 30);
+
+// Rate-limit window in seconds.
+// define('TEST_LOGIN_RATE_WINDOW', 3600);
+
+// Marks (out of 120) at or above which a completed
+// attempt is stamped `test_qualified: true` on the
+// lead — the admin panel reads it.
+//
+// LEAVE THIS COMMENTED OUT unless the admission
+// team has fixed a cutoff. Undefined means no
+// automatic verdict: `test_qualified` is simply
+// absent and a human decides, which is not the same
+// as a stored `false`. Nothing the student sees
+// changes either way — every applicant gets the
+// same "if you qualify" wording.
+// define('TEST_QUALIFY_CUTOFF', 60);

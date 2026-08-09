@@ -174,28 +174,73 @@ Same route-bundle discipline as `/apply` — no framer-motion, sweetalert2, icon
 native controls plus inline SVG (`src/pages/Test/fields.jsx`, duplicated per-route on purpose).
 The key field is pre-filled from `sessionStorage.lead_login_key` and accepts the key with or
 without its `CIT26-` prefix. Endpoint comes from `REACT_APP_TEST_API_URL || '/api/test.php'`.
+The engine screen lives in `src/pages/Test/TestEngine.jsx` — same route chunk.
 
 ### `test.php` rules that must hold
 
 - **One generic error.** A malformed key, an unknown key and a rate-limited request all answer
   `{"success": false, "error": "invalid_key"}` with HTTP 200. Anything more specific turns the
   endpoint into an oracle for which keys exist. Login is rate-limited to **30 attempts per IP per
-  hour** (`data/test_ratelimit.json`, fails open).
-- **Answers and scores never reach the browser.** No login response carries them, in any state.
+  hour** (`data/test_ratelimit.json`, fails open). `start` / `state` / `answer` charge that same
+  budget **only when the key fails to resolve** — a running test makes ~30 calls, and CGNAT puts a
+  whole district behind one address, so metering every call would lock real students out mid-paper.
+- **Answers and scores never reach the browser.** No response from any action carries a correct
+  option index, a qid, or a score — including the completion response, which is identical for
+  every applicant.
 - **`?action=login` writes nothing** — it is idempotent reconnaissance, so a refresh leaves no
   trace on the applicant's timeline. The timeline entry for starting belongs to `action=start`.
 - `Cache-Control: no-store` on every response.
 
 **Attempt store:** `public/api/data/test_attempts.json`, keyed on the login key (not the lead), so
 a re-issued lead record can never hand out a second attempt. It lives in the same deny-all `data/`
-folder as `leads.json`. `leads.json` is read here and written *only* through `patch_lead()` — an
-internal server-side write that appends activity and bumps `updated_at`, and never touches
-`notes`, `lead_id`, `submitted_at` or `login_key`.
+folder as `leads.json`. Every read-modify-write goes through `with_attempts_locked()` (one `flock`
+per request; `patch_lead` is called *after* the lock releases, so only one file is ever held at a
+time). `leads.json` is read here and written *only* through `patch_lead()` — an internal
+server-side write that appends activity and bumps `updated_at`, and never touches `notes`,
+`lead_id`, `submitted_at` or `login_key`.
 
-Login states: `not_started` · `in_progress` (+ `question_index`, the first unanswered question) ·
-`completed` (+ `completed_at`, `slot_booked`). `action=start` / `answer` / `state` land with the
-test-engine prompt and `action=book_slot` with the slot-booking prompt — **extend `test.php`,
-never add a second endpoint.**
+Login states: `not_started` · `in_progress` (+ `question_index`, the first question still in play) ·
+`completed` (+ `completed_at`, `slot_booked`). `action=book_slot` lands with the slot-booking
+prompt — **extend `test.php`, never add a second endpoint.**
+
+### The test engine (`start` · `state` · `answer`)
+
+**The paper:** 15 random Maths + 15 random Physics qids drawn per attempt, merged and shuffled, so
+no two applicants get the same 30 questions in the same order. The attempt stores qids and the
+chosen option index only — correctness is derived from the bank at scoring time, so the attempts
+file is not itself an answer key.
+
+**The timing model is exact — prompt 09 and the admin panel read these numbers:**
+
+- A question's 60-second clock starts at its **first** serving (`first_served_at`) and is **never
+  re-stamped on resume**. Closing the tab does not pause it.
+- An answer is accepted while `now − first_served_at ≤ 60 + 15` (`CIT_TEST_GRACE_SECONDS`). The
+  grace is slack for slow networks and is deliberately invisible to the client.
+- Serving returns `remaining_seconds = clamp(60 − elapsed, 0, 60)`, so a resumed question shows
+  what is really left rather than a fresh minute.
+- **Auto-advance is server-authoritative.** `advance_attempt()` finalises every question whose
+  window closed while the applicant was away (`selected: null, timed_out: true`) before anything
+  else happens. The browser countdown is UX; it only ever posts a blank and asks for the next one.
+- A stale `index` on `answer` gets `{"success": false, "error": "out_of_sync"}` **plus the current
+  serving payload** — that is both the re-sync path and the entire no-going-back enforcement: an
+  old index can never overwrite an answer.
+
+**One attempt per key, for life.** A second `action=start` resumes; it never draws a second paper.
+
+**Scoring** happens server-side on the 30th finalisation: +4 correct, 0 wrong, 0 blank, max 120.
+No negative marking, so a guess never costs anything. The completion response is
+`{"success": true, "state": "completed", "slot_booked": false}` — **no score to the student**; the
+cutoff is the admission team's to apply.
+
+**Lead fields the engine writes** (server-authored via `patch_lead` only): `test_status`
+(`in_progress` → `completed`), `test_started_at`, `test_completed_at`, `test_score`,
+`test_maths_score`, `test_physics_score`, `test_correct_count`, `test_wrong_count`,
+`test_blank_count`, and `test_qualified` *only* when `TEST_QUALIFY_CUTOFF` is defined in
+`config.php` (it ships commented out — absent means "not decided", where a stored `false` would
+read as "rejected"). **None of these are in `lead_field_whitelist()` in `leads.php`**, so a bot
+POSTing `test_score: 120` to `?action=create` finds it stripped. Activity strings are fixed:
+`Merit test started` and `Merit test completed — scored` — no marks in the timeline, which gets
+read out to applicants over the phone.
 
 ## Meta Quality Feedback Loop
 
