@@ -186,7 +186,9 @@
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
 }
 
 .logoCard {
@@ -213,6 +215,21 @@
   max-width: 100%;
   height: auto;
   object-fit: contain;
+}
+
+/* Recruiter name chip — the default rendering until CIT supplies licensed
+   logo artwork (see RECRUITER_LOGOS in StatsSection.jsx). Balanced for the
+   longest name in the list ("Tech Mahindra") at 360px. */
+.logoName {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #0C2D48;
+  text-align: center;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
 }
 
 /* ========== CTA Row ========== */
@@ -425,6 +442,10 @@
     padding: 0.5rem;
     min-height: 64px;
     border-radius: 10px;
+  }
+
+  .logoName {
+    font-size: 0.75rem;
   }
 
   .ctaButton {

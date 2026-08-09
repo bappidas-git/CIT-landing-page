@@ -67,7 +67,7 @@ export const featuresData = [
         icon: "mdi:account-tie-voice-outline",
         title: "Guided Direct-Admission Support",
         description:
-          "End-to-end direct-admission guidance from the CIT NE admission desk — no confusing counselling trips.",
+          "We guide you through every step — eligibility, documents, travel and hostel — from the CIT NE admission desk.",
       },
       {
         icon: "mdi:hand-heart-outline",

@@ -1,14 +1,16 @@
 /* ============================================
    SecondaryCTASection Component
-   Urgency / limited-seats band before footer
-   Final conversion push for CIT 2026 admissions
+   Closing band before the footer — the last
+   chance to start an application, argued on
+   substance (accreditation, placements, hostel,
+   guidance) rather than a countdown.
    ============================================ */
 
 import React from "react";
 import { Container, Typography, Box } from "@mui/material";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
 import Button from "../../common/Button/Button";
 import styles from "./SecondaryCTASection.module.css";
@@ -27,14 +29,14 @@ const reassurances = [
     icon: "mdi:home-heart",
   },
   {
-    text: "End-to-end admission guidance — no Karnataka trip needed",
+    text: "We guide you through every step — eligibility, documents, travel and hostel",
     icon: "mdi:compass-outline",
   },
 ];
 
 const trustIndicators = [
-  { text: "100% Free Guidance", icon: "mdi:hand-heart" },
-  { text: "Limited 2026 Seats", icon: "mdi:timer-sand" },
+  { text: "No consultancy or agent fees", icon: "mdi:hand-heart" },
+  { text: "Direct college admission", icon: "mdi:school-outline" },
   { text: "Trusted by NE Families", icon: "mdi:account-group" },
 ];
 
@@ -42,7 +44,7 @@ const WHATSAPP_URL =
   "https://api.whatsapp.com/send?phone=918069645014&text=Hi%2C%20I%27d%20like%20to%20apply%20for%20Direct%20B.E.%20Admission%202026%20at%20CIT%20Tumakuru.%20Please%20share%20the%20details.";
 
 const SecondaryCTASection = () => {
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA("apply-now", { location: "secondary_cta" });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -82,7 +84,7 @@ const SecondaryCTASection = () => {
               >
                 <span className={styles.badge}>
                   <Icon icon="mdi:alarm-light" className={styles.badgeIcon} />
-                  Limited Seats — 2026 Intake
+                  Direct B.E. Admission — 2026 Intake
                 </span>
               </motion.div>
 
@@ -92,8 +94,8 @@ const SecondaryCTASection = () => {
                   className={styles.title}
                   sx={{ color: "#fff" }}
                 >
-                  Limited Seats for the 2026 Intake —{" "}
-                  <span className={styles.titleAccent}>Apply Early</span>
+                  Your 2026 B.E. Seat Starts With{" "}
+                  <span className={styles.titleAccent}>One Application</span>
                 </Typography>
               </motion.div>
 
@@ -103,10 +105,10 @@ const SecondaryCTASection = () => {
                   className={styles.subtitle}
                   sx={{ color: "rgba(255,255,255,0.92)" }}
                 >
-                  Direct B.E. admissions for 2026 close quickly each year. Lock
-                  in your seat at Channabasaveshwara Institute of Technology,
-                  Tumakuru with end-to-end guidance from our North-East
-                  admission desk.
+                  2026 seats at Channabasaveshwara Institute of Technology,
+                  Tumakuru are allotted in order of completed applications.
+                  Submit yours and our North-East admission desk guides you
+                  through the rest.
                 </Typography>
               </motion.div>
 
@@ -126,20 +128,21 @@ const SecondaryCTASection = () => {
                   variant="primary"
                   size="large"
                   className={styles.primaryCta}
-                  onClick={() => {
+                  onClick={(event) => {
                     trackCTAClick(
                       "secondary_cta_apply",
                       "secondary_cta",
-                      "Apply for 2026 Admission",
+                      "Start My Application",
                     );
-                    openLeadDrawer("apply-now");
+                    applyCTA.onClick(event);
                   }}
+                  onPointerDown={applyCTA.onPointerDown}
                 >
                   <Icon
                     icon="mdi:school"
                     style={{ marginRight: 8, fontSize: "1.2rem" }}
                   />
-                  Apply for 2026 Admission
+                  Start My Application
                 </Button>
 
                 <a
@@ -198,11 +201,11 @@ const SecondaryCTASection = () => {
                   loading="lazy"
                 />
                 <div className={styles.seatBadge}>
-                  <Icon icon="mdi:fire" className={styles.seatBadgeIcon} />
+                  <Icon icon="mdi:certificate" className={styles.seatBadgeIcon} />
                   <div>
-                    <span className={styles.seatBadgeLabel}>Filling Fast</span>
+                    <span className={styles.seatBadgeLabel}>VTU Affiliated</span>
                     <span className={styles.seatBadgeValue}>
-                      2026 B.E. Seats
+                      2026 B.E. Intake
                     </span>
                   </div>
                 </div>

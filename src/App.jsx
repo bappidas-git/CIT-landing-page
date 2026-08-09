@@ -15,6 +15,7 @@ import './App.css';
 // Context Providers
 import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { ModalProvider, useModal } from './context/ModalContext';
+import useApplyCTA from './hooks/useApplyCTA';
 
 // Components (Eager loaded for critical path - Above the fold)
 import Header from './components/common/Header/Header';
@@ -53,9 +54,11 @@ const FeesFundingSection = lazy(() => import('./components/sections/FeesFundingS
 const AdmissionProcessSection = lazy(() => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'));
 const ServicesSection = lazy(() => import('./components/sections/ServicesSection/ServicesSection'));
 const StatsSection = lazy(() => import('./components/sections/StatsSection/StatsSection'));
+const TestimonialsSection = lazy(() => import('./components/sections/TestimonialsSection'));
 const HighlightsSection = lazy(() => import('./components/sections/HighlightsSection/HighlightsSection'));
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection/FeaturesSection'));
 const LocationSection = lazy(() => import('./components/sections/LocationSection/LocationSection'));
+const FAQSection = lazy(() => import('./components/sections/FAQSection'));
 const CTASection = lazy(() => import('./components/sections/CTASection/CTASection'));
 const ContactSection = lazy(() => import('./components/sections/ContactSection/ContactSection'));
 const SecondaryCTASection = lazy(() => import('./components/sections/SecondaryCTASection/SecondaryCTASection'));
@@ -331,9 +334,11 @@ const useIdlePreload = () => {
         () => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'),
         () => import('./components/sections/ServicesSection/ServicesSection'),
         () => import('./components/sections/StatsSection/StatsSection'),
+        () => import('./components/sections/TestimonialsSection'),
         () => import('./components/sections/LocationSection/LocationSection'),
         () => import('./components/sections/FeaturesSection/FeaturesSection'),
         () => import('./components/sections/HighlightsSection/HighlightsSection'),
+        () => import('./components/sections/FAQSection'),
         () => import('./components/sections/CTASection/CTASection'),
         () => import('./components/sections/ContactSection/ContactSection'),
         () => import('./components/sections/SecondaryCTASection/SecondaryCTASection'),
@@ -381,8 +386,12 @@ const HomePageContent = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-  const { openLeadDrawer } = useModal();
   const location = useLocation();
+
+  // Feeds BOTH mobile Apply surfaces — the sticky bottom nav's Apply item and
+  // the mobile drawer's "Apply for 2026 Admission" button — so this one
+  // handler is the mobile funnel. It goes to /apply, not the drawer.
+  const applyCTA = useApplyCTA('apply-now', { location: 'mobile_nav' });
 
   // Initialize GTM tracking (page views, scroll depth, time on page, section visibility)
   useGTMTracking();
@@ -395,7 +404,7 @@ const HomePageContent = () => {
   const handleMenuClick = () => setIsMobileDrawerOpen(true);
   const handleMobileDrawerClose = () => setIsMobileDrawerOpen(false);
   const handleMobileDrawerOpen = () => setIsMobileDrawerOpen(true);
-  const handleEnquiryClick = () => openLeadDrawer('default');
+  const handleEnquiryClick = applyCTA.onClick;
 
   // Handle hash-based scroll to section (e.g., /#overview, /#floor-plans)
   // Sections are lazy-loaded, so we poll until the target element appears in the DOM
@@ -483,6 +492,13 @@ const HomePageContent = () => {
           </Suspense>
         </ErrorBoundary>
 
+        {/* Renders nothing until testimonialsData.isLive flips to true */}
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <TestimonialsSection />
+          </Suspense>
+        </ErrorBoundary>
+
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
             <HighlightsSection />
@@ -498,6 +514,12 @@ const HomePageContent = () => {
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={400} variant="skeleton" />}>
             <LocationSection />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader height={400} variant="skeleton" />}>
+            <FAQSection />
           </Suspense>
         </ErrorBoundary>
 

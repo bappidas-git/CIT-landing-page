@@ -27,7 +27,7 @@ const trustBadges = [
   },
   {
     icon: "mdi:headset",
-    label: "100% Free Admission Guidance",
+    label: "No consultancy or agent fees",
     color: "#D82618",
   },
 ];

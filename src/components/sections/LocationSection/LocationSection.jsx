@@ -10,11 +10,11 @@ import { Icon } from "@iconify/react";
 import SectionTitle from "../../common/SectionTitle/SectionTitle";
 import Button from "../../common/Button/Button";
 import { locationData } from "../../../data/locationData";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import styles from "./LocationSection.module.css";
 
 const LocationSection = () => {
-  const { openLeadDrawer } = useModal();
+  const callbackCTA = useApplyCTA("request-callback", { location: "location" });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -65,10 +65,6 @@ const LocationSection = () => {
 
   const handleGetDirections = () => {
     window.open(mapsUrl, "_blank", "noopener,noreferrer");
-  };
-
-  const handleAdmissionGuidance = () => {
-    openLeadDrawer("request-callback");
   };
 
   const neHighlights = [
@@ -358,9 +354,9 @@ const LocationSection = () => {
               variant="primary"
               size="large"
               startIcon="mdi:headset"
-              onClick={handleAdmissionGuidance}
+              {...callbackCTA}
             >
-              Get Admission Guidance
+              Request a Callback
             </Button>
             <Button
               variant="outline"

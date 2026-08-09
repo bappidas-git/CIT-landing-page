@@ -7,7 +7,7 @@ import React, { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Container, Typography, Button } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import { featuresData } from "../../../data/featuresData";
 import styles from "./FeaturesSection.module.css";
 
@@ -102,11 +102,7 @@ const FeaturesSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [activeTab, setActiveTab] = useState(featuresData[0]?.id ?? 1);
-  const { openLeadDrawer } = useModal();
-
-  const handleApply = () => {
-    openLeadDrawer("apply-now");
-  };
+  const applyCTA = useApplyCTA("apply-now", { location: "why_us" });
 
   const activeCategory =
     featuresData.find((c) => c.id === activeTab) || featuresData[0];
@@ -341,7 +337,7 @@ const FeaturesSection = () => {
             <Button
               variant="contained"
               className={styles.ctaButton}
-              onClick={handleApply}
+              {...applyCTA}
               endIcon={<Icon icon="mdi:arrow-right" />}
               sx={{
                 background: "linear-gradient(135deg, #E0301E 0%, #B71F12 100%)",
@@ -362,7 +358,7 @@ const FeaturesSection = () => {
                 },
               }}
             >
-              Apply for 2026 Admission
+              Start My Application
             </Button>
           </motion.div>
         </motion.div>

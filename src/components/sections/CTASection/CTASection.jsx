@@ -9,18 +9,24 @@ import { Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import Button from "../../common/Button/Button";
-import { useModal } from "../../../context/ModalContext";
+import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
 import styles from "./CTASection.module.css";
 
 const reassurances = [
-  { text: "Guided direct admission — no confusing CET trips", icon: "mdi:compass-outline" },
-  { text: "Free counselling for students & parents", icon: "mdi:headset" },
+  {
+    text: "We guide you through every step — eligibility, documents, travel and hostel",
+    icon: "mdi:compass-outline",
+  },
+  {
+    text: "No consultancy or agent fees — you deal with the college directly",
+    icon: "mdi:headset",
+  },
   { text: "Hostel support for North-East students", icon: "mdi:home-heart" },
 ];
 
 const CTASection = () => {
-  const { openLeadDrawer } = useModal();
+  const applyCTA = useApplyCTA("apply-now", { location: "mid_page_cta" });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -57,9 +63,9 @@ const CTASection = () => {
     },
   };
 
-  const handleApplyNow = () => {
-    trackCTAClick("primary_cta_apply", "mid_page_cta", "Apply Now");
-    openLeadDrawer("apply-now");
+  const handleApplyNow = (event) => {
+    trackCTAClick("primary_cta_apply", "mid_page_cta", "Start My Application");
+    applyCTA.onClick(event);
   };
 
   const handleCallClick = () => {
@@ -89,9 +95,10 @@ const CTASection = () => {
               <span className={styles.highlight}>B.E. Seat for 2026?</span>
             </Typography>
             <Typography variant="body1" className={styles.subtitle}>
-              Talk to the CIT North-East admission desk today. We&apos;ll guide
-              you through eligibility, branches, hostel and fee details — no
-              trips to Karnataka required to get started.
+              Complete the online application and the CIT North-East admission
+              desk takes it from there. We guide you through every step —
+              eligibility, documents, travel and hostel. 2026 seats are allotted
+              in order of completed applications.
             </Typography>
           </motion.div>
 
@@ -115,9 +122,10 @@ const CTASection = () => {
                 size="large"
                 endIcon="mdi:arrow-right"
                 onClick={handleApplyNow}
+                onPointerDown={applyCTA.onPointerDown}
                 className={styles.primaryBtn}
               >
-                Apply Now
+                Start My Application
               </Button>
             </motion.div>
 

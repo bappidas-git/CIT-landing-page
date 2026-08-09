@@ -193,7 +193,7 @@ Hostel + Mess for NE Students
         <h3 className={styles.guideSubtitle}>Example Descriptions</h3>
         <pre className={styles.guideCode}>
 {`Direct B.E. admission for 2026 at CIT Tumakuru. NAAC-accredited, AICTE-approved, VTU-affiliated. Guided admission for NE students. Apply now!
-Channabasaveshwara Institute of Technology — 25 years of excellence, 90+ recruiters, strong placement track record. Limited 2026 seats. Enquire today.`}
+Channabasaveshwara Institute of Technology — 25 years of excellence, 90+ recruiters, strong placement track record. No consultancy or agent fees. Start your application.`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>Tips for Better Ads</h3>
