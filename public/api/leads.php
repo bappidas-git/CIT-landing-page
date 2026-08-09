@@ -18,6 +18,11 @@
        Re-submissions MERGE into the stored lead
        (upsert by lead_id; silent duplicate merge
        by mobile) instead of being rejected.
+       Answers {"success":true,"login_key":"..."} —
+       apply-funnel leads get a real, server-assigned
+       test key (see "Test login keys" below); every
+       other path gets an unpersisted decoy so the
+       response shape reveals nothing.
 
      GET  /api/leads.php?action=list
        Header: X-Admin-Key: <ADMIN_API_KEY>
@@ -35,12 +40,18 @@
        Body: { "lead_ids": ["..."] }
        Removes leads by id.
 
-   Storage: a JSON file at api/data/leads.json.
-   The data/ folder is created on first use and
-   protected with a .htaccess "Deny from all".
+   Storage: a JSON file at api/data/leads.json,
+   plus api/data/login_keys.json (the test-key
+   ledger). The data/ folder is created on first
+   use and protected with a .htaccess "Deny from
+   all".
    ============================================ */
 
 header('Content-Type: application/json');
+// Lead data is per-request and never public: no proxy, CDN or browser may keep
+// a copy. Without this a Varnish layer in front of the app can serve one
+// admin's list response to the next caller.
+header('Cache-Control: no-store');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-Admin-Key');
@@ -51,9 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ----- Storage paths -----
-$dataDir  = __DIR__ . '/data';
-$dataFile = $dataDir . '/leads.json';
-$rateFile = $dataDir . '/ratelimit.json';
+$dataDir     = __DIR__ . '/data';
+$dataFile    = $dataDir . '/leads.json';
+$rateFile    = $dataDir . '/ratelimit.json';
+$keyPoolFile = $dataDir . '/login_keys.json';
 
 if (!is_dir($dataDir)) {
     @mkdir($dataDir, 0755, true);
@@ -183,6 +195,203 @@ function require_admin_auth($expected) {
 // (JS Date.toISOString()), so string-sorted activity stays chronological.
 function now_iso() {
     return gmdate('Y-m-d\TH:i:s') . '.000Z';
+}
+
+/* ----- Test login keys -----
+   Every /apply-funnel lead earns one unique key (CIT26-XXXXX). It is the sole
+   credential for the online merit test, so it is authored HERE and never
+   accepted from the client: `login_key` is deliberately absent from
+   lead_field_whitelist(), which silently drops any value an attacker injects.
+
+   The key lives in two places on purpose. The lead record is authoritative —
+   that is what the test platform looks a key up in — while login_keys.json is
+   a ledger that guarantees uniqueness and lets us see what has been handed
+   out. Nothing here may ever fail a lead capture: if the ledger cannot be
+   read or written, the applicant still gets a working key. */
+
+// 5 chars from a 32-char alphabet ≈ 33.5M combinations. 0/O and 1/I are
+// excluded so a telecaller can read a key out over a bad line without it being
+// mis-typed at the other end.
+function generate_login_key() {
+    $charset = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+    $max     = strlen($charset) - 1;
+    $key     = '';
+    for ($i = 0; $i < 5; $i++) {
+        $key .= $charset[random_int(0, $max)];
+    }
+    return 'CIT26-' . $key;
+}
+
+function load_key_pool($file) {
+    if (!file_exists($file)) return [];
+    $raw = @file_get_contents($file);
+    if ($raw === false || $raw === '') return [];
+    $data = json_decode($raw, true);
+    return is_array($data) ? $data : [];
+}
+
+function save_key_pool($file, $pool) {
+    // Same exclusive-lock + truncate/rewrite pattern as save_leads().
+    $fp = @fopen($file, 'c+');
+    if (!$fp) return false;
+    if (!flock($fp, LOCK_EX)) {
+        fclose($fp);
+        return false;
+    }
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode(array_values($pool), JSON_UNESCAPED_SLASHES));
+    fflush($fp);
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    return true;
+}
+
+// Build $count fresh unassigned entries whose keys collide neither with each
+// other nor with anything already in $pool.
+function build_key_pool_entries($count, $pool) {
+    $taken = [];
+    foreach ($pool as $entry) {
+        if (is_array($entry) && isset($entry['key'])) {
+            $taken[(string) $entry['key']] = true;
+        }
+    }
+    $entries  = [];
+    $attempts = 0;
+    // Collisions against a few hundred keys out of 33.5M are vanishingly rare,
+    // but the attempt cap means a degenerate RNG can never spin here forever
+    // while an applicant waits on the submit.
+    $maxAttempts = $count * 50;
+    while (count($entries) < $count && $attempts < $maxAttempts) {
+        $attempts++;
+        $key = generate_login_key();
+        if (isset($taken[$key])) continue;
+        $taken[$key] = true;
+        $entries[]   = ['key' => $key, 'lead_id' => null, 'assigned_at' => null];
+    }
+    return $entries;
+}
+
+// Bootstrap the ledger with 100 unassigned keys on first use. The name is
+// claimed with fopen 'x', which fails if the file already exists, so two
+// simultaneous first-ever creates cannot both seed; the content then goes in
+// through save_key_pool() so every write to this file is lock-protected.
+function seed_key_pool_if_missing($file) {
+    if (file_exists($file)) return load_key_pool($file);
+    $fp = @fopen($file, 'x');
+    if (!$fp) return load_key_pool($file); // lost the race — read what won
+    fclose($fp);
+    $pool = build_key_pool_entries(100, []);
+    save_key_pool($file, $pool);
+    return $pool;
+}
+
+// Claim the next free key for $leadId and return it. The read-modify-write
+// runs under one exclusive lock so two concurrent applicants can never be
+// handed the same key.
+function assign_login_key($file, $leadId) {
+    seed_key_pool_if_missing($file);
+
+    $fp = @fopen($file, 'c+');
+    if (!$fp) return generate_login_key();
+    if (!flock($fp, LOCK_EX)) {
+        fclose($fp);
+        // Ledger unavailable. The key still gets written onto the lead record,
+        // which is what the test platform authenticates against, so the
+        // applicant is unaffected — only the ledger misses this entry.
+        return generate_login_key();
+    }
+
+    $raw  = stream_get_contents($fp);
+    $pool = json_decode($raw ?: '[]', true);
+    if (!is_array($pool)) $pool = [];
+
+    // Seeding is repeated in-memory here rather than by calling
+    // seed_key_pool_if_missing() again: a second flock on the file we already
+    // hold would deadlock against ourselves. This covers a torn or truncated
+    // ledger as well as one the seed above could not create.
+    if (count($pool) === 0) {
+        $pool = build_key_pool_entries(100, []);
+    }
+
+    $assigned = '';
+    foreach ($pool as $i => $entry) {
+        if (!is_array($entry) || !isset($entry['key'])) continue;
+        if (isset($entry['lead_id']) && $entry['lead_id'] !== null) continue;
+        $pool[$i]['lead_id']     = $leadId;
+        $pool[$i]['assigned_at'] = now_iso();
+        $assigned = (string) $entry['key'];
+        break;
+    }
+
+    // Pool exhausted — extend instead of failing. A campaign that outruns the
+    // seeded keys is a good problem, and it must never cost us an applicant.
+    if ($assigned === '') {
+        $fresh = build_key_pool_entries(50, $pool);
+        if (count($fresh) > 0) {
+            $fresh[0]['lead_id']     = $leadId;
+            $fresh[0]['assigned_at'] = now_iso();
+            $assigned = (string) $fresh[0]['key'];
+            $pool     = array_merge($pool, $fresh);
+        }
+    }
+
+    if ($assigned === '') {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+        return generate_login_key();
+    }
+
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode(array_values($pool), JSON_UNESCAPED_SLASHES));
+    fflush($fp);
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    return $assigned;
+}
+
+// A throwaway key for the paths that must answer like a stored lead without
+// being one (rate-limited, spam-tiered, non-funnel). Never written to the
+// ledger or to a lead, so it opens nothing — a bot learns only that keys exist.
+function decoy_login_key() {
+    return generate_login_key();
+}
+
+// Only the /apply funnel sits the merit test. Drawer enquiries, admin CSV
+// imports and legacy creates must not consume a key.
+function is_key_eligible_lead($lead) {
+    $tier = (isset($lead['lead_tier']) && is_string($lead['lead_tier'])) ? $lead['lead_tier'] : '';
+    return $tier === 'partial' || $tier === 'application';
+}
+
+// Return the key already on a lead, or claim one for it when it qualifies and
+// has none yet. Takes the lead by reference so the caller's array is stamped
+// with both the key and the activity entry the telecaller sees. Returns '' for
+// a lead that is not part of the test funnel.
+function ensure_login_key(&$lead, $file, $eligible) {
+    $existingKey = (isset($lead['login_key']) && is_string($lead['login_key'])) ? trim($lead['login_key']) : '';
+    if ($existingKey !== '') return $existingKey;
+    if (!$eligible) return '';
+
+    $key = assign_login_key($file, (string) ($lead['lead_id'] ?? ''));
+    $lead['login_key'] = $key;
+    $lead['activity']  = merge_lead_array($lead['activity'] ?? [], [[
+        'action'    => 'Test login key assigned',
+        'status'    => $lead['status'] ?? 'new',
+        'timestamp' => now_iso(),
+    ]], 'activity');
+    return $key;
+}
+
+// Every create answers with the same shape, so nothing about the response
+// tells a bot whether its payload was stored, merged or silently discarded.
+function respond_created($loginKey) {
+    echo json_encode([
+        'success'   => true,
+        'login_key' => ($loginKey !== '' ? $loginKey : decoy_login_key()),
+    ]);
+    exit;
 }
 
 // Known lead keys: the existing enquiry/admin keys (which also cover every
@@ -425,14 +634,18 @@ if ($method === 'POST' && $action === 'create') {
         // discarded with a success response, so the limit is never revealed.
         $ip = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : '';
         if (!check_rate_limit($rateFile, $ip, $rateLimitMax, $rateLimitWindow)) {
-            echo json_encode(['success' => true]);
-            exit;
+            respond_created(decoy_login_key());
         }
     }
 
     if ($forceSpam) {
         $lead['lead_tier'] = 'spam';
     }
+
+    // Test-key eligibility, decided once from the payload as it now stands: a
+    // spam-flagged lead has already been re-tiered above, and a trusted
+    // request is an admin import rather than an applicant sitting the test.
+    $keyEligible = !$isTrusted && is_key_eligible_lead($lead);
 
     $leads = load_leads($dataFile);
 
@@ -442,17 +655,19 @@ if ($method === 'POST' && $action === 'create') {
         if (($existing['lead_id'] ?? null) === $lead['lead_id']) {
             if ($forceSpam) {
                 // Never let a spam-flagged payload poison an existing lead.
-                echo json_encode(['success' => true]);
-                exit;
+                respond_created(decoy_login_key());
             }
             merge_into_lead($leads[$i], $lead, 'Application step completed');
+            // The Step-1 partial already earned this lead its key, so the full
+            // submit re-reads it instead of burning a second one. One lead
+            // keeps one key for life.
+            $loginKey = ensure_login_key($leads[$i], $keyPoolFile, $keyEligible);
             if (!save_leads($dataFile, $leads)) {
                 http_response_code(500);
                 echo json_encode(['error' => 'Failed to save lead']);
                 exit;
             }
-            echo json_encode(['success' => true]);
-            exit;
+            respond_created($loginKey);
         }
     }
 
@@ -464,29 +679,31 @@ if ($method === 'POST' && $action === 'create') {
         foreach ($leads as $i => $existing) {
             if (trim((string) ($existing['mobile'] ?? '')) === $mobile) {
                 if ($forceSpam) {
-                    echo json_encode(['success' => true]);
-                    exit;
+                    respond_created(decoy_login_key());
                 }
                 merge_into_lead($leads[$i], $lead, 'Re-enquiry / re-submission received');
+                // A legacy enquiry lead that now applies gets its first key
+                // here; one that already has a key keeps it.
+                $loginKey = ensure_login_key($leads[$i], $keyPoolFile, $keyEligible);
                 if (!save_leads($dataFile, $leads)) {
                     http_response_code(500);
                     echo json_encode(['error' => 'Failed to save lead']);
                     exit;
                 }
-                echo json_encode(['success' => true]);
-                exit;
+                respond_created($loginKey);
             }
         }
     }
 
-    $leads[] = $lead;
+    // (9) Fresh insert — a first-touch application lead earns its key here.
+    $loginKey = ensure_login_key($lead, $keyPoolFile, $keyEligible);
+    $leads[]  = $lead;
     if (!save_leads($dataFile, $leads)) {
         http_response_code(500);
         echo json_encode(['error' => 'Failed to save lead']);
         exit;
     }
-    echo json_encode(['success' => true]);
-    exit;
+    respond_created($loginKey);
 }
 
 if ($method === 'POST' && $action === 'update') {

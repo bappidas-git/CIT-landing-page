@@ -51,6 +51,19 @@ in sessionStorage so a dropped connection never costs the applicant their answer
 same `lead_id` and upgrades the record to `lead_tier: 'application'`. `leads.php` upserts by
 `lead_id`, so the second post merges rather than duplicating.
 
+**Every application earns one test login key.** `leads.php` answers each create with
+`{"success": true, "login_key": "CIT26-XXXXX"}` — see "Test login keys" below. The Step-1
+partial claims the key, the full submit gets the *same* key back, and both stash it in
+`sessionStorage.lead_login_key` for `/thank-you` and the test platform. Never generate or
+accept a key client-side.
+
+**`/thank-you` is the handoff to the test, not a celebration.** It is gated on
+`sessionStorage.lead_submitted`, shows the key large with a Copy button (clipboard API, falling
+back to a select-on-tap readonly input for old Android), and its primary CTA starts the test.
+When no key is on the device it says the admission team will share it — never an empty box.
+`lead_submitted` / `lead_name` self-clear after 5 minutes; `lead_login_key` deliberately does
+not, because the test login screen pre-fills from it.
+
 **The short enquiry drawer is retained but unreachable.** `LeadFormDrawer` / `UnifiedLeadForm`
 are still mounted in `App.jsx`, but `openLeadDrawer()` (in `ModalContext.jsx`) has zero call
 sites. Do not re-point any CTA at it.
@@ -95,11 +108,29 @@ bypassable:
   merge into the stored lead by `lead_id`, else by `mobile`. No `duplicate` flag is returned
   (that was a phone-number enumeration vector).
 
-Anti-bot responses are deliberately indistinguishable from success, so a bot learns nothing.
-Requests carrying a valid `X-Admin-Key` (admin CSV import) skip the anti-bot checks.
+Anti-bot responses are deliberately indistinguishable from success, so a bot learns nothing —
+including the `login_key` every create answers with (a real key for an application lead, an
+unpersisted decoy otherwise). Requests carrying a valid `X-Admin-Key` (admin CSV import) skip
+the anti-bot checks. Every response carries `Cache-Control: no-store`.
 
 Both `leads.php` and `telecalls.php` ship with **no fallback admin key** — until one is
 configured they answer `503` on admin actions. See `LAUNCH_NOTES.md`.
+
+### Test login keys
+
+`CIT26-XXXXX` — 5 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ` (no ambiguous `0 O 1 I`, so a
+telecaller can read one out over a bad line). Rules that must hold:
+
+- **Server-authored only.** `login_key` is deliberately absent from `lead_field_whitelist()`, so
+  a client-supplied value is dropped. Only admin `?action=update` can set one by hand.
+- **One key per lead, for life.** The Step-1 partial claims it; the full submit re-reads the
+  stored key instead of claiming a second. `merge_into_lead()` never touches it.
+- **Only apply-funnel leads qualify** — incoming `lead_tier` `partial` or `application`, on an
+  untrusted request. Drawer, CSV-import and legacy creates must not consume keys.
+- **Capture never fails for want of a key.** `public/api/data/login_keys.json` (entries
+  `{key, lead_id, assigned_at}`) is seeded with 100 keys, auto-extends by 50 when it runs dry,
+  and falls back to an unpersisted generated key if the ledger cannot be read or written — the
+  lead record is what the test platform authenticates against, not the ledger.
 
 ## Meta Quality Feedback Loop
 
