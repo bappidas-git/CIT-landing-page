@@ -11,7 +11,14 @@
    Run with: npm test
    ============================================ */
 import { exportLeadsCSV, importLeadsCSV, getLeads, syncLeadsFromServer } from "../leadService";
-import { computeQualityScore, getLeadTier } from "../leadQuality";
+import {
+  computeQualityScore,
+  formatScore,
+  getLeadTier,
+  getTestStatus,
+  hasSelectionData,
+  shortBranch,
+} from "../leadQuality";
 
 let captured = "";
 
@@ -125,6 +132,84 @@ test("comma-bearing values survive an export -> import round trip", async () => 
 
   // Column alignment: header count === row count.
   expect(headerLine.split(",").length).toBeGreaterThan(30);
+});
+
+test("merit test, slot and selection fields survive an export -> import round trip", async () => {
+  const lead = {
+    lead_id: "test-777",
+    name: "Bhaskar Deka",
+    mobile: "9876500077",
+    service_interest: "B.E. — Computer Science & Engineering",
+    state: "Assam",
+    source: "apply-now/full",
+    status: "new",
+    submitted_at: "2026-05-02T09:00:00.000Z",
+    lead_tier: "application",
+    intake_year: "2026",
+    // ---- written server-side by leads.php / test.php ----
+    login_key: "CIT26-7K4QP",
+    test_status: "completed",
+    test_score: 84,
+    test_maths_score: 44,
+    test_physics_score: 40,
+    test_correct_count: 21,
+    test_wrong_count: 6,
+    test_blank_count: 3,
+    test_started_at: "2026-05-02T10:00:00.000Z",
+    test_completed_at: "2026-05-02T10:30:00.000Z",
+    counselling_slot: "2026-05-03T10:30:00.000Z",
+    // ---- /apply Step 5 ----
+    fee_affordability: "education_loan",
+    branch_pref_1: "B.E. — Computer Science & Engineering",
+    branch_pref_2: "B.E. — Electronics & Communication Engineering",
+  };
+
+  exportLeadsCSV([lead]);
+  // Affordability exports as its short human label; everything else raw.
+  expect(captured).toContain("Needs loan");
+  expect(captured).toContain("CIT26-7K4QP");
+
+  await syncLeadsFromServer(); // no API configured -> cache stays empty
+  const result = await importLeadsCSV(captured);
+  expect(result.imported).toBe(1);
+
+  const [imported] = getLeads({});
+  expect(imported.login_key).toBe("CIT26-7K4QP");
+  // Raw key, not the "Completed" chip label.
+  expect(imported.test_status).toBe("completed");
+  expect(imported.test_score).toBe(84);
+  expect(imported.test_maths_score).toBe(44);
+  expect(imported.test_physics_score).toBe(40);
+  expect(imported.test_correct_count).toBe(21);
+  expect(imported.test_wrong_count).toBe(6);
+  expect(imported.test_blank_count).toBe(3);
+  expect(imported.test_started_at).toBe("2026-05-02T10:00:00.000Z");
+  expect(imported.test_completed_at).toBe("2026-05-02T10:30:00.000Z");
+  expect(imported.counselling_slot).toBe("2026-05-03T10:30:00.000Z");
+  expect(imported.fee_affordability).toBe("education_loan");
+  expect(imported.branch_pref_1).toBe("B.E. — Computer Science & Engineering");
+  expect(imported.branch_pref_2).toBe(
+    "B.E. — Electronics & Communication Engineering"
+  );
+
+  // The admin reads the same state back out of the imported copy.
+  expect(getTestStatus(imported)).toBe("completed");
+  expect(formatScore(imported)).toBe("84/120");
+  expect(shortBranch(imported.branch_pref_1)).toBe("CSE");
+  expect(shortBranch(imported.branch_pref_2)).toBe("ECE");
+});
+
+test("a lead that never sat the test reports no test state at all", () => {
+  // Legacy enquiry lead — never issued a key, so the admin shows nothing
+  // rather than branding it "Not Started".
+  expect(getTestStatus({ name: "legacy" })).toBe(null);
+  expect(hasSelectionData({ name: "legacy" })).toBe(false);
+  // A key on its own means the paper is still owed.
+  expect(getTestStatus({ login_key: "CIT26-ABCDE" })).toBe("not_started");
+  expect(hasSelectionData({ login_key: "CIT26-ABCDE" })).toBe(true);
+  expect(formatScore({ login_key: "CIT26-ABCDE" })).toBe("—");
+  // A zero score is a real result, not a missing one.
+  expect(formatScore({ test_score: 0 })).toBe("0/120");
 });
 
 test("partial leads are capped at warm and legacy leads are enquiry tier", () => {

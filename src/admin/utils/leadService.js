@@ -16,6 +16,8 @@ import { getConfig } from "../../utils/webhookSubmit";
 import { describeStatusChange } from "./leadStatus";
 import {
   ADMISSION_TIMELINE_LABELS,
+  AFFORDABILITY_LABELS,
+  AFFORDABILITY_LONG_LABELS,
   BOARD_LABELS,
   BEST_TIME_LABELS,
   COUNSELLING_MODE_LABELS,
@@ -29,6 +31,7 @@ import {
   computeQualityScore,
   getLeadTier,
   getQualityConfig,
+  getTestStatus,
   labelFor,
 } from "./leadQuality";
 
@@ -237,10 +240,13 @@ export const getLeads = (filters = {}) => {
   // Search filter — the applicant's own details plus the qualification fields
   // a telecaller searches by (the parent who answers the phone, the district,
   // and the schools that identify a lead when two students share a name).
+  // `login_key` is matched case-insensitively and with or without its
+  // `CIT26-` prefix, because that is how an applicant reads it back on a call.
   if (filters.search) {
     const q = filters.search.toLowerCase();
     leads = leads.filter(
       (l) =>
+        (l.login_key || "").toLowerCase().includes(q) ||
         (l.name || "").toLowerCase().includes(q) ||
         (l.email || "").toLowerCase().includes(q) ||
         (l.mobile || "").includes(q) ||
@@ -528,6 +534,21 @@ export const exportLeadsCSV = (leads) => {
     "Best Time",
     "WhatsApp Confirmed",
     "FBCLID",
+    // ---- Merit test & selection (server-written) ----
+    "Login Key",
+    "Test Status",
+    "Test Score",
+    "Maths Score",
+    "Physics Score",
+    "Correct",
+    "Wrong",
+    "Blank",
+    "Test Started",
+    "Test Completed",
+    "Counselling Slot",
+    "Affordability",
+    "Branch Pref 1",
+    "Branch Pref 2",
   ];
 
   const escapeCSV = (val) => {
@@ -584,6 +605,23 @@ export const exportLeadsCSV = (leads) => {
       labelFor(BEST_TIME_LABELS, l.best_time),
       booleanCell(l.whatsapp_confirmed),
       l.fbclid,
+      // ---- Merit test & selection ----
+      // Timestamps go out as raw ISO so a re-import lands the same instant,
+      // and `test_status` as its raw key for the same reason.
+      l.login_key,
+      l.test_status,
+      l.test_score,
+      l.test_maths_score,
+      l.test_physics_score,
+      l.test_correct_count,
+      l.test_wrong_count,
+      l.test_blank_count,
+      l.test_started_at,
+      l.test_completed_at,
+      l.counselling_slot,
+      labelFor(AFFORDABILITY_LABELS, l.fee_affordability),
+      l.branch_pref_1,
+      l.branch_pref_2,
     ];
   });
 
@@ -710,6 +748,27 @@ const CSV_FIELD_MAP = {
   "best time": "best_time",
   "whatsapp confirmed": "whatsapp_confirmed",
   fbclid: "fbclid",
+  // ---- Merit test & selection columns ----
+  // NOTE: `login_key` and every `test_*` field are absent from
+  // `lead_field_whitelist()` in leads.php by design — they are server-authored,
+  // so a CSV import restores them to the admin's own view but the server will
+  // not accept them back onto a newly created lead. Re-importing an export is
+  // for reporting and for rebuilding a local view, not for replaying test
+  // results into the store.
+  "login key": "login_key",
+  "test status": "test_status",
+  "test score": "test_score",
+  "maths score": "test_maths_score",
+  "physics score": "test_physics_score",
+  correct: "test_correct_count",
+  wrong: "test_wrong_count",
+  blank: "test_blank_count",
+  "test started": "test_started_at",
+  "test completed": "test_completed_at",
+  "counselling slot": "counselling_slot",
+  affordability: "fee_affordability",
+  "branch pref 1": "branch_pref_1",
+  "branch pref 2": "branch_pref_2",
 };
 
 // Derived-at-export columns — never written back onto a lead. The quality
@@ -729,12 +788,19 @@ const CSV_ENUM_MAPS = {
   counselling_mode: [COUNSELLING_MODE_LABELS],
   admission_timeline: [ADMISSION_TIMELINE_LABELS],
   best_time: [BEST_TIME_LABELS],
+  fee_affordability: [AFFORDABILITY_LABELS, AFFORDABILITY_LONG_LABELS],
 };
 
 const CSV_NUMERIC_KEYS = new Set([
   "eligibility_percent",
   "tenth_year",
   "tenth_percent",
+  "test_score",
+  "test_maths_score",
+  "test_physics_score",
+  "test_correct_count",
+  "test_wrong_count",
+  "test_blank_count",
 ]);
 
 const CSV_BOOLEAN_KEYS = new Set(["eligibility_met", "whatsapp_confirmed"]);
@@ -964,11 +1030,19 @@ export const getLeadStats = ({ excludeSpam = false } = {}) => {
   let applicationLeads = 0;
   let partialLeads = 0;
   let hotQualityLeads = 0;
+  // Merit-test progress. `awaitingTest` counts leads holding a login key who
+  // have not finished a paper — that is exactly the push-to-test queue on the
+  // Lead Management page, so the two numbers agree.
+  let testsCompleted = 0;
+  let awaitingTest = 0;
   leads.forEach((l) => {
     const tier = getLeadTier(l);
     if (tier === "application") applicationLeads++;
     else if (tier === "partial") partialLeads++;
     if (computeQualityScore(l).band === "hot") hotQualityLeads++;
+    const testStatus = getTestStatus(l);
+    if (testStatus === "completed") testsCompleted++;
+    else if (testStatus) awaitingTest++;
   });
 
   // Always counted against the full store, so the number stays truthful even
@@ -987,6 +1061,8 @@ export const getLeadStats = ({ excludeSpam = false } = {}) => {
     applicationLeads,
     partialLeads,
     hotQualityLeads,
+    testsCompleted,
+    awaitingTest,
     spamLeads,
   };
 };

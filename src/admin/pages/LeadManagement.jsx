@@ -55,16 +55,24 @@ import {
 } from "../utils/leadService";
 import { STATUS_OPTIONS, getStatusConfig } from "../utils/leadStatus";
 import {
+  AFFORDABILITY_LABELS,
   FUNDING_PLAN_SHORT_LABELS,
   INTAKE_YEAR_LABELS,
   PARTIAL_HINT,
   QUALITY_BANDS,
+  TEST_STATUS_OPTIONS,
   computeQualityScore,
+  formatScore,
+  formatSlot,
   getLeadTier,
   getQualityConfig,
+  getTestSortValue,
+  getTestStatus,
+  getTestStatusConfig,
   getTierConfig,
   hasQualitySignal,
   labelFor,
+  shortBranch,
 } from "../utils/leadQuality";
 import { exportGoogleAdsCSV } from "../utils/googleAdsExport";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -111,15 +119,57 @@ const FUNDING_FILTER_OPTIONS = [
   })),
 ];
 
+// Merit-test state. "All" keeps legacy leads (never issued a key) visible;
+// picking a specific state necessarily hides them, because they were never
+// asked to sit the paper.
+const TEST_FILTER_OPTIONS = [
+  { value: "all", label: "All Tests" },
+  ...TEST_STATUS_OPTIONS.map((t) => ({ value: t.value, label: t.label })),
+];
+
+const AFFORDABILITY_FILTER_OPTIONS = [
+  { value: "all", label: "All Affordability" },
+  ...Object.keys(AFFORDABILITY_LABELS).map((value) => ({
+    value,
+    label: AFFORDABILITY_LABELS[value],
+  })),
+];
+
+/* ============================================
+   TELECALLER QUEUES
+   ============================================
+   Two one-tap views onto the two calls the team actually makes. A preset is
+   nothing more than a saved position of the filter + sort state above plus one
+   extra predicate in the same filter chain (see `loadData`) — there is no
+   second filtering path, so what the table shows always matches the chips.
+   Touching any filter by hand drops the badge: the view is no longer the queue
+   the button promised.
+   ============================================ */
+const QUEUE_PRESETS = {
+  push_to_test: {
+    label: "Push-to-test queue",
+    icon: "mdi:key-arrow-right",
+    hint: "Applicants holding a login key who have not finished the test — call, re-share the key, get them to attempt it.",
+  },
+  counselling: {
+    label: "Counselling queue",
+    icon: "mdi:phone-in-talk-outline",
+    hint: "Finished papers, next call slot first. Unbooked applicants sort last, best scores first among them.",
+  },
+};
+
 // Left-border accent + hint colour for an abandoned Step-1 application.
 const PARTIAL_TIER = getTierConfig("partial");
 
 // Columns whose first click should sort high-to-low — a score or a date is
 // only useful with the best/newest at the top.
+// `counselling_slot` is deliberately absent: the next call belongs at the top,
+// so its first click sorts ascending.
 const DESC_FIRST_COLUMNS = new Set([
   "quality",
   "eligibility_percent",
   "submitted_at",
+  "test_status",
 ]);
 
 const formatShortDate = (dateStr) => {
@@ -145,6 +195,18 @@ const COLUMNS = [
   { id: "mobile", label: "Mobile", sortable: true, width: 130 },
   { id: "lead_tier", label: "Tier", sortable: true, width: 120 },
   { id: "quality", label: "Quality", sortable: true, width: 110 },
+  // ---- Merit test & selection (server-written, see leadQuality.js) ----
+  { id: "login_key", label: "Key", width: 110 },
+  { id: "test_status", label: "Test", sortable: true, width: 120 },
+  { id: "counselling_slot", label: "Call Slot", sortable: true, width: 140 },
+  {
+    id: "fee_affordability",
+    label: "Affordability",
+    sortable: true,
+    width: 120,
+    hideTablet: true,
+  },
+  { id: "branch_prefs", label: "Pref Branches", width: 140, hideTablet: true },
   { id: "intake_year", label: "Intake", sortable: true, width: 110 },
   {
     id: "eligibility_percent",
@@ -186,6 +248,17 @@ const formatEligibility = (lead) => {
   return { text: `${percent.toFixed(1)}% ${met ? "✔" : "–"}`, met };
 };
 
+/**
+ * Render both ranked branch choices as `CSE → ECE`, using the short names so
+ * the column stays narrow. Returns "" when neither was answered.
+ * @param {Object} lead - Lead record
+ * @returns {string} Preference pair
+ */
+const formatBranchPrefs = (lead) =>
+  [shortBranch(lead.branch_pref_1), shortBranch(lead.branch_pref_2)]
+    .filter(Boolean)
+    .join(" → ");
+
 const LeadManagement = () => {
   const navigate = useNavigate();
 
@@ -205,6 +278,10 @@ const LeadManagement = () => {
   const [qualityFilter, setQualityFilter] = useState("all");
   const [intakeFilter, setIntakeFilter] = useState("all");
   const [fundingFilter, setFundingFilter] = useState("all");
+  const [testFilter, setTestFilter] = useState("all");
+  const [affordabilityFilter, setAffordabilityFilter] = useState("all");
+  // Active telecaller queue ("push_to_test" | "counselling" | null).
+  const [queuePreset, setQueuePreset] = useState(null);
 
   // Table state
   const [orderBy, setOrderBy] = useState("submitted_at");
@@ -223,6 +300,8 @@ const LeadManagement = () => {
     severity: "success",
   });
   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+  // Login key most recently copied to the clipboard, so the row can confirm it.
+  const [copiedKey, setCopiedKey] = useState(null);
   const fileInputRef = useRef(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTablet = useMediaQuery("(max-width: 1024px)");
@@ -267,6 +346,24 @@ const LeadManagement = () => {
       ) {
         return false;
       }
+      if (testFilter !== "all" && getTestStatus(lead) !== testFilter) {
+        return false;
+      }
+      if (
+        affordabilityFilter !== "all" &&
+        (lead.fee_affordability || "") !== affordabilityFilter
+      ) {
+        return false;
+      }
+      // The one queue rule the dropdowns above cannot express: an apply-funnel
+      // lead that holds a key and still owes us a paper. Applied in the same
+      // chain so the table can never disagree with the chips.
+      if (queuePreset === "push_to_test") {
+        if (!lead.login_key) return false;
+        const funnelTier = getLeadTier(lead);
+        if (funnelTier !== "application" && funnelTier !== "partial") return false;
+        if (getTestStatus(lead) === "completed") return false;
+      }
       return true;
     });
     setLeads(data);
@@ -287,6 +384,9 @@ const LeadManagement = () => {
     qualityFilter,
     intakeFilter,
     fundingFilter,
+    testFilter,
+    affordabilityFilter,
+    queuePreset,
   ]);
 
   // Keep the latest loadData in a ref so event listeners below don't need
@@ -415,11 +515,33 @@ const LeadManagement = () => {
             FUNDING_PLAN_SHORT_LABELS,
             lead.funding_plan
           ).toLowerCase();
+        case "test_status":
+          return getTestSortValue(lead);
+        case "counselling_slot": {
+          const at = new Date(lead.counselling_slot || 0).getTime();
+          // An unbooked applicant sorts last on the natural (ascending) click,
+          // where the top of the list is the next call due.
+          return lead.counselling_slot && Number.isFinite(at)
+            ? at
+            : Number.POSITIVE_INFINITY;
+        }
+        case "fee_affordability":
+          return labelFor(
+            AFFORDABILITY_LABELS,
+            lead.fee_affordability
+          ).toLowerCase();
         case "submitted_at":
           return new Date(lead.submitted_at || 0).getTime() || 0;
         default:
           return String(lead[orderBy] || "").toLowerCase();
       }
+    };
+
+    // Ties inside the call-slot column break on score, best first — that is
+    // the whole ordering of the counselling queue's unbooked tail.
+    const tieBreak = (a, b) => {
+      if (orderBy !== "counselling_slot") return 0;
+      return (Number(b.test_score) || 0) - (Number(a.test_score) || 0);
     };
 
     const sorted = [...leads];
@@ -428,7 +550,7 @@ const LeadManagement = () => {
       const bVal = sortValue(b);
       if (aVal < bVal) return order === "asc" ? -1 : 1;
       if (aVal > bVal) return order === "asc" ? 1 : -1;
-      return 0;
+      return tieBreak(a, b);
     });
     return sorted;
   }, [leads, orderBy, order]);
@@ -441,13 +563,80 @@ const LeadManagement = () => {
   );
 
   // Handlers
+
+  // Any hand-made change to the view drops the queue badge — what is on screen
+  // is no longer the queue the button promised.
+  const clearPreset = () => setQueuePreset(null);
+
   const handleSort = (column) => {
+    clearPreset();
     if (orderBy === column) {
       setOrder(order === "asc" ? "desc" : "asc");
     } else {
       setOrderBy(column);
       setOrder(DESC_FIRST_COLUMNS.has(column) ? "desc" : "asc");
     }
+  };
+
+  // Reset every filter to its default WITHOUT touching the preset badge, so a
+  // queue button always starts from a clean view.
+  const resetFilterState = () => {
+    setSearch("");
+    setStatusFilter("all");
+    setSourceFilter("all");
+    setDateRange("all");
+    setCustomStart("");
+    setCustomEnd("");
+    setTierFilter("active");
+    setQualityFilter("all");
+    setIntakeFilter("all");
+    setFundingFilter("all");
+    setTestFilter("all");
+    setAffordabilityFilter("all");
+    setPage(0);
+  };
+
+  /**
+   * Telecaller queue: everyone holding a login key who has not finished the
+   * paper, newest application first. The "has a key, not completed" rule lives
+   * in `loadData`; this only positions the shared filter/sort state.
+   */
+  const applyPushToTestQueue = () => {
+    resetFilterState();
+    // A selection made in another view means nothing in this one.
+    setSelected([]);
+    setOrderBy("submitted_at");
+    setOrder("desc");
+    setQueuePreset("push_to_test");
+  };
+
+  /**
+   * Counselling Officer queue: finished papers ordered by the hour they booked,
+   * next call on top. Applicants who never chose a slot fall to the bottom,
+   * best score first, so the officer works down them when the diary is clear.
+   */
+  const applyCounsellingQueue = () => {
+    resetFilterState();
+    setSelected([]);
+    setTestFilter("completed");
+    setOrderBy("counselling_slot");
+    setOrder("asc");
+    setQueuePreset("counselling");
+  };
+
+  const handleCopyKey = (key) => {
+    if (!key) return;
+    if (!navigator.clipboard?.writeText) {
+      showSnackbar("Clipboard unavailable — open the lead to copy the key", "warning");
+      return;
+    }
+    navigator.clipboard
+      .writeText(key)
+      .then(() => {
+        setCopiedKey(key);
+        setTimeout(() => setCopiedKey(null), 2000);
+      })
+      .catch(() => showSnackbar("Could not copy the key", "warning"));
   };
 
   const handleSelectAll = (e) => {
@@ -540,18 +729,9 @@ const LeadManagement = () => {
   };
 
   const clearFilters = () => {
-    setSearch("");
-    setStatusFilter("all");
-    setSourceFilter("all");
-    setDateRange("all");
-    setCustomStart("");
-    setCustomEnd("");
     // Back to the default view, which still hides spam.
-    setTierFilter("active");
-    setQualityFilter("all");
-    setIntakeFilter("all");
-    setFundingFilter("all");
-    setPage(0);
+    resetFilterState();
+    clearPreset();
   };
 
   const showSnackbar = (message, severity = "success") => {
@@ -566,7 +746,10 @@ const LeadManagement = () => {
     tierFilter !== "active" ||
     qualityFilter !== "all" ||
     intakeFilter !== "all" ||
-    fundingFilter !== "all";
+    fundingFilter !== "all" ||
+    testFilter !== "all" ||
+    affordabilityFilter !== "all" ||
+    !!queuePreset;
 
   return (
     <div className={styles.page}>
@@ -611,6 +794,42 @@ const LeadManagement = () => {
               </IconButton>
             </span>
           </Tooltip>
+          {/* Telecaller queues — one tap to the list the team is calling from. */}
+          {Object.entries(QUEUE_PRESETS).map(([key, preset]) => {
+            const active = queuePreset === key;
+            return (
+              <Tooltip key={key} title={preset.hint}>
+                <Button
+                  variant={active ? "contained" : "outlined"}
+                  size="small"
+                  disableElevation
+                  startIcon={<Icon icon={preset.icon} />}
+                  onClick={() =>
+                    active
+                      ? clearFilters()
+                      : key === "push_to_test"
+                        ? applyPushToTestQueue()
+                        : applyCounsellingQueue()
+                  }
+                  aria-pressed={active}
+                  sx={{
+                    textTransform: "none",
+                    borderColor: "var(--admin-accent)",
+                    color: active ? "#fff" : "var(--admin-accent)",
+                    bgcolor: active ? "var(--admin-accent)" : "transparent",
+                    "&:hover": {
+                      borderColor: "var(--admin-accent)",
+                      bgcolor: active
+                        ? "var(--admin-accent)"
+                        : "rgba(216, 38, 24, 0.06)",
+                    },
+                  }}
+                >
+                  {preset.label}
+                </Button>
+              </Tooltip>
+            );
+          })}
           <Button
             variant="outlined"
             size="small"
@@ -688,6 +907,21 @@ const LeadManagement = () => {
             />{" "}
             Refresh
           </MenuItem>
+          {Object.entries(QUEUE_PRESETS).map(([key, preset]) => (
+            <MenuItem
+              key={key}
+              selected={queuePreset === key}
+              onClick={() => {
+                if (queuePreset === key) clearFilters();
+                else if (key === "push_to_test") applyPushToTestQueue();
+                else applyCounsellingQueue();
+                setMoreMenuAnchor(null);
+              }}
+            >
+              <Icon icon={preset.icon} width={18} style={{ marginRight: 8 }} />{" "}
+              {preset.label}
+            </MenuItem>
+          ))}
           <MenuItem
             onClick={() => {
               fileInputRef.current?.click();
@@ -770,9 +1004,10 @@ const LeadManagement = () => {
         <div className={styles.filtersBar}>
           <TextField
             size="small"
-            placeholder="Search by name, mobile, parent, district, school, course..."
+            placeholder="Search by name, mobile, key, parent, district, school, course..."
             value={search}
             onChange={(e) => {
+              clearPreset();
               setSearch(e.target.value);
               setPage(0);
             }}
@@ -804,6 +1039,7 @@ const LeadManagement = () => {
               value={statusFilter}
               label="Status"
               onChange={(e) => {
+                clearPreset();
                 setStatusFilter(e.target.value);
                 setPage(0);
               }}
@@ -828,6 +1064,7 @@ const LeadManagement = () => {
               value={sourceFilter}
               label="Source"
               onChange={(e) => {
+                clearPreset();
                 setSourceFilter(e.target.value);
                 setPage(0);
               }}
@@ -852,6 +1089,7 @@ const LeadManagement = () => {
               value={tierFilter}
               label="Tier"
               onChange={(e) => {
+                clearPreset();
                 setTierFilter(e.target.value);
                 setPage(0);
               }}
@@ -875,6 +1113,7 @@ const LeadManagement = () => {
               value={qualityFilter}
               label="Quality"
               onChange={(e) => {
+                clearPreset();
                 setQualityFilter(e.target.value);
                 setPage(0);
               }}
@@ -898,6 +1137,7 @@ const LeadManagement = () => {
               value={intakeFilter}
               label="Intake"
               onChange={(e) => {
+                clearPreset();
                 setIntakeFilter(e.target.value);
                 setPage(0);
               }}
@@ -921,6 +1161,7 @@ const LeadManagement = () => {
               value={fundingFilter}
               label="Funding"
               onChange={(e) => {
+                clearPreset();
                 setFundingFilter(e.target.value);
                 setPage(0);
               }}
@@ -938,12 +1179,61 @@ const LeadManagement = () => {
               ))}
             </Select>
           </FormControl>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel>Test</InputLabel>
+            <Select
+              value={testFilter}
+              label="Test"
+              onChange={(e) => {
+                clearPreset();
+                setTestFilter(e.target.value);
+                setPage(0);
+              }}
+              sx={{
+                borderRadius: "8px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--admin-accent)",
+                },
+              }}
+            >
+              {TEST_FILTER_OPTIONS.map((t) => (
+                <MenuItem key={t.value} value={t.value}>
+                  {t.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Affordability</InputLabel>
+            <Select
+              value={affordabilityFilter}
+              label="Affordability"
+              onChange={(e) => {
+                clearPreset();
+                setAffordabilityFilter(e.target.value);
+                setPage(0);
+              }}
+              sx={{
+                borderRadius: "8px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--admin-accent)",
+                },
+              }}
+            >
+              {AFFORDABILITY_FILTER_OPTIONS.map((a) => (
+                <MenuItem key={a.value} value={a.value}>
+                  {a.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FormControl size="small" sx={{ minWidth: 140 }}>
             <InputLabel>Date Range</InputLabel>
             <Select
               value={dateRange}
               label="Date Range"
               onChange={(e) => {
+                clearPreset();
                 setDateRange(e.target.value);
                 setPage(0);
               }}
@@ -988,6 +1278,26 @@ const LeadManagement = () => {
         {/* Active filter chips */}
         {hasActiveFilters && (
           <div className={styles.filterChips}>
+            {queuePreset && (
+              <Chip
+                label={`Queue: ${QUEUE_PRESETS[queuePreset].label}`}
+                size="small"
+                icon={
+                  <Icon
+                    icon={QUEUE_PRESETS[queuePreset].icon}
+                    width={14}
+                    style={{ color: "#fff" }}
+                  />
+                }
+                onDelete={clearFilters}
+                sx={{
+                  bgcolor: "var(--admin-accent)",
+                  color: "#fff",
+                  fontWeight: 600,
+                  "& .MuiChip-deleteIcon": { color: "#ffffffcc" },
+                }}
+              />
+            )}
             {search && (
               <Chip
                 label={`Search: "${search}"`}
@@ -1074,6 +1384,41 @@ const LeadManagement = () => {
                 )}`}
                 size="small"
                 onDelete={() => setFundingFilter("all")}
+                sx={{
+                  bgcolor: "#EBF5FF",
+                  color: "var(--admin-accent)",
+                  "& .MuiChip-deleteIcon": { color: "var(--admin-accent)" },
+                }}
+              />
+            )}
+            {testFilter !== "all" && (
+              <Chip
+                label={`Test: ${getTestStatusConfig(testFilter).label}`}
+                size="small"
+                onDelete={() => {
+                  clearPreset();
+                  setTestFilter("all");
+                }}
+                sx={{
+                  bgcolor: getTestStatusConfig(testFilter).bg,
+                  color: getTestStatusConfig(testFilter).color,
+                  "& .MuiChip-deleteIcon": {
+                    color: getTestStatusConfig(testFilter).color,
+                  },
+                }}
+              />
+            )}
+            {affordabilityFilter !== "all" && (
+              <Chip
+                label={`Affordability: ${labelFor(
+                  AFFORDABILITY_LABELS,
+                  affordabilityFilter
+                )}`}
+                size="small"
+                onDelete={() => {
+                  clearPreset();
+                  setAffordabilityFilter("all");
+                }}
                 sx={{
                   bgcolor: "#EBF5FF",
                   color: "var(--admin-accent)",
@@ -1291,6 +1636,11 @@ const LeadManagement = () => {
                       const qc = getQualityConfig(quality.band);
                       const scored = hasQualitySignal(lead);
                       const eligibility = formatEligibility(lead);
+                      // Test state is null for a lead that never held a key —
+                      // it renders as a dash, never as "Not Started".
+                      const testStatus = getTestStatus(lead);
+                      const testConfig = getTestStatusConfig(testStatus);
+                      const branchPrefs = formatBranchPrefs(lead);
                       return (
                         <TableRow
                           key={lead.lead_id}
@@ -1399,6 +1749,128 @@ const LeadManagement = () => {
                               </Typography>
                             )}
                           </TableCell>
+                          {/* Login key — the credential the telecaller reads
+                              out on the call, so it copies in one tap. */}
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            {lead.login_key ? (
+                              <Tooltip
+                                title={
+                                  copiedKey === lead.login_key
+                                    ? "Copied"
+                                    : "Copy login key"
+                                }
+                              >
+                                <span
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={() => handleCopyKey(lead.login_key)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault();
+                                      handleCopyKey(lead.login_key);
+                                    }
+                                  }}
+                                  className={styles.keyCell}
+                                >
+                                  {lead.login_key}
+                                  <Icon
+                                    icon={
+                                      copiedKey === lead.login_key
+                                        ? "mdi:check"
+                                        : "mdi:content-copy"
+                                    }
+                                    width={12}
+                                  />
+                                </span>
+                              </Tooltip>
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  color: "var(--admin-text-muted)",
+                                }}
+                              >
+                                —
+                              </Typography>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {testStatus ? (
+                              <div className={styles.testCell}>
+                                <Chip
+                                  label={testConfig.label}
+                                  size="small"
+                                  sx={{
+                                    bgcolor: testConfig.bg,
+                                    color: testConfig.color,
+                                    fontWeight: 600,
+                                    fontSize: "0.7rem",
+                                    height: 22,
+                                  }}
+                                />
+                                {testStatus === "completed" && (
+                                  <span className={styles.testScore}>
+                                    {formatScore(lead)}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  color: "var(--admin-text-muted)",
+                                }}
+                              >
+                                —
+                              </Typography>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontSize: "0.8125rem",
+                                fontWeight: lead.counselling_slot ? 600 : 400,
+                                color: lead.counselling_slot
+                                  ? "var(--admin-text-primary)"
+                                  : "var(--admin-text-muted)",
+                              }}
+                            >
+                              {formatSlot(lead.counselling_slot) || "—"}
+                            </Typography>
+                          </TableCell>
+                          {!isTablet && (
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  color: "var(--admin-text-secondary)",
+                                }}
+                              >
+                                {labelFor(
+                                  AFFORDABILITY_LABELS,
+                                  lead.fee_affordability
+                                ) || "—"}
+                              </Typography>
+                            </TableCell>
+                          )}
+                          {!isTablet && (
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontSize: "0.8125rem",
+                                  color: "var(--admin-text-secondary)",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {branchPrefs || "—"}
+                              </Typography>
+                            </TableCell>
+                          )}
                           <TableCell>
                             <Typography
                               variant="body2"
@@ -1608,6 +2080,20 @@ const LeadManagement = () => {
                 ]
                   .filter(Boolean)
                   .join(" · ");
+                // Second compact line for the merit-test stage — again only
+                // what this lead actually carries.
+                const testStatus = getTestStatus(lead);
+                const testConfig = getTestStatusConfig(testStatus);
+                const branchPrefs = formatBranchPrefs(lead);
+                const selectionLine = [
+                  lead.counselling_slot
+                    ? `Call ${formatSlot(lead.counselling_slot)}`
+                    : "",
+                  labelFor(AFFORDABILITY_LABELS, lead.fee_affordability),
+                  branchPrefs,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
                 return (
                   <div
                     key={lead.lead_id}
@@ -1666,6 +2152,18 @@ const LeadManagement = () => {
                         {qualificationLine}
                       </div>
                     )}
+                    {selectionLine && (
+                      <div
+                        className={styles.leadCardMobile}
+                        style={{
+                          paddingLeft: 32,
+                          fontFamily: "inherit",
+                          marginTop: 2,
+                        }}
+                      >
+                        {selectionLine}
+                      </div>
+                    )}
                     {isPartial && (
                       <div
                         className={styles.partialHint}
@@ -1703,6 +2201,47 @@ const LeadManagement = () => {
                             }}
                           />
                         </Tooltip>
+                      )}
+                      {testStatus && (
+                        <Chip
+                          label={
+                            testStatus === "completed"
+                              ? `${testConfig.label} · ${formatScore(lead)}`
+                              : testConfig.label
+                          }
+                          size="small"
+                          sx={{
+                            bgcolor: testConfig.bg,
+                            color: testConfig.color,
+                            fontWeight: 600,
+                            fontSize: "0.65rem",
+                            height: 24,
+                          }}
+                        />
+                      )}
+                      {lead.login_key && (
+                        <Chip
+                          label={lead.login_key}
+                          size="small"
+                          variant="outlined"
+                          icon={
+                            <Icon
+                              icon={
+                                copiedKey === lead.login_key
+                                  ? "mdi:check"
+                                  : "mdi:content-copy"
+                              }
+                              width={12}
+                            />
+                          }
+                          onClick={() => handleCopyKey(lead.login_key)}
+                          sx={{
+                            fontSize: "0.7rem",
+                            height: 24,
+                            fontFamily:
+                              "'SF Mono', 'Fira Code', 'Roboto Mono', monospace",
+                          }}
+                        />
                       )}
                       <Chip
                         label={lead.source || "—"}

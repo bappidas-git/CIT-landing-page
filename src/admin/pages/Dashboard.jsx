@@ -115,6 +115,20 @@ const Dashboard = () => {
       icon: 'mdi:fire',
       colorClass: 'statIconBlue',
     },
+    {
+      label: 'Tests Completed',
+      sublabel: 'Merit paper submitted',
+      value: stats?.testsCompleted ?? 0,
+      icon: 'mdi:clipboard-check-outline',
+      colorClass: 'statIconTeal',
+    },
+    {
+      label: 'Awaiting Test',
+      sublabel: 'Holds a key, not attempted',
+      value: stats?.awaitingTest ?? 0,
+      icon: 'mdi:key-arrow-right',
+      colorClass: 'statIconAmber',
+    },
   ];
 
   const recentLeads = stats?.recentLeads || [];
