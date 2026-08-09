@@ -13,6 +13,7 @@
 
 import React from 'react';
 import EligibilityBadge from '../EligibilityBadge';
+import EligibilityStrip from '../../../components/common/EligibilityStrip';
 import {
   TextField,
   SelectField,
@@ -89,6 +90,8 @@ const StepAcademics = ({
         CIT&apos;s admission team uses this to confirm your VTU B.E. eligibility
         instantly.
       </p>
+
+      <EligibilityStrip className={styles.eligibilityStrip} />
 
       <ChipGroup
         label="Your 12th / PUC status"

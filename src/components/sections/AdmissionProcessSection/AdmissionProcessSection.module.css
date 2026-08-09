@@ -1,0 +1,407 @@
+/* ============================================
+   AdmissionProcessSection Styles
+   Mobile-first (360px): the four steps read as a
+   vertical timeline. From 768px they lay out as
+   a horizontal timeline (2 columns), and 4 across
+   from 1024px.
+   ============================================ */
+
+/* ---------- Section ---------- */
+.section {
+  position: relative;
+  padding: var(--space-12) 0;
+  background: linear-gradient(
+    180deg,
+    #f8fafc 0%,
+    var(--color-tint) 50%,
+    #f8fafc 100%
+  );
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(12, 45, 72, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.6),
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Header ---------- */
+.header {
+  max-width: 760px;
+  margin: 0 auto var(--space-8);
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(12, 45, 72, 0.08);
+  color: var(--color-primary);
+  font-family: var(--font-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  border: 1px solid rgba(12, 45, 72, 0.2);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
+}
+
+.badgeIcon {
+  font-size: 1.1rem;
+  color: var(--color-accent);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-4);
+}
+
+.titleAccent {
+  color: var(--color-accent);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--text-gray);
+  line-height: var(--lh-relaxed);
+  margin-top: var(--space-4);
+}
+
+/* ---------- Timeline (vertical by default) ---------- */
+.timeline {
+  list-style: none;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  display: grid;
+  gap: var(--space-4);
+  counter-reset: none;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.stepMarker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  box-shadow: 0 6px 16px rgba(12, 45, 72, 0.25);
+}
+
+.stepConnector {
+  flex: 1 1 auto;
+  width: 2px;
+  min-height: var(--space-4);
+  margin-top: var(--space-2);
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 45, 72, 0.35) 0%,
+    rgba(12, 45, 72, 0.1) 100%
+  );
+}
+
+.step:last-child .stepConnector {
+  display: none;
+}
+
+.stepBody {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid rgba(12, 45, 72, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: 0 8px 24px rgba(12, 45, 72, 0.08);
+}
+
+.stepIcon {
+  display: block;
+  font-size: 1.5rem;
+  color: var(--color-accent);
+  margin-bottom: var(--space-2);
+}
+
+.stepTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-snug);
+  margin: 0 0 var(--space-2);
+}
+
+.stepDescription {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--text-gray);
+  line-height: var(--lh-relaxed);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Eligibility strip ---------- */
+.eligibilityWrap {
+  max-width: 860px;
+  margin: 0 auto var(--space-8);
+}
+
+/* ---------- CTA ---------- */
+.ctaWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 340px;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  background: var(--accent-amber-gradient);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  text-transform: none;
+  box-shadow: 0 10px 24px rgba(224, 48, 30, 0.4);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    var(--accent-amber-light) 0%,
+    var(--color-accent) 100%
+  );
+  box-shadow: 0 14px 32px rgba(224, 48, 30, 0.5);
+}
+
+.ctaButton:focus-visible {
+  outline: 3px solid rgba(224, 48, 30, 0.5);
+  outline-offset: 3px;
+}
+
+.ctaButtonIcon {
+  font-size: 1.25rem;
+}
+
+/* ============================================
+   Tablet and up (768px+) — horizontal timeline
+   ============================================ */
+@media (min-width: 768px) {
+  .section {
+    padding: var(--space-14) 0;
+  }
+
+  .header {
+    margin-bottom: var(--space-10);
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 2.4vw + 0.5rem, 2.75rem);
+  }
+
+  .subtitle {
+    font-size: var(--fs-md);
+  }
+
+  .timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-10);
+  }
+
+  /* Marker row stays auto-sized and pinned to the top so every marker in the
+     row lines up; the card row takes the slack, so cards match in height. */
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-content: start;
+    gap: 0;
+  }
+
+  .stepMarker {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .stepConnector {
+    flex: 1 1 auto;
+    width: auto;
+    height: 2px;
+    min-height: 0;
+    margin-top: 0;
+    margin-left: var(--space-3);
+    background: linear-gradient(
+      90deg,
+      rgba(12, 45, 72, 0.35) 0%,
+      rgba(12, 45, 72, 0.05) 100%
+    );
+  }
+
+  /* End of a row points nowhere — hide the trailing connector */
+  .step:nth-child(2n) .stepConnector {
+    display: none;
+  }
+
+  .stepBody {
+    height: 100%;
+    padding: var(--space-6);
+  }
+
+  .stepTitle {
+    font-size: var(--fs-lg);
+  }
+
+  .stepDescription {
+    font-size: var(--fs-base);
+  }
+
+  .ctaButton {
+    width: auto;
+    max-width: none;
+    padding: var(--space-4) var(--space-8);
+  }
+}
+
+/* ============================================
+   Desktop (1024px+) — all four steps in a row
+   ============================================ */
+@media (min-width: 1024px) {
+  .section {
+    padding: var(--space-16) 0;
+  }
+
+  .header {
+    margin-bottom: var(--space-12);
+  }
+
+  .timeline {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: var(--space-10);
+  }
+
+  .step:nth-child(2n) .stepConnector {
+    display: block;
+  }
+
+  .step:last-child .stepConnector {
+    display: none;
+  }
+
+  .eligibilityWrap {
+    margin-bottom: var(--space-10);
+  }
+}
+
+/* Small mobile */
+@media (max-width: 420px) {
+  .title {
+    font-size: 1.45rem;
+  }
+
+  .step {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .stepNumber {
+    width: 40px;
+    height: 40px;
+    font-size: var(--fs-base);
+  }
+
+  .stepBody {
+    padding: var(--space-4);
+  }
+}
+
+/* ============================================
+   Motion preferences
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .ctaButton {
+    transition: none;
+  }
+
+  .ctaButton:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   Print
+   ============================================ */
+@media print {
+  .section {
+    background: #ffffff;
+    padding: var(--space-8) 0;
+  }
+
+  .bgDecor {
+    display: none;
+  }
+
+  .stepBody {
+    box-shadow: none;
+  }
+}
