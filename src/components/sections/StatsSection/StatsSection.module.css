@@ -135,6 +135,191 @@
   line-height: 1.6;
 }
 
+/* ========== Last 3 Years — Placement Record ========== */
+.recordBlock {
+  position: relative;
+  z-index: 1;
+  margin-top: 3.5rem;
+  padding: 2.25rem 2rem;
+  background: #FFFFFF;
+  border: 1px solid rgba(12, 45, 72, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 6px 22px rgba(12, 45, 72, 0.06);
+}
+
+.recordHeader {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.recordEyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #D82618;
+  margin-bottom: 0.5rem;
+}
+
+.recordTitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #0C2D48;
+  line-height: 1.3;
+}
+
+/* Desktop/tablet: a real table. Collapsed into per-year cards below 768px. */
+.recordTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+}
+
+.recordTable thead th {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #475569;
+  text-align: center;
+  background: #EAEFF3;
+  border-bottom: 2px solid rgba(12, 45, 72, 0.12);
+}
+
+.recordTable thead th:first-child {
+  text-align: left;
+  border-top-left-radius: 12px;
+}
+
+.recordTable thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.recordTable tbody td,
+.recordTable tbody th {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(12, 45, 72, 0.08);
+  vertical-align: middle;
+}
+
+.recordTable tbody tr:last-child td,
+.recordTable tbody tr:last-child th {
+  border-bottom: none;
+}
+
+.recordTable tbody tr:nth-child(even) {
+  background: rgba(234, 239, 243, 0.45);
+}
+
+.recordYear {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0C2D48;
+  text-align: left !important;
+  white-space: nowrap;
+}
+
+.recordValue {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1E8E5A;
+  white-space: nowrap;
+}
+
+.recordNote {
+  margin: 1.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #64748B;
+  text-align: center;
+}
+
+/* ========== Branch-wise Strip (native disclosure) ========== */
+.branchDetails {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(12, 45, 72, 0.1);
+  border-radius: 14px;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+.branchSummary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0C2D48;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.branchSummary::-webkit-details-marker {
+  display: none;
+}
+
+.branchSummary:hover {
+  background: rgba(234, 239, 243, 0.6);
+}
+
+.branchSummary:focus-visible {
+  outline: 2px solid #0C2D48;
+  outline-offset: -2px;
+}
+
+.branchChevron {
+  font-size: 1.25rem;
+  color: #1E8E5A;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.branchDetails[open] .branchChevron {
+  transform: rotate(180deg);
+}
+
+.branchList {
+  margin: 0;
+  padding: 0 1.1rem 1rem;
+  list-style: none;
+}
+
+.branchRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.25rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid rgba(12, 45, 72, 0.07);
+}
+
+.branchName {
+  flex: 0 0 5.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0C2D48;
+}
+
+.branchStat {
+  font-size: 0.8125rem;
+  color: #475569;
+}
+
+.branchStat strong {
+  font-weight: 700;
+  color: #0C2D48;
+}
+
 /* ========== Recruiter Logo Wall ========== */
 .recruiterBlock {
   position: relative;
@@ -232,6 +417,39 @@
   overflow-wrap: anywhere;
 }
 
+/* ========== Recruiter "+N more" Toggle ========== */
+.recruiterToggleRow {
+  display: flex;
+  justify-content: center;
+  margin: -0.75rem 0 1.75rem;
+}
+
+.recruiterToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0C2D48;
+  background: #FFFFFF;
+  border: 1px solid rgba(12, 45, 72, 0.2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.recruiterToggle:hover {
+  background: #EAEFF3;
+  border-color: rgba(12, 45, 72, 0.4);
+}
+
+.recruiterToggle:focus-visible {
+  outline: 2px solid #0C2D48;
+  outline-offset: 2px;
+}
+
 /* ========== CTA Row ========== */
 .ctaRow {
   display: flex;
@@ -316,6 +534,10 @@
   .recruiterTitle {
     font-size: 1.75rem;
   }
+
+  .recordTitle {
+    font-size: 1.75rem;
+  }
 }
 
 /* Desktop (1024px - 1439px) */
@@ -358,6 +580,30 @@
 
   .statDescription {
     font-size: 0.8125rem;
+  }
+
+  .recordBlock {
+    padding: 1.75rem 1.25rem;
+    margin-top: 3rem;
+  }
+
+  .recordTitle {
+    font-size: 1.375rem;
+  }
+
+  .recordTable thead th {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+
+  .recordTable tbody td,
+  .recordTable tbody th {
+    padding: 0.85rem 0.5rem;
+  }
+
+  .recordValue {
+    font-size: 1rem;
   }
 
   .recruiterBlock {
@@ -416,6 +662,121 @@
   .statDescription {
     font-size: 0.8125rem;
     line-height: 1.55;
+  }
+
+  /* --- Placement record: table collapses into one card per year --- */
+  .recordBlock {
+    padding: 1.5rem 1rem;
+    margin-top: 2.5rem;
+    border-radius: 18px;
+  }
+
+  .recordHeader {
+    margin-bottom: 1.25rem;
+  }
+
+  .recordTitle {
+    font-size: 1.1875rem;
+  }
+
+  /* Header row is visually redundant once each cell carries its own label,
+     but stays in the accessibility tree. */
+  .recordTable thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .recordTable,
+  .recordTable tbody,
+  .recordTable tr,
+  .recordTable td,
+  .recordTable tbody th {
+    display: block;
+  }
+
+  .recordTable tbody tr {
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.85rem;
+    background: #FFFFFF;
+    border: 1px solid rgba(12, 45, 72, 0.1);
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(12, 45, 72, 0.05);
+  }
+
+  .recordTable tbody tr:nth-child(even) {
+    background: #FFFFFF;
+  }
+
+  .recordTable tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .recordTable tbody th.recordYear {
+    padding: 0 0 0.6rem;
+    margin-bottom: 0.4rem;
+    font-size: 1.0625rem;
+    border-bottom: 1px solid rgba(12, 45, 72, 0.1);
+  }
+
+  .recordTable tbody td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    text-align: right;
+    border-bottom: none;
+  }
+
+  .recordTable tbody td::before {
+    content: attr(data-label);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #475569;
+    text-align: left;
+  }
+
+  .recordValue {
+    font-size: 1rem;
+  }
+
+  .recordNote {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    text-align: left;
+  }
+
+  .branchSummary {
+    font-size: 0.875rem;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .branchList {
+    padding: 0 0.9rem 0.9rem;
+  }
+
+  .branchRow {
+    gap: 0.3rem 0.9rem;
+  }
+
+  .branchName {
+    flex: 0 0 100%;
+    font-size: 0.875rem;
+  }
+
+  .branchStat {
+    font-size: 0.75rem;
+  }
+
+  .recruiterToggleRow {
+    margin: -0.5rem 0 1.5rem;
   }
 
   .recruiterBlock {
@@ -505,7 +866,9 @@
   .statCard,
   .statIconWrapper,
   .logoCard,
-  .ctaButton {
+  .ctaButton,
+  .recruiterToggle,
+  .branchChevron {
     transition: none;
   }
 

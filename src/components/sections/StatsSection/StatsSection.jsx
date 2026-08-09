@@ -3,7 +3,7 @@
    Placement-proof headline stats + recruiter logo wall
    ============================================ */
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Container, Typography, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { Icon } from '@iconify/react';
@@ -11,10 +11,21 @@ import AnimatedCounter from '../../common/AnimatedCounter/AnimatedCounter';
 import useApplyCTA from '../../../hooks/useApplyCTA';
 import { trackCTAClick } from '../../../utils/gtm';
 import { statsData } from '../../../data/statsData';
+import {
+  PLACEMENT_YEARS,
+  BRANCH_PLACEMENTS,
+  PLACEMENT_SOURCE_NOTE,
+} from '../../../data/placementsData';
 import styles from './StatsSection.module.css';
 
 const HEADLINE_STAT_IDS = [2, 3, 4];
 
+/**
+ * Every name here is on a CIT recruiter wall (`resources/Info-1/3/4.jpeg`)
+ * or was already verified site content (TCS, Bosch). Ordered most- to
+ * least-recognisable: the first RECRUITERS_VISIBLE render on load, the
+ * rest sit behind the "+N more" toggle so the wall stays readable at 360px.
+ */
 const RECRUITERS = [
   'Accenture',
   'Infosys',
@@ -32,7 +43,26 @@ const RECRUITERS = [
   'Bosch',
   'Park Controls',
   'Boomi',
+  'HashedIn by Deloitte',
+  'Indo-MIM',
+  'Travancore Analytics',
+  'Ivoyant',
+  'Aarbee',
+  'RGSM Power',
+  'Deduce Technologies',
+  'NASH',
+  'CGS',
+  'Khyath',
+  'Acmegrade',
+  'Corizo',
+  'MCoreta',
+  'RCCL',
+  'DNR',
+  'Nag Interiors',
+  'Eleation',
 ];
+
+const RECRUITERS_VISIBLE = 20;
 
 /**
  * Real recruiter logos, once CIT supplies licensed artwork: add
@@ -121,8 +151,13 @@ const StatsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const applyCTA = useApplyCTA('apply-now', { location: 'placements' });
+  const [showAllRecruiters, setShowAllRecruiters] = useState(false);
 
   const headlineStats = statsData.filter((s) => HEADLINE_STAT_IDS.includes(s.id));
+  const visibleRecruiters = showAllRecruiters
+    ? RECRUITERS
+    : RECRUITERS.slice(0, RECRUITERS_VISIBLE);
+  const hiddenRecruiterCount = RECRUITERS.length - RECRUITERS_VISIBLE;
 
   const handleApplyNow = (event) => {
     trackCTAClick('placements_apply_now', 'placements', 'Start My Application');
@@ -142,7 +177,7 @@ const StatsSection = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className={styles.sectionHeader}>
-            <Typography className={styles.overline}>Placements</Typography>
+            <Typography className={styles.overline}>Proof, Not Promises</Typography>
             <Typography
               variant="h2"
               className={styles.sectionTitle}
@@ -154,8 +189,8 @@ const StatsSection = () => {
                 marginBottom: { xs: '0.75rem', md: '1rem' },
               }}
             >
-              Strong Placements,{' '}
-              <span className={styles.accentText}>Bright Futures</span>
+              The placement record behind{' '}
+              <span className={styles.accentText}>the 15 seats</span>
             </Typography>
             <Typography
               className={styles.sectionSubtitle}
@@ -221,6 +256,94 @@ const StatsSection = () => {
             })}
           </Grid>
 
+          {/* Last 3 Years — Placement Record
+              One semantic <table>. At <768px the CSS collapses it into one
+              card per year (each cell labelled from its data-label), so the
+              page never scrolls sideways on a 360px phone. */}
+          <motion.div variants={itemVariants} className={styles.recordBlock}>
+            <div className={styles.recordHeader}>
+              <Typography className={styles.recordEyebrow}>
+                Verified Record
+              </Typography>
+              <Typography variant="h3" className={styles.recordTitle}>
+                Last 3 Years — Placement Record
+              </Typography>
+            </div>
+
+            <table className={styles.recordTable}>
+              <thead>
+                <tr>
+                  <th scope="col">Academic Year</th>
+                  <th scope="col">Students Placed</th>
+                  <th scope="col">Eligible Students Placed</th>
+                  <th scope="col">Highest CTC</th>
+                  <th scope="col">Companies Visited</th>
+                </tr>
+              </thead>
+              <tbody>
+                {PLACEMENT_YEARS.map((row) => {
+                  const mark = row.provisional ? '*' : '';
+                  return (
+                    <tr key={row.year}>
+                      <th scope="row" className={styles.recordYear}>
+                        {row.year}
+                      </th>
+                      <td data-label="Students Placed">
+                        <span className={styles.recordValue}>
+                          {row.placements}
+                          {mark}
+                        </span>
+                      </td>
+                      <td data-label="Eligible Students Placed">
+                        <span className={styles.recordValue}>
+                          {row.percentPlaced}%{mark}
+                        </span>
+                      </td>
+                      <td data-label="Highest CTC">
+                        <span className={styles.recordValue}>
+                          {row.highestCTC.toFixed(1)} LPA
+                        </span>
+                      </td>
+                      <td data-label="Companies Visited">
+                        <span className={styles.recordValue}>{row.companies}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            {/* Branch-wise strip — native disclosure, no JS, no bundle cost */}
+            <details className={styles.branchDetails}>
+              <summary className={styles.branchSummary}>
+                <Icon
+                  icon="mdi:chevron-down"
+                  className={styles.branchChevron}
+                  aria-hidden="true"
+                />
+                <span>Branch-wise offers &amp; companies</span>
+              </summary>
+              <ul className={styles.branchList}>
+                {BRANCH_PLACEMENTS.map((branch) => (
+                  <li key={branch.branch} className={styles.branchRow}>
+                    <span className={styles.branchName}>{branch.branch}</span>
+                    <span className={styles.branchStat}>
+                      <strong>{branch.offers}</strong> offers
+                    </span>
+                    <span className={styles.branchStat}>
+                      <strong>{branch.companies}</strong> companies
+                    </span>
+                    <span className={styles.branchStat}>
+                      Highest <strong>{branch.highestCTC.toFixed(1)} LPA</strong>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+
+            <p className={styles.recordNote}>{PLACEMENT_SOURCE_NOTE}</p>
+          </motion.div>
+
           {/* Recruiter Logo Wall */}
           <motion.div variants={itemVariants} className={styles.recruiterBlock}>
             <div className={styles.recruiterHeader}>
@@ -248,11 +371,13 @@ const StatsSection = () => {
             </div>
 
             <ul className={styles.logoGrid}>
-              {RECRUITERS.map((name, index) => (
+              {visibleRecruiters.map((name, index) => (
                 <motion.li
                   key={name}
                   className={styles.logoCard}
-                  custom={index}
+                  /* Chips revealed by the toggle restart the stagger from 0
+                     instead of inheriting a second-long delay. */
+                  custom={index % RECRUITERS_VISIBLE}
                   variants={logoVariants}
                 >
                   {RECRUITER_LOGOS[name] ? (
@@ -270,6 +395,21 @@ const StatsSection = () => {
                 </motion.li>
               ))}
             </ul>
+
+            {hiddenRecruiterCount > 0 && (
+              <div className={styles.recruiterToggleRow}>
+                <button
+                  type="button"
+                  className={styles.recruiterToggle}
+                  onClick={() => setShowAllRecruiters((open) => !open)}
+                  aria-expanded={showAllRecruiters}
+                >
+                  {showAllRecruiters
+                    ? 'Show fewer recruiters'
+                    : `+${hiddenRecruiterCount} more recruiters`}
+                </button>
+              </div>
+            )}
 
             <div className={styles.ctaRow}>
               <button

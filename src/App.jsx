@@ -54,6 +54,7 @@ const FeesFundingSection = lazy(() => import('./components/sections/FeesFundingS
 const AdmissionProcessSection = lazy(() => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'));
 const ServicesSection = lazy(() => import('./components/sections/ServicesSection/ServicesSection'));
 const StatsSection = lazy(() => import('./components/sections/StatsSection/StatsSection'));
+const UniversityResultsSection = lazy(() => import('./components/sections/UniversityResultsSection/UniversityResultsSection'));
 const TestimonialsSection = lazy(() => import('./components/sections/TestimonialsSection'));
 const HighlightsSection = lazy(() => import('./components/sections/HighlightsSection/HighlightsSection'));
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection/FeaturesSection'));
@@ -334,6 +335,7 @@ const useIdlePreload = () => {
         () => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'),
         () => import('./components/sections/ServicesSection/ServicesSection'),
         () => import('./components/sections/StatsSection/StatsSection'),
+        () => import('./components/sections/UniversityResultsSection/UniversityResultsSection'),
         () => import('./components/sections/TestimonialsSection'),
         () => import('./components/sections/LocationSection/LocationSection'),
         () => import('./components/sections/FeaturesSection/FeaturesSection'),
@@ -489,6 +491,12 @@ const HomePageContent = () => {
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
             <StatsSection />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
+            <UniversityResultsSection />
           </Suspense>
         </ErrorBoundary>
 
