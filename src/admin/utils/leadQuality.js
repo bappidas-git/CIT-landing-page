@@ -25,6 +25,7 @@ import {
   computeEligibility,
   getParentMobileError,
 } from "../../utils/applicationValidators";
+import { MERIT_BRANCHES } from "../../data/meritProgram";
 
 /* ============================================
    TIERS
@@ -259,6 +260,29 @@ export const BEST_TIME_LABELS = {
   evening: "Evening",
 };
 
+// `fee_affordability` is answered on /apply Step 5, AFTER the applicant has
+// seen the complete per-branch cost table — so unlike `funding_plan` (a plan
+// formed before the numbers) it is a statement of capability. Short labels for
+// the list column and the CSV; the applicant's own sentence for the detail card.
+export const AFFORDABILITY_LABELS = {
+  own_income: "Own income",
+  education_loan: "Needs loan",
+};
+
+export const AFFORDABILITY_LONG_LABELS = {
+  own_income: "Yes — I can afford this study cost with my own family income.",
+  education_loan: "I'll need an education loan to afford this study cost.",
+};
+
+// Branch preferences are stored as the full course strings (`B.E. — Computer
+// Science & Engineering`), which no list column can fit. The short forms come
+// from meritProgram.js so the admin can never drift from the fee table and the
+// /apply step that produced the answer.
+export const BRANCH_SHORT_LABELS = MERIT_BRANCHES.reduce((acc, branch) => {
+  acc[branch.course] = branch.short;
+  return acc;
+}, {});
+
 /**
  * Look a stored key up in a label map, falling back to the raw value so an
  * unmapped key is still visible rather than silently blank.
@@ -269,6 +293,148 @@ export const BEST_TIME_LABELS = {
 export const labelFor = (map, value) => {
   if (value === undefined || value === null || value === "") return "";
   return map[value] || String(value);
+};
+
+/**
+ * Compact a stored branch string to `CSE` / `AI & DS` / … for the list table.
+ * An unmapped course (a legacy `service_interest` value, say) falls through to
+ * its raw text rather than disappearing.
+ * @param {string} course - Stored course string
+ * @returns {string} Short branch name
+ */
+export const shortBranch = (course) => labelFor(BRANCH_SHORT_LABELS, course);
+
+/* ============================================
+   MERIT TEST & COUNSELLING
+   ============================================
+   Every field read below is written SERVER-SIDE by test.php (via its internal
+   patch_lead) or by leads.php when it assigns the login key. None of them are
+   in `lead_field_whitelist()`, so nothing here can be forged by a payload
+   POSTed to the public create endpoint — the admin can trust these numbers in
+   a way it deliberately does not trust the quality score above.
+   ============================================ */
+
+export const TEST_STATUS_OPTIONS = [
+  { value: "not_started", label: "Not Started", color: "#6B7280", bg: "#F3F4F6" },
+  { value: "in_progress", label: "In Progress", color: "#B45309", bg: "#FEF3C7" },
+  { value: "completed", label: "Completed", color: "#10B981", bg: "#ECFDF5" },
+];
+
+const TEST_STATUS_BY_VALUE = TEST_STATUS_OPTIONS.reduce((acc, t) => {
+  acc[t.value] = t;
+  return acc;
+}, {});
+
+/** Sort rank — a lead further along the test sorts above one that is not. */
+const TEST_STATUS_RANK = { not_started: 0, in_progress: 1, completed: 2 };
+
+/**
+ * Where this lead stands on the merit test.
+ *
+ * Returns null — not "not started" — for a lead that was never issued a key
+ * (legacy drawer enquiries, CSV imports, spam). Those applicants were never
+ * asked to sit the paper, so the admin shows them nothing at all rather than
+ * branding them as having skipped it.
+ *
+ * @param {Object} lead - Lead record
+ * @returns {'not_started'|'in_progress'|'completed'|null} Test state, or null
+ */
+export const getTestStatus = (lead) => {
+  if (!lead) return null;
+  const stored = typeof lead.test_status === "string" ? lead.test_status.trim() : "";
+  if (stored === "completed" || stored === "in_progress") return stored;
+  return lead.login_key ? "not_started" : null;
+};
+
+/**
+ * Resolve a test-state key to its chip config (label/color/bg).
+ * @param {string} status - Test state key
+ * @returns {{value: string, label: string, color: string, bg: string}} Config
+ */
+export const getTestStatusConfig = (status) =>
+  TEST_STATUS_BY_VALUE[status] || TEST_STATUS_BY_VALUE.not_started;
+
+/**
+ * Sort key for the Test column: state first, then score inside "completed" so
+ * one click puts the best finished papers on top.
+ * @param {Object} lead - Lead record
+ * @returns {number} Comparable rank
+ */
+export const getTestSortValue = (lead) => {
+  const status = getTestStatus(lead);
+  if (!status) return -1; // never issued a key — below every tested lead
+  const score = Number(lead?.test_score);
+  return TEST_STATUS_RANK[status] * 1000 + (Number.isFinite(score) ? score : 0);
+};
+
+// `Sat 10 Aug, 4:00 PM`. Built from parts rather than a single toLocaleString
+// so the separators and the AM/PM casing are fixed regardless of which ICU
+// build the browser ships — a telecaller reads this hour off the screen.
+const SLOT_FORMAT_OPTIONS = {
+  weekday: "short",
+  day: "numeric",
+  month: "short",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+};
+
+/**
+ * Render a booked counselling slot in the applicant's reading of it.
+ * @param {string} iso - ISO UTC timestamp for the start of the hour
+ * @returns {string} `Sat 10 Aug, 4:00 PM`, or "" when unset/unparseable
+ */
+export const formatSlot = (iso) => {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const parts = new Intl.DateTimeFormat("en-IN", SLOT_FORMAT_OPTIONS).formatToParts(
+    date
+  );
+  const part = (type) => (parts.find((p) => p.type === type) || {}).value || "";
+  const period = part("dayPeriod").replace(/\./g, "").toUpperCase();
+  return `${part("weekday")} ${part("day")} ${part("month")}, ${part("hour")}:${part(
+    "minute"
+  )}${period ? ` ${period}` : ""}`;
+};
+
+/** Maximum reachable merit-test score (30 questions × 4 marks). */
+export const TEST_MAX_SCORE = 120;
+
+/** Maximum per subject — the paper draws 15 Maths + 15 Physics. */
+export const TEST_SUBJECT_MAX_SCORE = 60;
+
+/**
+ * Render the merit-test result as `84/120`, or an em dash when the applicant
+ * has not finished a paper.
+ * @param {Object} lead - Lead record
+ * @returns {string} Score text
+ */
+export const formatScore = (lead) => {
+  const score = Number(lead?.test_score);
+  if (!Number.isFinite(score)) return "—";
+  return `${score}/${TEST_MAX_SCORE}`;
+};
+
+/**
+ * Relative reading of a booked slot for the telecaller: how long until the
+ * call is due, or how far past it is. Returns "" when there is nothing to say.
+ * @param {string} iso - Slot timestamp
+ * @param {number} [now] - Epoch ms to compare against (injectable for tests)
+ * @returns {string} `in 3 hours` / `overdue` / `now`
+ */
+export const describeSlotTiming = (iso, now = Date.now()) => {
+  if (!iso) return "";
+  const at = new Date(iso).getTime();
+  if (Number.isNaN(at)) return "";
+  const minutes = Math.round((at - now) / 60000);
+  if (minutes <= -60) return "overdue";
+  if (minutes < 5) return "now";
+  if (minutes < 60) return `in ${minutes} minutes`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `in ${hours} hour${hours === 1 ? "" : "s"}`;
+  const days = Math.round(hours / 24);
+  return `in ${days} day${days === 1 ? "" : "s"}`;
 };
 
 /* ============================================
@@ -406,15 +572,45 @@ export const hasLogistics = (lead) =>
     lead.intake_year,
   ].some(hasValue);
 
+/**
+ * True when the lead carries anything from the merit-test / selection stage —
+ * a login key, a test result, a booked counselling hour, the affordability
+ * answer or a branch preference. Everything that stage produced is rendered
+ * inside one card, so one gate covers all of it and a pre-merit-program lead
+ * renders exactly as it did before.
+ * @param {Object} lead - Lead record
+ * @returns {boolean} Whether to render the Merit Test & Selection card
+ */
+export const hasSelectionData = (lead) =>
+  !!lead &&
+  [
+    lead.login_key,
+    lead.test_status,
+    lead.test_score,
+    lead.test_started_at,
+    lead.test_completed_at,
+    lead.counselling_slot,
+    lead.fee_affordability,
+    lead.branch_pref_1,
+    lead.branch_pref_2,
+  ].some(hasValue);
+
 const leadQuality = {
   TIER_OPTIONS,
   QUALITY_BANDS,
+  TEST_STATUS_OPTIONS,
   getLeadTier,
   getTierConfig,
   isPartialLead,
   computeQualityScore,
   getQualityConfig,
   getEligibilitySummary,
+  getTestStatus,
+  getTestStatusConfig,
+  hasSelectionData,
+  formatSlot,
+  formatScore,
+  shortBranch,
   labelFor,
 };
 

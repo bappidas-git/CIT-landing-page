@@ -39,6 +39,7 @@ import {
 } from "../utils/leadStatus";
 import {
   ADMISSION_TIMELINE_LABELS,
+  AFFORDABILITY_LONG_LABELS,
   BEST_TIME_LABELS,
   BOARD_LABELS,
   COUNSELLING_MODE_LABELS,
@@ -47,16 +48,23 @@ import {
   FUNDING_PLAN_LABELS,
   INTAKE_YEAR_LABELS,
   PARTIAL_BANNER,
+  TEST_SUBJECT_MAX_SCORE,
   TWELFTH_STATUS_LABELS,
   computeQualityScore,
+  describeSlotTiming,
+  formatScore,
+  formatSlot,
   getEligibilitySummary,
   getLeadTier,
   getQualityConfig,
+  getTestStatus,
+  getTestStatusConfig,
   getTierConfig,
   hasAcademicDetails,
   hasFamilyFunding,
   hasLogistics,
   hasQualitySignal,
+  hasSelectionData,
   labelFor,
 } from "../utils/leadQuality";
 import { sendConversionEvent } from "../../utils/metaCAPI";
@@ -378,6 +386,41 @@ const LeadDetail = () => {
   }[eligibility?.tone];
   const hasTenth = !!(lead.tenth_school || lead.tenth_year || lead.tenth_percent);
 
+  /* ---- Merit test & selection ----
+     Every value below is written server-side (test.php via patch_lead, or
+     leads.php when it issues the key) and none of them are in the public
+     create whitelist, so unlike the quality score these numbers can be read
+     as fact. */
+  const testStatus = getTestStatus(lead);
+  const testConfig = getTestStatusConfig(testStatus);
+  const testCompleted = testStatus === "completed";
+  const slotTiming = describeSlotTiming(lead.counselling_slot);
+  const branchPrefs = [lead.branch_pref_1, lead.branch_pref_2].filter(Boolean);
+
+  // A stored 0 is a real answer (a blank paper scores zero), so presence is
+  // tested rather than truthiness.
+  const numberText = (value) =>
+    value === undefined || value === null || value === "" || !Number.isFinite(Number(value))
+      ? null
+      : String(value);
+
+  const subjectScoreLine = [
+    numberText(lead.test_maths_score) &&
+      `Maths ${lead.test_maths_score}/${TEST_SUBJECT_MAX_SCORE}`,
+    numberText(lead.test_physics_score) &&
+      `Physics ${lead.test_physics_score}/${TEST_SUBJECT_MAX_SCORE}`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  const answerCountLine = [
+    numberText(lead.test_correct_count) && `Correct ${lead.test_correct_count}`,
+    numberText(lead.test_wrong_count) && `Wrong ${lead.test_wrong_count}`,
+    numberText(lead.test_blank_count) && `Blank ${lead.test_blank_count}`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   // fbclid/fbp/fbc only exist on leads captured after Meta attribution
   // landed, so they join the UTM grid only when the lead actually carries them.
   const utmItems = [
@@ -542,6 +585,145 @@ const LeadDetail = () => {
               <InfoField label="Message" value={lead.message} full />
             </div>
           </div>
+
+          {/* Merit Test & Selection — merit-program leads only. A lead that
+              never reached this stage (legacy enquiry, CSV import) carries none
+              of these fields and the whole card stays out of the page. */}
+          {hasSelectionData(lead) && (
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
+                <Icon icon="mdi:clipboard-check-outline" width={16} />
+                Merit Test &amp; Selection
+              </h3>
+
+              {/* The counselling hour the applicant chose, first and loudest —
+                  it is the only thing on this card with a deadline attached. */}
+              {lead.counselling_slot ? (
+                <div
+                  className={`${styles.slotBox} ${
+                    slotTiming === "overdue" ? styles.slotBoxOverdue : ""
+                  }`}
+                >
+                  <Icon icon="mdi:phone-clock" width={18} />
+                  <div>
+                    <span className={styles.slotLabel}>Tele-Counselling Slot</span>
+                    <span className={styles.slotValue}>
+                      {formatSlot(lead.counselling_slot)}
+                      {slotTiming && (
+                        <span className={styles.slotTiming}> — {slotTiming}</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                testCompleted && (
+                  <div className={`${styles.slotBox} ${styles.slotBoxEmpty}`}>
+                    <Icon icon="mdi:phone-alert-outline" width={18} />
+                    <div>
+                      <span className={styles.slotLabel}>Tele-Counselling Slot</span>
+                      <span className={styles.slotValue}>
+                        No slot chosen — fix a time on the call
+                      </span>
+                    </div>
+                  </div>
+                )
+              )}
+
+              <div className={styles.infoGrid}>
+                {lead.login_key && (
+                  <InfoField label="Login Key">
+                    <span className={styles.keyValue}>
+                      {lead.login_key}
+                      <button
+                        className={styles.copyBtn}
+                        onClick={() => handleCopy(lead.login_key, "login_key")}
+                      >
+                        <Icon
+                          icon={
+                            copiedField === "login_key"
+                              ? "mdi:check"
+                              : "mdi:content-copy"
+                          }
+                          width={12}
+                        />
+                        {copiedField === "login_key" ? "Copied" : "Copy"}
+                      </button>
+                    </span>
+                  </InfoField>
+                )}
+                {testStatus && (
+                  <InfoField label="Test Status">
+                    <span
+                      className={styles.flagChip}
+                      style={{ background: testConfig.bg, color: testConfig.color }}
+                    >
+                      {testConfig.label}
+                    </span>
+                  </InfoField>
+                )}
+                {testCompleted && (
+                  <InfoField label="Score" full>
+                    <span className={styles.scoreValue}>{formatScore(lead)}</span>
+                    {subjectScoreLine && (
+                      <span className={styles.scoreBreakdown}>
+                        {subjectScoreLine}
+                      </span>
+                    )}
+                    {answerCountLine && (
+                      <span className={styles.scoreBreakdown}>
+                        {answerCountLine}
+                      </span>
+                    )}
+                  </InfoField>
+                )}
+                {/* Only ever present when the operator has set a cutoff in
+                    config.php; absent means "not decided", not "rejected". */}
+                {typeof lead.test_qualified === "boolean" && (
+                  <InfoField label="Cutoff Verdict">
+                    <span
+                      className={`${styles.flagChip} ${
+                        lead.test_qualified ? styles.flagChipOn : styles.flagChipOff
+                      }`}
+                    >
+                      <Icon
+                        icon={
+                          lead.test_qualified
+                            ? "mdi:check-circle-outline"
+                            : "mdi:minus-circle-outline"
+                        }
+                        width={14}
+                      />
+                      {lead.test_qualified ? "Qualified" : "Below cutoff"}
+                    </span>
+                  </InfoField>
+                )}
+                <InfoField
+                  label="Test Started"
+                  value={lead.test_started_at ? formatDate(lead.test_started_at) : ""}
+                />
+                <InfoField
+                  label="Test Completed"
+                  value={
+                    lead.test_completed_at ? formatDate(lead.test_completed_at) : ""
+                  }
+                />
+                <InfoField
+                  label="Can Afford the Fees"
+                  value={labelFor(AFFORDABILITY_LONG_LABELS, lead.fee_affordability)}
+                  full
+                />
+                {branchPrefs.length > 0 && (
+                  <InfoField label="Branch Preferences" full>
+                    <ol className={styles.prefList}>
+                      {branchPrefs.map((course, i) => (
+                        <li key={`${course}-${i}`}>{course}</li>
+                      ))}
+                    </ol>
+                  </InfoField>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Academic Details — application form only */}
           {hasAcademicDetails(lead) && (

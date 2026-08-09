@@ -4,6 +4,95 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Admin panel — merit test, counselling slots and the two telecaller queues
+
+Four prompts' worth of new lead fields (`login_key`, the `test_*` block,
+`counselling_slot`, `fee_affordability`, `branch_pref_1/2`) were being written
+server-side and read by nobody. They are now visible and, more to the point,
+**workable**: the panel answers the two questions the team asks all day — *who
+still owes us a paper*, and *who am I calling next and when*.
+
+Everything is additive and gated on presence. A lead that predates the merit
+program carries none of these fields and renders exactly as it did before —
+verified against a legacy enquiry lead in the QA run below.
+
+**Added — `src/admin/utils/leadQuality.js`** (still the single source for labels)
+- `AFFORDABILITY_LABELS` (`Own income` / `Needs loan`) and
+  `AFFORDABILITY_LONG_LABELS` (the applicant's own two sentences from Step 5).
+- `TEST_STATUS_OPTIONS` chip configs — `Not Started` (grey) · `In Progress`
+  (amber) · `Completed` (green) — with `getTestStatusConfig()`.
+- `getTestStatus(lead)` resolves `completed` / `in_progress` from
+  `lead.test_status`, falls back to `not_started` **only when the lead holds a
+  login key**, and otherwise returns `null`. A legacy lead was never asked to
+  sit the paper, so it shows nothing rather than being branded a no-show — the
+  same reasoning that keeps unscored leads out of the quality bands.
+- `getTestSortValue()`, `formatSlot()` (`Sat 10 Aug, 4:00 PM`, built from
+  `formatToParts` so separators and AM/PM casing cannot drift with the browser's
+  ICU build), `formatScore()` (`84/120`), `describeSlotTiming()`
+  (`in 3 hours` / `overdue`), `hasSelectionData()`, and `shortBranch()` +
+  `BRANCH_SHORT_LABELS` derived from `MERIT_BRANCHES` so the short names can
+  never contradict the fee table.
+
+**Added — Lead Management (`LeadManagement.jsx`)**
+- Five columns after Quality: **Key** (monospace, click-to-copy),
+  **Test** (status chip, plus the score inline once completed), **Call Slot**,
+  and — tablet-hidden, like Eligibility and Funding — **Affordability** and
+  **Pref Branches** (`CSE → ECE`). Header, body cells and the mobile card were
+  all updated together, as the file's own note demands.
+- Sorting for `test_status` (state, then score), `counselling_slot` (epoch,
+  unbooked last) and `fee_affordability`. `test_status` joins
+  `DESC_FIRST_COLUMNS`; `counselling_slot` deliberately does not, because the
+  next call belongs at the top. Ties inside the slot column break on score
+  descending — that is the entire ordering of the counselling queue's tail.
+- Two filters, **Test** and **Affordability**, applied in the same client-side
+  chain as tier/quality/intake/funding.
+- **Two telecaller queue presets**, grouped with Refresh (and in the mobile
+  overflow menu):
+  - **Push-to-test queue** — apply-funnel leads holding a key whose paper is not
+    finished, newest first. Call, re-share the key, get them to attempt it.
+  - **Counselling queue** — finished papers by booked hour, next call on top;
+    applicants who never chose a slot fall to the bottom, best score first.
+  A preset is a saved position of the existing filter/sort state plus one extra
+  predicate in the same filter chain — no parallel pipeline, so the table can
+  never disagree with the chips. Touching any filter by hand drops the badge.
+- `getLeads()` search now also matches `login_key`, case-insensitively and with
+  or without the `CIT26-` prefix — how an applicant reads it back on a call.
+
+**Added — Lead Detail (`LeadDetail.jsx`)**
+- A **Merit Test & Selection** card before Academic Details, gated on
+  `hasSelectionData`. The booked hour leads the card in a highlight box
+  (green, red when overdue, amber "No slot chosen — fix a time on the call" when
+  a finished applicant never picked one) because it is the only thing on the
+  page with a deadline. Then the login key with a Copy button, the status chip,
+  `84/120` with `Maths 44/60 · Physics 40/60` and `Correct 21 · Wrong 6 ·
+  Blank 3`, both timestamps, the affordability sentence, and the two ranked
+  branch choices in full.
+- `test_qualified` renders as a Qualified / Below-cutoff chip **only** when the
+  field exists — it is written solely when `TEST_QUALIFY_CUTOFF` is configured,
+  and an absent field means "not decided", never "rejected".
+
+**Added — CSV + Dashboard**
+- 14 export columns after `FBCLID`: `Login Key`, `Test Status`, `Test Score`,
+  `Maths Score`, `Physics Score`, `Correct`, `Wrong`, `Blank`, `Test Started`,
+  `Test Completed`, `Counselling Slot`, `Affordability`, `Branch Pref 1`,
+  `Branch Pref 2`. Timestamps and `test_status` go out raw so a re-import lands
+  the same values; affordability round-trips through its label.
+- **Import restores these columns to the admin's view, but the server will not
+  take them back.** `login_key` and every `test_*` field are absent from
+  `lead_field_whitelist()` in `leads.php` by design, so `?action=create` strips
+  them even from an admin-keyed import. Re-importing an export is for reporting
+  and for rebuilding a local view — never for replaying test results into the
+  store. (`fee_affordability` and the branch preferences *are* whitelisted and
+  do persist.)
+- `getLeadStats()` gains `testsCompleted` and `awaitingTest` (holds a key, has
+  not finished), both spam-excluded; the Dashboard renders them as a card pair.
+  `awaitingTest` is exactly the push-to-test queue, so the two agree by
+  construction.
+
+**Verified** — `csvRoundTrip.test.js` covers a lead carrying the full new field
+set, the "never sat the test" case and a legitimate zero score; suite green,
+`npm run build` clean.
+
 ### Post-test tele-counselling slot booking
 
 Finishing the paper is no longer the end of the funnel. The applicant now

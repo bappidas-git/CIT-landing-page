@@ -97,6 +97,87 @@ is a silent no-op; the Meta and GTM legs still work.
 
 ---
 
+## 7. Merit-test rollout (Cloudways deployment)
+
+The merit test adds three server files and two runtime data files. Everything
+below is about **not destroying the server's own state on the way up** — the two
+files the deploy must never touch are `public/api/config.php` (your keys) and
+`public/api/data/` (leads, keys, attempts).
+
+### Upload order
+
+1. `public/api/question-bank.php` — the 120 MCQs. Upload it **before** `test.php`,
+   so the endpoint is never live without its bank.
+2. `public/api/test.php` — the merit-test API.
+3. `public/api/leads.php` — the updated store (issues the `CIT26-XXXXX` login
+   keys).
+4. The React build (`build/` → web root) last, so the new front end never calls
+   an endpoint that is not there yet.
+
+> **Deploy with an "upload/overwrite changed files" sync — never a
+> delete-then-upload of `public/api/`.** `config.php` is not in the repository
+> and `api/data/` is created at runtime, so a mirror-style deploy that deletes
+> anything absent from the local copy will take your admin key, your Meta
+> credentials, every lead, every issued key and every test attempt with it.
+> If your tool cannot exclude them, download `api/data/` first.
+
+`api/data/` must stay writable by PHP (`755` on the folder is normal on
+Cloudways). `leads.php` and `test.php` create `login_keys.json` and
+`test_attempts.json` themselves on first use.
+
+### Verify from a phone, on the real domain, before spending anything
+
+**(a) The data folder must not be readable.** Open each of these:
+
+```
+https://<site>/api/data/leads.json
+https://<site>/api/data/login_keys.json
+https://<site>/api/data/test_attempts.json
+```
+
+Every one must answer **403 or 404**. Do this check **after** at least one lead
+has been submitted, because `api/data/` and the `Deny from all` `.htaccess`
+inside it are written by `leads.php` / `test.php` on first use — an empty folder
+proves nothing. If any of them serves JSON, the nginx static layer is answering
+before Apache ever reads that `.htaccess`, and your entire lead database —
+names, mobile numbers, and every valid test key — is public.
+**Stop and have Cloudways add a server-level deny rule for `/api/data/` before
+the campaign launches.** This is the single highest-consequence check on this
+page.
+
+**(b) The question bank must be unreachable.** `https://<site>/api/question-bank.php`
+must return **404 with an empty body**. Anything else — a PHP error, a blank 200,
+a stack trace — means the `CIT_TEST_INTERNAL` guard is not doing its job and the
+answer key is exposed.
+
+**(c) No caching.** Response headers on `/api/leads.php` and `/api/test.php` must
+carry `Cache-Control: no-store`. A CDN or page-cache layer in front of the API is
+a correctness bug, not a performance win: cached login responses would hand one
+applicant another's state.
+
+**(d) One real end-to-end run.** From a phone on mobile data: `/apply` → complete
+all five steps → `/thank-you` shows a key → `/test` with that key → accept the
+T&C → answer a few questions → finish → book a call slot. Then, **on a different
+device**, open the admin panel and confirm the lead shows its key, a **Completed**
+chip with the score, and the booked slot within one 15-second poll. Check the
+**Counselling queue** button puts that applicant in the right position.
+
+**(e) The cutoff stays manual until the business fixes a number.**
+`TEST_QUALIFY_CUTOFF` ships commented out in `config.php`. While it is unset, no
+`test_qualified` verdict is written at all and the admission team applies the
+cutoff by eye in the admin panel — which is the correct default, because an
+absent field reads as "not decided" where a stored `false` would read as
+"rejected". Set it only once the passing score is a real decision:
+
+```php
+define('TEST_QUALIFY_CUTOFF', 60);   // out of 120 — only when the business has decided
+```
+
+Existing attempts are not re-scored when you set it; the verdict is written at
+completion time, so it applies to papers submitted from then on.
+
+---
+
 ## Verifying the loop end to end
 
 1. Set `META_TEST_EVENT_CODE` + `REACT_APP_META_TEST_EVENT_CODE` to the same test

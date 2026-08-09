@@ -329,6 +329,51 @@ which fires all three legs from one call. Call it *instead of* `trackPhoneClick`
 The browser pixel needs `REACT_APP_META_PIXEL_ID`; a GTM-only pixel does not fire this code's
 events, and without it CAPI deduplication is inactive.
 
+## Admin Panel — Merit Test & Selection surfaces
+
+The panel is **read-only on everything the test writes.** `login_key`, the `test_*` block and
+`counselling_slot` are authored server-side (`leads.php` issues the key; `test.php` writes the
+rest through `patch_lead()`), and none of them are in `lead_field_whitelist()` — so unlike the
+derived quality score, the admin can treat these numbers as fact. Admin writes still go only
+through the existing `callLeadsApi('update', …)` path; there is no second endpoint.
+
+`src/admin/utils/leadQuality.js` remains the single source for labels and now also owns
+`getTestStatus()` / `getTestStatusConfig()`, `formatSlot()`, `formatScore()`,
+`describeSlotTiming()`, `hasSelectionData()`, `AFFORDABILITY_LABELS` (+ long form) and
+`shortBranch()` (derived from `MERIT_BRANCHES`, so short names can't drift from the fee table).
+
+**`getTestStatus()` returns `null`, not `'not_started'`, for a lead with no `login_key`.** A
+legacy enquiry or CSV-imported lead was never asked to sit the paper, so every surface shows it
+nothing rather than branding it a no-show — the same rule that keeps unscored leads out of the
+quality bands. Every new UI element is gated this way and must degrade to the pre-merit UI.
+
+**Lead Management** (`LeadManagement.jsx`) — five columns after Quality: `login_key` (Key,
+click-to-copy) · `test_status` (Test — chip, plus the score inline once completed) ·
+`counselling_slot` (Call Slot) · `fee_affordability` and `branch_prefs` (both `hideTablet`).
+`COLUMNS` drives the header only: body cells and the mobile card are hand-written and all three
+must be kept in step. Sorting: `test_status` sorts state-then-score and is in
+`DESC_FIRST_COLUMNS`; `counselling_slot` is deliberately **not** — the next call belongs on top
+— and its ties break on `test_score` descending.
+
+**Two telecaller queues** sit beside Refresh. *Push-to-test* = apply-funnel tier + holds a key +
+test not completed, newest first. *Counselling* = completed papers by booked hour, unbooked last
+and best score first among them. A preset is a saved position of the shared filter/sort state
+plus **one predicate inside the same `loadData` filter chain** — never a parallel pipeline — and
+any manual filter change clears the badge. `getLeadStats().awaitingTest` counts exactly the
+push-to-test queue, so the Dashboard pair (`testsCompleted` / `awaitingTest`) agrees with it by
+construction.
+
+**Lead Detail** — one gated card, *Merit Test & Selection*, before Academic Details. The booked
+hour leads it in a highlight box (overdue in red; "No slot chosen" in amber when a finished
+applicant never picked one). `test_qualified` renders only when the field exists: it is written
+solely when `TEST_QUALIFY_CUTOFF` is configured, and absent means "not decided", never
+"rejected".
+
+**CSV** — 14 columns after `FBCLID`; timestamps and `test_status` export raw. Import restores
+them to the admin's own view, but `?action=create` strips `login_key` and every `test_*` field
+even for an admin-keyed import, because they are absent from the server whitelist by design.
+Re-importing an export is for reporting, never for replaying test results into the store.
+
 ## Tele-Calling Module
 
 The **Tele-Calling** admin module (`/admin/tele-calling`) mirrors Lead Management but its records are entered manually by telecallers (not the public form). It has its own server store `public/api/telecalls.php` (`data/telecalls.json`), service `src/admin/utils/telecallService.js`, status config `src/admin/utils/telecallStatus.js`, list page `TeleCalling.jsx`, detail page `TeleCallDetail.jsx`, and shared add/edit form `src/admin/components/TelecallFormDialog.jsx`. It uses the same cross-device sync pattern as leads (in-memory cache hydrated from the server, 15s poll, BroadcastChannel for same-browser tabs) and reuses `REACT_APP_LEADS_ADMIN_KEY` for auth (configure the endpoint with `REACT_APP_TELECALLS_API_URL`). Tele-calling statuses: Hot · Warm · Cold · Need More Follow Ups · Seat Booked · Not Interested.

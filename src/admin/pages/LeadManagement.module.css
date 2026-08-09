@@ -207,6 +207,49 @@
   margin-top: 2px;
 }
 
+/* ---- Merit test & selection columns ---- */
+
+/* The CIT26-XXXXX login key, copied in one tap. Monospace because a telecaller
+   reads it out digit by digit over a bad line. */
+.keyCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--admin-text-primary);
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 2px 4px;
+  margin-left: -4px;
+  transition: background 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.keyCell:hover,
+.keyCell:focus-visible {
+  background: rgba(216, 38, 24, 0.08);
+  color: var(--admin-accent);
+  outline: none;
+}
+
+/* Status chip + score, wrapping to a second line in a narrow column. */
+.testCell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.testScore {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--admin-text-primary);
+  white-space: nowrap;
+}
+
 .leadCardRow {
   display: flex;
   align-items: center;
