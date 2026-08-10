@@ -21,7 +21,7 @@ import {
 } from '../fields';
 import {
   MERIT_BRANCHES,
-  EXTRA_FEES_PER_YEAR,
+  EXTRA_FEES_ONE_TIME,
   ADMISSION_FEE_ONE_TIME,
   HOSTEL_FEES_PER_YEAR,
   branchTotals,
@@ -247,11 +247,12 @@ const StepFeesBranches = ({ draft, errors, setField }) => {
           <span>
             Extra Fees
             <span className={styles.feeUniversalNote}>
-              Skill &amp; Cultural activities etc.
+              One-time, payable in the 1st year at admission — Skill &amp;
+              Cultural activities etc.
             </span>
           </span>
           <span className={styles.feeYearValue}>
-            {formatINR(EXTRA_FEES_PER_YEAR)}/year
+            {formatINR(EXTRA_FEES_ONE_TIME)}
           </span>
         </div>
         <div className={styles.feeUniversalRow}>

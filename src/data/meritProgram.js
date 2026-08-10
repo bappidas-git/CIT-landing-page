@@ -19,16 +19,19 @@ export const MERIT_BRANCHES = [
 export const TOTAL_SEATS_LEFT = MERIT_BRANCHES.reduce((n, b) => n + b.seats, 0); // must equal 15
 
 // Universal costs — identical for every branch.
-export const EXTRA_FEES_PER_YEAR = 12500;      // Skill & Cultural activities etc.
+// Both admission-time charges are ONE-TIME: they are paid once, at admission in
+// the 1st year, and never again. Only hostel repeats every year.
+export const EXTRA_FEES_ONE_TIME = 12500;      // one-time at admission — Skill & Cultural activities etc.
 export const ADMISSION_FEE_ONE_TIME = 107500;  // one-time, payable in the 1st year at admission
 export const HOSTEL_FEES_PER_YEAR = 65000;     // boys & girls, in-campus hostel (stay & food)
 
-/** ₹12,17,500-style Indian formatting. */
+/** ₹11,80,000-style Indian formatting. */
 export const formatINR = (n) => '₹' + Number(n).toLocaleString('en-IN');
 
-/** 4-year totals for a branch. */
+/** 4-year totals for a branch. The two one-time charges are counted once;
+    only hostel is multiplied across the 4 years. */
 export const branchTotals = (branch) => {
   const tuition4 = branch.tuition.reduce((a, b) => a + b, 0);
-  const exclHostel = tuition4 + EXTRA_FEES_PER_YEAR * 4 + ADMISSION_FEE_ONE_TIME;
+  const exclHostel = tuition4 + EXTRA_FEES_ONE_TIME + ADMISSION_FEE_ONE_TIME;
   return { tuition4, exclHostel, inclHostel: exclHostel + HOSTEL_FEES_PER_YEAR * 4 };
 };
