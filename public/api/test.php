@@ -54,14 +54,17 @@
      POST /api/test.php?action=book_slot
        Body: { "key": "...", "slot": "<ISO UTC>" }
        Books the hour in which CIT's Counselling
-       Officer will call, inside the 24 hours after
-       the applicant finished. WRITE-ONCE from the
-       student side: a second call answers the slot
-       that is already stored rather than moving it —
-       a changed appointment goes through the
-       telecaller, who can see the whole picture.
-       The window is re-derived and re-checked here;
-       the list of chips the browser drew is
+       Officer will call: inside the 24 hours after
+       the applicant finished AND inside the office's
+       own day, 10:00–19:00 IST, every day of the week.
+       A paper finished at midnight therefore books
+       into the morning, not into the small hours.
+       WRITE-ONCE from the student side: a second call
+       answers the slot that is already stored rather
+       than moving it — a changed appointment goes
+       through the telecaller, who can see the whole
+       picture. The window is re-derived and re-checked
+       here; the list of chips the browser drew is
        convenience, never the authority.
 
    THE TIMING MODEL IS THE SERVER'S. A question's
@@ -190,6 +193,28 @@ define('CIT_TEST_SLOT_WINDOW_SECONDS', 24 * 3600);
 // phone's clock can sit a couple of minutes ahead of ours. Five minutes of
 // slack covers both without letting a genuinely stale chip through.
 define('CIT_TEST_SLOT_PAST_GRACE_SECONDS', 300);
+
+// ----- Office hours -----
+// CIT's Counselling Officers work 10:00–19:00, EVERY day — Saturday and Sunday
+// included, so there is no weekday check here and there must not be one.
+//
+// The paper can be sat at any hour: campaign traffic peaks late, and an
+// applicant finishing at 11 PM was previously offered midnight and 1 AM chips
+// for a call nobody was ever going to make. The window below is therefore
+// intersected with the office's day, which is why a late finisher's first
+// bookable hour is 10 AM the following morning.
+//
+// THE OFFICER'S CLOCK, NOT THE APPLICANT'S DEVICE. The hours are IST because
+// that is when the Tumakuru desk is staffed; a phone set to another zone must
+// not be able to book 10 AM local. Slots are stored in UTC, so the offset is
+// applied here rather than trusting anything the browser computed.
+//
+// MIRRORED IN src/pages/Test/PostTestScreen.jsx — the picker draws its chips
+// from the same three numbers. Changing one file alone either hides hours the
+// office does work, or shows chips this endpoint will refuse. Change both.
+define('CIT_TEST_SLOT_TZ_OFFSET_SECONDS', 5 * 3600 + 30 * 60); // IST, UTC+05:30
+define('CIT_TEST_SLOT_FIRST_HOUR', 10); // earliest hour a call may start in
+define('CIT_TEST_SLOT_LAST_HOUR', 18);  // latest hour a call may START in — it runs to 19:00
 
 // Marks at or above which an attempt is stamped `test_qualified` on the lead.
 // null — the default, and what ships — means no automatic verdict: the
@@ -479,6 +504,29 @@ function parse_client_iso($iso) {
 }
 
 /**
+ * Is this instant the start of an hour the counselling desk actually works in?
+ *
+ * Both halves are measured in IST, since that is the clock the officers keep:
+ * an hour boundary in Tumakuru is at :30 past the hour in UTC (UTC+05:30), so
+ * a naive "minutes must be 00" test on the stored UTC timestamp would reject
+ * every slot this page can legitimately produce.
+ *
+ * @param int $epoch Slot start, epoch seconds
+ * @return bool
+ */
+function slot_is_office_hour($epoch) {
+    $ist = $epoch + CIT_TEST_SLOT_TZ_OFFSET_SECONDS;
+
+    // On the hour, in IST. This is deliberately stricter than "some timezone's
+    // hour boundary" — the appointment goes into an IST diary, and an offset
+    // the office does not keep is not a time anyone here can call at.
+    if ($ist % 3600 !== 0) return false;
+
+    $hour = (int) (($ist % 86400) / 3600);
+    return $hour >= CIT_TEST_SLOT_FIRST_HOUR && $hour <= CIT_TEST_SLOT_LAST_HOUR;
+}
+
+/**
  * Check a requested counselling slot against the attempt, and return it in our
  * own canonical ISO shape — so what lands on the lead is always the same
  * format the rest of the store uses, whatever the browser sent.
@@ -496,13 +544,8 @@ function validate_counselling_slot($iso, $completedAt) {
     $slot = parse_client_iso($iso);
     if ($slot === null) return null;
 
-    // "The start of an hour" means the applicant's local hour, not UTC's: IST
-    // is UTC+05:30, so 4:00 PM in Tumakuru is 10:30Z and a naive "minutes must
-    // be 00" test would reject every slot this page can produce. Every real
-    // UTC offset is a whole number of quarter-hours, so an hour boundary
-    // anywhere on earth is a quarter-hour boundary here — which still refuses
-    // the arbitrary instants this check exists to keep out.
-    if ($slot % 900 !== 0) return null;
+    // Inside the hours the desk is staffed — 10:00 to 19:00 IST, every day.
+    if (!slot_is_office_hour($slot)) return null;
 
     $completedEpoch = iso_to_epoch($completedAt);
     if ($completedEpoch === null) return null;
@@ -1099,7 +1142,10 @@ if ($method === 'POST' && ($action === 'start' || $action === 'state' || $action
    action=book_slot — the tele-counselling appointment
 
    The last thing an applicant does on this route: pick the hour in which CIT's
-   Counselling Officer will call them, inside the 24 hours after they submitted.
+   Counselling Officer will call them — inside the 24 hours after they
+   submitted, and inside the hours the desk is staffed (10:00–19:00 IST, all
+   seven days). The two together are the whole rule: a paper finished at 11 PM
+   has its next bookable hour at 10 AM, not at midnight.
 
    WRITE-ONCE FROM THE STUDENT SIDE. A second booking answers the slot that is
    already stored rather than moving it — the officer has the appointment in

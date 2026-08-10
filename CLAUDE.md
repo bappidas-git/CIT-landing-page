@@ -247,22 +247,40 @@ Success is `{"success": true, "slot": "<canonical iso>"}`.
   `{"success": true, "already_booked": true, "slot": "<stored iso>"}` and does **not** move the
   appointment — by then the officer has it in their day, so a change is a conversation with the
   telecaller. The admin panel may edit `counselling_slot` on the lead directly.
+- **Office hours are part of the rule.** The counselling desk works **10:00–19:00 IST, every day
+  of the week — Saturday and Sunday included**, so a bookable slot is an hour that starts at
+  10:00…18:00 IST (the 18:00 slot runs to 19:00). The paper can be sat at any hour, so this is
+  not decorative: an applicant finishing at 11 PM books 10 AM the next morning, not midnight.
+  There is deliberately **no weekday check** — do not add one.
+- **The hours are the officer's, not the device's.** `CIT_TEST_SLOT_TZ_OFFSET_SECONDS` (IST,
+  UTC+05:30) is applied server-side, so a phone left on another timezone cannot book 10 AM local
+  — which would be the middle of the night in Tumakuru. India keeps no DST, so a fixed offset is
+  exact.
 - **The server re-derives the window; the browser's chip list is convenience.** A slot must parse
-  as a UTC ISO timestamp, sit on an hour boundary, fall inside
+  as a UTC ISO timestamp, sit on an IST hour boundary inside office hours, fall inside
   `completed_at … completed_at + 24h`, and not already be in the past (5 minutes of slack for a
   fast phone clock). Otherwise `invalid_slot`. Before the paper is finished: `not_completed`.
 - The **shape check runs before parsing** (`parse_client_iso`), because `strtotime()` accepts
   `tomorrow` and `+2 hours` — a lax parse would let a client name any instant it liked.
-- "On the hour" is enforced as a **quarter-hour boundary in UTC**. An hour boundary in the
-  applicant's local time is not one in UTC (IST is UTC+05:30, so 4:00 PM is `10:30Z`), and every
-  real UTC offset is a whole number of quarter-hours.
+- "On the hour" is enforced as an **exact hour boundary in IST** (`slot_is_office_hour()`) — at
+  :30 past the hour in UTC, since IST is UTC+05:30 and 4:00 PM in Tumakuru is `10:30Z`. This
+  replaced an older any-quarter-hour test, which existed to accommodate any timezone's hour and
+  is now too loose: the appointment goes into an IST diary.
 - Writes `counselling_slot` to the attempt **and** to the lead via `patch_lead()`, with the fixed
   activity string **`Counselling slot booked`** — the admin timeline renders on it.
 
-Client side, `PostTestScreen` never shows a chip the server would refuse: expired hours drop off a
+Client side, `PostTestScreen` never shows a chip the server would refuse: it applies the same
+three office-hour constants (**mirrored — change both files together**), expired hours drop off a
 one-minute refresh, an expired selection clears itself, and an `invalid_slot` redraws the list and
 asks for another pick. Once the 24 hours are gone it says so and hands off to the phone rather than
-rendering an empty picker.
+rendering an empty picker. Its times are formatted from the fixed IST offset rather than
+`toLocaleString`, because a WebView without timezone data would silently print device-local time —
+an applicant told the wrong hour is worse than an ugly one.
+
+The two bounds always overlap, so a freshly finished applicant is never shown an empty picker: any
+24-hour window contains a whole office day, which is **9 hours to choose from at every completion
+time** (verified across every 10-minute completion time on four dates, including month, year and
+leap-year boundaries).
 
 **Lead fields the engine writes** (server-authored via `patch_lead` only): `test_status`
 (`in_progress` → `completed`), `test_started_at`, `test_completed_at`, `test_score`,

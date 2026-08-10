@@ -19,6 +19,14 @@
    `invalid_slot` back and the list is redrawn rather
    than the booking silently landing in the past.
 
+   ONLY HOURS THE DESK IS STAFFED. The 24-hour window
+   is intersected with the counselling office's day —
+   10:00 to 19:00 IST, every day of the week — so a
+   paper finished at 11 PM offers 10 AM tomorrow
+   rather than midnight tonight. The hours are the
+   OFFICER'S, computed from a fixed IST offset and
+   never from the device's timezone.
+
    Booking is WRITE-ONCE from here. A second attempt
    answers the slot that is already stored — changing
    an appointment is a conversation with the
@@ -47,9 +55,29 @@ import { SUPPORT_PHONE } from '../../utils/applicationSubmit';
 import styles from './Test.module.css';
 
 const HOUR_MS = 3600 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 
 /** How far ahead of the submission the applicant may book. Mirrors test.php. */
 const WINDOW_HOURS = 24;
+
+/**
+ * The counselling desk's clock, and the working day inside it.
+ *
+ * MIRRORS test.php — `CIT_TEST_SLOT_TZ_OFFSET_SECONDS`,
+ * `CIT_TEST_SLOT_FIRST_HOUR`, `CIT_TEST_SLOT_LAST_HOUR`. Every chip drawn here
+ * is re-checked against those three before a booking is written, so a chip this
+ * screen shows that they would refuse is a Confirm that fails for no reason the
+ * applicant can see. Change the two files together.
+ *
+ * The officers sit in Tumakuru and work 10:00–19:00 IST, all seven days, so
+ * these are IST hours — derived from a fixed offset rather than the device's
+ * own timezone. A phone left on the wrong zone would otherwise be offered a
+ * 10 AM chip that is the middle of the night at the desk. India keeps no
+ * daylight saving, so a constant offset is exact rather than an approximation.
+ */
+const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
+const OFFICE_FIRST_HOUR = 10;
+const OFFICE_LAST_HOUR = 18; // the last hour a call may START in — it runs to 19:00
 
 /**
  * How long a slot stays offered after its hour has started. Mirrors
@@ -80,82 +108,99 @@ const ERROR_MESSAGES = {
 };
 
 /* ----- Time formatting -----
-   Slots are chosen and read in the device's local time (an IST audience) and
-   stored as ISO UTC. Everything below formats; nothing below decides. */
+   Slots are stored as ISO UTC and read here in IST, the counselling desk's own
+   clock. Everything below formats; nothing below decides.
+
+   Formatting is hand-rolled from the fixed offset rather than handed to
+   `toLocaleString`, because the one thing that must never happen is a chip
+   quietly rendering in the device's timezone: an applicant who reads "4:00 PM"
+   and is called at what their phone thinks is 4:00 PM has been told the wrong
+   time. `timeZone: 'Asia/Kolkata'` would say it exactly, but budget Android
+   WebViews ship without the timezone data to honour it — and the failure is
+   silent. Slots are always whole hours, so there is little to build anyway. */
+
+const WEEKDAYS = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 /**
- * Split a locale time string into its clock part and its meridiem, so a slot
- * can render as "4:00 – 5:00 PM" rather than repeating "PM" twice in a chip
- * that has to fit two-across on a 360 px screen.
- * @param {Date} date
+ * An instant read on the officers' clock. Shifting by the offset and reading
+ * with getUTC* keeps the device's own timezone out of every string below.
+ * @param {number} ms - Epoch ms
+ * @returns {{hour: number, weekday: string, day: number, month: string, dayIndex: number}}
+ */
+const istParts = (ms) => {
+  const shifted = ms + IST_OFFSET_MS;
+  const date = new Date(shifted);
+  return {
+    hour: date.getUTCHours(),
+    weekday: WEEKDAYS[date.getUTCDay()],
+    day: date.getUTCDate(),
+    month: MONTHS[date.getUTCMonth()],
+    // Days since the epoch in IST — equal for two instants on the same IST
+    // date, which is all Today / Tomorrow needs to know.
+    dayIndex: Math.floor(shifted / DAY_MS),
+  };
+};
+
+/**
+ * A whole hour on the clock, split so a chip can render "4:00 – 5:00 PM"
+ * rather than repeating "PM" twice in a box that has to fit two-across on a
+ * 360 px screen.
+ * @param {number} hour - Hour of the day, 0–23
  * @returns {{time: string, meridiem: string}}
  */
-const splitTime = (date) => {
-  let raw;
-  try {
-    raw = date.toLocaleTimeString('en-IN', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-  } catch (error) {
-    // No Intl data for en-IN (very old Android WebView) — build it by hand
-    // rather than print a 24-hour string an applicant has to translate.
-    const hours = date.getHours();
-    const display = hours % 12 === 0 ? 12 : hours % 12;
-    raw = `${display}:${String(date.getMinutes()).padStart(2, '0')} ${
-      hours < 12 ? 'AM' : 'PM'
-    }`;
-  }
-  // Engines disagree on "4:00 pm" vs "4:00 PM"; a row where half the chips
-  // shout and half whisper looks broken.
-  const match = raw.match(/^(.*?)\s*([ap])\.?m\.?$/i);
-  if (!match) return { time: raw.trim(), meridiem: '' };
-  return { time: match[1].trim(), meridiem: `${match[2].toUpperCase()}M` };
-};
+const hourParts = (hour) => ({
+  time: `${hour % 12 === 0 ? 12 : hour % 12}:00`,
+  meridiem: hour < 12 ? 'AM' : 'PM',
+});
 
 /**
  * The label on a slot chip: the hour the officer will call in.
- * @param {Date} start - Start of the hour
+ * @param {number} ms - Start of the hour, epoch ms
  * @returns {string} e.g. "4:00 – 5:00 PM", or "11:00 AM – 12:00 PM"
  */
-const slotLabel = (start) => {
-  const from = splitTime(start);
-  const to = splitTime(new Date(start.getTime() + HOUR_MS));
+const slotLabel = (ms) => {
+  const from = hourParts(istParts(ms).hour);
+  const to = hourParts(istParts(ms + HOUR_MS).hour);
   const fromText =
-    from.meridiem && from.meridiem === to.meridiem
-      ? from.time
-      : `${from.time} ${from.meridiem}`.trim();
-  const toText = `${to.time} ${to.meridiem}`.trim();
-  return `${fromText} – ${toText}`;
-};
-
-/** Local midnight for a date, as epoch ms — the basis for Today / Tomorrow. */
-const startOfDay = (value) => {
-  const date = new Date(value);
-  date.setHours(0, 0, 0, 0);
-  return date.getTime();
+    from.meridiem === to.meridiem ? from.time : `${from.time} ${from.meridiem}`;
+  return `${fromText} – ${to.time} ${to.meridiem}`;
 };
 
 /**
  * Which day a slot falls on, from the applicant's point of view.
- * @param {Date} date - Slot start
+ * @param {number} ms - Slot start, epoch ms
  * @param {number} nowMs - Current wall clock
  * @returns {string} 'Today', 'Tomorrow', or a written date
  */
-const dayLabel = (date, nowMs) => {
-  const offset = Math.round((startOfDay(date) - startOfDay(nowMs)) / 86400000);
+const dayLabel = (ms, nowMs) => {
+  const offset = istParts(ms).dayIndex - istParts(nowMs).dayIndex;
   if (offset <= 0) return 'Today';
   if (offset === 1) return 'Tomorrow';
-  try {
-    return date.toLocaleDateString('en-IN', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'short',
-    });
-  } catch (error) {
-    return date.toDateString();
-  }
+  const parts = istParts(ms);
+  return `${parts.weekday}, ${parts.day} ${parts.month.slice(0, 3)}`;
 };
 
 /**
@@ -165,62 +210,67 @@ const dayLabel = (date, nowMs) => {
  * @returns {string} e.g. "Tuesday, 11 August, 4:00 – 5:00 PM", or ''
  */
 const formatBookedSlot = (iso) => {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-  let day;
-  try {
-    day = date.toLocaleDateString('en-IN', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    });
-  } catch (error) {
-    day = date.toDateString();
-  }
-  return `${day}, ${slotLabel(date)}`;
+  const ms = new Date(iso).getTime();
+  if (Number.isNaN(ms)) return '';
+  const parts = istParts(ms);
+  return `${parts.weekday}, ${parts.day} ${parts.month}, ${slotLabel(ms)}`;
 };
 
 /**
  * Every hour the applicant may still book, in order.
  *
- * Starts at the first full hour AFTER they submitted (a call cannot be booked
- * for the minute they finished) and runs to 24 hours after submission — the
- * same bounds test.php enforces. Hours already gone are dropped, so a screen
- * left open never offers a time that would be refused.
+ * Three bounds, all of which test.php re-applies:
+ *   - starts at the first IST hour AFTER they submitted — a call cannot be
+ *     booked for the minute they finished;
+ *   - runs to 24 hours after submission;
+ *   - keeps only the hours the desk is staffed, so a paper finished outside
+ *     office hours offers the next morning rather than the small hours.
+ *
+ * Hours already gone are dropped too, so a screen left open never offers a time
+ * that would be refused.
+ *
+ * The three bounds always overlap: any 24-hour window spans a whole office day,
+ * so an applicant who has just finished is never shown an empty picker,
+ * whatever time of night they sat the paper.
  *
  * @param {string} completedAtIso - The attempt's completion time
  * @param {number} nowMs - Current wall clock
- * @returns {Array<Date>} Slot starts, oldest first (empty if the window closed)
+ * @returns {Array<number>} Slot starts as epoch ms, oldest first (empty if the
+ *   window has closed)
  */
 const buildSlots = (completedAtIso, nowMs) => {
   if (!completedAtIso) return [];
-  const completed = new Date(completedAtIso);
-  if (Number.isNaN(completed.getTime())) return [];
+  const completed = new Date(completedAtIso).getTime();
+  if (Number.isNaN(completed)) return [];
 
-  const windowEnd = completed.getTime() + WINDOW_HOURS * HOUR_MS;
+  const windowEnd = completed + WINDOW_HOURS * HOUR_MS;
   const earliest = nowMs - PAST_GRACE_MS;
 
-  // Stepped with setHours rather than by adding milliseconds, so the chips stay
-  // on local hour boundaries even across a daylight-saving change (India has
-  // none; a phone set to another zone is not this code's problem to create).
-  const cursor = new Date(completed);
-  cursor.setMinutes(0, 0, 0);
-  cursor.setHours(cursor.getHours() + 1);
+  // The first IST hour boundary strictly after submission. Floor-then-add
+  // rather than round up, so a paper submitted exactly on the hour still moves
+  // to the next one instead of offering the minute it was handed in.
+  const firstHour =
+    (Math.floor((completed + IST_OFFSET_MS) / HOUR_MS) + 1) * HOUR_MS - IST_OFFSET_MS;
 
   const slots = [];
-  while (cursor.getTime() <= windowEnd && slots.length < WINDOW_HOURS) {
-    if (cursor.getTime() >= earliest) slots.push(new Date(cursor.getTime()));
-    cursor.setHours(cursor.getHours() + 1);
+  for (let cursor = firstHour; cursor <= windowEnd; cursor += HOUR_MS) {
+    const { hour } = istParts(cursor);
+    if (hour < OFFICE_FIRST_HOUR || hour > OFFICE_LAST_HOUR) continue;
+    if (cursor < earliest) continue;
+    slots.push(cursor);
   }
   return slots;
 };
 
 /**
  * Group consecutive slots by the day they fall on, preserving order.
- * @param {Array<Date>} slots
+ * @param {Array<number>} slots
  * @param {number} nowMs
- * @returns {Array<{label: string, slots: Array<Date>}>}
+ * @returns {Array<{label: string, slots: Array<number>}>}
  */
+/** The wire form of a slot: what the chip posts, and what test.php parses. */
+const toIso = (ms) => new Date(ms).toISOString();
+
 const groupSlots = (slots, nowMs) => {
   const groups = [];
   slots.forEach((slot) => {
@@ -333,7 +383,7 @@ const PostTestScreen = ({
   // can never post a chip that is no longer on the screen.
   useEffect(() => {
     if (!chosen) return;
-    if (slots.some((slot) => slot.toISOString() === chosen)) return;
+    if (slots.some((slot) => toIso(slot) === chosen)) return;
     setChosen('');
   }, [slots, chosen]);
 
@@ -520,7 +570,7 @@ const PostTestScreen = ({
         <p className={styles.intro}>
           Your answers are being evaluated. The 24-hour window for choosing your
           own call time has closed — our Counselling Officer will call you on the
-          number in your application.
+          number in your application, between 10:00 AM and 7:00 PM.
         </p>
 
         <h2 className={styles.subHeading}>Before the call</h2>
@@ -551,8 +601,10 @@ const PostTestScreen = ({
           <IconCalendarClock size={20} />
         </span>
         <span>
-          Pick the hour that suits you best. The call takes about 15 minutes and
-          your parents should be with you.
+          Our Counselling Officers call between{' '}
+          <strong>10:00 AM and 7:00 PM</strong>, every day of the week. Pick the
+          hour that suits you best — the call takes about 15 minutes and your
+          parents should be with you.
         </span>
       </div>
 
@@ -573,7 +625,7 @@ const PostTestScreen = ({
             <h2 className={styles.slotGroupTitle}>{group.label}</h2>
             <div className={styles.slotGrid}>
               {group.slots.map((slot) => {
-                const value = slot.toISOString();
+                const value = toIso(slot);
                 const selected = value === chosen;
                 return (
                   <button
