@@ -256,57 +256,59 @@ const Footer = () => {
                 <h4 className={styles.columnTitle}>Admissions Contact</h4>
                 <ul className={styles.contactList}>
                   <li className={styles.contactItem}>
-                    <div className={styles.contactLabelRow}>
-                      <Icon
-                        icon="mdi:phone-in-talk-outline"
-                        className={styles.contactIcon}
-                      />
+                    <Icon
+                      icon="mdi:phone-in-talk-outline"
+                      className={styles.contactIcon}
+                      aria-hidden="true"
+                    />
+                    <div className={styles.contactBody}>
                       <span className={styles.contactLabel}>
                         Call or WhatsApp
                       </span>
-                    </div>
-                    <span className={styles.contactValue}>
-                      {PRIMARY_PHONE_DISPLAY}
-                    </span>
-                    <div className={styles.contactChipRow}>
-                      <a
-                        href={`tel:${PRIMARY_PHONE}`}
-                        className={`${styles.contactChip} ${styles.contactChipCall}`}
-                        onClick={() =>
-                          trackContactClick("phone", "footer", PRIMARY_PHONE)
-                        }
-                        aria-label={`Call ${PRIMARY_PHONE_DISPLAY}`}
-                      >
-                        <Icon icon="mdi:phone" />
-                        <span>Call</span>
-                      </a>
-                      <a
-                        href={WHATSAPP_LINK}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${styles.contactChip} ${styles.contactChipWhatsapp}`}
-                        onClick={() => trackContactClick("whatsapp", "footer")}
-                        aria-label={`Chat on WhatsApp with ${PRIMARY_PHONE_DISPLAY}`}
-                      >
-                        <Icon icon="mdi:whatsapp" />
-                        <span>Chat</span>
-                      </a>
+                      <span className={styles.contactValue}>
+                        {PRIMARY_PHONE_DISPLAY}
+                      </span>
+                      <div className={styles.contactChipRow}>
+                        <a
+                          href={`tel:${PRIMARY_PHONE}`}
+                          className={`${styles.contactChip} ${styles.contactChipCall}`}
+                          onClick={() =>
+                            trackContactClick("phone", "footer", PRIMARY_PHONE)
+                          }
+                          aria-label={`Call ${PRIMARY_PHONE_DISPLAY}`}
+                        >
+                          <Icon icon="mdi:phone" />
+                          <span>Call</span>
+                        </a>
+                        <a
+                          href={WHATSAPP_LINK}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${styles.contactChip} ${styles.contactChipWhatsapp}`}
+                          onClick={() => trackContactClick("whatsapp", "footer")}
+                          aria-label={`Chat on WhatsApp with ${PRIMARY_PHONE_DISPLAY}`}
+                        >
+                          <Icon icon="mdi:whatsapp" />
+                          <span>Chat</span>
+                        </a>
+                      </div>
                     </div>
                   </li>
 
                   <li className={styles.contactItem}>
-                    <div className={styles.contactLabelRow}>
-                      <Icon
-                        icon="mdi:map-marker"
-                        className={styles.contactIcon}
-                      />
+                    <Icon
+                      icon="mdi:map-marker"
+                      className={styles.contactIcon}
+                      aria-hidden="true"
+                    />
+                    <div className={styles.contactBody}>
                       <span className={styles.contactLabel}>Campus</span>
+                      <span className={styles.contactValue}>
+                        NH 206, B.H. Road, Gubbi,
+                        <br />
+                        Tumakuru – 572 216, Karnataka
+                      </span>
                     </div>
-                    <span className={styles.contactValue}>
-                      NH 206, B.H. Road, Gubbi,
-                      <br />
-                      Tumakuru – 572 216, Karnataka
-                    </span>
                   </li>
                 </ul>
               </div>

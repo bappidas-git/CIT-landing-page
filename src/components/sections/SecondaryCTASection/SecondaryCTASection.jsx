@@ -8,12 +8,11 @@
    ============================================ */
 
 import React from "react";
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
-import { trackContactClick } from "../../../utils/contactTracking";
 import Button from "../../common/Button/Button";
 import {
   PROGRAM_NAME,
@@ -46,10 +45,6 @@ const trustIndicators = [
   { text: "Straight to the college", icon: "mdi:school-outline" },
   { text: "Trusted by NE Families", icon: "mdi:account-group" },
 ];
-
-const WHATSAPP_URL = `https://api.whatsapp.com/send?phone=918069645014&text=${encodeURIComponent(
-  `Hi CIT Admissions, I want to apply for the ${PROGRAM_NAME} (${TOTAL_SEATS_LEFT} seats). Please share the details.`,
-)}`;
 
 const SecondaryCTASection = () => {
   const applyCTA = useApplyCTA("apply-now", { location: "secondary_cta" });
@@ -154,42 +149,6 @@ const SecondaryCTASection = () => {
                   />
                   Start My Application
                 </Button>
-
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.whatsappBtn}
-                  onClick={() => {
-                    trackCTAClick(
-                      "secondary_cta_whatsapp",
-                      "secondary_cta",
-                      "WhatsApp Us",
-                    );
-                    trackContactClick("whatsapp", "secondary_cta");
-                  }}
-                >
-                  <Icon icon="mdi:whatsapp" style={{ fontSize: "1.3rem" }} />
-                  WhatsApp Us
-                </a>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <a
-                  href="tel:+918069645014"
-                  className={styles.phoneLink}
-                  onClick={() => {
-                    trackCTAClick(
-                      "secondary_cta_call",
-                      "secondary_cta",
-                      "Call CIT",
-                    );
-                    trackContactClick("phone", "secondary_cta");
-                  }}
-                >
-                  <Icon icon="mdi:phone" className={styles.phoneIcon} />
-                  +91 8069645014
-                </a>
               </motion.div>
 
               <motion.div variants={itemVariants} className={styles.trustRow}>
@@ -201,28 +160,6 @@ const SecondaryCTASection = () => {
                 ))}
               </motion.div>
             </div>
-
-            {/* Right Column - Visual */}
-            <motion.div variants={itemVariants} className={styles.imageColumn}>
-              <div className={styles.imageWrapper}>
-                <Box
-                  component="img"
-                  src="https://res.cloudinary.com/dn9gyaiik/image/upload/v1779670911/CTA-Image_ntt9ql.png"
-                  alt={`${PROGRAM_NAME} at CIT Tumakuru`}
-                  className={styles.ctaImage}
-                  loading="lazy"
-                />
-                <div className={styles.seatBadge}>
-                  <Icon icon="mdi:certificate" className={styles.seatBadgeIcon} />
-                  <div>
-                    <span className={styles.seatBadgeLabel}>VTU Affiliated</span>
-                    <span className={styles.seatBadgeValue}>
-                      {TOTAL_SEATS_LEFT} Seats Left
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </motion.div>
       </Container>

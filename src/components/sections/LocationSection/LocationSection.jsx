@@ -15,7 +15,10 @@ import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./LocationSection.module.css";
 
 const LocationSection = () => {
-  const callbackCTA = useApplyCTA("request-callback", { location: "location" });
+  const applyCTA = useApplyCTA("apply-now", {
+    location: "location",
+    label: "Apply for the Merit Assessment Test",
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -315,7 +318,9 @@ const LocationSection = () => {
           viewport={{ once: true, margin: "-50px" }}
           className={styles.statesBand}
         >
-          <motion.div variants={itemVariants}>
+          {/* The gap lives on the wrapper, not the Typography: MUI's own
+              `margin: 0` is injected after this stylesheet and wins the tie. */}
+          <motion.div variants={itemVariants} className={styles.statesTitleWrap}>
             <Typography variant="h6" className={styles.statesTitle}>
               Proudly welcoming students from across North East India
             </Typography>
@@ -364,22 +369,10 @@ const LocationSection = () => {
             <Button
               variant="primary"
               size="large"
-              startIcon="mdi:headset"
-              {...callbackCTA}
+              startIcon="mdi:rocket-launch-outline"
+              {...applyCTA}
             >
-              Request a Callback
-            </Button>
-            <Button
-              variant="outline"
-              size="large"
-              startIcon="mdi:phone"
-              href={`tel:${locationData.phone}`}
-              className={styles.callUsBtn}
-              onClick={() =>
-                trackContactClick("phone", "location_cta", locationData.phone)
-              }
-            >
-              Call {locationData.phoneDisplay}
+              Apply for the Merit Assessment Test
             </Button>
           </motion.div>
         </motion.div>
