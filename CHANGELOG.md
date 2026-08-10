@@ -4,6 +4,44 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Fixed — the ₹12,500 Extra Fees is one-time, not yearly
+
+Step 5 of `/apply` billed the ₹12,500 Extra Fees (Skill & Cultural activities
+etc.) as `₹12,500/year`, and `branchTotals()` multiplied it across all four
+years. It is a **one-time charge, paid once at admission in the 1st year** —
+exactly like the ₹1,07,500 Admission Fee sitting next to it. Every 4-year total
+on the page was therefore ₹37,500 too high.
+
+`EXTRA_FEES_PER_YEAR` is renamed **`EXTRA_FEES_ONE_TIME`** in
+`src/data/meritProgram.js` (the name is what made the mistake easy to write),
+`branchTotals()` now counts it once, and the "Same for every branch" card drops
+the `/year` suffix and carries the same note as the Admission Fee row:
+*"One-time, payable in the 1st year at admission — Skill & Cultural activities
+etc."* Only Hostel (₹65,000) remains a per-year charge in that card.
+
+Corrected 4-year totals (tuition | excl. hostel | incl. hostel):
+
+| Branch | 4-yr tuition | Excl. hostel | Incl. hostel |
+|---|---|---|---|
+| CSE | ₹12,50,000 | ₹13,70,000 | ₹16,30,000 |
+| AI & DS | ₹12,00,000 | ₹13,20,000 | ₹15,80,000 |
+| ISE | ₹10,25,000 | ₹11,45,000 | ₹14,05,000 |
+| ECE | ₹8,00,000 | ₹9,20,000 | ₹11,80,000 |
+| EEE | ₹4,00,000 | ₹5,20,000 | ₹7,80,000 |
+| Civil | ₹3,45,000 | ₹4,65,000 | ₹7,25,000 |
+| Mech | ₹3,45,000 | ₹4,65,000 | ₹7,25,000 |
+
+The education-loan panel derives from `branchTotals()`, so it re-rendered on its
+own: the B.E. ECE worked example is now ₹11,80,000 total → ≈ ₹9,44,000 loan (80%)
+→ ≈ ₹2,36,000 from the family, ≈ ₹12,200/month for 10 years at ~9.5% p.a. No
+figure is hard-coded in the step, so this was a one-file data fix plus the label.
+
+Landing-page copy is untouched: `FeesFundingSection` and the FAQ name *"tuition,
+admission fee, extra fees and hostel"* as categories without amounts or
+periodicity, which stays correct and keeps fee numbers on Step 5 only. The
+`new-refinement-prompts/` archive keeps the old figures — it records what was
+specified at the time, not what the form charges now.
+
 ### Changed — the admissions number is now +91 84536 23233
 
 Every call and WhatsApp surface moves off `+91 8069645014`. The number lives in
