@@ -19,7 +19,6 @@ import {
 import { Icon } from "@iconify/react";
 import { preloadApply } from "../../../pages/Apply/preload";
 import { trackCTAClick } from "../../../utils/gtm";
-import { trackContactClick } from "../../../utils/contactTracking";
 import { setApplySource } from "../../../hooks/useApplyCTA";
 import {
   PROGRAM_NAME,
@@ -343,40 +342,6 @@ const HeroSection = () => {
                   }}
                 >
                   Apply for the Merit Assessment Test →
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  className={styles.secondaryCta}
-                  component="a"
-                  href="tel:+918069645014"
-                  onClick={() => {
-                    trackCTAClick(
-                      "hero_secondary_cta",
-                      "hero",
-                      "Call +91 8069645014"
-                    );
-                    trackContactClick("phone", "hero");
-                  }}
-                  sx={{
-                    borderColor: "rgba(255, 255, 255, 0.6)",
-                    color: "#FFFFFF",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    padding: "0.875rem 2rem",
-                    borderRadius: "12px",
-                    textTransform: "none",
-                    fontFamily: "'Poppins', sans-serif",
-                    borderWidth: "2px",
-                    "&:hover": {
-                      borderColor: "#FFFFFF",
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      borderWidth: "2px",
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  Call +91 8069645014
                 </Button>
               </motion.div>
 

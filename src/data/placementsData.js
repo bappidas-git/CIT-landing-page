@@ -64,6 +64,10 @@ export const PLACEMENT_YEARS_EXTENDED = [
  * Branch-wise recruitment from the poster's asterisked recent-year block.
  * `branch` matches the `short` names in `src/data/meritProgram.js` so the
  * two can be joined; display order matches MERIT_BRANCHES.
+ *
+ * Not rendered anywhere today — the branch-wise accordion under the placement
+ * table was removed. Kept because these are verified CIT figures and the next
+ * surface that needs per-branch numbers should read them, not re-source them.
  * @type {Array<{branch: string, companies: number, offers: number, highestCTC: number}>}
  */
 export const BRANCH_PLACEMENTS = [

@@ -4,6 +4,47 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Changed — the top of the funnel points at the application, not the phone
+
+Three phone CTAs sat above the fold, each offering a caller-shaped exit from a
+page whose entire job is to start an application. They are gone, and the
+five-step selection story now runs directly under the hero that promises it.
+
+**Phone CTAs removed** (the number is unchanged everywhere else — Contact,
+FAQ, Location, Footer, and the mobile bottom-nav / drawer Call actions all
+still carry it):
+- `Header.jsx` — the desktop `+91 8069645014` pill beside *Apply Now*, and the
+  matching call row at the foot of the mobile menu, so the header offers one
+  action at every breakpoint. `PRIMARY_PHONE`, its display constant and the
+  `trackContactClick` import are gone with them; the mobile *Apply Now* icon
+  now uses `.applyButtonIcon` rather than borrowing the call button's class.
+- `HeroSection.jsx` — the outlined *Call +91 8069645014* button beside the
+  primary CTA. The `hero_secondary_cta` `cta_click` and the `phone` leg of
+  `trackContactClick` no longer fire from the hero.
+- `WhyChooseCIT.jsx` — the *Or call …* link under *Start My Application* in the
+  Merit Promise card, and with it `handleCallClick` / the `why_cit_call`
+  `cta_click`. The card is a flex column with a gap, so it closes up on its own.
+
+**Section order** — `AdmissionProcessSection` ("How the Selection Works") moves
+from sixth to first below the hero, ahead of `AboutSection`. The hero promises a
+30-minute merit test; the next thing on the page now explains it instead of
+making the visitor read three sections first. The idle-preload list in
+`App.jsx` is reordered to match, so the first section below the fold is also
+the first one warmed after `/apply`.
+
+**Branch-wise accordion removed** — the `<details>` strip under *Last 3 Years —
+Placement Record* in `StatsSection.jsx`, plus its `.branch*` rules. The
+three-year table and the source footnote are untouched. `BRANCH_PLACEMENTS`
+stays in `src/data/placementsData.js`, now flagged as unrendered: the figures
+are verified and worth keeping sourced.
+
+**GTM container owner:** `header_desktop`, `header_mobile_menu`, `hero` and
+`why_choose_cit` no longer appear as the `source` on `phone_click` /
+`Contact` events, and the `why_cit_call` and `hero_secondary_cta` `cta_click`
+values stop firing. Nothing was renamed — these sources simply have no call
+site left, so any report or audience segmented on them will trend to zero
+rather than break.
+
 ### Fixed — counselling slots are offered only in office hours
 
 The post-test picker drew its chips from the clock alone: an applicant who

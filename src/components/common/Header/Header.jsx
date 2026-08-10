@@ -8,15 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Container, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { Icon } from "@iconify/react";
 import { trackNavigation, trackCTAClick } from "../../../utils/gtm";
-import { trackContactClick } from "../../../utils/contactTracking";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import styles from "./Header.module.css";
 
 const logoUrl =
   "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png";
-
-const PRIMARY_PHONE = "+918069645014";
-const PRIMARY_PHONE_DISPLAY = "+91 8069645014";
 
 // Navigation items — admission-focused anchors. Section IDs are set
 // alongside each section component (about / courses / placements / campus / contact).
@@ -229,41 +225,22 @@ const Header = ({ forceCloseMenu = false }) => {
           </nav>
         )}
 
-        {/* Right Section - Phone + Apply Now CTA */}
+        {/* Right Section - Apply Now CTA */}
         <div className={styles.rightSection}>
           {!isMobile && (
-            <>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.45, duration: 0.3 }}
-              >
-                <a
-                  href={`tel:${PRIMARY_PHONE}`}
-                  className={styles.callButton}
-                  onClick={() =>
-                    trackContactClick("phone", "header_desktop", PRIMARY_PHONE)
-                  }
-                  aria-label={`Call CIT admissions on ${PRIMARY_PHONE_DISPLAY}`}
-                >
-                  <Icon icon="mdi:phone" className={styles.callButtonIcon} />
-                  {PRIMARY_PHONE_DISPLAY}
-                </a>
-              </motion.div>
-              <motion.button
-                type="button"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.55, duration: 0.3 }}
-                onClick={handleApplyClick("desktop")}
-                onPointerDown={applyCTA.onPointerDown}
-                className={styles.applyButton}
-                aria-label="Apply for 2026 B.E. admission"
-              >
-                <Icon icon="mdi:school-outline" className={styles.applyButtonIcon} />
-                Apply Now
-              </motion.button>
-            </>
+            <motion.button
+              type="button"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.55, duration: 0.3 }}
+              onClick={handleApplyClick("desktop")}
+              onPointerDown={applyCTA.onPointerDown}
+              className={styles.applyButton}
+              aria-label="Apply for 2026 B.E. admission"
+            >
+              <Icon icon="mdi:school-outline" className={styles.applyButtonIcon} />
+              Apply Now
+            </motion.button>
           )}
 
           {/* Mobile Menu Button */}
@@ -330,21 +307,10 @@ const Header = ({ forceCloseMenu = false }) => {
                 >
                   <Icon
                     icon="mdi:school-outline"
-                    className={styles.callButtonIcon}
+                    className={styles.applyButtonIcon}
                   />
                   Apply Now
                 </button>
-                <a
-                  href={`tel:${PRIMARY_PHONE}`}
-                  className={styles.mobileCallButton}
-                  onClick={() => {
-                    trackContactClick("phone", "header_mobile_menu", PRIMARY_PHONE);
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  <Icon icon="mdi:phone" className={styles.callButtonIcon} />
-                  {PRIMARY_PHONE_DISPLAY}
-                </a>
               </div>
             </nav>
           </motion.div>
