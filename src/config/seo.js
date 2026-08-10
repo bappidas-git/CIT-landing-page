@@ -29,7 +29,7 @@ export const seoConfig = {
     alternateName: "CIT Tumakuru",
     url: "https://www.cittumkur.org",
     logo: "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png",
-    phone: "+91 8069645014",
+    phone: "+91 84536 23233",
     description:
       "Channabasaveshwara Institute of Technology (CIT), Tumakuru is a NAAC-accredited, AICTE-approved engineering college in Karnataka — about 70 km from Bengaluru on NH-206 — affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements. The final 15 B.E. seats for Session 2026 are filled on merit through the CIT Merit-Based Selection Program 2026.",
     address: {

@@ -184,7 +184,7 @@ const PrivacyPolicyContent = () => (
         <br />
         NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
         <br />
-        Phone: +91 8069645014
+        Phone: +91 84536 23233
       </p>
     </section>
 

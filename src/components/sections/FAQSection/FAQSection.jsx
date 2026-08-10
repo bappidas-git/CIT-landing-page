@@ -22,8 +22,8 @@ import { faqData } from "../../../data/faqData";
 import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./FAQSection.module.css";
 
-const SUPPORT_PHONE_DISPLAY = "+91 8069645014";
-const SUPPORT_PHONE_HREF = "tel:+918069645014";
+const SUPPORT_PHONE_DISPLAY = "+91 84536 23233";
+const SUPPORT_PHONE_HREF = "tel:+918453623233";
 
 const ChevronIcon = () => (
   <svg

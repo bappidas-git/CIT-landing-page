@@ -94,7 +94,7 @@ const REFRESH_MS = 60 * 1000;
 const SUPPORT_PHONE_HREF = `tel:${SUPPORT_PHONE.replace(/[^\d+]/g, '')}`;
 
 const WHATSAPP_LINK =
-  'https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20have%20finished%20my%2030-Minute%20Online%20Merit%20Assessment%20Test%20and%20need%20help%20with%20my%20counselling%20call.';
+  'https://wa.me/918453623233?text=Hi%20CIT%20Admissions%2C%0AI%20have%20finished%20my%2030-Minute%20Online%20Merit%20Assessment%20Test%20and%20need%20help%20with%20my%20counselling%20call.';
 
 const ERROR_MESSAGES = {
   invalid_slot:

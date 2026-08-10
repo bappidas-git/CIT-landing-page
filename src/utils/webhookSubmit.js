@@ -89,7 +89,7 @@ export const submitLeadToWebhook = async (leadData) => {
     return {
       success: false,
       message:
-        "Submissions aren't configured yet. Please call us at +91 8069645014.",
+        "Submissions aren't configured yet. Please call us at +91 84536 23233.",
     };
   }
 
@@ -119,7 +119,7 @@ export const submitLeadToWebhook = async (leadData) => {
     return {
       success: false,
       message:
-        "We couldn't submit your enquiry right now. Please try again or call us at +91 8069645014.",
+        "We couldn't submit your enquiry right now. Please try again or call us at +91 84536 23233.",
     };
   } catch (error) {
     // Network-level failure (offline, DNS error, etc.). Surface honestly so
@@ -128,7 +128,7 @@ export const submitLeadToWebhook = async (leadData) => {
     return {
       success: false,
       message:
-        "Network error. Please check your connection and try again, or call us at +91 8069645014.",
+        "Network error. Please check your connection and try again, or call us at +91 84536 23233.",
     };
   }
 };

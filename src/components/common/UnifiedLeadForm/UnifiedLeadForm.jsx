@@ -357,7 +357,7 @@ const PrivacyPolicyContent = () => (
         <br />
         NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
         <br />
-        Phone: +91 8069645014
+        Phone: +91 84536 23233
       </p>
     </section>
 
@@ -757,7 +757,7 @@ const UnifiedLeadForm = ({
       console.error('Form submission error:', error);
       await showError(
         'Something went wrong',
-        'Please try again or call us directly at +91 8069645014.'
+        'Please try again or call us directly at +91 84536 23233.'
       );
     } finally {
       setIsSubmitting(false);
@@ -1273,9 +1273,9 @@ const UnifiedLeadForm = ({
           >
             Or call us directly
           </Typography>
-          <a href="tel:+918069645014" className={styles.phoneLink}>
+          <a href="tel:+918453623233" className={styles.phoneLink}>
             <Icon icon="mdi:phone" />
-            <span>+91 8069645014</span>
+            <span>+91 84536 23233</span>
           </a>
         </div>
       )}

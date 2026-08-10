@@ -102,8 +102,8 @@ if (!function_exists('capi_feedback_hash')) {
 if (!function_exists('capi_feedback_normalize_mobile')) {
     /**
      * Reduce a loosely-typed phone number to the 10 Indian subscriber digits.
-     * Tele-calling records are typed by hand, so "+91 80696 45014",
-     * "0918069645014" and "8069645014" must all resolve to the same number.
+     * Tele-calling records are typed by hand, so "+91 84536 23233",
+     * "0918453623233" and "8453623233" must all resolve to the same number.
      *
      * @param  mixed  $raw Stored mobile value
      * @return string 10 digits starting 6-9, or '' when the number is unusable
@@ -113,7 +113,7 @@ if (!function_exists('capi_feedback_normalize_mobile')) {
         $digits = preg_replace('/[^0-9]/', '', (string) $raw);
         if ($digits === '' || $digits === null) return '';
         // Drop a trunk prefix ("0…"), then an Indian country code ("91…") —
-        // in that order, so "0918069645014" reduces the same as "918069645014".
+        // in that order, so "0918453623233" reduces the same as "918453623233".
         // The length guard keeps a genuine 10-digit number beginning 91 intact.
         $digits = ltrim($digits, '0');
         if (strlen($digits) > 10 && substr($digits, 0, 2) === '91') {

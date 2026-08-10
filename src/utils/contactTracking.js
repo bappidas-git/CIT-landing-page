@@ -38,7 +38,7 @@ import { trackPhoneConversion } from './googleAds';
 import { generateEventId } from './eventDedup';
 
 /** Primary CIT admissions number, in the form Google Ads expects. */
-export const CONTACT_PHONE = '+918069645014';
+export const CONTACT_PHONE = '+918453623233';
 
 /**
  * Fire every contact-conversion signal for a phone or WhatsApp click.
