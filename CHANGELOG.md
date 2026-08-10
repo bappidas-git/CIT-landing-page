@@ -4,6 +4,58 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Fixed — counselling slots are offered only in office hours
+
+The post-test picker drew its chips from the clock alone: an applicant who
+finished at 11:40 PM was offered *12:00 – 1:00 AM*, *1:00 – 2:00 AM* and the
+rest of the night, and could book a call nobody was ever going to make. The
+counselling desk works **10:00 AM – 7:00 PM IST, every day of the week**, so
+the 24-hour booking window is now intersected with that day.
+
+**`public/api/test.php`**
+- Three new fixed constants — `CIT_TEST_SLOT_TZ_OFFSET_SECONDS` (IST,
+  UTC+05:30), `CIT_TEST_SLOT_FIRST_HOUR` (10) and `CIT_TEST_SLOT_LAST_HOUR`
+  (18, the last hour a call may *start* in) — mirrored in `PostTestScreen.jsx`
+  and documented as a pair that must be changed together.
+- `slot_is_office_hour()` replaces the old any-quarter-hour test inside
+  `validate_counselling_slot()`. The hour must now be an **exact IST hour
+  boundary** (`:30` past in UTC) **and** inside 10:00–19:00 IST. The
+  quarter-hour rule existed to accept any timezone's hour boundary; that is too
+  loose now the appointment goes into an IST diary. Everything else about the
+  endpoint is untouched: the 24-hour window, the 5-minute past-grace,
+  write-once, the `parse_client_iso` shape check that keeps `strtotime()` from
+  accepting `tomorrow`, and the `Counselling slot booked` activity string.
+- The hours are enforced **server-side in IST**, so a phone left on another
+  timezone cannot book 10 AM local — the middle of the night in Tumakuru.
+
+**`src/pages/Test/PostTestScreen.jsx`**
+- `buildSlots()` filters to office hours and now steps IST hour boundaries,
+  returning epoch ms rather than `Date` objects.
+- The time layer is anchored to the fixed IST offset instead of the device's
+  timezone, and formatted by hand rather than through `toLocaleTimeString`.
+  `timeZone: 'Asia/Kolkata'` would have said it exactly, but budget Android
+  WebViews ship without the timezone data to honour it and fail *silently* —
+  printing device-local time under an IST label is the one outcome worse than
+  an ugly string. Slots are always whole hours, so there is little to build:
+  the old `splitTime` Intl round-trip and its am/pm-casing repair are gone.
+- Copy: the notice now states the office hours ("Our Counselling Officers call
+  between **10:00 AM and 7:00 PM**, every day of the week"), and the
+  window-closed branch says when the team will ring instead.
+
+No migration. Slots booked under the old rule stay exactly as stored — nothing
+re-validates them, and the admin panel renders them as before.
+
+**Verified** — the picker was exercised at every 10-minute completion time
+across four dates (including month-end, year-end and a leap day): every chip
+lands in 10:00–18:00 IST, inside the 24-hour window, on an IST hour boundary,
+and the list is **never empty — 9 hours at every completion time**, because any
+24-hour window spans a whole office day. Identical output under `TZ=UTC`,
+`Asia/Kolkata`, `Asia/Kathmandu` (+05:45) and `America/New_York`. `book_slot`
+was driven over HTTP against a live `php -S`: it accepts IST hours 10–18 and
+refuses 19–09, refuses quarter/half-past the hour, still refuses `tomorrow`,
+`+2 hours`, `midnight` and offset-bearing timestamps, still refuses the past
+and beyond-24h, and every chip the client drew was accepted by the server.
+
 ### Admin panel — merit test, counselling slots and the two telecaller queues
 
 Four prompts' worth of new lead fields (`login_key`, the `test_*` block,
