@@ -47,18 +47,21 @@
   z-index: 2;
 }
 
-/* Grid Layout */
+/* Layout — one centred column at every width. The band used to be a
+   two-column split with an illustration on the right; with the image gone a
+   single measured column is the only way it stays balanced. */
 .gridLayout {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: var(--space-12);
-  align-items: center;
+  grid-template-columns: minmax(0, 760px);
+  justify-content: center;
 }
 
 /* Text Column */
 .textColumn {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: var(--space-5);
 }
 
@@ -122,13 +125,17 @@
   line-height: var(--lh-relaxed);
 }
 
-/* Benefits List */
+/* Benefits List — centred as a block, but each line stays left-aligned so
+   the ticks form a single column instead of a ragged centre. */
 .benefitsList {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 560px;
   gap: var(--space-3);
 }
 
@@ -152,6 +159,7 @@
 .ctaGroup {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-4);
   flex-wrap: wrap;
   padding-top: var(--space-2);
@@ -165,60 +173,11 @@
   box-shadow: 0 10px 30px rgba(224, 48, 30, 0.55);
 }
 
-.whatsappBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
-  background: #25d366;
-  color: #ffffff;
-  font-size: var(--fs-base);
-  font-weight: var(--fw-semibold);
-  border-radius: var(--radius-xl);
-  text-decoration: none;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
-  min-height: 52px;
-}
-
-.whatsappBtn:hover {
-  background: #1ebe5d;
-  transform: translateY(-2px);
-}
-
-/* Phone Link */
-.phoneLink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: #ffffff;
-  font-size: var(--fs-base);
-  font-weight: var(--fw-semibold);
-  text-decoration: none;
-  padding: var(--space-3) var(--space-6);
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  border-radius: var(--radius-xl);
-  transition: all 0.25s ease;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.phoneLink:hover {
-  color: #ffffff;
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
-}
-
-.phoneIcon {
-  font-size: 1.1rem;
-}
-
 /* Trust Indicators */
 .trustRow {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-6);
   flex-wrap: wrap;
   padding-top: var(--space-2);
@@ -238,64 +197,6 @@
   color: var(--accent-amber-light);
 }
 
-/* Image Column */
-.imageColumn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.imageWrapper {
-  position: relative;
-  width: 100%;
-  max-width: 540px;
-}
-
-.ctaImage {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-2xl);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Floating Seat Badge */
-.seatBadge {
-  position: absolute;
-  bottom: -18px;
-  left: -18px;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-5);
-  background: var(--accent-amber-gradient);
-  color: #ffffff;
-  border-radius: var(--radius-xl);
-  box-shadow: 0 12px 30px rgba(224, 48, 30, 0.45);
-}
-
-.seatBadgeIcon {
-  font-size: 1.75rem;
-  color: #ffffff;
-}
-
-.seatBadgeLabel {
-  display: block;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.seatBadgeValue {
-  display: block;
-  font-family: var(--font-heading);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  line-height: 1.1;
-}
-
 /* ============================================
    Desktop (1024px+)
    ============================================ */
@@ -313,40 +214,8 @@
     padding: var(--space-14) 0;
   }
 
-  .gridLayout {
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
-    text-align: center;
-  }
-
-  .textColumn {
-    align-items: center;
-  }
-
   .benefitsList {
-    align-items: flex-start;
-    text-align: left;
     max-width: 520px;
-  }
-
-  .ctaGroup {
-    justify-content: center;
-  }
-
-  .trustRow {
-    justify-content: center;
-  }
-
-  .phoneLink {
-    justify-content: center;
-  }
-
-  .imageColumn {
-    order: -1;
-  }
-
-  .imageWrapper {
-    max-width: 420px;
   }
 }
 
@@ -358,16 +227,6 @@
     padding: var(--space-12) 0;
   }
 
-  .gridLayout {
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
-    text-align: center;
-  }
-
-  .textColumn {
-    align-items: center;
-  }
-
   .title {
     font-size: var(--fs-2xl);
   }
@@ -376,42 +235,19 @@
     font-size: var(--fs-sm);
   }
 
-  .benefitsList {
-    align-items: flex-start;
-    text-align: left;
-  }
-
   .ctaGroup {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
   }
 
-  .primaryCta,
-  .whatsappBtn,
-  .phoneLink {
+  .primaryCta {
     justify-content: center;
     width: 100%;
   }
 
   .trustRow {
-    justify-content: center;
     gap: var(--space-4);
-  }
-
-  .imageColumn {
-    order: -1;
-  }
-
-  .imageWrapper {
-    max-width: 100%;
-  }
-
-  .seatBadge {
-    bottom: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: var(--space-2) var(--space-4);
   }
 }
 
@@ -434,22 +270,12 @@
     flex-direction: column;
     gap: var(--space-2);
   }
-
-  .seatBadgeIcon {
-    font-size: 1.4rem;
-  }
-
-  .seatBadgeValue {
-    font-size: var(--fs-sm);
-  }
 }
 
 /* ============================================
    Touch Device Optimizations
    ============================================ */
 @media (hover: none) and (pointer: coarse) {
-  .whatsappBtn:hover,
-  .phoneLink:hover,
   .primaryCta:hover {
     transform: none;
   }
@@ -459,8 +285,6 @@
    Reduced Motion
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .whatsappBtn,
-  .phoneLink,
   .primaryCta {
     transition: none;
   }
@@ -475,8 +299,7 @@
     padding: var(--space-8) 0;
   }
 
-  .bgPattern,
-  .seatBadge {
+  .bgPattern {
     display: none;
   }
 

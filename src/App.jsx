@@ -330,10 +330,11 @@ const useIdlePreload = () => {
       const sections = [
         // The application form is the destination of every CTA — warm it first.
         () => import('./pages/Apply'),
+        // Then in render order, so the first section below the hero is ready first.
+        () => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'),
         () => import('./components/sections/AboutSection/AboutSection'),
         () => import('./components/sections/WhyChooseCIT/WhyChooseCIT'),
         () => import('./components/sections/FeesFundingSection/FeesFundingSection'),
-        () => import('./components/sections/AdmissionProcessSection/AdmissionProcessSection'),
         () => import('./components/sections/ServicesSection/ServicesSection'),
         () => import('./components/sections/StatsSection/StatsSection'),
         () => import('./components/sections/UniversityResultsSection/UniversityResultsSection'),
@@ -458,7 +459,16 @@ const HomePageContent = () => {
         {/* Hero Section - Critical, loaded immediately */}
         <HeroSection />
 
-        {/* Lazy loaded sections with error boundaries */}
+        {/* Lazy loaded sections with error boundaries.
+            The five-step selection story sits directly under the hero — the
+            hero promises a merit test, this section explains it before the
+            visitor is asked to read anything else about the college. */}
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
+            <AdmissionProcessSection />
+          </Suspense>
+        </ErrorBoundary>
+
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={400} variant="skeleton" />}>
             <AboutSection />
@@ -474,12 +484,6 @@ const HomePageContent = () => {
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
             <FeesFundingSection />
-          </Suspense>
-        </ErrorBoundary>
-
-        <ErrorBoundary>
-          <Suspense fallback={<SectionLoader height={500} variant="skeleton" />}>
-            <AdmissionProcessSection />
           </Suspense>
         </ErrorBoundary>
 

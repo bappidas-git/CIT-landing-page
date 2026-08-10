@@ -315,10 +315,6 @@
   min-width: 180px;
 }
 
-.secondaryCta {
-  min-width: 200px;
-}
-
 /* ========== Trust Indicators ========== */
 .trustIndicators {
   display: flex;
@@ -584,8 +580,7 @@
     width: 100%;
   }
 
-  .primaryCta,
-  .secondaryCta {
+  .primaryCta {
     width: 100%;
     max-width: 300px;
     min-height: 48px;

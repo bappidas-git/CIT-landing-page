@@ -287,12 +287,17 @@
   text-align: center;
 }
 
+/* Spacing sits on the wrapper because MUI resets Typography's margin from a
+   stylesheet injected after this one — a margin here would be overridden. */
+.statesTitleWrap {
+  margin-bottom: var(--space-6);
+}
+
 .statesTitle {
   font-family: var(--font-heading);
   font-weight: var(--fw-semibold);
   color: var(--primary-dark);
   font-size: var(--fs-lg);
-  margin-bottom: var(--space-6);
 }
 
 .statesPills {
@@ -367,19 +372,6 @@
   justify-content: center;
   gap: var(--space-4);
   flex-wrap: wrap;
-}
-
-.callUsBtn {
-  border-color: rgba(255, 255, 255, 0.7) !important;
-  color: #FFFFFF !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(4px);
-}
-
-.callUsBtn:hover {
-  background: rgba(255, 255, 255, 0.18) !important;
-  border-color: #FFFFFF !important;
-  color: #FFFFFF !important;
 }
 
 /* ========== Background Decorations ========== */
@@ -487,9 +479,12 @@
     margin-top: var(--space-8);
   }
 
+  .statesTitleWrap {
+    margin-bottom: var(--space-4);
+  }
+
   .statesTitle {
     font-size: var(--fs-base);
-    margin-bottom: var(--space-4);
   }
 
   .statesPills {

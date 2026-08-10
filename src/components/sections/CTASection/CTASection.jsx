@@ -12,7 +12,6 @@ import { Icon } from "@iconify/react";
 import Button from "../../common/Button/Button";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
-import { trackContactClick } from "../../../utils/contactTracking";
 import { PROGRAM_NAME, TOTAL_SEATS_LEFT } from "../../../data/meritProgram";
 import styles from "./CTASection.module.css";
 
@@ -71,11 +70,6 @@ const CTASection = () => {
     applyCTA.onClick(event);
   };
 
-  const handleCallClick = () => {
-    trackCTAClick("primary_cta_call", "mid_page_cta", "Call CIT");
-    trackContactClick("phone", "mid_page_cta");
-  };
-
   return (
     <section id="apply" className={styles.section}>
       {/* Background */}
@@ -132,17 +126,6 @@ const CTASection = () => {
                 Start My Application
               </Button>
             </motion.div>
-
-            <Button
-              variant="outline"
-              size="large"
-              startIcon="mdi:phone-outline"
-              href="tel:+918069645014"
-              onClick={handleCallClick}
-              className={styles.secondaryBtn}
-            >
-              Call +91 8069645014
-            </Button>
           </motion.div>
 
           <motion.p variants={itemVariants} className={styles.microCopy}>

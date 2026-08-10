@@ -4,6 +4,99 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Fixed — the footer's accents were painted in its own background colour
+
+`--accent-gold` was remapped to CIT navy `#0C2D48` during the rebrand, and the
+footer's background is `--primary-dark`, the *same* `#0C2D48`. Everything the
+footer accented with it rendered invisible:
+
+- **Quick Links vanished on hover** (`.footerLink:hover`) — the reported bug.
+  Hover is now full white, up from `rgba(255,255,255,.65)` at rest.
+- The **Call chip** disappeared on hover the same way (`.contactChipCall:hover`).
+- **Column rules** under *Quick Links* / *Admissions Contact* and the **contact
+  icons** never showed at all, and the missing icons are what made the contact
+  block look misaligned — the icon still occupied its inline space.
+- **Focus rings** on `.footerLink` / `.legalLink` were invisible, and so was the
+  privacy modal's header rule.
+
+Fixed with two footer-scoped tokens (`--footer-accent`,
+`--footer-accent-strong`) rather than by touching the global palette, where
+navy-on-light is correct. The privacy modal is portalled to `document.body` and
+cannot inherit them, so its rule names `--accent-amber` directly.
+
+### Changed — Contact, Location and the closing band lose their side exits
+
+- **Contact / Admissions** — the *Get Admission Details* form is gone.
+  `UnifiedLeadForm` is untouched and still mounted in the drawer; it simply has
+  no second mount point, which is what "`/apply` is the sole public
+  lead-capture surface" already said. The three contact cards now span the
+  section on a self-sizing `auto-fit` grid — three across, two on tablet, one
+  at 360px — so the `1fr 1fr` and `max-width: 600px` breakpoint rules that
+  existed to fit them into a half-width column are gone. The subtitle no longer
+  offers to take the visitor's details.
+- **Location** — the two bottom CTAs (*Request a Callback*, *Call …*) are
+  replaced by one *Apply for the Merit Assessment Test*, which is what the
+  callback button already did behind the scenes. The gap under "Proudly
+  welcoming students from across North East India" moves to a wrapper class:
+  MUI's `margin: 0` for Typography is injected after this stylesheet and was
+  silently winning the tie, so the heading sat on top of the state pills.
+- **Mid-page CTA band** — the *Call +91 8069645014* button beside *Start My
+  Application* is removed.
+- **Closing band** — the *WhatsApp Us* button, the phone link and the
+  illustration are removed. With the image gone the two-column split had
+  nothing to balance, so the band is now one centred `max 760px` column at
+  every width, with the ticks left-aligned inside it. The tablet/mobile
+  overrides that used to re-centre it are no longer needed.
+
+**GTM container owner:** four more `cta_click` values stop firing —
+`primary_cta_call`, `secondary_cta_whatsapp`, `secondary_cta_call` and
+`why_cit_call` — along with the `phone` / `whatsapp` contact legs from
+`mid_page_cta`, `secondary_cta` and `location_cta`. The Location CTA now
+reports `apply_apply-now` with `cta_location: 'location'`; it previously
+reported `apply_request-callback`, so a trigger pinned to that value needs
+re-pointing. Nothing was renamed.
+
+### Changed — the top of the funnel points at the application, not the phone
+
+Three phone CTAs sat above the fold, each offering a caller-shaped exit from a
+page whose entire job is to start an application. They are gone, and the
+five-step selection story now runs directly under the hero that promises it.
+
+**Phone CTAs removed** (the number is unchanged everywhere else — Contact,
+FAQ, Location, Footer, and the mobile bottom-nav / drawer Call actions all
+still carry it):
+- `Header.jsx` — the desktop `+91 8069645014` pill beside *Apply Now*, and the
+  matching call row at the foot of the mobile menu, so the header offers one
+  action at every breakpoint. `PRIMARY_PHONE`, its display constant and the
+  `trackContactClick` import are gone with them; the mobile *Apply Now* icon
+  now uses `.applyButtonIcon` rather than borrowing the call button's class.
+- `HeroSection.jsx` — the outlined *Call +91 8069645014* button beside the
+  primary CTA. The `hero_secondary_cta` `cta_click` and the `phone` leg of
+  `trackContactClick` no longer fire from the hero.
+- `WhyChooseCIT.jsx` — the *Or call …* link under *Start My Application* in the
+  Merit Promise card, and with it `handleCallClick` / the `why_cit_call`
+  `cta_click`. The card is a flex column with a gap, so it closes up on its own.
+
+**Section order** — `AdmissionProcessSection` ("How the Selection Works") moves
+from sixth to first below the hero, ahead of `AboutSection`. The hero promises a
+30-minute merit test; the next thing on the page now explains it instead of
+making the visitor read three sections first. The idle-preload list in
+`App.jsx` is reordered to match, so the first section below the fold is also
+the first one warmed after `/apply`.
+
+**Branch-wise accordion removed** — the `<details>` strip under *Last 3 Years —
+Placement Record* in `StatsSection.jsx`, plus its `.branch*` rules. The
+three-year table and the source footnote are untouched. `BRANCH_PLACEMENTS`
+stays in `src/data/placementsData.js`, now flagged as unrendered: the figures
+are verified and worth keeping sourced.
+
+**GTM container owner:** `header_desktop`, `header_mobile_menu`, `hero` and
+`why_choose_cit` no longer appear as the `source` on `phone_click` /
+`Contact` events, and the `why_cit_call` and `hero_secondary_cta` `cta_click`
+values stop firing. Nothing was renamed — these sources simply have no call
+site left, so any report or audience segmented on them will trend to zero
+rather than break.
+
 ### Fixed — counselling slots are offered only in office hours
 
 The post-test picker drew its chips from the clock alone: an applicant who

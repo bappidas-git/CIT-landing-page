@@ -161,20 +161,6 @@
   box-shadow: 0 12px 35px rgba(224, 48, 30, 0.5);
 }
 
-.secondaryBtn {
-  min-width: 240px;
-  border-color: rgba(255, 255, 255, 0.7) !important;
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(4px);
-}
-
-.secondaryBtn:hover {
-  background: rgba(255, 255, 255, 0.18) !important;
-  border-color: #ffffff !important;
-  color: #ffffff !important;
-}
-
 /* Micro Copy */
 .microCopy {
   display: inline-flex;
@@ -269,8 +255,7 @@
     width: 100%;
   }
 
-  .primaryBtn,
-  .secondaryBtn {
+  .primaryBtn {
     width: 100%;
     max-width: 320px;
     min-width: unset;
@@ -304,8 +289,7 @@
     line-height: 1.7;
   }
 
-  .primaryBtn,
-  .secondaryBtn {
+  .primaryBtn {
     max-width: 100%;
   }
 }
@@ -314,8 +298,7 @@
    Touch Device Optimizations
    ============================================ */
 @media (hover: none) and (pointer: coarse) {
-  .primaryBtn:hover,
-  .secondaryBtn:hover {
+  .primaryBtn:hover {
     transform: none;
   }
 }
@@ -324,8 +307,7 @@
    Reduced Motion
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .primaryBtn,
-  .secondaryBtn {
+  .primaryBtn {
     transition: none;
   }
 }

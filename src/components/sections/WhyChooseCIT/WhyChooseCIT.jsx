@@ -12,16 +12,12 @@ import { Container, Typography } from "@mui/material";
 import { Icon } from "@iconify/react";
 import useApplyCTA from "../../../hooks/useApplyCTA";
 import { trackCTAClick } from "../../../utils/gtm";
-import { trackContactClick } from "../../../utils/contactTracking";
 import {
   TEST_NAME,
   SESSION_LABEL,
   TOTAL_SEATS_LEFT,
 } from "../../../data/meritProgram";
 import styles from "./WhyChooseCIT.module.css";
-
-const CIT_PHONE_DISPLAY = "+91 8069645014";
-const CIT_PHONE_DIAL = "+918069645014";
 
 // Student/parent objections, answered by CIT
 const objections = [
@@ -95,13 +91,6 @@ const WhyChooseCIT = () => {
   const handleApplyNow = (event) => {
     trackCTAClick("why_cit_apply_now", "why_choose_cit", "Start My Application");
     applyCTA.onClick(event);
-  };
-
-  const handleCallClick = () => {
-    trackCTAClick("why_cit_call", "why_choose_cit", CIT_PHONE_DISPLAY);
-    // Distinct dataLayer event (`phone_click`) plus the Meta/Google contact
-    // legs — no overlap with the cta_click above, so nothing double-fires.
-    trackContactClick("phone", "why_choose_cit", CIT_PHONE_DIAL);
   };
 
   return (
@@ -223,17 +212,6 @@ const WhyChooseCIT = () => {
                     />
                     <span>Start My Application</span>
                   </button>
-
-                  <a
-                    href={`tel:${CIT_PHONE_DIAL}`}
-                    className={styles.callLink}
-                    onClick={handleCallClick}
-                  >
-                    <Icon icon="mdi:phone-in-talk" className={styles.callIcon} />
-                    <span>
-                      Or call <strong>{CIT_PHONE_DISPLAY}</strong>
-                    </span>
-                  </a>
 
                   <div className={styles.trustRow}>
                     <div className={styles.trustItem}>

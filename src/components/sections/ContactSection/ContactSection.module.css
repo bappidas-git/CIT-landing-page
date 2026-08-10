@@ -118,11 +118,15 @@
   z-index: 2;
 }
 
-/* Contact Grid */
+/* Contact Grid — spans the section now that the enquiry form is gone.
+   auto-fit sizes itself: three across on desktop, two on tablet, one at
+   360px, with no breakpoint rules to keep in step. */
 .contactGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
   gap: var(--space-4);
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
 /* Contact Card */
@@ -309,41 +313,6 @@
   color: var(--primary-dark);
 }
 
-/* Form Wrapper */
-.formWrapper {
-  position: relative;
-  z-index: 2;
-  background: var(--white);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-8);
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--medium-gray);
-}
-
-.formHeader {
-  text-align: center;
-  margin-bottom: var(--space-6);
-}
-
-.formTitle {
-  font-family: var(--font-heading);
-  font-weight: var(--fw-bold);
-  color: var(--primary-dark);
-  margin-bottom: var(--space-2);
-}
-
-.formSubtitle {
-  color: var(--text-gray);
-  font-size: var(--fs-sm);
-}
-
-/* Form Content - override unified form container padding */
-.formContent {
-  padding: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
 /* ============================================
    Responsive Styles
    ============================================ */
@@ -355,18 +324,6 @@
 
   .contactCard {
     padding: var(--space-4);
-  }
-
-  .formWrapper {
-    padding: var(--space-6);
-  }
-}
-
-@media (max-width: 1024px) {
-  .contactGrid {
-    grid-template-columns: 1fr 1fr;
-    max-width: 600px;
-    margin: 0 auto;
   }
 }
 
@@ -432,19 +389,6 @@
     padding: 5px 10px;
   }
 
-  .formWrapper {
-    padding: var(--space-5);
-    border-radius: var(--radius-xl);
-    margin-top: var(--space-4);
-  }
-
-  .formTitle {
-    font-size: var(--fs-lg);
-  }
-
-  .formSubtitle {
-    font-size: var(--fs-xs);
-  }
 }
 
 @media (max-width: 480px) {
@@ -467,18 +411,6 @@
 
   .contactCard:hover {
     transform: none;
-  }
-
-  .formWrapper {
-    padding: var(--space-4);
-  }
-
-  .formHeader {
-    margin-bottom: var(--space-4);
-  }
-
-  .formTitle {
-    font-size: var(--fs-base);
   }
 }
 
@@ -513,10 +445,5 @@
   .contactCard {
     border: 1px solid var(--border-gray);
     box-shadow: none;
-  }
-
-  .formWrapper {
-    box-shadow: none;
-    border: 1px solid var(--medium-gray);
   }
 }

@@ -13,7 +13,6 @@ import { trackCTAClick } from '../../../utils/gtm';
 import { statsData } from '../../../data/statsData';
 import {
   PLACEMENT_YEARS,
-  BRANCH_PLACEMENTS,
   PLACEMENT_SOURCE_NOTE,
 } from '../../../data/placementsData';
 import styles from './StatsSection.module.css';
@@ -312,34 +311,6 @@ const StatsSection = () => {
                 })}
               </tbody>
             </table>
-
-            {/* Branch-wise strip — native disclosure, no JS, no bundle cost */}
-            <details className={styles.branchDetails}>
-              <summary className={styles.branchSummary}>
-                <Icon
-                  icon="mdi:chevron-down"
-                  className={styles.branchChevron}
-                  aria-hidden="true"
-                />
-                <span>Branch-wise offers &amp; companies</span>
-              </summary>
-              <ul className={styles.branchList}>
-                {BRANCH_PLACEMENTS.map((branch) => (
-                  <li key={branch.branch} className={styles.branchRow}>
-                    <span className={styles.branchName}>{branch.branch}</span>
-                    <span className={styles.branchStat}>
-                      <strong>{branch.offers}</strong> offers
-                    </span>
-                    <span className={styles.branchStat}>
-                      <strong>{branch.companies}</strong> companies
-                    </span>
-                    <span className={styles.branchStat}>
-                      Highest <strong>{branch.highestCTC.toFixed(1)} LPA</strong>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </details>
 
             <p className={styles.recordNote}>{PLACEMENT_SOURCE_NOTE}</p>
           </motion.div>
