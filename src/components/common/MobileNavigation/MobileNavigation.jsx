@@ -12,8 +12,8 @@ import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./MobileNavigation.module.css";
 
 // Primary CIT admissions contact (Assam Digital campaign)
-const PRIMARY_PHONE = "+918069645014";
-const PRIMARY_PHONE_DIGITS = "918069645014";
+const PRIMARY_PHONE = "+918453623233";
+const PRIMARY_PHONE_DIGITS = "918453623233";
 const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=${encodeURIComponent(
   "Hi CIT Admissions, I want to apply for the CIT Merit-Based Selection Program 2026. Please share the details.",
 )}`;

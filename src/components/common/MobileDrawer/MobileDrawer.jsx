@@ -22,9 +22,9 @@ import { trackContactClick } from "../../../utils/contactTracking";
 import styles from "./MobileDrawer.module.css";
 
 // CIT primary admissions contact (Assam Digital campaign)
-const PRIMARY_PHONE = "+918069645014";
-const PRIMARY_PHONE_DISPLAY = "+91 8069645014";
-const PRIMARY_PHONE_DIGITS = "918069645014";
+const PRIMARY_PHONE = "+918453623233";
+const PRIMARY_PHONE_DISPLAY = "+91 84536 23233";
+const PRIMARY_PHONE_DIGITS = "918453623233";
 const WHATSAPP_HREF = `https://api.whatsapp.com/send?phone=${PRIMARY_PHONE_DIGITS}&text=Hello%20CIT%2C%20I%27d%20like%20guidance%20on%20Direct%20B.E.%20admission%202026.`;
 
 const CIT_LOGO_URL =

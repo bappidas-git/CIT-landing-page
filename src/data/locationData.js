@@ -3,9 +3,9 @@ export const locationData = {
   address: "NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka",
   city: "Tumakuru",
   state: "Karnataka",
-  phone: "+918069645014",
-  phoneDisplay: "+91 8069645014",
-  whatsapp: "918069645014",
+  phone: "+918453623233",
+  phoneDisplay: "+91 84536 23233",
+  whatsapp: "918453623233",
   mapUrl:
     "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779671141/CIT-Map_jqtimx.png",
   warehouses: [],

@@ -4,6 +4,29 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Changed — the admissions number is now +91 84536 23233
+
+Every call and WhatsApp surface moves off `+91 8069645014`. The number lives in
+too many places to hold in one constant today, so all of them were swapped
+together: `locationData.js` (`phone` / `phoneDisplay` / `whatsapp`),
+`SUPPORT_PHONE` in `applicationSubmit.js` (which feeds the `/apply` and `/test`
+support lines and `PostTestScreen`), `CONTACT_PHONE` in `contactTracking.js`
+(the number reported to Google Ads as the call-conversion target), the Footer,
+MobileDrawer and MobileNavigation constants, the FAQ support line, `/thank-you`,
+both `/apply` and drawer privacy overlays, `seoConfig.organization.phone`, both
+JSON-LD `telephone` values in `public/index.html`, and
+`REACT_APP_SALES_PHONE` / `REACT_APP_WHATSAPP_NUMBER` in `.env` + `.env.example`.
+
+Display strings pick up the new 5-5 grouping (`+91 84536 23233`); `tel:` hrefs,
+`wa.me` / `api.whatsapp.com` links and the Google Ads value stay unspaced E.164
+(`+918453623233` / `918453623233`). The `tel:` builders that derive from the
+display constant — `SUPPORT_PHONE.replace(/[^\d+]/g, '')` on `/apply`, `/test`
+and `PostTestScreen` — strip the new interior space, so they still emit
+`tel:+918453623233`.
+
+Historical `CHANGELOG` entries and the `prompts/` archives keep the old number:
+they record what the page was at the time, not what it dials now.
+
 ### Fixed — the footer's accents were painted in its own background colour
 
 `--accent-gold` was remapped to CIT navy `#0C2D48` during the rebrand, and the

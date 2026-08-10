@@ -51,7 +51,7 @@ export const APPLY_SOURCE_KEY = 'cit_apply_source';
 export const APPLY_RETRY_KEY = 'cit_apply_retry';
 
 /** Phone number surfaced when a submit cannot reach the server. */
-export const SUPPORT_PHONE = '+91 8069645014';
+export const SUPPORT_PHONE = '+91 84536 23233';
 
 /* sessionStorage keys handed to /thank-you (and from there to /test). The
    Thank-You page gates on THANKYOU_SUBMITTED_STORAGE and greets by

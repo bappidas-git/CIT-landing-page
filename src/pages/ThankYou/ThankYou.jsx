@@ -47,14 +47,14 @@ const trustBadges = [
 
 // Contact details
 const contactInfo = {
-  phone: "+91 8069645014",
-  whatsapp: "+91 8069645014",
+  phone: "+91 84536 23233",
+  whatsapp: "+91 84536 23233",
   officeHours: "Mon - Sat: 9:00 AM - 5:00 PM",
 };
 
 // Pre-filled WhatsApp message — merit-program wording, URL-encoded.
 const WHATSAPP_LINK =
-  "https://wa.me/918069645014?text=Hi%20CIT%20Admissions%2C%0AI%20have%20submitted%20my%20application%20for%20the%20CIT%20Merit-Based%20Selection%20Program%202026%20and%20need%20help%20with%20my%20Test%20Login%20Key.";
+  "https://wa.me/918453623233?text=Hi%20CIT%20Admissions%2C%0AI%20have%20submitted%20my%20application%20for%20the%20CIT%20Merit-Based%20Selection%20Program%202026%20and%20need%20help%20with%20my%20Test%20Login%20Key.";
 
 // What the applicant is walking into. Same rules as the FAQ and the test
 // platform — keep the three in sync if the format ever changes.
@@ -391,7 +391,7 @@ const ThankYou = () => {
                       Call Us
                     </span>
                     <a
-                      href="tel:+918069645014"
+                      href="tel:+918453623233"
                       className={styles.contactValue}
                       onClick={() => trackContactClick("phone", "thank_you")}
                     >
