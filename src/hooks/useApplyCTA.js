@@ -42,6 +42,7 @@ const CTA_TEXT = {
   'apply-now': 'Apply for 2026 Admission',
   'get-details': 'Get Admission Details',
   'request-callback': 'Request a Callback',
+  'admission-notice': 'Apply for Session 2026',
   default: 'Start My Application',
 };
 

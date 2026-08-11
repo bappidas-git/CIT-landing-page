@@ -25,6 +25,7 @@ import Modal from './components/common/Modal/Modal';
 import MobileNavigation from './components/common/MobileNavigation/MobileNavigation';
 import MobileDrawer from './components/common/MobileDrawer/MobileDrawer';
 import LeadFormDrawer from './components/common/LeadFormDrawer/LeadFormDrawer';
+import AdmissionNoticeModal from './components/common/AdmissionNoticeModal';
 import EngagementTracker from './components/common/EngagementTracker/EngagementTracker';
 import SEOHead from './components/common/SEO/SEOHead';
 import useGTMTracking from './hooks/useGTMTracking';
@@ -577,6 +578,11 @@ const HomePageContent = () => {
 
       {/* Back to Top Button */}
       <BackToTopButton />
+
+      {/* First-visit admission notice — landing page only, so it can never
+          interrupt /apply, /thank-you or a running merit test. Shows once,
+          after 10s of visible dwell; skipping it retires it for good. */}
+      <AdmissionNoticeModal />
 
       {/* Global Modal */}
       <Modal />

@@ -68,6 +68,29 @@ not, because the test login screen pre-fills from it.
 are still mounted in `App.jsx`, but `openLeadDrawer()` (in `ModalContext.jsx`) has zero call
 sites. Do not re-point any CTA at it.
 
+### The first-visit admission notice
+
+`src/components/common/AdmissionNoticeModal/` shows one popup — Session 2026 is closing,
+`TOTAL_SEATS_LEFT` seats remain across the seven B.E. branches — after **10 seconds of visible
+dwell** on the landing page. It is mounted inside `HomePageContent`, so it exists on `/` only
+and can never interrupt `/apply`, `/thank-you` or a running merit test. Rules that must hold:
+
+- **The countdown is visible time, not wall clock.** It accrues only while `document.hidden` is
+  false and resumes where it paused — a page opened in a background tab has not been stayed on.
+- **A skip is permanent.** X, "Not now", Escape and a backdrop tap all write
+  `cit_admission_notice_dismissed` to **localStorage** (not sessionStorage — "again" means the
+  next visit, not just this tab). Taking the CTA retires it too, and a visitor who already
+  applied this session (`lead_login_key` / `lead_submitted`) never arms the timer.
+- **The seat count is derived from `meritProgram.js`**, never typed into the component, so it
+  cannot drift from the branch cards. No fee figures — the landing-page fee rule applies here
+  like everywhere else.
+- **It routes to `/apply` through `useApplyCTA('admission-notice')`**, like every other CTA, so
+  the lead's `source` is `admission-notice/step1-partial` / `admission-notice/full` and popup
+  leads stay separable in reporting. Do not point it at the drawer.
+- **Keep it dependency-free and eagerly imported.** No framer-motion, iconify or MUI — a lazy
+  chunk still downloading on a budget Android could lose the race with its own 10s timer, and
+  eager mounting is only affordable while the component stays this small.
+
 ### Where the applicant lives
 
 `src/data/geoOptions.js` is the single source for every location control: the four
@@ -341,6 +364,7 @@ rendered on the page.
 | `merit_test_login` / `merit_test_instructions_view` | `/test` login accepted; instructions shown | GTM only |
 | `merit_test_start` / `merit_test_complete` | Paper drawn; paper submitted | GTM only |
 | `counselling_slot_booked` | Tele-counselling hour confirmed on `/test` | GTM only |
+| `admission_notice` | First-visit popup shown, skipped or acted on | GTM only |
 
 **GTM container owner:** the funnel now runs to **step 5** (`step_name: 'fees_branches'`), so
 `application_step_view` and `application_step_complete` each fire one new step value. Add
@@ -351,6 +375,11 @@ step 4 as "application finished" must be re-pointed or it will silently stop fir
 (`not_started` | `in_progress` | `completed`). `counselling_slot_booked` needs one too and carries
 **no parameters at all** — not the chosen hour, and certainly not the login key or the student's
 name. **No `/test` event ever carries PII.**
+
+`admission_notice` needs one trigger and covers the whole popup on its own: the stage rides in
+`notice_action` (`view` | `dismiss` | `cta`) and a dismiss adds `dismiss_method`
+(`close_button` | `not_now` | `escape` | `backdrop`). Its CTA separately fires the usual
+`cta_click` as `apply_admission-notice`, so no extra trigger is needed to count the click.
 
 Phone and WhatsApp taps go through **`src/utils/contactTracking.js` → `trackContactClick(channel, source)`**,
 which fires all three legs from one call. Call it *instead of* `trackPhoneClick` /

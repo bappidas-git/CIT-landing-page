@@ -112,6 +112,24 @@ export const trackCTAClick = (ctaName, ctaLocation, ctaText = '') => {
 };
 
 /**
+ * Track the first-visit admission notice popup.
+ *
+ * One event name, so the GTM container needs a single trigger: the stage rides
+ * in `notice_action` ('view' | 'dismiss' | 'cta') and, on a dismiss, how it was
+ * closed. The CTA also fires the usual `cta_click` through useApplyCTA, so
+ * `admission_notice` is purely the popup's own funnel. No PII.
+ *
+ * @param {string} action - 'view' | 'dismiss' | 'cta'
+ * @param {Object} data - Extra non-PII data (e.g. { dismiss_method: 'escape' })
+ */
+export const trackAdmissionNotice = (action, data = {}) => {
+  pushDataLayer('admission_notice', {
+    notice_action: action,
+    ...data,
+  });
+};
+
+/**
  * Track phone number link click
  * @param {string} phoneNumber - Phone number clicked
  * @param {string} location - Where the click occurred
