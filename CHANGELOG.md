@@ -4,6 +4,48 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Added — first-visit admission notice popup
+
+A visitor who has spent **10 seconds** on the landing page now gets one
+admission notice: Session 2026 is closing, and `TOTAL_SEATS_LEFT` seats remain
+across all seven B.E. branches. Its CTA goes to `/apply` like every other CTA on
+the site. Skip it and it never comes back.
+
+New `src/components/common/AdmissionNoticeModal/`, mounted inside
+`HomePageContent` in `App.jsx` — landing page only, so it can never interrupt
+`/apply`, `/thank-you` or a running merit test.
+
+- **The 10 seconds are *visible* seconds.** The timer accrues only while
+  `document.hidden` is false and resumes where it left off, so a page opened in
+  a background tab has not been "stayed on" and does not burn the countdown.
+- **One skip is final.** Closing it — X, "Not now", Escape or a backdrop tap —
+  writes `cit_admission_notice_dismissed` to **localStorage**, not
+  sessionStorage: "should not appear for that student again" means across
+  visits, not just across this tab. Acting on the CTA retires it too, so an
+  applicant returning to the page is not told about closing admissions again.
+  A visitor who already applied this session (`lead_login_key` /
+  `lead_submitted`) never arms the timer at all.
+- **Seat count is derived, never typed.** `TOTAL_SEATS_LEFT` and `SESSION_LABEL`
+  come from `src/data/meritProgram.js`, so the notice cannot drift from the
+  seven branch cards. No fee figures — the landing-page fee rule holds.
+- **Dependency-free and eagerly mounted.** No framer-motion, iconify or MUI:
+  CSS-module animation and one inline SVG. It is imported eagerly on purpose —
+  a lazy chunk still in flight on a budget Android could lose the race with its
+  own 10-second timer — and that is only affordable because it weighs almost
+  nothing.
+- **Accessible:** `role="dialog"` + `aria-modal`, labelled and described,
+  focus moved in and restored on close, a Tab focus trap, Escape to close, and
+  a body scroll lock that saves and restores the previous value rather than
+  blanking it (the mobile drawer sets it too).
+- **Attribution:** the CTA runs through `useApplyCTA('admission-notice')`, so
+  the lead's `source` becomes `admission-notice/step1-partial` and
+  `admission-notice/full` — popup leads are separable from hero leads in
+  reporting.
+- **Tracking:** one new GTM event, `admission_notice`, via
+  `trackAdmissionNotice()` in `src/utils/gtm.js`. It carries
+  `notice_action: 'view' | 'dismiss' | 'cta'` and, on a dismiss,
+  `dismiss_method`. No PII. **The GTM container owner needs one new trigger.**
+
 ### Changed — the page now sells to all of India, not only the North East
 
 The campaign is going live across every Indian state (Karnataka and Tumkur
