@@ -46,6 +46,12 @@ New `src/components/common/AdmissionNoticeModal/`, mounted inside
   `notice_action: 'view' | 'dismiss' | 'cta'` and, on a dismiss,
   `dismiss_method`. No PII. **The GTM container owner needs one new trigger.**
 
+Both invisible contracts — the visible-time countdown and the permanence of a
+skip — are pinned by `AdmissionNoticeModal/__tests__/admissionNotice.test.js`
+(`npm test`). Neither shows up in the rendered output, so a plain `setTimeout`
+or a `sessionStorage` swap would look correct on screen while quietly re-nagging
+students who already said no.
+
 ### Changed — the page now sells to all of India, not only the North East
 
 The campaign is going live across every Indian state (Karnataka and Tumkur
