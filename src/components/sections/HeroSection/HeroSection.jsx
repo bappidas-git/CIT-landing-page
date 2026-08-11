@@ -257,11 +257,11 @@ const HeroSection = () => {
                     marginTop: "0.875rem",
                   }}
                 >
-                  Channabasaveshwara Institute of Technology (CIT), Tumakuru
+                  Channabasaveshwara Institute of Technology (CIT), Tumkur
                 </Typography>
               </motion.div>
 
-              {/* Location Strip + Disambiguation */}
+              {/* Location Strip */}
               <motion.div variants={itemVariants}>
                 <div className={styles.locationStrip}>
                   <span className={styles.locationBadge}>
@@ -269,7 +269,7 @@ const HeroSection = () => {
                       icon="mdi:map-marker"
                       className={styles.locationIcon}
                     />
-                    Tumakuru, Karnataka
+                    Tumkur, Karnataka
                   </span>
                   <span className={styles.locationBadge}>
                     <Icon icon="mdi:highway" className={styles.locationIcon} />
@@ -283,9 +283,6 @@ const HeroSection = () => {
                     NH-206
                   </span>
                 </div>
-                <p className={styles.locationClarifier}>
-                  This is CIT Tumakuru, Karnataka — not CIT Kokrajhar, Assam.
-                </p>
               </motion.div>
 
               {/* Scarcity + Merit Message */}

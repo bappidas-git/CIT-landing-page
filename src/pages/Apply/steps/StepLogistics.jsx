@@ -17,27 +17,20 @@ import {
   IconEmail,
   IconClose,
 } from '../fields';
+import {
+  COUNTRY_OPTIONS,
+  getStateOptions,
+  getStateLabel,
+} from '../../../data/geoOptions';
 import styles from '../Apply.module.css';
-
-// Same 8 North-East states + "Other" the enquiry form offers, stored under
-// the existing `state` key.
-export const STATE_OPTIONS = [
-  'Assam',
-  'Arunachal Pradesh',
-  'Manipur',
-  'Meghalaya',
-  'Mizoram',
-  'Nagaland',
-  'Tripura',
-  'Sikkim',
-  'Other',
-];
 
 export const COUNSELLING_MODE_OPTIONS = [
   { value: 'whatsapp_video', label: 'WhatsApp video call' },
   { value: 'phone', label: 'Phone call' },
   { value: 'campus_visit', label: 'I can visit the campus' },
-  { value: 'ne_rep', label: "Meet CIT's NE representative near me" },
+  // Value kept as-is — it is stored on every existing lead and read by the
+  // admin panel. Only the label widened when the campaign went pan-India.
+  { value: 'ne_rep', label: "Meet CIT's representative near me" },
 ];
 
 export const ADMISSION_TIMELINE_OPTIONS = [
@@ -63,7 +56,7 @@ const PrivacyPolicyContent = () => (
     <section className={styles.policySection}>
       <h3 className={styles.policyHeading}>Introduction</h3>
       <p className={styles.policyText}>
-        Channabasaveshwara Institute of Technology (CIT), Tumakuru, together
+        Channabasaveshwara Institute of Technology (CIT), Tumkur, together
         with Assam Digital, the marketing partner running this 2026 B.E.
         admissions campaign (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;),
         respects your privacy and is committed to protecting the information you
@@ -90,8 +83,8 @@ const PrivacyPolicyContent = () => (
         </li>
         <li>
           <strong>Admission preferences:</strong> the B.E. branch you are
-          interested in, your intake year, home state and district, how you
-          plan to fund the course, and how you would like to be counselled.
+          interested in, your intake year, home country, state and city, how
+          you plan to fund the course, and how you would like to be counselled.
         </li>
         <li>
           <strong>Optional message:</strong> any question you choose to add for
@@ -130,12 +123,12 @@ const PrivacyPolicyContent = () => (
       <p className={styles.policyText}>Your application is shared with:</p>
       <ul className={styles.policyList}>
         <li>
-          <strong>CIT admission office, Tumakuru:</strong> so the admission team
+          <strong>CIT admission office, Tumkur:</strong> so the admission team
           can follow up with you.
         </li>
         <li>
           <strong>Assam Digital:</strong> the marketing partner managing this
-          campaign and the North-East admission desk.
+          campaign and the admission desk.
         </li>
         <li>
           <strong>Service providers:</strong> trusted vendors that help us host
@@ -182,7 +175,7 @@ const PrivacyPolicyContent = () => (
       <p className={styles.policyText}>
         <strong>Channabasaveshwara Institute of Technology (CIT)</strong>
         <br />
-        NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
+        NH 206, B.H. Road, Gubbi, Tumkur – 572 216, Karnataka
         <br />
         Phone: +91 84536 23233
       </p>
@@ -232,6 +225,17 @@ const PrivacyOverlay = ({ onClose }) => {
 const StepLogistics = ({ draft, errors, setField, onBlurField }) => {
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
+  const stateOptions = getStateOptions(draft.country);
+  const stateLabel = getStateLabel(draft.country);
+
+  // Changing country invalidates whatever region was chosen under the old one,
+  // so it is cleared here rather than shipped as a Bhutan dzongkhag on an
+  // Indian application.
+  const handleCountryChange = (value) => {
+    setField('country', value);
+    if (draft.state) setField('state', '');
+  };
+
   return (
     <>
       <h1 className={styles.stepHeading}>Almost done</h1>
@@ -241,26 +245,55 @@ const StepLogistics = ({ draft, errors, setField, onBlurField }) => {
       </p>
 
       <SelectField
-        id="apply-state"
-        label="Your home state"
-        value={draft.state}
-        onChange={(value) => setField('state', value)}
-        onBlur={() => onBlurField('state')}
-        error={errors.state}
-        placeholder="Select your state"
-        options={STATE_OPTIONS}
-        name="state"
+        id="apply-country"
+        label="Your country"
+        value={draft.country}
+        onChange={handleCountryChange}
+        onBlur={() => onBlurField('country')}
+        error={errors.country}
+        placeholder="Select your country"
+        options={COUNTRY_OPTIONS}
+        name="country"
       />
+
+      {stateOptions.length > 0 ? (
+        <SelectField
+          id="apply-state"
+          label={stateLabel}
+          value={draft.state}
+          onChange={(value) => setField('state', value)}
+          onBlur={() => onBlurField('state')}
+          error={errors.state}
+          placeholder="Select from the list"
+          options={stateOptions}
+          name="state"
+        />
+      ) : (
+        <TextField
+          id="apply-state"
+          label={stateLabel}
+          value={draft.state}
+          onChange={(value) => setField('state', value)}
+          onBlur={() => onBlurField('state')}
+          error={errors.state}
+          icon={<IconMapMarker size={18} />}
+          placeholder="Type your state or province"
+          name="state"
+          autoComplete="address-level1"
+          enterKeyHint="next"
+          maxLength={60}
+        />
+      )}
 
       <TextField
         id="apply-district"
-        label="Your district / town"
+        label="Your city / town"
         value={draft.district}
         onChange={(value) => setField('district', value)}
         onBlur={() => onBlurField('district')}
         error={errors.district}
         icon={<IconMapMarker size={18} />}
-        placeholder="e.g. Nagaon"
+        placeholder="e.g. Tumkur, Bengaluru, Guwahati"
         name="district"
         autoComplete="address-level2"
         enterKeyHint="next"
@@ -317,7 +350,7 @@ const StepLogistics = ({ draft, errors, setField, onBlurField }) => {
         onChange={(value) => setField('message', value)}
         onBlur={() => onBlurField('message')}
         error={errors.message}
-        placeholder="Hostel, scholarships, travel from the North East…"
+        placeholder="Hostel, scholarships, travel to campus…"
         name="message"
         maxLength={500}
         enterKeyHint="done"

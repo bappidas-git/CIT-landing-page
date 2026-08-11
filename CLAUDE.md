@@ -2,7 +2,7 @@
 
 ## Overview
 
-A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumakuru** — built to capture quality leads for **Direct B.E. (Engineering) Admissions, 2026 intake**, targeted at students and parents across North East India and run by Assam Digital. Built with React 18, Material UI, and Framer Motion. Includes an admin panel with lead management, a tele-calling lead module, GTM integration, Meta CAPI, and Google Ads conversion tracking.
+A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumkur** — built to capture quality leads for **Direct B.E. (Engineering) Admissions, 2026 intake**, targeted at students and parents **across India — Karnataka and Tumkur itself included — plus Nepal and Bhutan**, and run by Assam Digital. Built with React 18, Material UI, and Framer Motion. Includes an admin panel with lead management, a tele-calling lead module, GTM integration, Meta CAPI, and Google Ads conversion tracking.
 
 The page is a **high-intent application funnel**, not an enquiry funnel. Campaign traffic is budget Android on Jio/Airtel, so every new surface is designed at 360 px first.
 
@@ -33,7 +33,7 @@ CTA produced it.
 1. **Identity** (`StepIdentity`) — name, mobile, WhatsApp confirmation, B.E. branch, intake year
 2. **Academic Details** (`StepAcademics`) — 12th status/board/school, subject marks, 10th details
 3. **Family & Funding** (`StepFamilyFinance`) — filled by, parent name + mobile, funding plan
-4. **Logistics** (`StepLogistics`) — state, district, counselling mode, timeline, optional best time / email / message
+4. **Logistics** (`StepLogistics`) — country, state/province, city/town, counselling mode, timeline, optional best time / email / message
 5. **Fees & Branch Choice** (`StepFeesBranches`) — the complete per-branch cost table, the
    affordability answer (`fee_affordability`), the conditional education-loan panel, and two
    ranked branch preferences (`branch_pref_1` / `branch_pref_2`)
@@ -67,6 +67,18 @@ not, because the test login screen pre-fills from it.
 **The short enquiry drawer is retained but unreachable.** `LeadFormDrawer` / `UnifiedLeadForm`
 are still mounted in `App.jsx`, but `openLeadDrawer()` (in `ModalContext.jsx`) has zero call
 sites. Do not re-point any CTA at it.
+
+### Where the applicant lives
+
+`src/data/geoOptions.js` is the single source for every location control: the four
+`COUNTRY_OPTIONS` (India · Nepal · Bhutan · Other), all 36 Indian states and union
+territories, Nepal's 7 provinces, Bhutan's 20 dzongkhags, and the flat
+`TELECALL_REGION_OPTIONS` list the tele-calling module uses. `getStateOptions(country)` returns
+`[]` for a country we carry no list for, and both forms then render the region as free text
+rather than an empty dropdown; `getStateLabel(country)` supplies the matching label ("state" is
+wrong in Kathmandu). Changing country clears the chosen state — a Bhutan dzongkhag must never
+ship on an Indian application. `country` defaults to `India`, which is most of the traffic and
+one control fewer to touch on a 360 px screen.
 
 ### Canonical field schema
 
@@ -254,7 +266,7 @@ Success is `{"success": true, "slot": "<canonical iso>"}`.
   There is deliberately **no weekday check** — do not add one.
 - **The hours are the officer's, not the device's.** `CIT_TEST_SLOT_TZ_OFFSET_SECONDS` (IST,
   UTC+05:30) is applied server-side, so a phone left on another timezone cannot book 10 AM local
-  — which would be the middle of the night in Tumakuru. India keeps no DST, so a fixed offset is
+  — which would be the middle of the night in Tumkur. India keeps no DST, so a fixed offset is
   exact.
 - **The server re-derives the window; the browser's chip list is convenience.** A slot must parse
   as a UTC ISO timestamp, sit on an IST hour boundary inside office hours, fall inside
@@ -263,7 +275,7 @@ Success is `{"success": true, "slot": "<canonical iso>"}`.
 - The **shape check runs before parsing** (`parse_client_iso`), because `strtotime()` accepts
   `tomorrow` and `+2 hours` — a lax parse would let a client name any instant it liked.
 - "On the hour" is enforced as an **exact hour boundary in IST** (`slot_is_office_hour()`) — at
-  :30 past the hour in UTC, since IST is UTC+05:30 and 4:00 PM in Tumakuru is `10:30Z`. This
+  :30 past the hour in UTC, since IST is UTC+05:30 and 4:00 PM in Tumkur is `10:30Z`. This
   replaced an older any-quarter-hour test, which existed to accommodate any timezone's hour and
   is now too loose: the appointment goes into an IST diary.
 - Writes `counselling_slot` to the attempt **and** to the lead via `patch_lead()`, with the fixed
@@ -407,6 +419,12 @@ The **Tele-Calling** admin module (`/admin/tele-calling`) mirrors Lead Managemen
 - **No "free counselling" angles, no fabricated scarcity, no invented stats or testimonials.**
   `testimonialsData.js` ships sample content behind `isLive: false`; recruiter chips only become
   logos when licensed artwork is added to `RECRUITER_LOGOS`.
+- **Pan-India audience, one page.** The campaign runs across every Indian state (Karnataka and
+  Tumkur itself included) plus Nepal and Bhutan, so no surface may address North East students
+  as if they were the only audience. Where the region is genuinely relevant the phrasing is
+  inclusive — "students from across India, including the North East" — never exclusive. The
+  city is written **Tumkur** everywhere; "Tumakuru" survives only as an alternate spelling in
+  the SEO keyword lists, because people still search it.
 - **No OTP, no visible CAPTCHA.** Anti-junk is qualification friction + the server-side checks above.
 
 ## Brand Color System (Defaults)

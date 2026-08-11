@@ -1,6 +1,6 @@
 /* ============================================
    FeesFundingSection Component
-   Answers the first question every North-East
+   Answers the first question every
    family asks — "what will this actually cost,
    and how do we pay for it?" — with a promise of
    written transparency instead of numbers.

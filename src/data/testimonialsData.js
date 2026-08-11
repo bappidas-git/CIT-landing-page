@@ -11,11 +11,11 @@ const SAMPLE_TESTIMONIALS = [
     id: 'sample-1',
     name: 'Student Name',
     hometown: 'Home Town',
-    state: 'Assam',
+    state: 'Karnataka',
     branch: 'B.E. Computer Science & Engineering',
     year: '2nd Year',
     quote:
-      'Replace this with the student’s own words about applying from the North East, arriving on campus, hostel life and how the admission desk helped.',
+      'Replace this with the student’s own words about applying from their home state, arriving on campus, hostel life and how the admission desk helped.',
     // Optional: an https URL to a consented photograph. Left empty on purpose —
     // an entry without a photo renders an initials avatar, never a placeholder
     // image service.
@@ -25,7 +25,7 @@ const SAMPLE_TESTIMONIALS = [
     id: 'sample-2',
     name: 'Student Name',
     hometown: 'Home Town',
-    state: 'Meghalaya',
+    state: 'Bihar',
     branch: 'B.E. Electronics & Communication Engineering',
     year: '3rd Year',
     quote:
@@ -36,7 +36,7 @@ const SAMPLE_TESTIMONIALS = [
     id: 'sample-3',
     name: 'Student Name',
     hometown: 'Home Town',
-    state: 'Nagaland',
+    state: 'Assam',
     branch: 'B.E. Mechanical Engineering',
     year: 'Final Year',
     quote:

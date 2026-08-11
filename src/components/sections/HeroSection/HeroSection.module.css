@@ -174,15 +174,6 @@
   flex-shrink: 0;
 }
 
-.locationClarifier {
-  margin: 0.625rem 0 0;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
-}
-
 /* ========== Scarcity + Merit Block ========== */
 .meritBlock {
   margin-top: 1.5rem;

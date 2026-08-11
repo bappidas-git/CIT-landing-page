@@ -70,6 +70,7 @@ test("comma-bearing values survive an export -> import round trip", async () => 
     parent_name: "Jyoti Baruah",
     parent_mobile: "9876500012",
     funding_plan: "education_loan",
+    country: "India",
     district: "Nalbari",
     counselling_mode: "whatsapp_video",
     admission_timeline: "two_weeks",
@@ -111,6 +112,7 @@ test("comma-bearing values survive an export -> import round trip", async () => 
   expect(imported.parent_name).toBe("Jyoti Baruah");
   expect(imported.parent_mobile).toBe("9876500012");
   expect(imported.funding_plan).toBe("education_loan");
+  expect(imported.country).toBe("India");
   expect(imported.district).toBe("Nalbari");
   expect(imported.counselling_mode).toBe("whatsapp_video");
   expect(imported.admission_timeline).toBe("two_weeks");

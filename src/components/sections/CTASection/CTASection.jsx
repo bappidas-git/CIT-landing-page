@@ -24,7 +24,10 @@ const reassurances = [
     text: "You deal directly with the college — no agents, no consultancy fees, full fee structure shown inside the application",
     icon: "mdi:headset",
   },
-  { text: "Hostel support for North-East students", icon: "mdi:home-heart" },
+  {
+    text: "Hostel support for students from across India",
+    icon: "mdi:home-heart",
+  },
 ];
 
 const CTASection = () => {

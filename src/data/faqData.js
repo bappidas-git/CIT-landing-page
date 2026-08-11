@@ -55,9 +55,9 @@ export const faqData = [
       'Yes. For qualified students, CIT’s team explains how an education loan in the student’s own name can cover about 80% of the total study cost, including hostel, repaid after placement. The details are worked out on your tele-counselling call, along with any scholarships you are eligible for.',
   },
   {
-    question: 'Is hostel and food arranged for outstation and North East students?',
+    question: 'Is hostel and food arranged for outstation students?',
     answer:
-      'Yes. Separate supervised hostels for boys and girls are on campus, with mess facilities and round-the-clock security. Rooms are allotted before you arrive, so nobody lands in Tumakuru searching for accommodation. CIT has an active North East student community and seniors who made the same journey.',
+      'Yes. Separate supervised hostels for boys and girls are on campus, with mess facilities and round-the-clock security. Rooms are allotted before you arrive, so nobody lands in Tumkur searching for accommodation. CIT has students from every region of India — and seniors who made the same journey. Students from Tumkur and nearby towns can also join as day scholars.',
   },
 ];
 

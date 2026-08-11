@@ -1,6 +1,6 @@
 # CIT — Direct B.E. Engineering Admissions 2026
 
-A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumakuru**, built to capture quality leads for **Direct B.E. (Engineering) Admissions — 2026 intake**. Targeted at students and parents across North East India and run by **Assam Digital** through Google Ads and Meta. Built with React 18, Material UI v5, and Framer Motion.
+A high-converting, mobile-first landing page for **Channabasaveshwara Institute of Technology (CIT), Tumkur**, built to capture quality leads for **Direct B.E. (Engineering) Admissions — 2026 intake**. Targeted at students and parents **across India — Karnataka and Tumkur itself included — plus Nepal and Bhutan**, and run by **Assam Digital** through Google Ads and Meta. Built with React 18, Material UI v5, and Framer Motion.
 
 ## Features
 

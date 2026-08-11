@@ -26,7 +26,7 @@ const PrivacyPolicyContent = () => (
     <section className={styles.legalSection}>
       <h3>Introduction</h3>
       <p>
-        Channabasaveshwara Institute of Technology (CIT), Tumakuru, together
+        Channabasaveshwara Institute of Technology (CIT), Tumkur, together
         with its marketing partner Assam Digital, respects your privacy and is
         committed to protecting the personal data shared by prospective
         students and parents during the B.E. Admissions 2026 campaign.
@@ -71,7 +71,7 @@ const PrivacyPolicyContent = () => (
         </li>
         <li>
           To improve our campaigns, the landing page experience, and the
-          guidance we provide to North East India students.
+          guidance we provide to students across India.
         </li>
         <li>
           To comply with applicable Indian laws and education-regulatory
@@ -84,7 +84,7 @@ const PrivacyPolicyContent = () => (
       <h3>Sharing of Information</h3>
       <p>
         Your details are shared only between CIT&apos;s admissions team and
-        Assam Digital&apos;s NE-region counsellors handling this campaign.
+        Assam Digital&apos;s admission counsellors handling this campaign.
         We do not sell your data. We may share aggregated, anonymised
         analytics with platforms such as Google and Meta for ad performance
         measurement.
@@ -120,7 +120,7 @@ const PrivacyPolicyContent = () => (
       <p>
         <strong>Channabasaveshwara Institute of Technology</strong>
         <br />
-        NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
+        NH 206, B.H. Road, Gubbi, Tumkur – 572 216, Karnataka
         <br />
         Phone: {PRIMARY_PHONE_DISPLAY}
       </p>
@@ -231,7 +231,7 @@ const Footer = () => {
                 </div>
                 <p className={styles.tagline}>
                   Channabasaveshwara Institute of Technology — a NAAC-accredited,
-                  AICTE-approved engineering institute in Tumakuru, Karnataka.
+                  AICTE-approved engineering institute in Tumkur, Karnataka.
                   The final Session 2026 B.E. seats are filled on merit, through
                   the CIT Merit-Based Selection Program 2026.
                 </p>
@@ -306,7 +306,7 @@ const Footer = () => {
                       <span className={styles.contactValue}>
                         NH 206, B.H. Road, Gubbi,
                         <br />
-                        Tumakuru – 572 216, Karnataka
+                        Tumkur – 572 216, Karnataka
                       </span>
                     </div>
                   </li>

@@ -63,6 +63,7 @@ import {
   getYearError,
 } from '../../utils/applicationValidators';
 import { APPLY_COURSE_KEY } from '../../hooks/useApplyCTA';
+import { DEFAULT_COUNTRY } from '../../data/geoOptions';
 
 import styles from './Apply.module.css';
 
@@ -113,6 +114,7 @@ const createInitialDraft = () => ({
   funding_plan: '',
 
   // Step 4
+  country: DEFAULT_COUNTRY,
   state: '',
   district: '',
   counselling_mode: '',
@@ -321,11 +323,21 @@ const validateStep = (step, draft) => {
   }
 
   if (step === 4) {
-    if (!draft.state) errors.state = 'Please select your home state';
+    if (!draft.country) errors.country = 'Please select your country';
+
+    // The state control is a dropdown where we carry a list for the country and
+    // a free-text box otherwise, so the message has to fit whichever is on
+    // screen — "select" would read as an instruction the applicant cannot follow.
+    const state = (draft.state || '').trim();
+    if (!state) {
+      errors.state = 'Please tell us your home state / province';
+    } else if (state.length > 60) {
+      errors.state = 'Please keep this under 60 characters';
+    }
 
     const district = (draft.district || '').trim();
     if (!district) {
-      errors.district = 'Please enter your district or town';
+      errors.district = 'Please enter your city or town';
     } else if (district.length > 60) {
       errors.district = 'Please keep this under 60 characters';
     }
@@ -409,7 +421,7 @@ const Apply = () => {
   // ---- Page chrome -------------------------------------------------------
   useEffect(() => {
     updatePageSEO({
-      title: 'Apply — CIT Merit-Based Selection Program 2026 | CIT Tumakuru',
+      title: 'Apply — CIT Merit-Based Selection Program 2026 | CIT Tumkur',
       robots: 'noindex, nofollow',
     });
 
@@ -623,7 +635,7 @@ const Apply = () => {
           <img
             className={styles.logo}
             src={LOGO_URL}
-            alt="CIT Tumakuru"
+            alt="CIT Tumkur"
             width="120"
             height="36"
           />

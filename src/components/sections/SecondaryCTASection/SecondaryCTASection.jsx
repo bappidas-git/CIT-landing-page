@@ -31,7 +31,7 @@ const reassurances = [
     icon: "mdi:briefcase-check",
   },
   {
-    text: "Safe hostel & mess facilities for North-East students",
+    text: "Safe hostel & mess facilities for students from across India",
     icon: "mdi:home-heart",
   },
   {
@@ -43,7 +43,7 @@ const reassurances = [
 const trustIndicators = [
   { text: "Merit-based selection", icon: "mdi:medal-outline" },
   { text: "Straight to the college", icon: "mdi:school-outline" },
-  { text: "Trusted by NE Families", icon: "mdi:account-group" },
+  { text: "Trusted by families across India", icon: "mdi:account-group" },
 ];
 
 const SecondaryCTASection = () => {

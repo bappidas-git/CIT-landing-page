@@ -1,6 +1,6 @@
 /* ============================================
    FeaturesSection Component - Campus Life & Recognition
-   Tabbed campus/NE-support benefits + awards timeline
+   Tabbed campus/student-support benefits + awards timeline
    ============================================ */
 
 import React, { useState, useRef } from "react";
@@ -145,7 +145,9 @@ const FeaturesSection = () => {
               }}
             >
               A Safe, Supportive Home for{" "}
-              <span className={styles.accentText}>North East Students</span>
+              <span className={styles.accentText}>
+                Students From Across India
+              </span>
             </Typography>
             <Typography
               className={styles.sectionSubtitle}

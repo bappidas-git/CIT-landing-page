@@ -55,13 +55,13 @@ export const featuresData = [
   },
   {
     id: 3,
-    category: "Campus Life & NE Student Support",
+    category: "Campus Life & Student Support",
     items: [
       {
         icon: "mdi:home-city-outline",
         title: "Safe Hostel & Mess Facilities",
         description:
-          "On-campus hostel and mess facilities offer a safe, supportive home away from home for North East students.",
+          "On-campus hostel and mess facilities offer a safe, supportive home away from home for students from across India.",
       },
       {
         icon: "mdi:account-tie-voice-outline",
@@ -73,7 +73,7 @@ export const featuresData = [
         icon: "mdi:hand-heart-outline",
         title: "Inclusive, Welcoming Campus",
         description:
-          "A supportive, inclusive campus community with help for travel planning and settling in at Tumakuru.",
+          "A supportive, inclusive campus community with help for travel planning and settling in at Tumkur.",
       },
       {
         icon: "mdi:shield-check-outline",
