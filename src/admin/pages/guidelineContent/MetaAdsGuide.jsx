@@ -8,8 +8,8 @@ const MetaAdsGuide = ({ styles }) => {
       <div className={styles.guideSection}>
         <p className={styles.guideParagraph}>
           Meta Ads (Facebook + Instagram) shows your ad to people who match a targeting profile,
-          rather than to people searching for you. For a Direct B.E. admissions campaign across the
-          North East, that is the right channel — students and parents are not searching "direct
+          rather than to people searching for you. For a Direct B.E. admissions campaign running across
+          India, that is the right channel — students and parents are not searching "direct
           admission Karnataka", they are scrolling Reels and Feed.
         </p>
         <p className={styles.guideParagraph}>
@@ -296,7 +296,7 @@ const MetaAdsGuide = ({ styles }) => {
                 <td className={styles.guideTableCell}>35-55</td>
                 <td className={styles.guideTableCell}>Facebook Feed</td>
                 <td className={styles.guideTableCell}>
-                  Accreditation (NAAC / AICTE / VTU), transparent fee process, safety and NE student
+                  Accreditation (NAAC / AICTE / VTU), transparent fee process, safety and campus
                   community, placement record
                 </td>
               </tr>
@@ -304,10 +304,11 @@ const MetaAdsGuide = ({ styles }) => {
           </table>
         </div>
         <p className={styles.guideParagraph}>
-          Geo-target both ad sets to the eight North East states the campaign serves: Assam,
-          Arunachal Pradesh, Manipur, Meghalaya, Mizoram, Nagaland, Tripura and Sikkim. Keep
-          interests broad at first — the geography plus the age split is already tight targeting, and
-          stacking narrow interests on top starves delivery.
+          Geo-target both ad sets to the campaign’s geography: all of India — with Karnataka and
+          Tumkur district worth their own ad set, since a local applicant converts on a very
+          different message from an outstation one — plus Nepal and Bhutan. Keep interests broad
+          at first; stacking narrow interests on top of a wide geography starves delivery. Split by
+          region only once a region has enough conversions to learn from.
         </p>
 
         <h3 className={styles.guideSubtitle}>Placements — Manual, Not Advantage+</h3>
@@ -361,7 +362,7 @@ const MetaAdsGuide = ({ styles }) => {
         <ol className={styles.guideStepList}>
           <li className={styles.guideStepItem}>
             <strong>Lead with the eligibility check.</strong> "Check if your 12th marks qualify you
-            for Direct B.E. admission at CIT Tumakuru" self-selects for people who actually have
+            for Direct B.E. admission at CIT Tumkur" self-selects for people who actually have
             marks to enter. It is the highest-quality hook available.
           </li>
           <li className={styles.guideStepItem}>
@@ -371,8 +372,9 @@ const MetaAdsGuide = ({ styles }) => {
             no figures.
           </li>
           <li className={styles.guideStepItem}>
-            <strong>North East hostel and community.</strong> Separate hostels, NE student community
-            on campus, travel and settling-in support. This is the parent objection, answered.
+            <strong>Hostel and campus community.</strong> Separate hostels, students from every region
+            of India on campus, travel and settling-in support. This is the parent objection,
+            answered — and for Tumkur and nearby towns, the day-scholar option.
           </li>
           <li className={styles.guideStepItem}>
             <strong>Placements.</strong> Recruiters and outcomes — use only verified, current
@@ -387,8 +389,8 @@ const MetaAdsGuide = ({ styles }) => {
           </li>
           <li className={styles.guideStepItem}>
             Use video and Reels-native vertical creative; static images under-deliver on IG
-            placements. Write in the language the audience actually uses — Assamese or English for
-            Assam, English elsewhere — and refresh creative every 2-3 weeks for ad fatigue.
+            placements. Write in the language the audience actually uses — Kannada for Karnataka,
+            Assamese for Assam, Hindi across the north, English elsewhere — and refresh creative every 2-3 weeks for ad fatigue.
           </li>
         </ol>
       </div>
@@ -402,7 +404,7 @@ const MetaAdsGuide = ({ styles }) => {
             <code className={styles.guideInlineCode}>QualifiedLead</code> leads — either the{' '}
             <code className={styles.guideInlineCode}>QualifiedLead</code> website event, or a CSV of
             Hot leads exported from Lead Management — then create a <strong>1% lookalike</strong>{' '}
-            from it, geo-limited to the NE states. A lookalike built from verified good leads is a
+            from it, geo-limited to the regions the campaign actually sells in. A lookalike built from verified good leads is a
             completely different audience from one built on raw form fills.
           </li>
           <li className={styles.guideStepItem}>

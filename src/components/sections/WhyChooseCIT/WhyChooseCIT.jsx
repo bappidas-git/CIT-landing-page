@@ -31,7 +31,7 @@ const objections = [
     icon: "mdi:home-heart",
     objection: "Worried about your child being far from home?",
     answer:
-      "Safe on-campus hostel and mess, a supportive and inclusive culture, and dedicated help settling in — a real home away from home for students from across the North East.",
+      "Safe on-campus hostel and mess, a supportive and inclusive culture, and dedicated help settling in — a real home away from home for students from across India, including the North East.",
   },
   {
     icon: "mdi:school-outline",
@@ -48,7 +48,7 @@ const reassurancePoints = [
   "The complete fee structure is shown inside the application, before you submit",
   "NAAC accredited, AICTE approved, affiliated to VTU Belagavi",
   "85%+ placements with 90+ recruiters visiting the campus",
-  "Safe hostel & mess facilities for North East students",
+  "Safe hostel & mess facilities for all students across India",
 ];
 
 // Animation variants
@@ -127,7 +127,7 @@ const WhyChooseCIT = () => {
               className={styles.title}
             >
               Earn Your B.E. Seat at{" "}
-              <span className={styles.titleAccent}>CIT Tumakuru</span>
+              <span className={styles.titleAccent}>CIT Tumkur</span>
             </Typography>
             <Typography className={styles.subtitle} sx={{ marginTop: "20px" }}>
               We hear the same questions from students and parents every

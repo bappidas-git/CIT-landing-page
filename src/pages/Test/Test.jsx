@@ -359,7 +359,7 @@ const Test = () => {
   // ---- Page chrome -------------------------------------------------------
   useEffect(() => {
     updatePageSEO({
-      title: '30-Minute Online Merit Assessment Test | CIT Tumakuru',
+      title: '30-Minute Online Merit Assessment Test | CIT Tumkur',
       robots: 'noindex, nofollow',
     });
 
@@ -521,7 +521,7 @@ const Test = () => {
         <img
           className={styles.logo}
           src={LOGO_URL}
-          alt="CIT Tumakuru"
+          alt="CIT Tumkur"
           width="120"
           height="36"
         />

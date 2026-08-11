@@ -40,6 +40,12 @@ import {
   getEmailErrorMessage,
   getNameErrorMessage,
 } from "../../../utils/validators";
+import {
+  COUNTRY_OPTIONS,
+  DEFAULT_COUNTRY,
+  getStateOptions,
+  getStateLabel,
+} from "../../../data/geoOptions";
 import styles from "./UnifiedLeadForm.module.css";
 
 // Course options for CIT B.E. (Engineering) admissions 2026.
@@ -56,25 +62,13 @@ const COURSE_OPTIONS = [
   "Not Sure — Need Guidance",
 ];
 
-// North-East India state options (the campaign's target geography).
-const STATE_OPTIONS = [
-  "Assam",
-  "Arunachal Pradesh",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Tripura",
-  "Sikkim",
-  "Other",
-];
-
 // Initial form state
 const initialFormState = {
   name: "",
   mobile: "",
   email: "",
   service_interest: "",
+  country: DEFAULT_COUNTRY,
   state: "",
   message: "",
 };
@@ -85,6 +79,7 @@ const initialErrorState = {
   mobile: "",
   email: "",
   service_interest: "",
+  country: "",
   state: "",
   message: "",
 };
@@ -104,7 +99,7 @@ const PrivacyPolicyContent = () => (
         Introduction
       </h3>
       <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#374151" }}>
-        Channabasaveshwara Institute of Technology (CIT), Tumakuru, together
+        Channabasaveshwara Institute of Technology (CIT), Tumkur, together
         with Assam Digital, the marketing partner running this 2026 B.E.
         admissions campaign ("we," "our," or "us"), respects your privacy and is
         committed to protecting the information you share with us. This Privacy
@@ -242,12 +237,12 @@ const PrivacyPolicyContent = () => (
         }}
       >
         <li style={{ marginBottom: "6px" }}>
-          <strong>CIT admission office, Tumakuru:</strong> so the admission
+          <strong>CIT admission office, Tumkur:</strong> so the admission
           team can follow up with you.
         </li>
         <li style={{ marginBottom: "6px" }}>
           <strong>Assam Digital:</strong> the marketing partner managing this
-          campaign and the North-East admission desk.
+          campaign and the admission desk.
         </li>
         <li>
           <strong>Service providers:</strong> trusted vendors that help us host
@@ -355,7 +350,7 @@ const PrivacyPolicyContent = () => (
       >
         <strong>Channabasaveshwara Institute of Technology (CIT)</strong>
         <br />
-        NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
+        NH 206, B.H. Road, Gubbi, Tumkur – 572 216, Karnataka
         <br />
         Phone: +91 84536 23233
       </p>
@@ -528,6 +523,14 @@ const UnifiedLeadForm = ({
   const stateSelectRef = useRef(null);
   const messageRef = useRef(null);
 
+  // The state control follows the chosen country: a dropdown where we carry a
+  // region list, a free-text box otherwise.
+  const stateOptions = getStateOptions(formData.country);
+  const statePlaceholder = getStateLabel(formData.country).replace(
+    /^Your home /,
+    "Your "
+  );
+
   // Handle input change
   const handleChange = useCallback(
     (field) => (event) => {
@@ -541,6 +544,10 @@ const UnifiedLeadForm = ({
       setFormData((prev) => ({
         ...prev,
         [field]: value,
+        // A state chosen under the previous country no longer belongs to the
+        // new one, so switching country clears it rather than shipping a
+        // Bhutan dzongkhag on an Indian enquiry.
+        ...(field === "country" ? { state: "" } : null),
       }));
 
       // Clear error when user starts typing
@@ -582,6 +589,11 @@ const UnifiedLeadForm = ({
             errorMessage = "Please select a course";
           }
           break;
+        case "country":
+          if (showCourseFields && !formData.country) {
+            errorMessage = "Please select your country";
+          }
+          break;
         case "state":
           if (showCourseFields && !formData.state) {
             errorMessage = "Please select your state";
@@ -614,6 +626,10 @@ const UnifiedLeadForm = ({
         showCourseFields && !formData.service_interest
           ? "Please select a course"
           : "",
+      country:
+        showCourseFields && !formData.country
+          ? "Please select your country"
+          : "",
       state:
         showCourseFields && !formData.state
           ? "Please select your state"
@@ -630,6 +646,7 @@ const UnifiedLeadForm = ({
       mobile: true,
       email: true,
       service_interest: true,
+      country: true,
       state: true,
       message: true,
     });
@@ -666,6 +683,7 @@ const UnifiedLeadForm = ({
         mobile: formData.mobile.trim(),
         email: formData.email.trim(),
         service_interest: formData.service_interest || '',
+        country: formData.country || '',
         state: formData.state || '',
         message: formData.message || '',
         source: formId || 'general',
@@ -1036,7 +1054,7 @@ const UnifiedLeadForm = ({
           </motion.div>
         )}
 
-        {/* State Field (NE states) */}
+        {/* Country Field */}
         {showCourseFields && (
           <motion.div
             custom={4}
@@ -1046,20 +1064,19 @@ const UnifiedLeadForm = ({
           >
             <FormControl
               fullWidth
-              error={touched.state && !!errors.state}
+              error={touched.country && !!errors.country}
               className={styles.textField}
             >
               <Select
-                ref={stateSelectRef}
                 displayEmpty
-                value={formData.state}
-                onChange={handleChange("state")}
-                onBlur={handleBlur("state")}
+                value={formData.country}
+                onChange={handleChange("country")}
+                onBlur={handleBlur("country")}
                 disabled={isSubmitting}
                 startAdornment={
                   <InputAdornment position="start">
                     <Icon
-                      icon="mdi:map-marker-outline"
+                      icon="mdi:earth"
                       className={styles.inputIcon}
                       style={
                         variant === "dark" || variant === "drawer"
@@ -1073,7 +1090,7 @@ const UnifiedLeadForm = ({
                   if (!selected) {
                     return (
                       <span style={{ color: variant === "dark" || variant === "drawer" ? "#FFFFFF80" : undefined, opacity: variant === "dark" || variant === "drawer" ? 1 : 0.5 }}>
-                        Your State
+                        Your Country
                       </span>
                     );
                   }
@@ -1087,7 +1104,7 @@ const UnifiedLeadForm = ({
                   style: { zIndex: 99999 },
                 }}
                 inputProps={{
-                  "aria-label": "Your state",
+                  "aria-label": "Your country",
                 }}
                 sx={
                   variant === "dark" || variant === "drawer"
@@ -1095,12 +1112,118 @@ const UnifiedLeadForm = ({
                     : undefined
                 }
               >
-                {STATE_OPTIONS.map((option) => (
+                {COUNTRY_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
                   </MenuItem>
                 ))}
               </Select>
+              {touched.country && errors.country && (
+                <FormHelperText>{errors.country}</FormHelperText>
+              )}
+            </FormControl>
+          </motion.div>
+        )}
+
+        {/* State / province Field — options follow the chosen country */}
+        {showCourseFields && (
+          <motion.div
+            custom={5}
+            variants={fieldVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <FormControl
+              fullWidth
+              error={touched.state && !!errors.state}
+              className={styles.textField}
+            >
+              {stateOptions.length > 0 ? (
+                <Select
+                  ref={stateSelectRef}
+                  displayEmpty
+                  value={formData.state}
+                  onChange={handleChange("state")}
+                  onBlur={handleBlur("state")}
+                  disabled={isSubmitting}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Icon
+                        icon="mdi:map-marker-outline"
+                        className={styles.inputIcon}
+                        style={
+                          variant === "dark" || variant === "drawer"
+                            ? { color: "#FFFFFF80" }
+                            : undefined
+                        }
+                      />
+                    </InputAdornment>
+                  }
+                  renderValue={(selected) => {
+                    if (!selected) {
+                      return (
+                        <span style={{ color: variant === "dark" || variant === "drawer" ? "#FFFFFF80" : undefined, opacity: variant === "dark" || variant === "drawer" ? 1 : 0.5 }}>
+                          {statePlaceholder}
+                        </span>
+                      );
+                    }
+                    return selected;
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { zIndex: 99999 },
+                    },
+                    disablePortal: false,
+                    style: { zIndex: 99999 },
+                  }}
+                  inputProps={{
+                    "aria-label": statePlaceholder,
+                  }}
+                  sx={
+                    variant === "dark" || variant === "drawer"
+                      ? { color: "#FFFFFF", "& .MuiSelect-icon": { color: "#FFFFFF80" } }
+                      : undefined
+                  }
+                >
+                  {stateOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              ) : (
+                // "Other" country — we carry no region list, so the applicant
+                // types it rather than being shown an empty dropdown.
+                <TextField
+                  inputRef={stateSelectRef}
+                  value={formData.state}
+                  onChange={handleChange("state")}
+                  onBlur={handleBlur("state")}
+                  disabled={isSubmitting}
+                  placeholder={statePlaceholder}
+                  error={touched.state && !!errors.state}
+                  inputProps={{ maxLength: 60, "aria-label": statePlaceholder }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Icon
+                          icon="mdi:map-marker-outline"
+                          className={styles.inputIcon}
+                          style={
+                            variant === "dark" || variant === "drawer"
+                              ? { color: "#FFFFFF80" }
+                              : undefined
+                          }
+                        />
+                      </InputAdornment>
+                    ),
+                    sx:
+                      variant === "dark" || variant === "drawer"
+                        ? { color: "#FFFFFF" }
+                        : undefined,
+                  }}
+                />
+              )}
               {touched.state && errors.state && (
                 <FormHelperText>{errors.state}</FormHelperText>
               )}
@@ -1110,7 +1233,7 @@ const UnifiedLeadForm = ({
 
         {/* Brief Message Field */}
         <motion.div
-          custom={5}
+          custom={6}
           variants={fieldVariants}
           initial="hidden"
           animate="visible"

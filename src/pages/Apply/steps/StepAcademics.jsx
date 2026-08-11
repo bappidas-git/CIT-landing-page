@@ -49,15 +49,21 @@ export const TWELFTH_STATUS_OPTIONS = [
   { value: 'diploma', label: 'Diploma (lateral entry)' },
 ];
 
+// National boards first — they are the largest slice of a pan-India intake —
+// then Karnataka's own PUC for local applicants, then the North East boards the
+// campaign started with. Existing values are never renamed: they are stored on
+// leads already and the admin CSV round-trips on them.
 export const BOARD_OPTIONS = [
+  { value: 'CBSE', label: 'CBSE' },
+  { value: 'ICSE', label: 'ICSE / ISC' },
+  { value: 'NIOS', label: 'NIOS' },
+  { value: 'KAR_PUC', label: 'Karnataka PUC (KSEAB)' },
   { value: 'AHSEC', label: 'AHSEC (Assam)' },
   { value: 'NBSE', label: 'NBSE (Nagaland)' },
   { value: 'MBOSE', label: 'MBOSE (Meghalaya)' },
   { value: 'TBSE', label: 'TBSE (Tripura)' },
   { value: 'COHSEM', label: 'COHSEM (Manipur)' },
-  { value: 'CBSE', label: 'CBSE' },
-  { value: 'ICSE', label: 'ICSE / ISC' },
-  { value: 'Other', label: 'Other board' },
+  { value: 'Other', label: 'Other state board' },
 ];
 
 export const EXPECTED_BAND_OPTIONS = [

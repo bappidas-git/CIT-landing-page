@@ -33,19 +33,12 @@ export const NURTURED_BY_OPTIONS = [
   "Abhijit Rabha",
 ];
 
-// North-East India state options (the campaign's target geography) — mirrors
-// the public lead form so both modules offer the same choices.
-export const TELECALL_STATE_OPTIONS = [
-  "Assam",
-  "Arunachal Pradesh",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Tripura",
-  "Sikkim",
-  "Other",
-];
+// Every Indian state and union territory, then Nepal / Bhutan / Other — the
+// campaign's geography, re-exported from the same source the public lead form
+// reads so both modules can never drift apart. One flat dropdown on purpose:
+// a telecaller typing a lead in by hand should not have to pick a country
+// first.
+export { TELECALL_REGION_OPTIONS as TELECALL_STATE_OPTIONS } from "../../data/geoOptions";
 
 // Quick lookup maps derived from the canonical list above.
 export const TELECALL_STATUS_LABELS = TELECALL_STATUS_OPTIONS.reduce((acc, s) => {

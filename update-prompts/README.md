@@ -115,7 +115,7 @@ Every field below is stored flat on the lead object alongside the existing keys
 | `intake_year` | `'2026'` \| `'2027'` \| `'researching'` | yes |
 | `whatsapp_confirmed` | boolean — "this number is on WhatsApp" | yes (checkbox may be false) |
 | `twelfth_status` | `'passed'` \| `'appearing_2026'` \| `'diploma'` | yes |
-| `twelfth_board` | `'AHSEC'` \| `'NBSE'` \| `'MBOSE'` \| `'TBSE'` \| `'COHSEM'` \| `'CBSE'` \| `'ICSE'` \| `'Other'` | yes, except `twelfth_status='diploma'` |
+| `twelfth_board` | `'CBSE'` \| `'ICSE'` \| `'NIOS'` \| `'KAR_PUC'` \| `'AHSEC'` \| `'NBSE'` \| `'MBOSE'` \| `'TBSE'` \| `'COHSEM'` \| `'Other'` — national boards, Karnataka's PUC, then the North East boards the campaign started with. Values are append-only: existing ones are stored on live leads and round-trip through the admin CSV | yes, except `twelfth_status='diploma'` |
 | `twelfth_school` | string ≤ 120 chars | yes, except `twelfth_status='diploma'` |
 | `twelfth_subjects` | array of `{ subject: string, marks: number 0–100 }` — Physics & Mathematics always present; ≥1 more from Chemistry / Biology / Computer Science / Statistics / Electronics / Other | yes; `twelfth_status='appearing_2026'` → `expected_band` instead; `'diploma'` → stored `[]` (diploma marks collected on the call) |
 | `expected_band` | `'above_75'` \| `'60_75'` \| `'45_60'` \| `'below_45'` (only when appearing) | conditional |
@@ -128,8 +128,9 @@ Every field below is stored flat on the lead object alongside the existing keys
 | `parent_name` | string (unicode letters) | yes |
 | `parent_mobile` | 10-digit `[6-9]\d{9}`, must differ from `mobile` | yes |
 | `funding_plan` | `'self_funded'` \| `'education_loan'` \| `'scholarship'` \| `'need_discussion'` | yes |
-| `district` | string ≤ 60 chars | yes |
-| `counselling_mode` | `'whatsapp_video'` \| `'phone'` \| `'campus_visit'` \| `'ne_rep'` | yes |
+| `country` | `'India'` \| `'Nepal'` \| `'Bhutan'` \| `'Other'` — from `src/data/geoOptions.js`; defaults to `'India'` | yes |
+| `district` | string ≤ 60 chars — the applicant's **city / town** (key kept as `district` for admin + CSV compatibility) | yes |
+| `counselling_mode` | `'whatsapp_video'` \| `'phone'` \| `'campus_visit'` \| `'ne_rep'` (label widened to "Meet CIT's representative near me" when the campaign went pan-India — the **value** is stored on live leads and must not be renamed) | yes |
 | `admission_timeline` | `'two_weeks'` \| `'one_month'` \| `'after_results'` \| `'not_sure'` | yes |
 | `best_time` | `'morning'` \| `'afternoon'` \| `'evening'` \| `''` | **optional** |
 | `email` | valid email or `''` | **optional** |
@@ -145,7 +146,9 @@ Existing-key reuse: the chosen B.E. branch is stored in `service_interest`
 (legacy key, admin-compatible) using the exact option strings from
 `src/components/common/UnifiedLeadForm/UnifiedLeadForm.jsx` `COURSE_OPTIONS`
 (em-dash format, e.g. `"B.E. — Computer Science & Engineering"`). Home state uses
-the existing `state` key with the same 8 NE states + `"Other"`.
+the existing `state` key; its allowed values are whatever `getStateOptions(country)` returns in
+`src/data/geoOptions.js` — all 36 Indian states and union territories under `India`, Nepal's 7
+provinces, Bhutan's 20 dzongkhags, and free text (≤ 60 chars) under `Other`.
 
 **`source` value contract (shared by prompts 02 and 04):** the base source is the
 CTA key stored in sessionStorage `cit_apply_source` by the CTA hook (prompt 04);

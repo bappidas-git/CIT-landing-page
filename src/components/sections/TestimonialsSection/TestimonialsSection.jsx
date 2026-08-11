@@ -1,6 +1,6 @@
 /* ============================================
    TestimonialsSection Component
-   Students from the North East who are already at
+   Students from across India who are already at
    CIT — the strongest proof a wavering parent can
    be given.
 
@@ -71,11 +71,11 @@ const TestimonialsSection = () => {
         <div className={styles.header}>
           <span className={styles.badge}>Student Stories</span>
           <h2 id="student-stories-title" className={styles.title}>
-            Students From the North East,{" "}
+            Students From Across India,{" "}
             <span className={styles.titleAccent}>Now at CIT</span>
           </h2>
           <p className={styles.subtitle}>
-            The journey from home to Tumakuru, in their own words.
+            The journey from home to Tumkur, in their own words.
           </p>
         </div>
 

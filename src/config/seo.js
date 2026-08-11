@@ -12,10 +12,10 @@ export const seoConfig = {
   // =========================================
   siteName: "CIT Admissions",
   siteUrl: "https://www.cittumkur.org",
-  defaultTitle: "CIT Tumakuru, Karnataka | Merit-Based B.E. Admissions 2026",
-  titleTemplate: "%s | CIT Tumakuru",
+  defaultTitle: "CIT Tumkur, Karnataka | Merit-Based B.E. Admissions 2026",
+  titleTemplate: "%s | CIT Tumkur",
   defaultDescription:
-    "CIT Tumakuru, Karnataka — 70 km from Bengaluru. NAAC, AICTE, VTU. Only 15 B.E. seats left for Session 2026, filled by a 30-minute online merit test.",
+    "CIT Tumkur, Karnataka — 70 km from Bengaluru. NAAC, AICTE, VTU. Only 15 B.E. seats left for Session 2026, filled by a 30-minute online merit test.",
   defaultImage:
     "https://placehold.co/1200x630/0C2D48/FFFFFF?text=CIT+Admissions+2026",
   locale: "en_IN",
@@ -26,15 +26,15 @@ export const seoConfig = {
   // =========================================
   organization: {
     name: "Channabasaveshwara Institute of Technology",
-    alternateName: "CIT Tumakuru",
+    alternateName: "CIT Tumkur",
     url: "https://www.cittumkur.org",
     logo: "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669113/logo-cit_ykpxvd.png",
     phone: "+91 84536 23233",
     description:
-      "Channabasaveshwara Institute of Technology (CIT), Tumakuru is a NAAC-accredited, AICTE-approved engineering college in Karnataka — about 70 km from Bengaluru on NH-206 — affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements. The final 15 B.E. seats for Session 2026 are filled on merit through the CIT Merit-Based Selection Program 2026.",
+      "Channabasaveshwara Institute of Technology (CIT), Tumkur is a NAAC-accredited, AICTE-approved engineering college in Karnataka — about 70 km from Bengaluru on NH-206 — affiliated to VTU, Belagavi. Celebrating 25 years of academic excellence with strong placements. The final 15 B.E. seats for Session 2026 are filled on merit through the CIT Merit-Based Selection Program 2026.",
     address: {
       streetAddress: "NH 206, B.H. Road, Gubbi",
-      addressLocality: "Tumakuru",
+      addressLocality: "Tumkur",
       addressRegion: "Karnataka",
       postalCode: "572216",
       addressCountry: "IN",
@@ -86,14 +86,14 @@ export const seoConfig = {
   // =========================================
   pages: {
     home: {
-      title: "CIT Tumakuru, Karnataka | Merit-Based B.E. Admissions 2026",
+      title: "CIT Tumkur, Karnataka | Merit-Based B.E. Admissions 2026",
       description:
-        "CIT Tumakuru, Karnataka — 70 km from Bengaluru. NAAC, AICTE, VTU. Only 15 B.E. seats left for Session 2026, filled by a 30-minute online merit test.",
+        "CIT Tumkur, Karnataka — 70 km from Bengaluru. NAAC, AICTE, VTU. Only 15 B.E. seats left for Session 2026, filled by a 30-minute online merit test.",
       keywords:
-        "cit tumakuru karnataka, cit engineering college near bengaluru, merit based engineering admission 2026, b.e. admission karnataka merit test, top engineering colleges karnataka, cit tumakuru, engineering admission karnataka, b.e. admission northeast india, vtu engineering college, naac engineering college, cit channabasaveshwara, engineering college tumakuru, hostel engineering karnataka",
+        "cit tumkur karnataka, cit engineering college near bengaluru, merit based engineering admission 2026, b.e. admission karnataka merit test, top engineering colleges karnataka, cit tumkur, cit tumakuru, engineering admission karnataka, direct b.e. admission india, b.e. admission for outstation students, vtu engineering college, naac engineering college, cit channabasaveshwara, engineering college tumkur, hostel engineering karnataka",
     },
     thankYou: {
-      title: "Thank You | CIT Tumakuru B.E. Admissions 2026",
+      title: "Thank You | CIT Tumkur B.E. Admissions 2026",
       description:
         "Your application for the CIT Merit-Based Selection Program 2026 is in. Next step: take the 30-Minute Online Merit Assessment Test using your Test Login Key.",
       robots: "noindex, nofollow",
@@ -136,6 +136,6 @@ export const seoConfig = {
       longitude: "76.9971",
     },
     hasMap:
-      "https://www.google.com/maps/search/?api=1&query=Channabasaveshwara+Institute+of+Technology+Tumakuru",
+      "https://www.google.com/maps/search/?api=1&query=Channabasaveshwara+Institute+of+Technology+Tumkur",
   },
 };

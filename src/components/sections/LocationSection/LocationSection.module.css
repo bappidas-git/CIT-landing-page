@@ -1,6 +1,6 @@
 /* ============================================
-   LocationSection Styles — CIT Tumakuru
-   Campus location + NE travel reassurance band
+   LocationSection Styles — CIT Tumkur
+   Campus location + travel reassurance band
    ============================================ */
 
 /* Section Container */
@@ -187,7 +187,7 @@
   z-index: 1;
 }
 
-/* ========== NE Helper Block ========== */
+/* ========== Travel Helper Block ========== */
 .neBlock {
   margin-top: var(--space-16);
   padding: var(--space-10) var(--space-6);

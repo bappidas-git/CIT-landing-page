@@ -4,6 +4,69 @@ All notable changes to the Landing Page Boilerplate project.
 
 ## [Unreleased]
 
+### Changed — the page now sells to all of India, not only the North East
+
+The campaign is going live across every Indian state (Karnataka and Tumkur
+itself included) plus Nepal and Bhutan, so copy that addressed North East
+students as the only audience no longer fits. Every such surface was rewritten,
+and the city is now written **Tumkur** throughout.
+
+Landing-page copy:
+
+- **Hero** — dropped *"This is CIT Tumkur, Karnataka — not CIT Kokrajhar,
+  Assam."* The disambiguation only made sense to an Assamese reader; to everyone
+  else it introduced a college they had never heard of. `.locationClarifier`
+  went with it.
+- **Why Choose CIT** — the "far from home" answer now reads *"…for students from
+  across India, including the North East."* Inclusive rather than exclusive: the
+  North East is still named, it just no longer defines the audience. The merit
+  band's hostel bullet becomes *"Safe hostel & mess facilities for all students
+  across India."*
+- **Campus Life** — the tab is *Campus Life & Student Support* (was *& NE Student
+  Support*), the heading *"A Safe, Supportive Home for Students From Across
+  India"*, and the hostel card drops "North East students".
+- **Location** — *"reachable by train, bus or flight from across India"*; the
+  travel block is *"Coming from another state? We've got you covered."* and now
+  also speaks to Tumkur/Karnataka locals and their day-scholar option; the
+  "CIT North East admission desk" is simply the "CIT admission desk". The states
+  band renders `locationData.servingRegions` — regions plus Nepal and Bhutan
+  rather than eight state pills.
+- **FAQ, testimonials, CTA bands, footer** — same treatment. The hostel FAQ adds
+  the day-scholar option for nearby towns; sample testimonial states are now a
+  pan-India mix.
+- **SEO** — `Tumkur` is primary everywhere in titles, descriptions and JSON-LD;
+  `cit tumakuru` stays in the keyword lists only, because people still type it.
+
+Where the applicant lives (new `src/data/geoOptions.js`, the single source):
+
+- **`/apply` Step 4 gains a Country control** — India (default) · Nepal · Bhutan
+  · Other. The state field follows it: 36 Indian states and union territories,
+  Nepal's 7 provinces, Bhutan's 20 dzongkhags, or a free-text box under *Other*,
+  with the label switching between state / province / dzongkhag. Changing
+  country clears the chosen state so a Bhutan dzongkhag can never ship on an
+  Indian application. *"Your district / town"* is relabelled *"Your city /
+  town"* (the stored key stays `district`).
+- **`country` is a new lead field** — added to `applicationSubmit.js`, to
+  `lead_field_whitelist()` in `leads.php`, to the admin Lead Detail *Logistics*
+  card, to lead search, and to the CSV export/import round trip (covered by a
+  test). The canonical schema in `update-prompts/README.md` is updated.
+- **The enquiry drawer** (`UnifiedLeadForm`, still unreachable) gets the same
+  country + state pair, so if it is ever re-enabled it cannot capture a lead the
+  admin panel would misread.
+- **Tele-calling** now offers the same geography: `TELECALL_STATE_OPTIONS`
+  re-exports `TELECALL_REGION_OPTIONS` — one flat list, since a telecaller
+  typing a lead by hand should not have to pick a country first.
+- **12th board options** were North East boards plus CBSE/ICSE, which forced a
+  Tumkur applicant to answer "Other". Added `CBSE`/`ICSE`/`NIOS`/`KAR_PUC`
+  ordering with **Karnataka PUC (KSEAB)**; existing values are untouched and
+  `BOARD_LABELS` was kept in step so the CSV still round-trips.
+- **`counselling_mode: 'ne_rep'`** keeps its stored value; only the label
+  widened, to *"Meet CIT's representative near me"*.
+
+Admin ad guides (Meta / Google / SEO) were re-pointed too: geo-targeting advice
+now covers all of India — with Karnataka and Tumkur worth their own ad set,
+since a local applicant converts on a different message — plus Nepal and Bhutan.
+
 ### Fixed — the ₹12,500 Extra Fees is one-time, not yearly
 
 Step 5 of `/apply` billed the ₹12,500 Extra Fees (Skill & Cultural activities

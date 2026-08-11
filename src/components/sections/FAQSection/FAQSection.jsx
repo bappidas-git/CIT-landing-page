@@ -1,6 +1,6 @@
 /* ============================================
    FAQSection Component
-   The eight questions a North-East family asks
+   The eight questions a family asks
    before they trust a Karnataka college with
    their child — answered on the page instead of
    held back for the call.

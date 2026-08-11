@@ -205,7 +205,7 @@ define('CIT_TEST_SLOT_PAST_GRACE_SECONDS', 300);
 // bookable hour is 10 AM the following morning.
 //
 // THE OFFICER'S CLOCK, NOT THE APPLICANT'S DEVICE. The hours are IST because
-// that is when the Tumakuru desk is staffed; a phone set to another zone must
+// that is when the Tumkur desk is staffed; a phone set to another zone must
 // not be able to book 10 AM local. Slots are stored in UTC, so the offset is
 // applied here rather than trusting anything the browser computed.
 //
@@ -507,7 +507,7 @@ function parse_client_iso($iso) {
  * Is this instant the start of an hour the counselling desk actually works in?
  *
  * Both halves are measured in IST, since that is the clock the officers keep:
- * an hour boundary in Tumakuru is at :30 past the hour in UTC (UTC+05:30), so
+ * an hour boundary in Tumkur is at :30 past the hour in UTC (UTC+05:30), so
  * a naive "minutes must be 00" test on the stored UTC timestamp would reject
  * every slot this page can legitimately produce.
  *

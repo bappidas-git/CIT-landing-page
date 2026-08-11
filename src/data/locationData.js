@@ -1,7 +1,7 @@
 export const locationData = {
   name: "Channabasaveshwara Institute of Technology (CIT)",
-  address: "NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka",
-  city: "Tumakuru",
+  address: "NH 206, B.H. Road, Gubbi, Tumkur – 572 216, Karnataka",
+  city: "Tumkur",
   state: "Karnataka",
   phone: "+918453623233",
   phoneDisplay: "+91 84536 23233",
@@ -11,22 +11,27 @@ export const locationData = {
   warehouses: [],
   nearbyAreas: [
     "Gubbi",
-    "Tumakuru City",
+    "Tumkur City",
     "Kyathsandra",
     "NH-206 (B.H. Road)",
     "Bengaluru (~70 km)",
     "Kempegowda International Airport (~110 km)",
-    "Tumakuru Railway Station",
+    "Tumkur Railway Station",
   ],
-  servingStates: [
-    "Assam",
-    "Arunachal Pradesh",
-    "Manipur",
-    "Meghalaya",
-    "Mizoram",
-    "Nagaland",
-    "Tripura",
-    "Sikkim",
+  // Regions rather than a 36-entry state list: the band is a row of pills on a
+  // 360 px screen, and the campaign runs across the whole country plus the two
+  // neighbouring markets.
+  servingRegions: [
+    "Karnataka & Tumkur",
+    "South India",
+    "North India",
+    "East India",
+    "West India",
+    "Central India",
+    "North East India",
+    "Nepal",
+    "Bhutan",
   ],
-  audienceNote: "Welcoming students from across North East India",
+  audienceNote:
+    "Welcoming students from across India, Nepal and Bhutan",
 };

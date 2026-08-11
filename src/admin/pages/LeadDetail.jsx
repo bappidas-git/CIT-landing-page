@@ -875,8 +875,9 @@ const LeadDetail = () => {
                 Logistics
               </h3>
               <div className={styles.infoGrid}>
+                <InfoField label="Country" value={lead.country} />
                 <InfoField label="State" value={lead.state} />
-                <InfoField label="District" value={lead.district} />
+                <InfoField label="City / Town" value={lead.district} />
                 <InfoField
                   label="Counselling Mode"
                   value={labelFor(COUNSELLING_MODE_LABELS, lead.counselling_mode)}

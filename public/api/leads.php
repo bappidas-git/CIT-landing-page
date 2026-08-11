@@ -410,7 +410,7 @@ function lead_field_whitelist() {
         'twelfth_board', 'twelfth_school', 'twelfth_subjects', 'expected_band',
         'eligibility_percent', 'eligibility_met', 'tenth_school', 'tenth_year',
         'tenth_percent', 'filled_by', 'parent_name', 'parent_mobile',
-        'funding_plan', 'district', 'counselling_mode', 'admission_timeline',
+        'funding_plan', 'country', 'district', 'counselling_mode', 'admission_timeline',
         'best_time', 'fbclid', 'fbp', 'fbc', 'form_started_at',
         'application_completed_at',
         // Merit-program fields (prompt series new-refinement-prompts)

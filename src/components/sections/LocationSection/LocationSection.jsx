@@ -1,6 +1,6 @@
 /* ============================================
    LocationSection Component
-   CIT — Tumakuru campus location + travel reassurance for NE students
+   CIT — Tumkur campus location + travel reassurance for students across India
    ============================================ */
 
 import React from "react";
@@ -71,11 +71,11 @@ const LocationSection = () => {
     window.open(mapsUrl, "_blank", "noopener,noreferrer");
   };
 
-  const neHighlights = [
+  const travelHighlights = [
     {
       icon: "mdi:train",
       title: "Well-connected via Bengaluru",
-      text: "~70 km from Bengaluru. Daily trains, buses & flights from all 8 North East states via Kempegowda International Airport.",
+      text: "~70 km from Bengaluru. Daily trains, buses & flights from every corner of India via Kempegowda International Airport.",
       color: "#0C2D48",
     },
     {
@@ -86,14 +86,14 @@ const LocationSection = () => {
     },
     {
       icon: "mdi:account-tie",
-      title: "CIT North East admission desk",
+      title: "CIT admission desk",
       text: "Our team helps with travel planning, documents, hostel allocation and settling in — in your language.",
       color: "#D82618",
     },
     {
       icon: "mdi:account-group",
       title: "Familiar faces on campus",
-      text: "An active North East student community — seniors who've made the same journey, ready to help juniors.",
+      text: "Students from every region of India on one campus — seniors who've made the same journey, ready to help juniors.",
       color: "#E0301E",
     },
   ];
@@ -104,8 +104,8 @@ const LocationSection = () => {
         <SectionTitle
           badge="LOCATION"
           title="Find Us in"
-          highlight="Tumakuru, Karnataka"
-          subtitle="CIT's campus sits on NH-206, just ~70 km from Bengaluru — reachable by train, bus or flight from across North East India."
+          highlight="Tumkur, Karnataka"
+          subtitle="CIT's campus sits on NH-206, just ~70 km from Bengaluru — reachable by train, bus or flight from across India."
           align="center"
           variant="light"
           badgeVariant="gold"
@@ -235,7 +235,7 @@ const LocationSection = () => {
                         className={styles.mapAddress}
                         sx={{ color: '#E6E8EA' }}
                       >
-                        NH-206, B.H. Road, Tumakuru — Karnataka
+                        NH-206, B.H. Road, Tumkur — Karnataka
                       </Typography>
                       <Button
                         variant="primary"
@@ -254,7 +254,7 @@ const LocationSection = () => {
           </Grid>
         </motion.div>
 
-        {/* "Coming from North East?" helper block */}
+        {/* "Coming from outside Karnataka?" helper block */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -263,18 +263,22 @@ const LocationSection = () => {
           className={styles.neBlock}
         >
           <motion.div variants={itemVariants} className={styles.neBlockHead}>
-            <span className={styles.neBlockEyebrow}>FOR NORTH EAST STUDENTS</span>
+            <span className={styles.neBlockEyebrow}>
+              FOR STUDENTS FROM ACROSS INDIA
+            </span>
             <Typography variant="h4" className={styles.neBlockTitle}>
-              Coming from the North East? We've got you covered.
+              Coming from another state? We've got you covered.
             </Typography>
             <Typography variant="body1" className={styles.neBlockSubtitle}>
               From the moment you decide to apply, our team walks you through
-              every step — travel, hostel and arrival in Tumakuru.
+              every step — travel, hostel and arrival in Tumkur. Local students
+              from Tumkur and around Karnataka get the same guidance on
+              documents and day-scholar options.
             </Typography>
           </motion.div>
 
           <Grid container spacing={3} className={styles.neGrid}>
-            {neHighlights.map((item, index) => (
+            {travelHighlights.map((item, index) => (
               <Grid item xs={12} sm={6} key={index}>
                 <motion.div
                   variants={cardVariants}
@@ -310,7 +314,7 @@ const LocationSection = () => {
           </Grid>
         </motion.div>
 
-        {/* NE audience strip */}
+        {/* Audience strip */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -322,14 +326,14 @@ const LocationSection = () => {
               `margin: 0` is injected after this stylesheet and wins the tie. */}
           <motion.div variants={itemVariants} className={styles.statesTitleWrap}>
             <Typography variant="h6" className={styles.statesTitle}>
-              Proudly welcoming students from across North East India
+              {locationData.audienceNote}
             </Typography>
           </motion.div>
           <motion.div variants={itemVariants} className={styles.statesPills}>
-            {locationData.servingStates.map((state) => (
-              <span key={state} className={styles.statePill}>
+            {locationData.servingRegions.map((region) => (
+              <span key={region} className={styles.statePill}>
                 <Icon icon="mdi:map-marker-radius" />
-                {state}
+                {region}
               </span>
             ))}
           </motion.div>

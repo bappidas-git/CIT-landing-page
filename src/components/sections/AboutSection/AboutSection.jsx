@@ -37,7 +37,7 @@ const itemVariants = {
 
 const campusImage = {
   src: "https://res.cloudinary.com/dn9gyaiik/image/upload/v1779669894/CIT-Campus_nndyrh.png",
-  alt: "CIT Tumakuru campus",
+  alt: "CIT Tumkur campus",
 };
 
 const credibilityPoints = [
@@ -121,7 +121,7 @@ const AboutSection = () => {
               <Typography className={styles.contentParagraph}>
                 <strong>Channabasaveshwara Institute of Technology (CIT)</strong>{" "}
                 is a NAAC-accredited, AICTE-approved and VTU-affiliated
-                engineering institute in <strong>Tumakuru, Karnataka</strong> —
+                engineering institute in <strong>Tumkur, Karnataka</strong> —
                 recognised nationally with the IIRF "Best Brand" 2025 award for
                 academic performance.
               </Typography>

@@ -69,7 +69,7 @@ const WINDOW_HOURS = 24;
  * screen shows that they would refuse is a Confirm that fails for no reason the
  * applicant can see. Change the two files together.
  *
- * The officers sit in Tumakuru and work 10:00–19:00 IST, all seven days, so
+ * The officers sit in Tumkur and work 10:00–19:00 IST, all seven days, so
  * these are IST hours — derived from a fixed offset rather than the device's
  * own timezone. A phone left on the wrong zone would otherwise be offered a
  * 10 AM chip that is the middle of the night at the desk. India keeps no

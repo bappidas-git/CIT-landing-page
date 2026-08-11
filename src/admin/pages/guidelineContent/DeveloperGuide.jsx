@@ -186,7 +186,7 @@ npm start
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/data/locationData.js</code></td>
               <td className={styles.guideTableCell}>Campus address, phone, WhatsApp, nearby cities</td>
-              <td className={styles.guideTableCell}>Tumakuru campus + admission office contact</td>
+              <td className={styles.guideTableCell}>Tumkur campus + admission office contact</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}><code className={styles.guideInlineCode}>src/styles/variables.css</code></td>

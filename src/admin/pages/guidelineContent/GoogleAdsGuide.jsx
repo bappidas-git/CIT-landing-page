@@ -58,7 +58,7 @@ const GoogleAdsGuide = ({ styles }) => {
           <li className={styles.guideStepItem}>Select campaign type: "Search"</li>
           <li className={styles.guideStepItem}>
             Campaign name: something descriptive like{' '}
-            <code className={styles.guideInlineCode}>CIT - B.E. Direct Admission 2026 - North East</code>
+            <code className={styles.guideInlineCode}>CIT - B.E. Direct Admission 2026 - India</code>
           </li>
           <li className={styles.guideStepItem}>
             Networks: Uncheck "Display Network" and "Search Partners" (focus budget on Google
@@ -98,14 +98,14 @@ const GoogleAdsGuide = ({ styles }) => {
 
         <h3 className={styles.guideSubtitle}>Example Keywords</h3>
         <p className={styles.guideParagraph}>
-          For CIT Tumakuru's B.E. 2026 direct-admission campaign aimed at North East students, your
+          For CIT Tumkur's B.E. 2026 direct-admission campaign, which runs across India (Karnataka and Tumkur included) plus Nepal and Bhutan, your
           keywords might look like:
         </p>
         <pre className={styles.guideCode}>
 {`"direct b.e. admission karnataka 2026"
-"b.e. admission for assam students"
-"cit tumakuru admission"
-"engineering college with hostel for ne students"
+"b.e. admission for outstation students"
+"cit tumkur admission"
+"engineering college with hostel in karnataka"
 "best computer science engineering karnataka"
 "vtu engineering admission 2026"
 "ai ds engineering admission"`}
@@ -185,20 +185,20 @@ Wikipedia`}
 {`Direct B.E. Admission 2026 — CIT
 NAAC-Accredited Engineering College
 Apply for CIT B.E. Admission Today
-Hostel + Mess for NE Students
+Hostel + Mess On Campus
 25 Years of Academic Excellence
 85%+ Placement | Highest 15 LPA`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>Example Descriptions</h3>
         <pre className={styles.guideCode}>
-{`Direct B.E. admission for 2026 at CIT Tumakuru. NAAC-accredited, AICTE-approved, VTU-affiliated. Guided admission for NE students. Apply now!
+{`Direct B.E. admission for 2026 at CIT Tumkur. NAAC-accredited, AICTE-approved, VTU-affiliated. Guided admission for students across India. Apply now!
 Channabasaveshwara Institute of Technology — 25 years of excellence, 90+ recruiters, strong placement track record. No consultancy or agent fees. Start your application.`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>Tips for Better Ads</h3>
         <ol className={styles.guideStepList}>
-          <li className={styles.guideStepItem}>Include your unique selling points (NAAC accreditation, AICTE approval, hostel for NE students, 85%+ placement)</li>
+          <li className={styles.guideStepItem}>Include your unique selling points (NAAC accreditation, AICTE approval, on-campus hostel, 85%+ placement)</li>
           <li className={styles.guideStepItem}>Use numbers and statistics ("25 years", "90+ recruiters", "Highest 15 LPA")</li>
           <li className={styles.guideStepItem}>Include a clear call-to-action ("Apply Now", "Get Admission Details", "Talk to Admission Counsellor")</li>
           <li className={styles.guideStepItem}>Include your target keyword in at least 2-3 headlines</li>
@@ -223,7 +223,7 @@ Channabasaveshwara Institute of Technology — 25 years of excellence, 90+ recru
             </tr>
             <tr>
               <td className={styles.guideTableCell}>Callouts</td>
-              <td className={styles.guideTableCell}>Short highlight phrases (e.g., "NAAC Accredited", "AICTE Approved", "Hostel for NE Students")</td>
+              <td className={styles.guideTableCell}>Short highlight phrases (e.g., "NAAC Accredited", "AICTE Approved", "On-Campus Hostel")</td>
             </tr>
             <tr>
               <td className={styles.guideTableCell}>Structured Snippets</td>

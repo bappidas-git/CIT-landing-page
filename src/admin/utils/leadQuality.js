@@ -217,14 +217,16 @@ export const TWELFTH_STATUS_LABELS = {
 };
 
 export const BOARD_LABELS = {
+  CBSE: "CBSE",
+  ICSE: "ICSE / ISC",
+  NIOS: "NIOS",
+  KAR_PUC: "Karnataka PUC (KSEAB)",
   AHSEC: "AHSEC (Assam)",
   NBSE: "NBSE (Nagaland)",
   MBOSE: "MBOSE (Meghalaya)",
   TBSE: "TBSE (Tripura)",
   COHSEM: "COHSEM (Manipur)",
-  CBSE: "CBSE",
-  ICSE: "ICSE / ISC",
-  Other: "Other board",
+  Other: "Other state board",
 };
 
 export const EXPECTED_BAND_LABELS = {
@@ -244,7 +246,7 @@ export const COUNSELLING_MODE_LABELS = {
   whatsapp_video: "WhatsApp video call",
   phone: "Phone call",
   campus_visit: "Can visit the campus",
-  ne_rep: "Meet CIT's NE representative",
+  ne_rep: "Meet CIT's representative near me",
 };
 
 export const ADMISSION_TIMELINE_LABELS = {
@@ -565,6 +567,7 @@ export const hasFamilyFunding = (lead) =>
 export const hasLogistics = (lead) =>
   !!lead &&
   [
+    lead.country,
     lead.district,
     lead.counselling_mode,
     lead.admission_timeline,

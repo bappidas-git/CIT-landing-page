@@ -254,6 +254,7 @@ export const getLeads = (filters = {}) => {
         (l.state || "").toLowerCase().includes(q) ||
         (l.parent_name || "").toLowerCase().includes(q) ||
         (l.parent_mobile || "").includes(q) ||
+        (l.country || "").toLowerCase().includes(q) ||
         (l.district || "").toLowerCase().includes(q) ||
         (l.twelfth_school || "").toLowerCase().includes(q) ||
         (l.tenth_school || "").toLowerCase().includes(q)
@@ -528,6 +529,7 @@ export const exportLeadsCSV = (leads) => {
     "Parent Name",
     "Parent Mobile",
     "Filled By",
+    "Country",
     "District",
     "Counselling Mode",
     "Admission Timeline",
@@ -599,6 +601,7 @@ export const exportLeadsCSV = (leads) => {
       l.parent_name,
       l.parent_mobile,
       labelFor(FILLED_BY_LABELS, l.filled_by),
+      l.country,
       l.district,
       labelFor(COUNSELLING_MODE_LABELS, l.counselling_mode),
       labelFor(ADMISSION_TIMELINE_LABELS, l.admission_timeline),
@@ -742,6 +745,7 @@ const CSV_FIELD_MAP = {
   "parent name": "parent_name",
   "parent mobile": "parent_mobile",
   "filled by": "filled_by",
+  country: "country",
   district: "district",
   "counselling mode": "counselling_mode",
   "admission timeline": "admission_timeline",

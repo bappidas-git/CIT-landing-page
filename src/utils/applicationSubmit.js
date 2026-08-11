@@ -392,7 +392,8 @@ const buildFullPayload = (draft, now) => {
     funding_plan: draft.funding_plan || '',
 
     // Logistics (Step 4)
-    state: draft.state || '',
+    country: draft.country || '',
+    state: (draft.state || '').trim(),
     district: (draft.district || '').trim(),
     counselling_mode: draft.counselling_mode || '',
     admission_timeline: draft.admission_timeline || '',

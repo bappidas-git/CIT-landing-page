@@ -32,7 +32,7 @@ const SEOSetupGuide = ({ styles }) => {
           <li className={styles.guideStepItem}>
             Example:
             <pre className={styles.guideCode}>
-{`<title>Direct B.E. Admission 2026 — CIT Tumakuru</title>`}
+{`<title>Direct B.E. Admission 2026 — CIT Tumkur</title>`}
             </pre>
           </li>
         </ol>
@@ -48,7 +48,7 @@ const SEOSetupGuide = ({ styles }) => {
           <li className={styles.guideStepItem}>
             Example:
             <pre className={styles.guideCode}>
-{`<meta name="description" content="Direct B.E. admission 2026 at Channabasaveshwara Institute of Technology, Tumakuru — NAAC-accredited, AICTE-approved, 25 years of excellence. Guided admissions for NE students.">`}
+{`<meta name="description" content="Direct B.E. admission 2026 at Channabasaveshwara Institute of Technology, Tumkur — NAAC-accredited, AICTE-approved, 25 years of excellence. Guided admissions for students across India.">`}
             </pre>
           </li>
         </ol>
@@ -121,7 +121,7 @@ organization.url        → https://landing.cittumkur.org
 organization.logo       → URL to the CIT logo image
 organization.phone      → +91-8453623233
 organization.email      → admin@cittumkur.org
-organization.address    → NH 206, B.H. Road, Gubbi, Tumakuru – 572 216, Karnataka
+organization.address    → NH 206, B.H. Road, Gubbi, Tumkur – 572 216, Karnataka
 
 // FAQ section
 faqs                    → Replace with your actual admission FAQs (5-8 questions:
@@ -131,7 +131,7 @@ faqs                    → Replace with your actual admission FAQs (5-8 questio
 localBusiness.type      → "CollegeOrUniversity" or "EducationalOrganization"
 localBusiness.priceRange → Leave blank or "₹₹"
 localBusiness.openingHours → CIT admission office hours
-localBusiness.geo       → Tumakuru campus latitude and longitude (get from Google Maps)`}
+localBusiness.geo       → Tumkur campus latitude and longitude (get from Google Maps)`}
         </pre>
 
         <h3 className={styles.guideSubtitle}>How to Get Latitude & Longitude from Google Maps</h3>
